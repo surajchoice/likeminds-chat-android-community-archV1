@@ -36,4 +36,19 @@
         <attr name="gridLayoutManagerColumns" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="LikeMindsCheckbox">
+        <attr name="set_font_type" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LikeMindsSwitch">
+        <attr name="setFontType" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LikeMindsRadioButton">
+        <attr name="set_font_style" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LikeMindsChip">
+        <attr name="font_look" format="string" />
+    </declare-styleable>
 </resources>

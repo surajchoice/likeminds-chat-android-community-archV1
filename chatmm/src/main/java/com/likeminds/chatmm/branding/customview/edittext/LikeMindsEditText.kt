@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.branding.customview.edittext
 
 import android.content.Context
 import android.content.res.ColorStateList
