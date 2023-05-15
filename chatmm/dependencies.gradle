@@ -1,0 +1,91 @@
+dependencies {
+    //core
+    implementation deps.android_core.core
+    implementation deps.android_core.appcompat
+    implementation deps.ktx.fragment
+
+    //Kotlin
+    implementation deps.kotlin.jdk
+    implementation deps.kotlin.reflect
+
+    //ui
+    api deps.material_design.main
+    implementation deps.constraint_layout.main
+    implementation deps.recycler_view.main
+    implementation deps.viewPager2.main
+    implementation deps.flexbox.main
+
+    //dagger
+    implementation deps.dagger.main
+    kapt deps.dagger.compiler
+
+    //firebase
+    api platform(deps.firebase.bom)
+    api deps.firebase.database
+    api deps.firebase.messaging
+
+    //rx
+    implementation deps.rxJava.main
+    implementation deps.rxJava.android
+
+    //lifecycle - viewModel & liveData
+    implementation deps.lifecycle.viewmodel
+    implementation deps.lifecycle.livedata
+    kapt deps.lifecycle.annotation
+
+    //chrometabs
+    implementation deps.chrometab.main
+
+    //navigation
+    implementation deps.navigation.main
+    implementation deps.navigation.ui
+
+    //circleimageview
+    implementation deps.circleimageview.main
+
+    //glide
+    implementation deps.glide.core
+    kapt deps.glide.compiler
+
+    //keyboardutil
+    implementation deps.keyboardutil.main
+
+    //google play core
+    implementation deps.playCore.main
+    implementation deps.playCore.ktx
+
+    //mp4parser
+    implementation deps.mp4parser.main
+
+    //exoPlayer
+    implementation deps.exo_player.main
+
+    //aws
+    implementation deps.aws.s3
+    implementation(deps.aws.mobile_client) { transitive = true }
+
+    //relate to branch
+    implementation deps.branch.main
+    implementation deps.firebase.appindexing
+    implementation deps.googlePlayServicesAppIdentifier.main
+
+    //shimmer
+    implementation deps.facebook.shimmer
+
+    //Stream
+    implementation deps.stream.main
+
+    //emoticon keyboard
+    implementation deps.emoticonKeyboard.main
+
+    //Giphy
+    implementation deps.giphy.main
+
+    //Balloons: Tooltips
+    implementation deps.balloons.main
+
+    //testing
+    testImplementation deps.junit.main
+    androidTestImplementation deps.android_test.android
+    androidTestImplementation deps.android_test.espresso
+}
