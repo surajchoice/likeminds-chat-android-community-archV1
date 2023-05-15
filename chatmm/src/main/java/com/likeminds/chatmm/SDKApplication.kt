@@ -6,6 +6,8 @@ import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.Callback
 import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import javax.inject.Inject
@@ -35,11 +37,18 @@ class SDKApplication {
     }
 
     fun initSDKApplication(
-        application: Application
+        application: Application,
+        brandingRequest: SetBrandingRequest
     ) {
-        // todo: branding and domain
+        // todo: set domain
+        setupBranding(brandingRequest)
         initAppComponent(application)
         initAWSMobileClient(application)
+    }
+
+    // sets branding to the app
+    private fun setupBranding(setBrandingRequest: SetBrandingRequest) {
+        LMBranding.setBranding(setBrandingRequest)
     }
 
     private fun initAWSMobileClient(applicationContext: Context) {
