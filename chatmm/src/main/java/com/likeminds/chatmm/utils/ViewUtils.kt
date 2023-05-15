@@ -1,11 +1,43 @@
 package com.likeminds.chatmm.utils
 
+import android.content.Context
+import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.likeminds.chatmm.R
 
+//view related utils class
 object ViewUtils {
+    fun dpToPx(dp: Int): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
+
+    fun View.hide() {
+        visibility = View.GONE
+    }
+
+    fun View.show() {
+        visibility = View.VISIBLE
+    }
+
+    fun showShortToast(context: Context?, text: String?) {
+        if (context == null || text.isNullOrEmpty()) return
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    // shows short toast with "Something went wrong!" message
+    fun showSomethingWentWrongToast(context: Context) {
+        showShortToast(context, context.getString(R.string.something_went_wrong))
+    }
+
+    // shows short toast with error message
+    fun showErrorMessageToast(context: Context, errorMessage: String?) {
+        showShortToast(context, errorMessage ?: context.getString(R.string.something_went_wrong))
+    }
+
     //find parent for a particular view
     fun View?.findSuitableParent(): ViewGroup? {
         var view = this
