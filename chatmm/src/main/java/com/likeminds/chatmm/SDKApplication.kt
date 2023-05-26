@@ -10,6 +10,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
+import com.likeminds.chatmm.di.home.HomeFeedComponent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,6 +20,8 @@ class SDKApplication {
     lateinit var transferUtility: TransferUtility
 
     private var likeMindsChatComponent: LikeMindsChatComponent? = null
+
+    private var homeFeedComponent: HomeFeedComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMinds"
@@ -38,6 +41,7 @@ class SDKApplication {
 
     fun initSDKApplication(
         application: Application,
+        lmUICallback: LMUICallback,
         brandingRequest: SetBrandingRequest
     ) {
         // todo: set domain
@@ -47,7 +51,7 @@ class SDKApplication {
     }
 
     // sets branding to the app
-    private fun setupBranding(setBrandingRequest: SetBrandingRequest) {
+    fun setupBranding(setBrandingRequest: SetBrandingRequest) {
         LMBranding.setBranding(setBrandingRequest)
     }
 
@@ -74,5 +78,15 @@ class SDKApplication {
                 .build()
         }
         likeMindsChatComponent!!.inject(this)
+    }
+
+    /**
+     * initiate and return HomeComponent: All dependencies required for home package
+     * */
+    internal fun homeFeedComponent(): HomeFeedComponent? {
+        if (homeFeedComponent == null) {
+            homeFeedComponent = likeMindsChatComponent?.homeFeedComponent()?.create()
+        }
+        return homeFeedComponent
     }
 }

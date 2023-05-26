@@ -6,4 +6,5 @@
     <string name="permission_continue">Continue</string>
     <string name="settings">Settings</string>
     <string name="something_went_wrong">Something went wrong!</string>
+    <string name="empty_api_key">Empty API Key</string>
 </resources>
