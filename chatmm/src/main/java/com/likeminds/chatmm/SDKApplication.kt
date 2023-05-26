@@ -11,6 +11,7 @@ import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.di.home.HomeFeedComponent
+import com.likeminds.likemindschat.LMChatClient
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -45,6 +46,8 @@ class SDKApplication {
         brandingRequest: SetBrandingRequest
     ) {
         // todo: set domain
+        LMChatClient.Builder(application)
+            .build()
         setupBranding(brandingRequest)
         initAppComponent(application)
         initAWSMobileClient(application)

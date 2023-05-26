@@ -11,10 +11,10 @@ import dagger.multibindings.IntoMap
 abstract class HomeFeedViewModelModule {
 
     @Binds
-    abstract fun bindHomeViewModelFactory(factory: HomeFeedViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindHomeFeedViewModelFactory(factory: HomeFeedViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @HomeFeedViewModelKey(HomeFeedViewModel::class)
-    abstract fun bindMyHomeFragmentViewModel(homeFeedViewModel: HomeFeedViewModel): ViewModel
+    abstract fun bindHomeFeedViewModel(homeFeedViewModel: HomeFeedViewModel): ViewModel
 }

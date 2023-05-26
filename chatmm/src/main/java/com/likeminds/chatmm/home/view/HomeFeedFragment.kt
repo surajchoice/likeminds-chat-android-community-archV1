@@ -8,6 +8,7 @@ import com.likeminds.chatmm.home.model.GroupChatResponse
 import com.likeminds.chatmm.home.model.HomeFeedExtras
 import com.likeminds.chatmm.home.viewmodel.HomeFeedViewModel
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private lateinit var extras: HomeFeedExtras
 
     @Inject
-    private lateinit var initiateViewModel: InitiateViewModel
+    lateinit var initiateViewModel: InitiateViewModel
 
     companion object {
         const val TAG = "HomeFeedFragment"
@@ -41,6 +42,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         }
     }
 
+    override val useSharedViewModel: Boolean
+        get() = true
+
     override fun getViewModelClass(): Class<HomeFeedViewModel> {
         return HomeFeedViewModel::class.java
     }
@@ -59,5 +63,33 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         extras = requireArguments().getParcelable(BUNDLE_HOME_FRAGMENT)
             ?: throw emptyExtrasException(TAG)
         isGuestUser = extras.isGuest ?: false
+    }
+
+    override fun setUpViews() {
+        super.setUpViews()
+        initiateUser()
+    }
+
+    override fun observeData() {
+        super.observeData()
+
+        // observes error message
+        observeErrors()
+    }
+
+    private fun observeErrors() {
+        initiateViewModel.initiateErrorMessage.observe(viewLifecycleOwner) {
+            ViewUtils.showErrorMessageToast(requireContext(), it)
+        }
+    }
+
+    private fun initiateUser() {
+        initiateViewModel.initiateUser(
+            requireContext(),
+            extras.apiKey,
+            extras.userName,
+            extras.userId,
+            extras.isGuest ?: false
+        )
     }
 }

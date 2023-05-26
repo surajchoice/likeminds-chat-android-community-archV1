@@ -11,4 +11,4 @@ import kotlin.reflect.KClass
 )
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
-internal annotation class HomeFeedViewModelKey(val value: KClass<out ViewModel>)
+annotation class HomeFeedViewModelKey(val value: KClass<out ViewModel>)

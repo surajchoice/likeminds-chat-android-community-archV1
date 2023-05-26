@@ -49,19 +49,23 @@ class AuthActivity : AppCompatActivity() {
                 // todo: handle deep links.
                 parseDeepLink()
             } else {
-                val intent = Intent(this, AfterLoginActivity::class.java)
-                val extras = LoginExtra(
-                    false,
-                    authPreferences.getUserName(),
-                    authPreferences.getUserId(),
-                )
-                intent.putExtra(ChatMMApplication.EXTRA_LOGIN, extras)
-                startActivity(intent)
+                navigateToAfterLoginActivity()
             }
         } else {
             // user is not logged in, ask login details.
             loginUser()
         }
+    }
+
+    private fun navigateToAfterLoginActivity() {
+        val intent = Intent(this, AfterLoginActivity::class.java)
+        val extras = LoginExtra(
+            false,
+            authPreferences.getUserName(),
+            authPreferences.getUserId(),
+        )
+        intent.putExtra(ChatMMApplication.EXTRA_LOGIN, extras)
+        startActivity(intent)
     }
 
     // parses deep link to start corresponding activity
@@ -101,11 +105,10 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
 
-
             btnLogin.setOnClickListener {
-                val apiKey = binding.etApiKey.text.toString().trim()
-                val userName = binding.etUserName.text.toString().trim()
-                val userId = binding.etUserId.text.toString().trim()
+                val apiKey = etApiKey.text.toString().trim()
+                val userName = etUserName.text.toString().trim()
+                val userId = etUserId.text.toString().trim()
 
                 if (apiKey.isEmpty()) {
                     ViewUtils.showShortToast(
@@ -155,6 +158,7 @@ class AuthActivity : AppCompatActivity() {
                     .build()
 
                 LikeMindsChatUI.setBranding(brandingRequest)
+                navigateToAfterLoginActivity()
             }
         }
     }
