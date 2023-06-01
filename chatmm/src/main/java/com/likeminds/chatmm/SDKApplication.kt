@@ -25,7 +25,7 @@ class SDKApplication {
     private var homeFeedComponent: HomeFeedComponent? = null
 
     companion object {
-        const val LOG_TAG = "LikeMinds"
+        const val LOG_TAG = "LikeMindsChat"
         private var sdkApplicationInstance: SDKApplication? = null
 
         /**
@@ -84,9 +84,9 @@ class SDKApplication {
     }
 
     /**
-     * initiate and return HomeComponent: All dependencies required for home package
+     * initiate and return HomeFeedComponent: All dependencies required for home package
      * */
-    internal fun homeFeedComponent(): HomeFeedComponent? {
+    fun homeFeedComponent(): HomeFeedComponent? {
         if (homeFeedComponent == null) {
             homeFeedComponent = likeMindsChatComponent?.homeFeedComponent()?.create()
         }

@@ -42,9 +42,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         }
     }
 
-    override val useSharedViewModel: Boolean
-        get() = true
-
     override fun getViewModelClass(): Class<HomeFeedViewModel> {
         return HomeFeedViewModel::class.java
     }
