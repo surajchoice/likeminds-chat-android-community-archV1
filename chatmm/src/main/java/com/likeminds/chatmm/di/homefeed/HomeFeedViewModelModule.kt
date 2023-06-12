@@ -1,8 +1,8 @@
-package com.likeminds.chatmm.di.home
+package com.likeminds.chatmm.di.homefeed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.likeminds.chatmm.home.viewmodel.HomeFeedViewModel
+import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

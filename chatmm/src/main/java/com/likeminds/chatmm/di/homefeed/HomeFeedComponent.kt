@@ -1,6 +1,6 @@
-package com.likeminds.chatmm.di.home
+package com.likeminds.chatmm.di.homefeed
 
-import com.likeminds.chatmm.home.view.HomeFeedFragment
+import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [HomeFeedViewModelModule::class])

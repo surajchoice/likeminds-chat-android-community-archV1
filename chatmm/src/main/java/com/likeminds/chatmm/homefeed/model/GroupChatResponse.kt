@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.home.model
+package com.likeminds.chatmm.homefeed.model
 
 import androidx.annotation.Keep
 import com.likeminds.likemindschat.community.model.Community

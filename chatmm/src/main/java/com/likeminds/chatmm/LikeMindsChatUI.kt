@@ -4,9 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
-import com.likeminds.chatmm.home.model.GroupChatResponse
-import com.likeminds.chatmm.home.model.HomeFeedExtras
-import com.likeminds.chatmm.home.view.HomeFeedFragment
+import com.likeminds.chatmm.homefeed.model.GroupChatResponse
+import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
+import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 
 object LikeMindsChatUI {
     /**

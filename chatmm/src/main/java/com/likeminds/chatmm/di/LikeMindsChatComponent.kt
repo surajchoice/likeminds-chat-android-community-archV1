@@ -2,8 +2,8 @@ package com.likeminds.chatmm.di
 
 import android.app.Application
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.di.home.HomeFeedComponent
-import com.likeminds.chatmm.di.home.HomeFeedComponentModule
+import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
+import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.home.view
+package com.likeminds.chatmm.homefeed.view
 
 import android.os.Bundle
 import com.likeminds.chatmm.InitiateViewModel
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
-import com.likeminds.chatmm.home.model.GroupChatResponse
-import com.likeminds.chatmm.home.model.HomeFeedExtras
-import com.likeminds.chatmm.home.viewmodel.HomeFeedViewModel
+import com.likeminds.chatmm.homefeed.model.GroupChatResponse
+import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
+import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment

@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.di.home
+package com.likeminds.chatmm.di.homefeed
 
 import dagger.Module
 
