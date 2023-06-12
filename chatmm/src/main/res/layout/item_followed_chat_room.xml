@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <import type="android.view.View" />
+
+        <variable
+            name="chatViewData"
+            type="com.likeminds.chatmm.homefeed.model.ChatViewData" />
 
         <variable
             name="isDraftOrCreating"
@@ -33,6 +38,211 @@
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/layoutImageGroup"
+            layout="@layout/layout_grouped_images"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/image_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".18" />
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_warning_circle"
+            android:translationX="3dp"
+            android:translationY="4dp"
+            android:visibility="@{isDraftOrCreating == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutImageGroup"
+            app:layout_constraintEnd_toEndOf="@+id/layoutImageGroup"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/layoutImageGroup"
+            app:layout_constraintTop_toTopOf="@+id/layoutImageGroup"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_time_stamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{chatViewData.lastConversationTime}"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@id/tv_chatroom_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_chatroom_name"
+            tools:text="20:20PM" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_chatroom_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:drawablePadding="8dp"
+            android:ellipsize="end"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="1"
+            android:text="@{chatViewData.chatroom.header.trim()}"
+            android:textColor="@color/black_two"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:fontType="medium"
+            app:layout_constraintEnd_toStartOf="@+id/iv_secret_chatroom"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/image_guide"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_goneMarginStart="14dp"
+            app:layout_goneMarginTop="24dp"
+            tools:drawableEnd="@drawable/ic_announcement_room"
+            tools:text="Announcement Rooms" />
+
+        <ImageView
+            android:id="@+id/iv_secret_chatroom"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_secret_lock"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_time_stamp"
+            app:layout_constraintStart_toEndOf="@+id/tv_chatroom_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_name"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_last_conversation_member_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:paddingEnd="4dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:fontType="regular"
+            app:layout_constraintStart_toStartOf="@+id/tv_chatroom_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name"
+            tools:ignore="RtlSymmetry"
+            tools:text="Person Name :"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_last_conversation_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintStart_toEndOf="@+id/tv_last_conversation_member_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_last_conversation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="6dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:singleLine="true"
+            android:textColor="@{isDraftOrCreating == true ? @color/scarlet : @color/grey}"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/iv_tagged"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_last_conversation_attachment"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name"
+            tools:text="This community is for all the members of society" />
+
+        <ImageView
+            android:id="@+id/iv_tagged"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_tagged_room"
+            android:visibility="@{chatViewData.chatroom.isTagged == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintEnd_toStartOf="@+id/iv_mute"
+            app:layout_constraintStart_toEndOf="@+id/tv_last_conversation"
+            app:layout_constraintTop_toTopOf="@+id/tv_last_conversation"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_mute"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="12dp"
+            android:paddingStart="2dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="3dp"
+            android:paddingBottom="3dp"
+            android:visibility="@{chatViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintEnd_toStartOf="@+id/tv_unseen_count"
+            app:srcCompat="@drawable/ic_mute"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_unseen_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/background_pending_circular"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:padding="2dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="@{showUnseenCount ? View.VISIBLE : View.GONE}"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_last_conversation"
+            tools:ignore="SmallSp"
+            tools:text="10" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/background_v1_50"
+            android:visibility="@{hideBottomLine ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_time_stamp"
+            app:layout_constraintStart_toStartOf="@+id/tv_chatroom_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_last_conversation"
+            app:layout_goneMarginStart="14dp"
+            app:layout_goneMarginTop="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
