@@ -10,8 +10,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ChatroomViewData private constructor(
-    val memberViewData: MemberViewData,
     val id: String,
+    val memberViewData: MemberViewData,
     val title: String,
     val createdAt: String?,
     val alreadySeenFullConversation: Boolean?,
@@ -79,8 +79,8 @@ class ChatroomViewData private constructor(
     }
 
     class Builder {
-        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var id: String = ""
+        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var title: String = ""
         private var createdAt: String? = null
         private var alreadySeenFullConversation: Boolean? = null
@@ -126,10 +126,10 @@ class ChatroomViewData private constructor(
         private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
 
+        fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
             apply { this.memberViewData = memberViewData }
 
-        fun id(id: String) = apply { this.id = id }
         fun title(title: String) = apply { this.title = title }
         fun createdAt(createdAt: String?) = apply { this.createdAt = createdAt }
         fun alreadySeenFullConversation(alreadySeenFullConversation: Boolean?) =
@@ -207,8 +207,8 @@ class ChatroomViewData private constructor(
             apply { this.dynamicViewType = dynamicViewType }
 
         fun build() = ChatroomViewData(
-            memberViewData,
             id,
+            memberViewData,
             title,
             createdAt,
             alreadySeenFullConversation,
@@ -257,8 +257,8 @@ class ChatroomViewData private constructor(
     }
 
     fun toBuilder(): Builder {
-        return Builder().memberViewData(memberViewData)
-            .id(id)
+        return Builder().id(id)
+            .memberViewData(memberViewData)
             .title(title)
             .createdAt(createdAt)
             .alreadySeenFullConversation(alreadySeenFullConversation)
