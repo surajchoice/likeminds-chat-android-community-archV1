@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class ConversationViewData private constructor(
     val id: String,
-    val memberViewData: MemberViewData,
+    val memberViewData: MemberViewData?,
     val answer: String,
     val shortAnswer: String?,
     val alreadySeenFullConversation: Boolean?,
@@ -36,7 +36,7 @@ class ConversationViewData private constructor(
     val replyChatroomId: String?,
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
-    val isExpanded: Boolean
+    val isExpanded: Boolean,
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -144,7 +144,7 @@ class ConversationViewData private constructor(
 
     class Builder {
         private var id: String = ""
-        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
+        private var memberViewData: MemberViewData? = null
         private var answer: String = ""
         private var shortAnswer: String? = null
         private var alreadySeenFullConversation: Boolean? = null
@@ -173,7 +173,7 @@ class ConversationViewData private constructor(
         private var isExpanded: Boolean = false
 
         fun id(id: String) = apply { this.id = id }
-        fun memberViewData(memberViewData: MemberViewData) =
+        fun memberViewData(memberViewData: MemberViewData?) =
             apply { this.memberViewData = memberViewData }
 
         fun answer(answer: String) = apply { this.answer = answer }
@@ -249,7 +249,7 @@ class ConversationViewData private constructor(
             replyChatroomId,
             isLastItem,
             pollInfoData,
-            isExpanded
+            isExpanded,
         )
     }
 

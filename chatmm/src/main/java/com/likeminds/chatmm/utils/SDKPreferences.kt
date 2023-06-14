@@ -14,6 +14,7 @@ class SDKPreferences @Inject constructor(
 
         private const val API_KEY = "API_KEY"
         private const val IS_GUEST = "IS_GUEST"
+        private const val HIDE_SECRET_CHATROOM_LOCK_ICON = "HIDE_SECRET_CHATROOM_LOCK_ICON"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -30,5 +31,21 @@ class SDKPreferences @Inject constructor(
 
     fun getIsGuestUser(): Boolean {
         return getPreference(IS_GUEST, false)
+    }
+
+    fun setHideSecretChatroomLockIcon(hideSecretChatroomLockIcon: Boolean) {
+        putPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, hideSecretChatroomLockIcon)
+    }
+
+    fun getHideSecretChatroomLockIcon(): Boolean {
+        return getPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, false)
+    }
+
+    fun setShowHomeFeedShimmer(setHomeFeedShimmer: Boolean) {
+        putPreference(SHOW_HOME_FEED_SHIMMER, setHomeFeedShimmer)
+    }
+
+    fun getShowHomeFeedShimmer(): Boolean {
+        return getPreference(SHOW_HOME_FEED_SHIMMER, false)
     }
 }

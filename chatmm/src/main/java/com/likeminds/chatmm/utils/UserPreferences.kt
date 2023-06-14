@@ -15,14 +15,23 @@ class UserPreferences @Inject constructor(
     companion object {
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
+        const val MEMBER_ID = "member_id"
     }
 
     fun getUserUniqueId(): String {
         return getPreference(USER_UNIQUE_ID, "") ?: ""
     }
 
-    fun saveUserUniqueId(memberId: String) {
-        putPreference(USER_UNIQUE_ID, memberId)
+    fun saveUserUniqueId(userUniqueId: String) {
+        putPreference(USER_UNIQUE_ID, userUniqueId)
+    }
+
+    fun getMemberId(): String {
+        return getPreference(MEMBER_ID, "") ?: ""
+    }
+
+    fun saveMemberId(memberId: String) {
+        putPreference(MEMBER_ID, memberId)
     }
 
     @SuppressLint("HardwareIds")

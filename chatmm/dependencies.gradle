@@ -84,11 +84,14 @@ dependencies {
     //Balloons: Tooltips
     implementation deps.balloons.main
 
+    //photoview
+    implementation deps.photoview.main
+
     //testing
     testImplementation deps.junit.main
     androidTestImplementation deps.android_test.android
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    api "com.github.NateshR.LikeMinds-Android-Chat-SDK:likemindschat:277e798a40"
+    api "com.github.NateshR.LikeMinds-Android-Chat-SDK:likemindschat:c8284518c1"
 }

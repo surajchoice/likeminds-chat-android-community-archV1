@@ -76,9 +76,11 @@ class InitiateViewModel @Inject constructor(
             _logoutResponse.postValue(true)
         } else {
             val user = data.user
-            val id = user?.userUniqueId ?: ""
+            val userUniqueId = user?.userUniqueId ?: ""
+            val memberId = user?.id.toString()
 
-            userPreferences.saveUserUniqueId(id)
+            userPreferences.saveUserUniqueId(userUniqueId)
+            userPreferences.saveMemberId(memberId)
 
             // todo: member state
 

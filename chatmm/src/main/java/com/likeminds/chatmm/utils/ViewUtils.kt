@@ -5,9 +5,11 @@ import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 
 //view related utils class
 object ViewUtils {
@@ -66,5 +68,29 @@ object ViewUtils {
 
         // If we reach here then we didn't find a CoL or a suitable content view so we'll fallback
         return fallback
+    }
+
+    /**
+     * set chatroom image to the [ivChatroomImage] and
+     * return [onChatroomImagePresent] if [chatroomImageUrl] != null
+     * and [onChatroomImageNotPresent] if [chatroomImageUrl] == null
+     **/
+    fun setChatroomImage(
+        chatroomImageUrl: String?,
+        ivChatroomImage: ImageView,
+        onChatroomImagePresent: () -> Unit,
+        onChatroomImageNotPresent: () -> Unit
+    ) {
+        if (chatroomImageUrl != null) {
+            onChatroomImagePresent()
+            ImageBindingUtil.loadImage(
+                ivChatroomImage,
+                chatroomImageUrl,
+                isCircle = true,
+                objectKey = chatroomImageUrl
+            )
+        } else {
+            onChatroomImageNotPresent()
+        }
     }
 }
