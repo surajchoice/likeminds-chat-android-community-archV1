@@ -28,4 +28,7 @@
     <string name="joined_chatrooms">Joined chat rooms</string>
     <string name="general_channel_name">General notifications</string>
     <string name="general_channel_description">All general notifications</string>
+    <string name="new_caps">NEW</string>
+    <string name="join">Join</string>
+    <string name="joined">Joined</string>
 </resources>

@@ -11,7 +11,6 @@ import com.likeminds.chatmm.chatroom.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemFollowedChatRoomBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
-import com.likeminds.chatmm.utils.HomeFeedPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
@@ -22,8 +21,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 
 class FollowedChatroomViewDataBinder(
-    val SDKPreferences: SDKPreferences,
-    val homeFeedPreferences: HomeFeedPreferences,
+    val sdkPreferences: SDKPreferences,
     private val homeAdapterListener: HomeFeedAdapter.HomeFeedAdapterListener
 ) : ViewDataBinder<ItemFollowedChatRoomBinding, BaseViewType>() {
 
@@ -86,7 +84,7 @@ class FollowedChatroomViewDataBinder(
 
             //secret chatroom lock icon
             val isSecretChatroom = data.chatroom.isSecret
-            val hideSecretChatroomLockIcon = homeFeedPreferences.getHideSecretChatroomLockIcon()
+            val hideSecretChatroomLockIcon = sdkPreferences.getHideSecretChatroomLockIcon()
 
             if (isSecretChatroom == true) {
                 if (hideSecretChatroomLockIcon) {
@@ -177,7 +175,7 @@ class FollowedChatroomViewDataBinder(
                 tvLastConversation.text = ChatroomUtil.getDeletedMessage(
                     root.context,
                     lastConversation,
-                    SDKPreferences.getMemberId()
+                    sdkPreferences.getMemberId()
                 )
             }
         }

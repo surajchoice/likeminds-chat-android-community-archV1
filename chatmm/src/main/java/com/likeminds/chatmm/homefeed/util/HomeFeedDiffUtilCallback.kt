@@ -28,9 +28,6 @@ internal class HomeFeedDiffUtilCallback(
                 oldItem.title == newItem.title
             }
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
-            // todo
-//            oldItem is ProgressViewData && newItem is ProgressViewData -> true
-//            oldItem is ProgressHorizontalViewData && newItem is ProgressHorizontalViewData -> true
             oldItem is ChatroomListShimmerViewData && newItem is ChatroomListShimmerViewData -> true
             oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> true
             else -> false

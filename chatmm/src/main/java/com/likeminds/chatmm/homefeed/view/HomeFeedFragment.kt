@@ -9,6 +9,7 @@ import com.likeminds.chatmm.InitiateViewModel
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.chatroom.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.model.MemberViewData
@@ -184,7 +185,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(SDKPreferences, homeFeedPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(SDKPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -231,6 +232,8 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     override fun homeFeedClicked() {
-        TODO("Not yet implemented")
+        // todo: Analytics
+        ChatroomExploreActivity.start(requireContext())
+//        viewModel.sendCommunityFeedClickedEvent(communityId, communityName)
     }
 }

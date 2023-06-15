@@ -20,6 +20,7 @@ class SDKPreferences @Inject constructor(
         const val GIF_SUPPORT_ENABLED = "GIF_SUPPORT_ENABLED"
         const val AUDIO_SUPPORT_ENABLED = "AUDIO_SUPPORT_ENABLED"
         const val VOICE_NOTE_ENABLED = "VOICE_NOTE_SUPPORT_ENABLED"
+        const val HIDE_SECRET_CHATROOM_LOCK_ICON = "HIDE_SECRET_CHATROOM_LOCK_ICON"
 
         private const val API_KEY = "API_KEY"
         private const val IS_GUEST = "IS_GUEST"
@@ -87,6 +88,18 @@ class SDKPreferences @Inject constructor(
 
     fun isVoiceNoteSupportEnabled(): Boolean {
         return getPreference(VOICE_NOTE_ENABLED, false)
+    }
+
+    // todo: ask about hide secret
+    fun setHideSecretChatroomLockIcon(hideSecretChatroomLockIcon: Boolean) {
+        putPreference(
+            HIDE_SECRET_CHATROOM_LOCK_ICON,
+            hideSecretChatroomLockIcon
+        )
+    }
+
+    fun getHideSecretChatroomLockIcon(): Boolean {
+        return getPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, false)
     }
 
     @SuppressLint("HardwareIds")

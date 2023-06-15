@@ -18,14 +18,6 @@ class HomeFeedPreferences @Inject constructor(
         private const val SHOW_HOME_FEED_SHIMMER = "SHOW_HOME_FEED_SHIMMER"
     }
 
-    fun setHideSecretChatroomLockIcon(hideSecretChatroomLockIcon: Boolean) {
-        putPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, hideSecretChatroomLockIcon)
-    }
-
-    fun getHideSecretChatroomLockIcon(): Boolean {
-        return getPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, false)
-    }
-
     fun setShowHomeFeedShimmer(setHomeFeedShimmer: Boolean) {
         putPreference(SHOW_HOME_FEED_SHIMMER, setHomeFeedShimmer)
     }

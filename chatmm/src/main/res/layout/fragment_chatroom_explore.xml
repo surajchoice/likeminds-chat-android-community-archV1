@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".chatroom.explore.view.CollabcardExploreFragment">
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_pending_members_count"
+            style="@style/ClickableView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/background_primary_22"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:fontType="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2 new member requests"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_menu"
+            style="@style/ClickableView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:drawablePadding="8dp"
+            android:padding="8dp"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            app:drawableEndCompat="@drawable/ic_menu_down"
+            app:fontType="regular"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pending_members_count"
+            tools:text="Newest" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_pinned"
+            style="@style/ClickableView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/background_explore_pinned"
+            android:drawablePadding="10dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="@string/pinned"
+            android:textColor="@color/teal"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:drawableEndCompat="@drawable/ic_explore_close"
+            app:drawableStartCompat="@drawable/ic_pinned"
+            app:drawableTint="@color/teal"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pending_members_count"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_pinned"
+            style="@style/ClickableImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_explore_pin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pending_members_count"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_explore"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_menu"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_collabcard_explore" />
+
+        <include
+            android:id="@+id/progress_bar"
+            layout="@layout/progress_bar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
