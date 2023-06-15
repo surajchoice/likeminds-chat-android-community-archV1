@@ -26,4 +26,6 @@
     <string name="chatroom_was_deleted">This chat room was deleted</string>
     <string name="empty_chat_room_title">It’s time to participate</string>
     <string name="joined_chatrooms">Joined chat rooms</string>
+    <string name="general_channel_name">General notifications</string>
+    <string name="general_channel_description">All general notifications</string>
 </resources>

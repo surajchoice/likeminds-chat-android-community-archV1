@@ -71,26 +71,26 @@ object ViewUtils {
     }
 
     /**
-     * set chatroom image to the [ivChatroomImage] and
-     * return [onChatroomImagePresent] if [chatroomImageUrl] != null
-     * and [onChatroomImageNotPresent] if [chatroomImageUrl] == null
+     * set chatroom image to the [ivChatroomImage]
      **/
     fun setChatroomImage(
+        chatroomId: String,
+        chatroomHeader: String?,
         chatroomImageUrl: String?,
         ivChatroomImage: ImageView,
-        onChatroomImagePresent: () -> Unit,
-        onChatroomImageNotPresent: () -> Unit
     ) {
-        if (chatroomImageUrl != null) {
-            onChatroomImagePresent()
-            ImageBindingUtil.loadImage(
-                ivChatroomImage,
-                chatroomImageUrl,
-                isCircle = true,
-                objectKey = chatroomImageUrl
-            )
-        } else {
-            onChatroomImageNotPresent()
-        }
+        val nameDrawable = MemberImageUtil.getNameDrawable(
+            MemberImageUtil.SIXTY_PX,
+            id = chatroomId,
+            name = chatroomHeader,
+            circle = true,
+            isChatroom = true
+        )
+        ImageBindingUtil.loadImage(
+            ivChatroomImage,
+            chatroomImageUrl,
+            nameDrawable.first,
+            isCircle = true,
+        )
     }
 }

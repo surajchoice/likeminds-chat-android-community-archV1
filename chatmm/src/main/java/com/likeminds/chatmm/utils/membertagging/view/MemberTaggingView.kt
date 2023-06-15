@@ -7,13 +7,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.adapter.MemberAdapter
-import com.collabmates.membertagging.adapter.MemberAdapterClickListener
-import com.collabmates.membertagging.databinding.LayoutMemberTaggingBinding
 import com.collabmates.membertagging.model.MemberTaggingExtras
-import com.collabmates.membertagging.model.TagViewData
-import com.collabmates.membertagging.util.*
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.databinding.LayoutMemberTaggingBinding
+import com.likeminds.chatmm.utils.EndlessRecyclerScrollListener
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.TagViewData
+import com.likeminds.chatmm.utils.membertagging.util.*
+import com.likeminds.chatmm.utils.membertagging.view.adapter.MemberAdapter
+import com.likeminds.chatmm.utils.membertagging.view.adapter.MemberAdapterClickListener
 
 /**
  * This is a constraint layout, so it cannot be considered as a popup window or a dialog, which will
@@ -71,7 +73,7 @@ class MemberTaggingView(
 
     private fun configureView() {
         //Set max height
-        val heightInPx = Util.getMaxHeight(context, extras.maxHeightInPercentage)
+        val heightInPx = MemberTaggingUtil.getMaxHeight(context, extras.maxHeightInPercentage)
         maxHeight = heightInPx
         val lp = binding.recyclerView.layoutParams as LayoutParams
         lp.matchConstraintMaxHeight = heightInPx
@@ -241,7 +243,7 @@ class MemberTaggingView(
         if (editable == null) {
             return ""
         }
-        val spans = Util.getSortedSpan(editable)
+        val spans = MemberTaggingUtil.getSortedSpan(editable)
         val stringBuilder = StringBuilder()
         var lastIndex = 0
         spans.forEach { span ->
@@ -277,5 +279,4 @@ class MemberTaggingView(
     fun getTaggedMembers() = selectedMembers.toList()
 
     fun isMembersListEmpty() = communityMembersAndGroups.isEmpty()
-
 }

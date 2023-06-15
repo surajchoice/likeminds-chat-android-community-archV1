@@ -7,8 +7,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.InitiateViewModel
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.model.MemberViewData
 import com.likeminds.chatmm.chatroom.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
@@ -17,14 +20,11 @@ import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
 import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
 import com.likeminds.chatmm.search.view.SearchActivity
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.UserPreferences
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.observeInLifecycle
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -35,10 +35,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
-    lateinit var userPreferences: UserPreferences
+    lateinit var SDKPreferences: SDKPreferences
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var homeFeedPreferences: HomeFeedPreferences
 
     @Inject
     lateinit var initiateViewModel: InitiateViewModel
@@ -88,6 +88,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun setUpViews() {
         super.setUpViews()
+        binding.toolbarColor = LMBranding.getToolbarColor()
         initiateUser()
         initRecyclerView()
         initToolbar()
@@ -99,6 +100,18 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
         // observes error message
         observeErrors()
+
+        initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) { user ->
+            observeInitiateUserResponse(user)
+        }
+
+        initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
+            Log.d(
+                LOG_TAG,
+                "initiate api sdk called -> success and have not app access"
+            )
+            showInvalidAccess()
+        }
 
         viewModel.homeEventsFlow.onEach { homeEvent ->
             when (homeEvent) {
@@ -115,10 +128,49 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         }
     }
 
+    //observe user data
+    private fun observeInitiateUserResponse(user: MemberViewData?) {
+        initToolbar()
+        viewModel.observeChatrooms(requireContext())
+        viewModel.getConfig()
+        viewModel.getExploreTabCount()
+        viewModel.sendCommunityTabClicked(user?.communityId, user?.communityName)
+        // todo: analytics
+//        viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Sources.SOURCE_COMMUNITY_TAB)
+
+        if (user != null) {
+            MemberImageUtil.setImage(
+                user.imageUrl,
+                user.name,
+                user.id,
+                binding.memberImage,
+                showRoundImage = true,
+                objectKey = user.updatedAt
+            )
+        }
+    }
+
+    // shows invalid access error and logs out invalid user
+    private fun showInvalidAccess() {
+        binding.apply {
+            rvHomeFeed.hide()
+            layoutRemoveAccess.root.show()
+            memberImage.hide()
+            ivSearch.hide()
+        }
+    }
+
     private fun updateChatrooms() {
         homeFeedAdapter.setItemsViaDiffUtilForHome(
             viewModel.getHomeFeedList(requireContext())
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        if (!LikeMindsDB.isEmpty() && !sdkPreferences.getIsGuestUser()) {
+        viewModel.observeChatrooms(requireContext())
+//        }
     }
 
     private fun initiateUser() {
@@ -132,7 +184,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(userPreferences, sdkPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(SDKPreferences, homeFeedPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -154,7 +206,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
         binding.ivSearch.setOnClickListener {
             SearchActivity.start(requireContext())
-            Log.d(SDKApplication.LOG_TAG, "search started")
+            Log.d(LOG_TAG, "search started")
         }
     }
 

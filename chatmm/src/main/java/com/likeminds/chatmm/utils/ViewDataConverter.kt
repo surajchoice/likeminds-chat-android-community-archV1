@@ -13,6 +13,7 @@ import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.Attachment
 import com.likeminds.likemindschat.conversation.model.Conversation
 import com.likeminds.likemindschat.conversation.model.LinkOGTags
+import com.likeminds.likemindschat.user.model.User
 
 object ViewDataConverter {
 
@@ -142,6 +143,20 @@ object ViewDataConverter {
             .thumbnailAWSFolderPath(attachment.thumbnailAWSFolderPath)
             .thumbnailLocalFilePath(attachment.thumbnailLocalFilePath)
             .meta(attachmentMeta)
+            .build()
+    }
+
+    // todo: have to be refactored
+    fun convertUser(user: User?): MemberViewData? {
+        if (user == null) {
+            return null
+        }
+        return MemberViewData.Builder()
+            .id(user.id)
+            .name(user.name)
+            .imageUrl(user.imageUrl)
+            .customTitle(user.customTitle)
+            .isGuest(user.isGuest)
             .build()
     }
 }

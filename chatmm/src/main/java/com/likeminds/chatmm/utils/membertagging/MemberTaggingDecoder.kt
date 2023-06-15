@@ -6,6 +6,8 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.EditText
 import android.widget.TextView
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingClickableSpan
+import com.likeminds.chatmm.utils.membertagging.view.adapter.MemberTaggingDecoderListener
 
 object MemberTaggingDecoder {
 

@@ -1,9 +1,6 @@
 package com.likeminds.chatmm.utils
 
-import android.view.View
 import android.widget.ImageView
-import com.likeminds.chatmm.chatroom.model.MemberViewData
-import com.likeminds.chatmm.databinding.LayoutGroupedImagesBinding
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.generator.ColorGenerator
 import com.likeminds.chatmm.utils.generator.TextDrawable
@@ -11,32 +8,6 @@ import com.likeminds.chatmm.utils.generator.TextDrawable
 object MemberImageUtil {
 
     val SIXTY_PX = ViewUtils.dpToPx(60)
-
-    fun showGroupedImages(
-        binding: LayoutGroupedImagesBinding,
-        memberViewData: MemberViewData,
-        conversationUsers: List<MemberViewData>? = null,
-        showGreyScale: Boolean = false
-    ) {
-        val membersList = listOf(memberViewData) + conversationUsers.orEmpty().take(2)
-        val imageViewList = listOf(binding.ivGrp1, binding.ivGrp2, binding.ivGrp3)
-        val lastIndex = membersList.size - 1
-        for ((index, imageViewMember) in imageViewList.withIndex()) {
-            if (index > lastIndex) {
-                imageViewMember.visibility = View.GONE
-            }
-        }
-        for ((index, member) in membersList.withIndex()) {
-            imageViewList[index].visibility = View.VISIBLE
-            setImage(
-                member.imageUrl,
-                member.name,
-                member.id,
-                imageViewList[index],
-                showGreyScale = showGreyScale
-            )
-        }
-    }
 
     fun setImage(
         imageUrl: String?,
@@ -67,10 +38,15 @@ object MemberImageUtil {
         id: String?,
         name: String?,
         circle: Boolean? = false,
-        roundRect: Boolean? = false
+        roundRect: Boolean? = false,
+        isChatroom: Boolean? = false
     ): Pair<TextDrawable, Int> {
         val uniqueId = id ?: name ?: "LM"
-        val nameCode = getNameInitial(name)
+        val nameCode = if (isChatroom == true) {
+            getChatroomInitial(name)
+        } else {
+            getNameInitial(name)
+        }
         val color = ColorGenerator.MATERIAL.getColor(uniqueId)
         val builder =
             TextDrawable.builder().beginConfig().bold().height(size).width(size).endConfig()
@@ -100,5 +76,14 @@ object MemberImageUtil {
         }
         val nameParts = name.split(" ").map { it.trim() }
         return "${nameParts.first()[0].uppercase()}${nameParts.last()[0].uppercase()}"
+    }
+
+    private fun getChatroomInitial(
+        chatroomName: String?
+    ): String {
+        if (chatroomName.isNullOrEmpty()) {
+            return "LM"
+        }
+        return chatroomName[0].uppercase()
     }
 }

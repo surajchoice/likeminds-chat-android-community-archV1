@@ -3,8 +3,8 @@ package com.likeminds.chatmm.utils.membertagging.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.collabmates.membertagging.databinding.ItemMemberBinding
-import com.collabmates.membertagging.model.TagViewData
+import com.likeminds.chatmm.databinding.ItemMemberBinding
+import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 
 internal class MemberAdapter(
     private val darkMode: Boolean,

@@ -223,9 +223,7 @@ deps.mockk = mockk
 
 def firebase = [:]
 firebase.bom = "com.google.firebase:firebase-bom:$versions.firebaseBOM"
-firebase.database = "com.google.firebase:firebase-database"
 firebase.messaging = "com.google.firebase:firebase-messaging"
-firebase.appindexing = "com.google.firebase:firebase-appindexing"
 deps.firebase = firebase
 
 def coroutines = [:]

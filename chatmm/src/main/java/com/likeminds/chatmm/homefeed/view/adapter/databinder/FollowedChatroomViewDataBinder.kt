@@ -11,8 +11,8 @@ import com.likeminds.chatmm.chatroom.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemFollowedChatRoomBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
+import com.likeminds.chatmm.utils.HomeFeedPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -22,8 +22,8 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 
 class FollowedChatroomViewDataBinder(
-    val userPreferences: UserPreferences,
-    val sdkPreferences: SDKPreferences,
+    val SDKPreferences: SDKPreferences,
+    val homeFeedPreferences: HomeFeedPreferences,
     private val homeAdapterListener: HomeFeedAdapter.HomeFeedAdapterListener
 ) : ViewDataBinder<ItemFollowedChatRoomBinding, BaseViewType>() {
 
@@ -61,22 +61,11 @@ class FollowedChatroomViewDataBinder(
             showUnseenCount = data.unseenConversationCount > 0
 
             ViewUtils.setChatroomImage(
+                data.chatroom.id,
+                data.chatroom.header,
                 data.chatroomImageUrl,
-                ivChatRoom,
-                onChatroomImagePresent = {
-                    ivChatRoom.show()
-                    layoutImageGroup.cardViewGroupImages.hide()
-                },
-                onChatroomImageNotPresent = {
-                    ivChatRoom.hide()
-                    layoutImageGroup.cardViewGroupImages.show()
-                    // todo:
-//                    MemberImageUtil.showGroupedImages(
-//                        layoutImageGroup,
-//                        data.chatroom.memberViewData,
-//                        data.members
-//                    )
-                })
+                ivChatRoom
+            )
 
             //Show unseen count
             tvUnseenCount.text =
@@ -97,7 +86,7 @@ class FollowedChatroomViewDataBinder(
 
             //secret chatroom lock icon
             val isSecretChatroom = data.chatroom.isSecret
-            val hideSecretChatroomLockIcon = sdkPreferences.getHideSecretChatroomLockIcon()
+            val hideSecretChatroomLockIcon = homeFeedPreferences.getHideSecretChatroomLockIcon()
 
             if (isSecretChatroom == true) {
                 if (hideSecretChatroomLockIcon) {
@@ -188,7 +177,7 @@ class FollowedChatroomViewDataBinder(
                 tvLastConversation.text = ChatroomUtil.getDeletedMessage(
                     root.context,
                     lastConversation,
-                    userPreferences.getMemberId()
+                    SDKPreferences.getMemberId()
                 )
             }
         }

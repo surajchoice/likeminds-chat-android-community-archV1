@@ -25,7 +25,8 @@ class SDKApplication {
     private var homeFeedComponent: HomeFeedComponent? = null
 
     companion object {
-        const val LOG_TAG = "LikeMindsChat"
+        const val
+                LOG_TAG = "LikeMindsChat"
         private var sdkApplicationInstance: SDKApplication? = null
 
         /**

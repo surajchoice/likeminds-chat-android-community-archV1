@@ -39,16 +39,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/layoutImageGroup"
-            layout="@layout/layout_grouped_images"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/image_guide"
             android:layout_width="wrap_content"
@@ -64,11 +54,11 @@
             android:translationX="3dp"
             android:translationY="4dp"
             android:visibility="@{isDraftOrCreating == true ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/layoutImageGroup"
-            app:layout_constraintEnd_toEndOf="@+id/layoutImageGroup"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_chat_room"
+            app:layout_constraintEnd_toEndOf="@+id/iv_chat_room"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/layoutImageGroup"
-            app:layout_constraintTop_toTopOf="@+id/layoutImageGroup"
+            app:layout_constraintStart_toStartOf="@+id/iv_chat_room"
+            app:layout_constraintTop_toTopOf="@+id/iv_chat_room"
             app:layout_constraintVertical_bias="1.0"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />

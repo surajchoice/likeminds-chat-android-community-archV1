@@ -11,6 +11,7 @@ import com.likeminds.chatmm.chatroom.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
+import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
@@ -22,8 +23,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
-    private val userPreferences: UserPreferences,
     private val sdkPreferences: SDKPreferences,
+    private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
     companion object {
         private const val TAG = "Home VM"
@@ -31,9 +32,20 @@ class HomeFeedViewModel @Inject constructor(
 
     private val lmChatClient = LMChatClient.getInstance()
 
+    private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
+    val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
+
+    sealed class ErrorMessageEvent {
+        data class GetChatroom(val errorMessage: String?) : ErrorMessageEvent()
+        data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
+    }
+
     private val chatroomListener = object : HomeFeedChangeListener {
         override fun initialChatrooms(chatrooms: List<Chatroom>) {
             super.initialChatrooms(chatrooms)
+            if (chatrooms.isNotEmpty()) {
+                setWasChatroomFetched(true)
+            }
             showInitialChatrooms(chatrooms)
         }
 
@@ -47,6 +59,9 @@ class HomeFeedViewModel @Inject constructor(
                 inserted,
                 changed
             )
+            if (inserted.isNotEmpty() || changed.isNotEmpty()) {
+                setWasChatroomFetched(true)
+            }
             updateChatroomChanges(
                 removedIndex,
                 inserted,
@@ -77,6 +92,10 @@ class HomeFeedViewModel @Inject constructor(
 
     private var totalChatroomCount: Int = 0
     private var unseenChatroomCount: Int = 0
+
+    fun setWasChatroomFetched(value: Boolean) {
+        homeFeedPreferences.setShowHomeFeedShimmer(value)
+    }
 
     fun observeChatrooms(context: Context) {
         viewModelScope.launchMain {
@@ -138,7 +157,7 @@ class HomeFeedViewModel @Inject constructor(
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
-            userPreferences,
+            sdkPreferences,
             lastConversation?.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
@@ -180,7 +199,7 @@ class HomeFeedViewModel @Inject constructor(
 
         //Chat rooms
         dataList.add(getContentHeaderView(context.getString(R.string.joined_chatrooms)))
-        val wasChatroomsFetched = sdkPreferences.getShowHomeFeedShimmer()
+        val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
             !wasChatroomsFetched -> {
                 dataList.add(chatRoomListShimmerView)
@@ -226,5 +245,75 @@ class HomeFeedViewModel @Inject constructor(
         return ContentHeaderViewData.Builder()
             .title(title)
             .build()
+    }
+
+    fun getConfig() {
+        viewModelScope.launchIO {
+            val getConfigResponse = lmChatClient.getConfig()
+
+            if (getConfigResponse.success) {
+                val data = getConfigResponse.data
+                if (data != null) {
+                    sdkPreferences.setMicroPollsEnabled(data.enableMicroPolls)
+                    sdkPreferences.setGifSupportEnabled(data.enableGifs)
+                    sdkPreferences.setAudioSupportEnabled(data.enableAudio)
+                    sdkPreferences.setVoiceNoteSupportEnabled(data.enableVoiceNote)
+
+                    // todo:
+//                    LMAnalytics.setSentryUserData(member)
+                }
+            } else {
+                Log.d(
+                    SDKApplication.LOG_TAG,
+                    "config api failed: ${getConfigResponse.errorMessage}"
+                )
+                // sets default values to config prefs
+                sdkPreferences.setDefaultConfigPrefs()
+            }
+        }
+    }
+
+    fun getExploreTabCount() {
+        viewModelScope.launchIO {
+            val getExploreTabCountResponse = lmChatClient.getExploreTabCount()
+
+            if (getExploreTabCountResponse.success) {
+                val data = getExploreTabCountResponse.data
+                if (data != null) {
+                    this.totalChatroomCount = data.totalChatroomCount
+                    this.unseenChatroomCount = data.unseenChatroomCount
+                    homeEventChannel.send(HomeEvent.UpdateChatrooms)
+                }
+            } else {
+                // send error
+                val errorMessage = getExploreTabCountResponse.errorMessage
+                errorMessageChannel.send(
+                    ErrorMessageEvent.GetExploreTabCount(errorMessage)
+                )
+                Log.e(SDKApplication.LOG_TAG, "$errorMessage")
+            }
+        }
+    }
+
+    //When a user clicks on the community tab
+    // todo: all analytics
+    fun sendCommunityTabClicked(communityId: String?, communityName: String?) {
+//        LMAnalytics.track(
+//            LMAnalytics.Keys.EVENT_COMMUNITY_TAB_CLICKED,
+//            "community_id" to communityId,
+//            "community_name" to communityName
+//        )
+    }
+
+    /**
+     *
+     * Mixpanel Events
+     **/
+    fun sendHomeScreenOpenedEvent(source: String?) {
+//        if (!source.isNullOrEmpty()) {
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_HOME_FEED_PAGE_OPENED, JSONObject().apply {
+//                put("source", source)
+//            })
+//        }
     }
 }

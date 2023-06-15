@@ -45,6 +45,7 @@
                     android:ellipsize="end"
                     android:maxEms="15"
                     android:maxLines="1"
+                    android:text="@string/community"
                     android:textColor="@{toolbarColor}"
                     android:textSize="22sp"
                     app:fontType="medium"

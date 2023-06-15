@@ -1,20 +1,19 @@
-package com.collabmates.membertagging.model
+package com.likeminds.chatmm.utils.membertagging.model
 
 import android.graphics.drawable.Drawable
 
 class TagViewData private constructor(
-    var name: String,
-    var imageUrl: String,
-    var id: Int,
-    var isGuest: Boolean,
-    var userUniqueId: String,
-    var placeholder: Drawable?,
-    var route: String,
-    var tag: String,
-    var description: String,
-    var isLastItem: Boolean
+    val name: String,
+    val imageUrl: String,
+    val id: Int,
+    val isGuest: Boolean,
+    val userUniqueId: String,
+    val placeholder: Drawable?,
+    val route: String,
+    val tag: String,
+    val description: String,
+    val isLastItem: Boolean
 ) {
-
     class Builder {
         private var name: String = ""
         private var imageUrl: String = ""
