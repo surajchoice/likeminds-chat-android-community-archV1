@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
+import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.chatroom.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
@@ -28,7 +29,7 @@ object ViewDataConverter {
             .communityId(chatroom.communityId)
             .communityName(chatroom.communityName)
             .memberViewData(convertMember(chatroom.member))
-            .createdAt(chatroom.createdAt)
+//            .createdAt(chatroom.createdAt)
             .title(chatroom.title)
             .answerText(chatroom.answerText)
             .state(chatroom.state)
@@ -46,6 +47,31 @@ object ViewDataConverter {
             .unseenCount(chatroom.unseenCount)
             .isEdited(chatroom.isEdited)
             .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .build()
+    }
+
+    // todo: member to uuid
+    fun convertChatroom(
+        chatroom: Chatroom?,
+        memberId: String,
+        sortIndex: Int
+    ): ExploreViewData? {
+        if (chatroom == null) return null
+        return ExploreViewData.Builder()
+            .isPinned(chatroom.isPinned)
+            .isCreator(chatroom.member?.id == memberId)
+            .externalSeen(chatroom.externalSeen)
+            .isSecret(chatroom.isSecret)
+            .followStatus(chatroom.followStatus)
+            .participantsCount(chatroom.participantsCount?.toIntOrNull())
+            .totalResponseCount(chatroom.totalResponseCount)
+            .sortIndex(sortIndex)
+            .id(chatroom.id)
+            .header(chatroom.header)
+            .title(chatroom.title)
+            .imageUrl(chatroom.member?.imageUrl)
+            .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .chatroomViewData(convertChatroom(chatroom))
             .build()
     }
 

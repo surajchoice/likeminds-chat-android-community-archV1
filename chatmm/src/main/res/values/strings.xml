@@ -31,4 +31,7 @@
     <string name="new_caps">NEW</string>
     <string name="join">Join</string>
     <string name="joined">Joined</string>
+    <string name="creator_cant_leave_message">The creator of a chatroom cannot leave the chatroom</string>
+    <string name="pinned">Pinned</string>
+    <string name="explore_chatroom">Explore Chatrooms</string>
 </resources>

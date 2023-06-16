@@ -18,6 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SDKApplication {
+
     @Inject
     lateinit var transferUtility: TransferUtility
 
@@ -27,9 +28,9 @@ class SDKApplication {
     private var exploreComponent: ExploreComponent? = null
 
     companion object {
-        const val
-                LOG_TAG = "LikeMindsChat"
+        const val LOG_TAG = "LikeMindsChat"
         private var sdkApplicationInstance: SDKApplication? = null
+        private var lmUICallback: LMUICallback? = null
 
         /**
          * @return Singleton Instance of SDK Application class, which used for injecting dagger in fragments.
@@ -51,6 +52,7 @@ class SDKApplication {
         // todo: set domain
         LMChatClient.Builder(application)
             .build()
+        SDKApplication.lmUICallback = lmUICallback
         setupBranding(brandingRequest)
         initAppComponent(application)
         initAWSMobileClient(application)

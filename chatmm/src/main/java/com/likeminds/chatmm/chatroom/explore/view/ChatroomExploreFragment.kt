@@ -1,30 +1,42 @@
 package com.likeminds.chatmm.chatroom.explore.view
 
+import android.view.Gravity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapter
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ExploreClickListener
 import com.likeminds.chatmm.chatroom.explore.viewmodel.ExploreViewModel
 import com.likeminds.chatmm.databinding.FragmentChatroomExploreBinding
-import com.likeminds.chatmm.utils.EndlessRecyclerScrollListener
-import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
+import com.likeminds.chatmm.overflowmenu.view.OverflowMenuPopup
+import com.likeminds.chatmm.overflowmenu.view.adapter.OverflowMenuAdapterListener
+import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.model.BaseViewType
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class ChatroomExploreFragment :
     BaseFragment<FragmentChatroomExploreBinding, ExploreViewModel>(),
-//    OverflowMenuAdapterListener,
+    OverflowMenuAdapterListener,
     ExploreClickListener {
 
     private lateinit var endlessRecyclerScrollListenerCommunities: EndlessRecyclerScrollListener
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    private val overflowMenu: OverflowMenuPopup by lazy {
+        OverflowMenuPopup.create(requireContext(), this)
+    }
 
     private val chatroomExploreAdapter: ChatroomExploreAdapter by lazy {
         ChatroomExploreAdapter(this, sdkPreferences.getHideSecretChatroomLockIcon())
@@ -71,11 +83,11 @@ class ChatroomExploreFragment :
     override fun setUpViews() {
         super.setUpViews()
         fetchExploreChatrooms()
+        initToolbar()
         initExploreRecyclerView()
 
         binding.tvMenu.setOnClickListener {
-            // todo: overflow
-//            showOverflowMenu()
+            showOverflowMenu()
         }
         binding.ivPinned.setOnClickListener {
             showPinnedChatrooms()
@@ -109,15 +121,15 @@ class ChatroomExploreFragment :
         viewModel.dataList.observe(viewLifecycleOwner) { list ->
             ProgressHelper.hideProgress(binding.progressBar)
             if (list.isNotEmpty()) {
-                collabcardExploreAdapter.addAll(list as List<BaseViewType>)
+                chatroomExploreAdapter.addAll(list as List<BaseViewType>)
             }
         }
 
         //First -> ViewData and Second -> Position to be updated
         viewModel.followStatus.observe(viewLifecycleOwner) { pair ->
             binding.rvExplore.post {
-                if (pair.second.isValidIndex(collabcardExploreAdapter.items())) {
-                    collabcardExploreAdapter.update(
+                if (pair.second.isValidIndex(chatroomExploreAdapter.items())) {
+                    chatroomExploreAdapter.update(
                         pair.second,
                         pair.first
                     )
@@ -142,6 +154,19 @@ class ChatroomExploreFragment :
     //fetch explore feed open explore tab is clicked
     private fun fetchExploreChatrooms() {
         viewModel.getInitialExploreFeed()
+    }
+
+    // initializes the toolbar
+    private fun initToolbar() {
+        binding.apply {
+            toolbarColor = LMBranding.getToolbarColor()
+
+            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
+            ivBack.setOnClickListener {
+                requireActivity().finish()
+            }
+        }
     }
 
     //init the recycler and attach scroll listener for pagination
@@ -185,15 +210,14 @@ class ChatroomExploreFragment :
         chatroomExploreAdapter.clearAndNotify()
     }
 
-    //shows all the chatrooms whether unpinned or pinned
-    private fun showUnpinnedChatrooms() {
-        binding.apply {
-            ivPinned.show()
-            tvPinned.hide()
-            resetRecyclerView()
-            viewModel.setShowPinnedChatroomsOnly(false)
-            viewModel.getExploreFeed(1)
-        }
+    //to show the filter of Explore feed
+    private fun showOverflowMenu() {
+        overflowMenu.showAsDropDown(
+            binding.tvMenu,
+            -ViewUtils.dpToPx(16),
+            -binding.tvMenu.height / 2,
+            Gravity.START
+        )
     }
 
     //shows pinned chatrooms when user clicks pin icon
@@ -204,6 +228,17 @@ class ChatroomExploreFragment :
             viewModel.setShowPinnedChatroomsOnly(true)
             resetRecyclerView()
             viewModel.getExploreFeed(1, true)
+        }
+    }
+
+    //shows all the chatrooms whether unpinned or pinned
+    private fun showUnpinnedChatrooms() {
+        binding.apply {
+            ivPinned.show()
+            tvPinned.hide()
+            resetRecyclerView()
+            viewModel.setShowPinnedChatroomsOnly(false)
+            viewModel.getExploreFeed(1)
         }
     }
 
@@ -236,27 +271,35 @@ class ChatroomExploreFragment :
 //        chatroomUpdateLauncher.launch(intent)
     }
 
-    // todo:
     //Handles Join/Joined button clicks
     override fun onJoinClick(follow: Boolean, position: Int, exploreViewData: ExploreViewData) {
         //Check for guest flow
-//        if (sdkPreferences.getIsGuestUser()) {
-//            //User is Guest
-//            SDKApplication.getLikeMindsCallback()?.loginRequiredCallback()
-//            activity?.finish()
-//        } else {
-//            //User is logged in
-//
-//            //Check whether logged in user is creator of the chatroom
-//            //Don't allow creator to leave the chatroom
-//            if (!follow && exploreViewData.isCreator) {
-//                ViewUtils.showShortSnack(
-//                    binding.root,
-//                    getString(R.string.creator_cant_leave_message)
-//                )
-//                return
-//            }
-//            viewModel.followChatroom(follow, exploreViewData, position)
-//        }
+        if (sdkPreferences.getIsGuestUser()) {
+            //User is Guest
+            // todo: login callback
+            activity?.finish()
+        } else {
+            //User is logged in
+
+            //Check whether logged in user is creator of the chatroom
+            //Don't allow creator to leave the chatroom
+            if (!follow && exploreViewData.isCreator) {
+                ViewUtils.showShortSnack(
+                    binding.root,
+                    getString(R.string.creator_cant_leave_message)
+                )
+                return
+            }
+            viewModel.followChatroom(follow, exploreViewData, position)
+        }
+    }
+
+    //Handles click of filter and show list accordingly
+    override fun onMenuItemClicked(menu: OverflowMenuItemViewData) {
+        overflowMenu.dismiss()
+        ProgressHelper.showProgress(binding.progressBar)
+        resetRecyclerView()
+        viewModel.setSelectedOrder(menu.title)
+        fetchExploreChatrooms()
     }
 }
