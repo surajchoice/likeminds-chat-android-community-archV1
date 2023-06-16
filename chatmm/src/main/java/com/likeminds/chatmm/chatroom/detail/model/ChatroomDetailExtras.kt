@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.chatroom.model
+package com.likeminds.chatmm.chatroom.detail.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

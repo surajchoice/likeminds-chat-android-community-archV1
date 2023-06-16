@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.chatroom.model.MemberViewData
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO

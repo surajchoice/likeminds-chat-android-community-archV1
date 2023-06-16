@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
-import com.likeminds.chatmm.chatroom.model.ChatroomViewData
 import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter

@@ -1,8 +1,8 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.model.MemberViewData
-import com.likeminds.chatmm.chatroom.util.ChatroomUtil
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.model.*
 import kotlinx.parcelize.Parcelize

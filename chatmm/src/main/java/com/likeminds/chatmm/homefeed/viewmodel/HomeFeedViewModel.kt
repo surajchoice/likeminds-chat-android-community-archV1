@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.chatroom.util.ChatroomUtil
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex

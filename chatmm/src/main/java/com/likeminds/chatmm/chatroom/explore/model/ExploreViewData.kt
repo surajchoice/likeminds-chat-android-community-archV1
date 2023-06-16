@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.chatroom.explore.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_EXPLORE
 import kotlinx.parcelize.Parcelize

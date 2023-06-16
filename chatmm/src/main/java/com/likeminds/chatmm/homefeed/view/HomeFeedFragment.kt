@@ -9,11 +9,11 @@ import com.likeminds.chatmm.InitiateViewModel
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
-import com.likeminds.chatmm.chatroom.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.model.MemberViewData
-import com.likeminds.chatmm.chatroom.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.model.GroupChatResponse

@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.chatroom.util
+package com.likeminds.chatmm.chatroom.detail.util
 
 import android.content.Context
 import android.text.Spannable
@@ -6,8 +6,8 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.chatroom.model.TYPE_ANNOUNCEMENT
-import com.likeminds.chatmm.chatroom.model.TYPE_INTRO
+import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
+import com.likeminds.chatmm.chatroom.detail.model.TYPE_INTRO
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ValueUtils.containsUrl

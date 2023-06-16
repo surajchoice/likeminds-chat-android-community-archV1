@@ -3,8 +3,8 @@ package com.likeminds.chatmm.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.likeminds.chatmm.chatroom.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 
 object Route {
     // todo:

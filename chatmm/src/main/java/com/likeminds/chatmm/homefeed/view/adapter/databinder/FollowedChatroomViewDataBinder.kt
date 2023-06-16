@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.chatroom.util.ChatroomUtil
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemFollowedChatRoomBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter

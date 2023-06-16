@@ -1,6 +1,6 @@
 package com.likeminds.chatmm.utils
 
-import com.likeminds.chatmm.chatroom.model.MemberViewData
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 
 object MemberUtil {
 

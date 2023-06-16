@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.homefeed.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.likeminds.chatmm.chatroom.model.MemberViewData
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.utils.model.BaseViewType

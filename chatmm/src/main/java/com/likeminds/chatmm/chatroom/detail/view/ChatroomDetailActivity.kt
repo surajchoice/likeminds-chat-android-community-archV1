@@ -1,10 +1,10 @@
-package com.likeminds.chatmm.chatroom.view
+package com.likeminds.chatmm.chatroom.detail.view
 
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.likeminds.chatmm.chatroom.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
 class ChatroomDetailActivity : BaseAppCompatActivity() {
