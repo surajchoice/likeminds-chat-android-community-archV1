@@ -90,18 +90,6 @@ class SDKPreferences @Inject constructor(
         return getPreference(VOICE_NOTE_ENABLED, false)
     }
 
-    // todo: ask about hide secret
-    fun setHideSecretChatroomLockIcon(hideSecretChatroomLockIcon: Boolean) {
-        putPreference(
-            HIDE_SECRET_CHATROOM_LOCK_ICON,
-            hideSecretChatroomLockIcon
-        )
-    }
-
-    fun getHideSecretChatroomLockIcon(): Boolean {
-        return getPreference(HIDE_SECRET_CHATROOM_LOCK_ICON, false)
-    }
-
     @SuppressLint("HardwareIds")
     fun getDeviceId(): String {
         return Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)

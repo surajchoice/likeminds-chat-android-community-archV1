@@ -6,10 +6,8 @@ import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
-// todo: ask about hide secret
 internal class ChatroomExploreAdapter(
-    private val listener: ExploreClickListener,
-    private val isHideSecretChatroomLockIcon: Boolean
+    private val listener: ExploreClickListener
 ) : BaseRecyclerAdapter<BaseViewType>() {
 
     init {
@@ -20,7 +18,7 @@ internal class ChatroomExploreAdapter(
         val viewDataBinders = ArrayList<ViewDataBinder<*, *>>(2)
 
         val chatroomExploreViewDataBinder =
-            ChatroomExploreViewDataBinder(listener, isHideSecretChatroomLockIcon)
+            ChatroomExploreViewDataBinder(listener)
         viewDataBinders.add(chatroomExploreViewDataBinder)
 
         val homeBlankSpaceItemViewDataBinder = HomeBlankSpaceItemViewDataBinder()

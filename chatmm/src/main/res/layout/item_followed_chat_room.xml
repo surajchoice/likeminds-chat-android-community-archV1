@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
             name="chatViewData"
             type="com.likeminds.chatmm.homefeed.model.ChatViewData" />
 
@@ -177,6 +181,7 @@
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_tagged_room"
+            android:tint="@{buttonColor}"
             android:visibility="@{chatViewData.chatroom.isTagged == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
             app:layout_constraintEnd_toStartOf="@+id/iv_mute"
@@ -207,6 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:background="@drawable/background_pending_circular"
+            android:backgroundTint="@{buttonColor}"
             android:gravity="center"
             android:includeFontPadding="false"
             android:padding="2dp"

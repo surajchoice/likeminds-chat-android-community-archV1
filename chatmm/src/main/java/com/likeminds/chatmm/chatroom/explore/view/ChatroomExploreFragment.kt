@@ -39,7 +39,7 @@ class ChatroomExploreFragment :
     }
 
     private val chatroomExploreAdapter: ChatroomExploreAdapter by lazy {
-        ChatroomExploreAdapter(this, sdkPreferences.getHideSecretChatroomLockIcon())
+        ChatroomExploreAdapter(this)
     }
 
     //Launcher to start Activity for result
@@ -141,11 +141,11 @@ class ChatroomExploreFragment :
             when (response) {
                 is ExploreViewModel.ErrorMessageEvent.ChatroomFollow -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                    requireActivity().finish()
                 }
 
                 is ExploreViewModel.ErrorMessageEvent.ExploreFeed -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                    requireActivity().finish()
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)

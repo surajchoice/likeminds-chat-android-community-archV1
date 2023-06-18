@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.homefeed.view.adapter.databinder
 
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,7 @@ class FollowedChatroomViewDataBinder(
         position: Int
     ) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
             chatViewData = data as ChatViewData
             hideBottomLine = data.isLastItem
             showUnseenCount = data.unseenConversationCount > 0
@@ -76,22 +78,31 @@ class FollowedChatroomViewDataBinder(
             //Set the chatroom type icon
             if (data.chatTypeDrawableId != null) {
                 tvChatroomName.setCompoundDrawablesWithIntrinsicBounds(
-                    0, 0, data.chatTypeDrawableId!!, 0
+                    0,
+                    0,
+                    data.chatTypeDrawableId,
+                    0
                 )
+                tvChatroomName.compoundDrawables.forEach {
+                    it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
+                }
             } else {
-                tvChatroomName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvChatroomName.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    0,
+                    0
+                )
+                tvChatroomName.compoundDrawables.forEach {
+                    it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
+                }
             }
 
             //secret chatroom lock icon
             val isSecretChatroom = data.chatroom.isSecret
-            val hideSecretChatroomLockIcon = sdkPreferences.getHideSecretChatroomLockIcon()
 
             if (isSecretChatroom == true) {
-                if (hideSecretChatroomLockIcon) {
-                    ivSecretChatroom.hide()
-                } else {
-                    ivSecretChatroom.show()
-                }
+                ivSecretChatroom.show()
             } else {
                 ivSecretChatroom.hide()
             }

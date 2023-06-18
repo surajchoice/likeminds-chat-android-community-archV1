@@ -36,7 +36,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
-    lateinit var SDKPreferences: SDKPreferences
+    lateinit var sdkPreferences: SDKPreferences
 
     @Inject
     lateinit var homeFeedPreferences: HomeFeedPreferences
@@ -89,7 +89,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun setUpViews() {
         super.setUpViews()
-        binding.toolbarColor = LMBranding.getToolbarColor()
+        setBranding()
         initiateUser()
         initRecyclerView()
         initToolbar()
@@ -127,6 +127,17 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         initiateViewModel.initiateErrorMessage.observe(viewLifecycleOwner) {
             ViewUtils.showErrorMessageToast(requireContext(), it)
         }
+
+        viewModel.errorMessageEventFlow.onEach { response ->
+            when (response) {
+                is HomeFeedViewModel.ErrorMessageEvent.GetChatroom -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
+                is HomeFeedViewModel.ErrorMessageEvent.GetExploreTabCount -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
+            }
+        }.observeInLifecycle(viewLifecycleOwner)
     }
 
     //observe user data
@@ -169,9 +180,16 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun onResume() {
         super.onResume()
+        // todo: check ad make exposed function in data
 //        if (!LikeMindsDB.isEmpty() && !sdkPreferences.getIsGuestUser()) {
         viewModel.observeChatrooms(requireContext())
 //        }
+    }
+
+    private fun setBranding() {
+        binding.apply {
+            toolbarColor = LMBranding.getToolbarColor()
+        }
     }
 
     private fun initiateUser() {
@@ -185,7 +203,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(SDKPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(sdkPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)

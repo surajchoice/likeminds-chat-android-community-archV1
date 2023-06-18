@@ -3,7 +3,6 @@ package com.likeminds.chatmm.homefeed.model
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONTENT_HEADER_VIEW
 
-// todo check if margins are required.
 class ContentHeaderViewData private constructor(
     val title: String
 ) : BaseViewType {

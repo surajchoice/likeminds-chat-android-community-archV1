@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
             name="data"
             type="com.likeminds.chatmm.homefeed.model.HomeFeedViewData" />
     </data>
@@ -25,6 +29,7 @@
             android:layout_marginStart="28dp"
             android:padding="4dp"
             android:src="@drawable/ic_explore_feed"
+            android:tint="@{buttonColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -63,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="14dp"
             android:background="@drawable/background_unread_chatroom"
+            android:backgroundTint="@{buttonColor}"
             android:gravity="center"
             android:includeFontPadding="false"
             android:paddingHorizontal="8dp"

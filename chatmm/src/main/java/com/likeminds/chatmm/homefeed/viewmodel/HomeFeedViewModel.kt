@@ -71,6 +71,9 @@ class HomeFeedViewModel @Inject constructor(
 
         override fun error(throwable: Throwable) {
             super.error(throwable)
+            viewModelScope.launchIO {
+                errorMessageChannel.send(ErrorMessageEvent.GetChatroom(throwable.message))
+            }
             Log.e(TAG, "HomeFeedChangeListener", throwable)
         }
     }

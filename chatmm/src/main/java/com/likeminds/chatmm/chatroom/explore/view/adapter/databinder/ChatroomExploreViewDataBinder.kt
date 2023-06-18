@@ -12,7 +12,6 @@ import com.likeminds.chatmm.utils.model.ITEM_EXPLORE
 
 internal class ChatroomExploreViewDataBinder(
     private val listener: ExploreClickListener,
-    private val isHideSecretChatroomLockIcon: Boolean
 ) : ViewDataBinder<ItemChatroomExploreBinding, ExploreViewData>() {
 
     override val viewType: Int
@@ -96,7 +95,7 @@ internal class ChatroomExploreViewDataBinder(
             if (data.isSecret == true) {
                 btnJoin.isVisible = false
                 btnJoined.isVisible = false
-                ivSecret.isVisible = !isHideSecretChatroomLockIcon
+                ivSecret.isVisible = true
             } else {
                 ivSecret.isVisible = false
                 if (data.followStatus == true) {
