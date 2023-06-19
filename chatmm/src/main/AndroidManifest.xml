@@ -21,6 +21,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".chatroom.detail.view.ChatroomDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
     </application>
 
 </manifest>

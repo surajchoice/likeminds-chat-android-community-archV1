@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_link"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_link"
+            android:layout_width="78dp"
+            android:layout_height="71dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_link_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:fontType="medium"
+            app:layout_constraintBottom_toTopOf="@+id/tv_link_description"
+            app:layout_constraintLeft_toRightOf="@+id/iv_link"
+            app:layout_constraintRight_toLeftOf="@+id/iv_cross"
+            app:layout_constraintTop_toTopOf="@+id/iv_link"
+            tools:text="Twitter will soon let you schedule your tweets" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_link_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2sp"
+            android:singleLine="true"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:fontType="regular"
+            app:layout_constraintBottom_toTopOf="@+id/tv_link_url"
+            app:layout_constraintLeft_toRightOf="@+id/iv_link"
+            app:layout_constraintRight_toLeftOf="@+id/iv_cross"
+            app:layout_constraintTop_toBottomOf="@+id/tv_link_title"
+            tools:text="The new feature has alr" />
+
+        <ImageView
+            android:id="@+id/iv_cross"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_link"
+            app:srcCompat="@drawable/ic_cross_tags_2"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_link_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_link"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_link_title"
+            app:layout_constraintRight_toRightOf="@+id/tv_link_title"
+            tools:text="www.livemint.com" />
+
+        <include
+            android:id="@+id/progress_bar"
+            layout="@layout/progress_bar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

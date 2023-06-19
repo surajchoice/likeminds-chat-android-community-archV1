@@ -8,10 +8,51 @@ import android.text.Editable
 import android.util.DisplayMetrics
 import android.view.WindowInsets
 import androidx.annotation.FloatRange
+import com.likeminds.chatmm.utils.ViewDataConverter
+import com.likeminds.chatmm.utils.membertagging.model.TagViewData
+import com.likeminds.likemindschat.helper.model.GroupTag
+import com.likeminds.likemindschat.helper.model.UserTag
 
 object MemberTaggingUtil {
 
     private const val DEFAULT_MAX_HEIGHT = 200
+    const val PAGE_SIZE = 20
+
+    /**
+     * return tagging list to the view
+     * @param groupTags: list og groups like: @everyone
+     * @param chatroomParticipants: list of participants in the chatroom
+     * @param communityMembers: list of community members containing participants
+     *
+     * @return list of groups and members
+     * */
+    fun getTaggingData(
+        groupTags: List<GroupTag>,
+        chatroomParticipants: List<UserTag>,
+        communityMembers: List<UserTag>
+    ): ArrayList<TagViewData> {
+        //list send to view
+        val listOfGroupAndMember = ArrayList<TagViewData>()
+
+        //convert groups
+        val groupViewData = groupTags.mapNotNull { groupTag ->
+            ViewDataConverter.convertGroupTag(groupTag)
+        }
+
+        //add to result list
+        listOfGroupAndMember.addAll(groupViewData)
+
+        //convert members
+        val chatroomParticipantsViewData =
+            ArrayList(chatroomParticipants + communityMembers).mapNotNull { userTag ->
+                ViewDataConverter.convertUserTag(userTag)
+            }
+
+        //add to result list
+        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
+
+        return listOfGroupAndMember
+    }
 
     @JvmSynthetic
     internal fun getMaxHeight(

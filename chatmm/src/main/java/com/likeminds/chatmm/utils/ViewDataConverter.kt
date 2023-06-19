@@ -8,12 +8,15 @@ import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.Attachment
 import com.likeminds.likemindschat.conversation.model.Conversation
 import com.likeminds.likemindschat.conversation.model.LinkOGTags
+import com.likeminds.likemindschat.helper.model.GroupTag
+import com.likeminds.likemindschat.helper.model.UserTag
 import com.likeminds.likemindschat.user.model.User
 
 object ViewDataConverter {
@@ -183,6 +186,47 @@ object ViewDataConverter {
             .imageUrl(user.imageUrl)
             .customTitle(user.customTitle)
             .isGuest(user.isGuest)
+            .build()
+    }
+
+    fun convertGroupTag(groupTag: GroupTag?): TagViewData? {
+        if (groupTag == null) return null
+        return TagViewData.Builder()
+            .name(groupTag.name)
+            .imageUrl(groupTag.imageUrl)
+            .tag(groupTag.tag)
+            .route(groupTag.route)
+            .description(groupTag.description)
+            .build()
+    }
+
+    fun convertUserTag(userTag: UserTag?): TagViewData? {
+        if (userTag == null) return null
+        val nameDrawable = MemberImageUtil.getNameDrawable(
+            MemberImageUtil.SIXTY_PX,
+            userTag.id.toString(),
+            userTag.name
+        )
+        return TagViewData.Builder()
+            .name(userTag.name)
+            .id(userTag.id)
+            .imageUrl(userTag.imageUrl)
+            .isGuest(userTag.isGuest)
+            .userUniqueId(userTag.userUniqueId)
+            .placeHolder(nameDrawable.first)
+            .build()
+    }
+
+    /**
+     * convert [LinkOGTags] to [LinkOGTagsViewData]
+     * @param linkOGTags: object of [LinkOGTags]
+     **/
+    fun convertLinkOGTags(linkOGTags: LinkOGTags): LinkOGTagsViewData {
+        return LinkOGTagsViewData.Builder()
+            .url(linkOGTags.url)
+            .description(linkOGTags.description)
+            .title(linkOGTags.title)
+            .image(linkOGTags.image)
             .build()
     }
 }

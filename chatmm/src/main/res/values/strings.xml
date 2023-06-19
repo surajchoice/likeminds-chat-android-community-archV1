@@ -34,4 +34,31 @@
     <string name="creator_cant_leave_message">The creator of a chatroom cannot leave the chatroom</string>
     <string name="pinned">Pinned</string>
     <string name="explore_chatroom">Explore Chatrooms</string>
+    <string name="community_manager">Community Manager</string>
+    <string name="edited">Edited</string>
+    <plurals name="community_manager">
+        <item quantity="one">Community Manager</item>
+        <item quantity="other">Community Managers</item>
+    </plurals>
+    <string name="about_this_community">About this community:</string>
+    <string name="reaction_red_heart">❤️</string>
+    <string name="reaction_crying_laugh">😂</string>
+    <string name="reaction_wow">😮</string>
+    <string name="reaction_cry">😢</string>
+    <string name="reaction_anger">😡</string>
+    <string name="reaction_like">👍</string>
+    <string name="long_press_to_react">Press and hold to react.</string>
+    <string name="tap_and_hold_to_record">Tap and Hold to record a voice message.</string>
+    <string name="reply">Reply</string>
+    <string name="voice_note">Voice Note</string>
+    <string name="type_your_response">Type your response</string>
+    <string name="the_community_managers_have_restricted_you_from_responding_here">The community managers have restricted you from responding here.</string>
+    <string name="gifs">GIFs</string>
+    <string name="slide_up_to_record_without_holding">Slide up to record without holding</string>
+    <string name="slide_to_cancel">Slide to cancel</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="document">Document</string>
+    <string name="poll">Poll</string>
+    <string name="audio">Audio</string>
 </resources>
