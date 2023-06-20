@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailData
-import com.likeminds.chatmm.chatroom.detail.model.MemberState
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
-import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
+import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
 import com.likeminds.chatmm.utils.SDKPreferences
@@ -68,6 +65,8 @@ class ChatroomDetailViewModel @Inject constructor(
     //Variable to hold current preview link, helps to avoid duplicate API calls
     private var previewLink: String? = null
 
+    private fun getChatroom() = chatroomDetail.chatroom
+
     sealed class ErrorMessageEvent {
         data class GetTaggingList(val errorMessage: String?) : ErrorMessageEvent()
         data class DecodeUrl(val errorMessage: String?) : ErrorMessageEvent()
@@ -89,8 +88,20 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    fun isDmChatroom(): Boolean {
+        return getChatroom()?.type == TYPE_DIRECT_MESSAGE
+    }
+
     fun isVoiceNoteSupportEnabled(): Boolean {
         return sdkPreferences.isVoiceNoteSupportEnabled()
+    }
+
+    fun getChatroomViewData(): ChatroomViewData? {
+        return if (this::chatroomDetail.isInitialized) {
+            chatroomDetail.chatroom
+        } else {
+            null
+        }
     }
 
     fun getFirstConversationFromAdapter(items: List<BaseViewType>): ConversationViewData? {
@@ -103,6 +114,36 @@ class ChatroomDetailViewModel @Inject constructor(
         return items.lastOrNull {
             it is ConversationViewData
         } as? ConversationViewData
+    }
+
+    fun isAllBottomConversationsAdded(bottomConversation: ConversationViewData?): Boolean {
+        return getConversationsBelowCount(bottomConversation) == 0
+    }
+
+    private fun getConversationsAboveCount(
+        topConversation: ConversationViewData?,
+    ): Int {
+        if (topConversation == null) {
+            return 0
+        }
+        // todo:
+        return 1
+//        return chatroomRepository.getConversationsAboveCount(
+//            realm, getChatroom()!!.id().toInt(), topConversation
+//        )
+    }
+
+    private fun getConversationsBelowCount(
+        bottomConversation: ConversationViewData?,
+    ): Int {
+        if (bottomConversation == null) {
+            return 0
+        }
+        // todo:
+        return 1
+//        return chatroomRepository.getConversationsBelowCount(
+//            realm, chatroomId()?.toInt() ?: 0, bottomConversation
+//        )
     }
 
     fun clearLinkPreview() {

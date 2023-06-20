@@ -12,6 +12,10 @@ object ValueUtils {
         return false
     }
 
+    fun Int.isValidIndex(itemCount: Int): Boolean {
+        return this > -1 && this < itemCount
+    }
+
     fun Int.isValidIndex(items: List<*>? = null): Boolean {
         return if (items != null) {
             this > -1 && this < items.size
@@ -58,7 +62,7 @@ object ValueUtils {
                     }
                 }
             }
-            if (!links.isEmpty()) {
+            if (links.isNotEmpty()) {
                 links.first()
             } else null
         } catch (e: Exception) {
@@ -81,5 +85,12 @@ object ValueUtils {
             }
         }
         return mediaType
+    }
+
+    fun Int?.getMaxCountNumberText(): String {
+        if (this == null) {
+            return "0"
+        }
+        return if (this > 99) "99+" else this.toString()
     }
 }

@@ -129,7 +129,7 @@
         </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/rv_chatroom"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="10dp"
@@ -197,14 +197,14 @@
             android:visibility="gone"
             app:civ_border_color="@color/white"
             app:civ_border_width="1dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_collab_card"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_member_name"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-            android:id="@+id/tv_collab_card_member_name"
+            android:id="@+id/tv_chatroom_member_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -229,14 +229,14 @@
             android:layout_marginStart="5dp"
             android:background="@drawable/background_black30_50"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_collab_card_member_name"
-            app:layout_constraintLeft_toRightOf="@+id/tv_collab_card_member_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_member_name"
+            app:layout_constraintLeft_toRightOf="@+id/tv_chatroom_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_member_name"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-            android:id="@+id/tv_collab_card_date"
+            android:id="@+id/tv_chatroom_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -247,13 +247,13 @@
             android:textSize="12sp"
             android:visibility="gone"
             app:fontType="regular"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_member_name"
             app:layout_constraintLeft_toRightOf="@+id/iv_date_dot"
-            app:layout_constraintTop_toTopOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_member_name"
             tools:text="April 20" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-            android:id="@+id/tv_collab_card"
+            android:id="@+id/tv_chatroom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -263,9 +263,9 @@
             android:textSize="13sp"
             android:visibility="gone"
             app:fontType="regular"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_chatroom_member_name"
             app:layout_constraintRight_toLeftOf="@id/topic_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_member_name"
             tools:text="Looking for a data science and analytics professional with experience in delivering analytics projects for an assignment. Work will be freelance initially but can..."
             tools:visibility="visible" />
 
@@ -276,9 +276,9 @@
             android:layout_marginEnd="8dp"
             android:elevation="5dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_collab_card"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_collab_card_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_member_name"
             tools:ignore="ContentDescription" />
 
         <View

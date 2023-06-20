@@ -73,6 +73,7 @@
                     app:layout_constraintVertical_chainStyle="packed"
                     tools:text="Nipun"
                     tools:visibility="visible" />
+                <!-- TODO: removed some attributes due to error -->
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
                     android:id="@+id/tv_conversation"
@@ -86,7 +87,6 @@
                     android:maxLines="2"
                     android:textColor="@{chatReplyData.isMessageDeleted ? @color/brown_grey : @color/grey}"
                     android:textSize="13sp"
-                    android:typeface='@{chatReplyData.isMessageDeleted ? "italic" : "normal"}'
                     app:fontType="regular"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_reply_attachment"
@@ -98,9 +98,6 @@
 
                 <ImageView
                     android:id="@+id/iv_reply_attachment"
-                    cornerRadius="@{20}"
-                    placeholder="@drawable/image_placeholder"
-                    url="@{chatReplyData.imageUrl}"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"

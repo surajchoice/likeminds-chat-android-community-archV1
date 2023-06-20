@@ -1,11 +1,15 @@
 package com.likeminds.chatmm.chatroom.detail.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +19,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailResultExtras
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.SCROLL_DOWN
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomScrollListener
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapter
@@ -25,9 +31,14 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
+import com.likeminds.chatmm.media.model.GIF
+import com.likeminds.chatmm.media.model.IMAGE
+import com.likeminds.chatmm.media.model.VIDEO
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
+import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.endRevealAnimation
 import com.likeminds.chatmm.utils.ViewUtils.startRevealAnimation
@@ -35,6 +46,7 @@ import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
+import com.vanniktech.emoji.EmojiPopup
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import javax.inject.Inject
 
@@ -45,6 +57,9 @@ class ChatroomDetailFragment :
     private lateinit var chatroomDetailExtras: ChatroomDetailExtras
 
     private var chatroomResultExtras: ChatroomDetailResultExtras? = null
+
+    private lateinit var emojiPopup: EmojiPopup
+    private var conversationIdForEmojiReaction = ""
 
     private lateinit var memberTagging: MemberTaggingView
 
@@ -165,12 +180,22 @@ class ChatroomDetailFragment :
         // todo: fetch data
     }
 
+    private fun getChatroomViewData(): ChatroomViewData? {
+        return viewModel.getChatroomViewData()
+    }
+
     override fun setUpViews() {
         super.setUpViews()
         initToolbar()
         setHasOptionsMenu(true)
         initView()
-
+        initEmojiView()
+        initGiphy()
+//        initEnterClick()
+//        initAttachmentClick()
+//        initAttachmentsView()
+//        disableAnswerPosting()
+//        initReplyView()
     }
 
     // initializes the toolbar
@@ -212,16 +237,16 @@ class ChatroomDetailFragment :
             }
 
             // scroll the recyclerview up when keyboard opens
-            recyclerView.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+            rvChatroom.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
                 if (!isScrollable()) {
                     hideScrollBottomFab()
                 }
                 if (bottom < oldBottom) {
-                    recyclerView.scrollBy(0, oldBottom - bottom)
+                    rvChatroom.scrollBy(0, oldBottom - bottom)
                 }
                 if (KeyboardVisibilityEvent.isKeyboardVisible(requireActivity())) {
                     val height =
-                        recyclerView.height - ViewUtils.dpToPx(16)
+                        rvChatroom.height - ViewUtils.dpToPx(16)
                     memberTagging.reSetMaxHeight(height)
                 }
             }
@@ -238,7 +263,7 @@ class ChatroomDetailFragment :
     }
 
     private fun initRecyclerView() {
-        binding.recyclerView.apply {
+        binding.rvChatroom.apply {
             val linearLayoutManager = LinearLayoutManager(context)
             linearLayoutManager.orientation = RecyclerView.VERTICAL
             layoutManager = linearLayoutManager
@@ -248,6 +273,74 @@ class ChatroomDetailFragment :
                 false
             attachPagination(this, linearLayoutManager)
         }
+    }
+
+    private fun initEmojiView() {
+        emojiPopup = buildEmojiPopup(binding.inputBox.etAnswer)
+    }
+
+    private fun buildEmojiPopup(editText: LikeMindsEmojiEditText): EmojiPopup {
+        binding.apply {
+            return EmojiPopup.Builder.fromRootView(root)
+                .setIconColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.brown_grey
+                    )
+                )
+                .setSelectedIconColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
+                )
+                .setBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.emoji_kb_background
+                    )
+                )
+                .setDividerColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.emoji_kb_background
+                    )
+                )
+                .setOnEmojiPopupShownListener {
+                    // todo: analytics
+//                viewModel.sendReactionsClickEvent()
+                }
+                .setOnEmojiPopupDismissListener {
+                    conversationIdForEmojiReaction = ""
+                }
+                .setOnEmojiClickListener { _, emojiString ->
+                    if (conversationIdForEmojiReaction.isNotEmpty()) {
+//                    reactedToMessage(emojiString.unicode, conversationIdForEmojiReaction, true)
+                        inputBox.etAnswer.setText("")
+                        emojiPopup.dismiss()
+                    }
+//                if (isChatroomReaction) {
+//                    reactedToMessage(emojiString.unicode, chatroomId, false)
+//                    binding.inputBox.etAnswer.setText("")
+//                    emojiPopup.dismiss()
+//                }
+                }
+                .build(editText)
+        }
+    }
+
+    private fun initGiphy() {
+//        Giphy.configure(requireContext(), BuildConfig.URLS_MAP[BuildConfig.GIPHY_SDK].toString())
+//        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
+//        settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
+//        settings.selectedContentType = GPHContentType.gif
+//        val giphyDialog = GiphyDialogFragment.newInstance(settings)
+//        giphyDialog.setTargetFragment(this, REQUEST_GIFS)
+//        binding.inputBox.tvGifs.setOnClickListener {
+//            if (checkIfResponseAllowed()) {
+//                giphyDialog.show(parentFragmentManager, "giphy_dialog")
+//            }
+//        }
     }
 
     private fun initMemberTaggingView() {
@@ -326,13 +419,15 @@ class ChatroomDetailFragment :
     ) {
         chatroomScrollListener = object : ChatroomScrollListener(linearLayoutManager) {
             override fun onScroll() {
-                if (messageReactionsTray?.isShowing == true) {
-                    messageReactionsTray?.dismiss()
-                }
+                // todo:
+//                if (messageReactionsTray?.isShowing == true) {
+//                    messageReactionsTray?.dismiss()
+//                }
             }
 
             override fun onLoadMore(scrollState: Int) {
-                fetchPaginatedConversations(scrollState)
+                // todo:
+//                fetchPaginatedConversations(scrollState)
             }
 
             override fun onBottomReached() {
@@ -349,9 +444,9 @@ class ChatroomDetailFragment :
 
             override fun onChatRoomVisibilityChanged(show: Boolean) {
                 if (show) {
-                    fadeInTopCollabcardView()
+                    fadeInTopChatroomView()
                 } else {
-                    fadeOutTopCollabcardView()
+                    fadeOutTopChatroomView()
                 }
             }
         }
@@ -361,8 +456,8 @@ class ChatroomDetailFragment :
     /**
      * Check if the recyclerview can scroll up or down
      */
-    private fun isScrollable() = binding.recyclerView.canScrollVertically(1)
-            || binding.recyclerView.canScrollVertically(-1)
+    private fun isScrollable() = binding.rvChatroom.canScrollVertically(1)
+            || binding.rvChatroom.canScrollVertically(-1)
 
     /**
      * Hide the scroll counter floating action button
@@ -378,6 +473,156 @@ class ChatroomDetailFragment :
                     tvScrollBottom.visibility = View.GONE
                 }
             })
+        }
+    }
+
+    /**
+     * Update the scroll counter floating action button when the user is scrolling down
+     * @param position Position of the last completely visible item position
+     */
+    private fun updateFabOnScrollingToBottom(position: Int) {
+        if (unSeenConversationsSet.size <= 0 || visibleBottomConversationIndex == position) {
+            return
+        }
+        visibleBottomConversationIndex = position
+        val item = chatroomDetailAdapter[position]
+        if (item is ConversationViewData && unSeenConversationsSet.contains(item.id)) {
+            unSeenConversationsSet.remove(item.id)
+            unSeenCount--
+            if (unSeenCount <= 0) {
+                return
+            }
+            showScrollBottomFab(unSeenCount.getMaxCountNumberText())
+        }
+    }
+
+    /**
+     * Show the scroll counter floating action button, which triggers only if the recyclerview is scrollable
+     * @param text Text to show on the counter, eg - 99+, 8, etc
+     */
+    private fun showScrollBottomFab(text: String?) {
+        binding.fabScrollBottom.apply {
+            if (!isScrollable()) {
+                return
+            }
+            if (text == null) {
+                show()
+            } else {
+                if (isOrWillBeShown) {
+                    configureScrollBottomFab(text)
+                } else {
+                    show(
+                        object : FloatingActionButton.OnVisibilityChangedListener() {
+                            override fun onShown(fab: FloatingActionButton?) {
+                                super.onShown(fab)
+                                configureScrollBottomFab(text)
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    /**
+     * Configure the scroll counter floating action button based on the text length and visibility
+     * @param text Text to show on the counter, eg - 99+, 8, etc
+     */
+    private fun configureScrollBottomFab(text: String) {
+        binding.tvScrollBottom.apply {
+            if (text.length > 2) {
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            } else {
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+            }
+            this.text = text
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun fadeInTopChatroomView() {
+        binding.apply {
+            if (viewModel.isDmChatroom()) {
+                return
+            }
+            fadeInTopChatroomEachView(viewTopBackground)
+            fadeInTopChatroomEachView(memberImage)
+            fadeInTopChatroomEachView(tvChatroomMemberName)
+            fadeInTopChatroomEachView(tvChatroom)
+            val topic = getChatRoom()?.topic
+            if (topic == null) {
+                fadeInTopChatroomEachView(ivDateDot)
+                fadeInTopChatroomEachView(tvChatroomDate)
+            } else {
+                when {
+                    topic.isDeleted() -> {
+                        fadeInTopChatroomEachView(ivDateDot)
+                        fadeInTopChatroomEachView(tvChatroomDate)
+                    }
+
+                    topic.ogTags != null -> {
+                        if (topic.ogTags.image != null) {
+                            fadeInTopChatroomEachView(topicImage)
+                        }
+                    }
+
+                    topic.attachmentCount!! > 0 -> {
+                        when (topic.attachments?.firstOrNull()?.type) {
+                            IMAGE -> {
+                                fadeInTopChatroomEachView(binding.topicImage)
+                            }
+
+                            VIDEO -> {
+                                fadeInTopChatroomEachView(binding.topicImage)
+                            }
+
+                            GIF -> {
+                                fadeInTopChatroomEachView(binding.topicImage)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fadeInTopChatroomEachView(view: View) {
+        if (view.visibility == View.GONE) {
+            view.visibility = View.VISIBLE
+            view.alpha = 0.0f
+            view.animate()
+                .setDuration(500)
+                .alpha(1.0f)
+                .setListener(null)
+        }
+    }
+
+    private fun fadeOutTopChatroomView() {
+        binding.apply {
+            fadeOutTopChatroomEachView(viewTopBackground)
+            fadeOutTopChatroomEachView(memberImage)
+            fadeOutTopChatroomEachView(tvChatroomMemberName)
+            fadeOutTopChatroomEachView(ivDateDot)
+            fadeOutTopChatroomEachView(tvChatroomDate)
+            fadeOutTopChatroomEachView(tvChatroom)
+            fadeOutTopChatroomEachView(topicImage)
+        }
+    }
+
+    private fun fadeOutTopChatroomEachView(view: View) {
+        if (view.visibility == View.VISIBLE) {
+            view.animate()
+                .setDuration(500)
+                .alpha(0.0f)
+                .setListener(fadeOutAnimatorListener(view))
+        }
+    }
+
+    private fun fadeOutAnimatorListener(view: View): Animator.AnimatorListener {
+        return object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                view.visibility = View.GONE
+            }
         }
     }
 
@@ -419,10 +664,11 @@ class ChatroomDetailFragment :
                 scrollToPosition(SCROLL_DOWN)
             } else {
                 chatroomScrollListener.topLoadingDone()
-                viewModel.fetchBottomConversationsOnClick(
-                    bottomConversation,
-                    chatroomDetailAdapter.items()
-                )
+                // todo
+//                viewModel.fetchBottomConversationsOnClick(
+//                    bottomConversation,
+//                    chatroomDetailAdapter.items()
+//                )
             }
         }
     }
@@ -474,6 +720,21 @@ class ChatroomDetailFragment :
         }
     }
 
+    /**
+     * Scroll to a position on the recyclerview
+     * @param pos Index of the item to scroll to
+     */
+    private fun scrollToPosition(pos: Int) {
+        binding.rvChatroom.apply {
+            if (pos.isValidIndex(chatroomDetailAdapter.itemCount)) {
+                scrollToPosition(pos)
+            } else {
+                hideScrollBottomFab()
+                scrollToPosition(chatroomDetailAdapter.itemCount - 1)
+            }
+        }
+    }
+
     fun setChatroomDetailActivityResult() {
         val intent = Intent().apply {
             putExtras(Bundle().apply {
@@ -481,5 +742,9 @@ class ChatroomDetailFragment :
             })
         }
         activity?.setResult(Activity.RESULT_OK, intent)
+    }
+
+    override fun getChatRoom(): ChatroomViewData? {
+        return getChatroomViewData()
     }
 }

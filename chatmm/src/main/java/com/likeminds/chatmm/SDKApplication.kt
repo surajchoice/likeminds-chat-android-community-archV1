@@ -14,6 +14,8 @@ import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.likemindschat.LMChatClient
+import com.vanniktech.emoji.EmojiManager
+import com.vanniktech.emoji.google.GoogleEmojiProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,6 +59,7 @@ class SDKApplication {
         SDKApplication.lmUICallback = lmUICallback
         setupBranding(brandingRequest)
         initAppComponent(application)
+        EmojiManager.install(GoogleEmojiProvider())
         initAWSMobileClient(application)
     }
 
