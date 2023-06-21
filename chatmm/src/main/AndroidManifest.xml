@@ -29,6 +29,12 @@
             android:theme="@style/LMAppTheme.NoActionBar" />
 
         <activity
+            android:name=".chatroom.detail.view.ViewParticipantsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
             android:name=".search.view.SearchActivity"
             android:exported="false"
             android:screenOrientation="portrait"

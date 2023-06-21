@@ -64,4 +64,10 @@
     <string name="search_hint_text">Search…</string>
     <string name="chatroom_not_joined_yet">chatroom not joined yet</string>
     <string name="no_results_found">No results found</string>
+    <string name="participants">Participants</string>
+    <plurals name="participants_s">
+        <item quantity="one">%d participant</item>
+        <item quantity="other">%d participants</item>
+    </plurals>
+    <string name="action_search">Search</string>
 </resources>
