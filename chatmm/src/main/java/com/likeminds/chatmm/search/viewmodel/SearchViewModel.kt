@@ -1,0 +1,381 @@
+package com.likeminds.chatmm.search.viewmodel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.likeminds.chatmm.homefeed.model.ChatroomListShimmerViewData
+import com.likeminds.chatmm.search.model.*
+import com.likeminds.chatmm.utils.ViewDataConverter
+import com.likeminds.chatmm.utils.coroutine.launchIO
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.search.model.SearchChatroomRequest
+import com.likeminds.likemindschat.search.model.SearchConversationRequest
+import javax.inject.Inject
+
+class SearchViewModel @Inject constructor() : ViewModel() {
+
+    private val lmChatClient = LMChatClient.getInstance()
+
+    companion object {
+        const val PAGE_SIZE = 100
+        private const val PARAM_SEARCH_TYPE_HEADER = "header"
+        private const val PARAM_SEARCH_TYPE_TITLE = "title"
+        private const val MESSAGES = "Messages"
+        private const val API_SEARCH_FOLLOWED_HEADERS = "followedHeaders"
+        private const val API_SEARCH_UNFOLLOWED_HEADERS = "unFollowedHeaders"
+        private const val API_SEARCH_FOLLOWED_TITLES = "followedTitles"
+        private const val API_SEARCH_UNFOLLOWED_TITLES = "unFollowedTitles"
+        private const val API_SEARCH_FOLLOWED_CONVERSATIONS = "followedConversations"
+        const val API_SEARCH_UNFOLLOWED_CONVERSATIONS = "unFollowedConversations"
+    }
+
+    private var currentApiPage = 0
+
+    /**
+     * [searchLiveData] is used to pass paginated data from API to Fragment
+     * [currentApi] is kept to SEARCH_FOLLOWED_HEADERS by default
+     * [noUnfollowedConversationsFound] is used to check if there is no unfollowed conversation and then show noResultsView in Fragment
+     */
+    private val _searchLiveData = MutableLiveData<SearchViewData?>()
+    val searchLiveData: LiveData<SearchViewData?> = _searchLiveData
+
+    var currentApi = API_SEARCH_FOLLOWED_HEADERS
+    val noUnfollowedConversationsFound by lazy { MutableLiveData<Pair<Boolean, String>>() }
+
+    private val _keywordSearched = MutableLiveData<String>()
+    val keywordSearched: LiveData<String> = _keywordSearched
+
+    fun getSingleShimmerView() = SingleShimmerViewData.Builder().build()
+
+    fun getShimmerView() = ChatroomListShimmerViewData.Builder().build()
+
+    private fun getLineBreakView() = SearchLineBreakViewData.Builder().build()
+
+    private fun getContentHeaderView(): SearchContentHeaderViewData {
+        return SearchContentHeaderViewData.Builder().title(MESSAGES).build()
+    }
+
+    fun getNoSearchResultsView() = SearchNoResultsScreenViewData.Builder().build()
+
+    private fun getKeyword() = _keywordSearched.value ?: ""
+
+    /**
+     * This function is used to call next page in case of various APIs
+     * @param disablePagination is used to check if the API is already fetching data,
+     * so not to fetch data using scroll listener
+     */
+    fun fetchNextPage(disablePagination: Boolean) {
+        currentApiPage++
+        when (currentApi) {
+            API_SEARCH_FOLLOWED_HEADERS -> getFollowedHeaders(disablePagination)
+            API_SEARCH_UNFOLLOWED_HEADERS -> getUnfollowedHeaders(disablePagination)
+            API_SEARCH_FOLLOWED_TITLES -> getFollowedTitles(disablePagination)
+            API_SEARCH_UNFOLLOWED_TITLES -> getUnfollowedTitles(disablePagination)
+            API_SEARCH_FOLLOWED_CONVERSATIONS -> getFollowedConversations(disablePagination)
+            API_SEARCH_UNFOLLOWED_CONVERSATIONS -> getUnfollowedConversations(disablePagination)
+        }
+    }
+
+    /**
+     * This function is used to getFollowedHeaders
+     * or else
+     * getUnfollowedHeaders if result size < [PAGE_SIZE]
+     */
+    private fun getFollowedHeaders(disablePagination: Boolean) {
+        viewModelScope.launchIO {
+            val searchChatroomRequest = getSearchChatroomRequest(true, PARAM_SEARCH_TYPE_HEADER)
+            searchChatroomHeadersApi(
+                searchChatroomRequest,
+                API_SEARCH_UNFOLLOWED_HEADERS,
+                disablePagination
+            )
+        }
+    }
+
+    /**
+     * This function is used to getUnfollowedHeaders
+     * or else
+     * getFollowedTitles if result size < [PAGE_SIZE]
+     */
+    private fun getUnfollowedHeaders(disablePagination: Boolean) {
+        val searchChatroomRequest = getSearchChatroomRequest(false, PARAM_SEARCH_TYPE_HEADER)
+        searchChatroomHeadersApi(
+            searchChatroomRequest,
+            API_SEARCH_FOLLOWED_TITLES,
+            disablePagination
+        )
+    }
+
+    /**
+     * This function is used to getFollowedTitles
+     * or else
+     * getFollowedConversations if result size < [PAGE_SIZE]
+     */
+    private fun getFollowedTitles(disablePagination: Boolean) {
+        val searchChatroomRequest = getSearchChatroomRequest(true, PARAM_SEARCH_TYPE_TITLE)
+        searchChatroomTitlesApi(
+            searchChatroomRequest,
+            API_SEARCH_FOLLOWED_CONVERSATIONS,
+            disablePagination
+        )
+    }
+
+    /**
+     * This function is used to getUnfollowedTitles
+     * or else
+     * getUnfollowedConversations if result size < [PAGE_SIZE]
+     */
+    private fun getUnfollowedTitles(disablePagination: Boolean) {
+        val searchChatroomRequest = getSearchChatroomRequest(true, PARAM_SEARCH_TYPE_TITLE)
+        searchChatroomTitlesApi(
+            searchChatroomRequest,
+            API_SEARCH_UNFOLLOWED_CONVERSATIONS,
+            disablePagination
+        )
+    }
+
+    /**
+     * This function is used to getFollowedConversations
+     * or else
+     * getUnfollowedTitles if result size < [PAGE_SIZE]
+     */
+    private fun getFollowedConversations(disablePagination: Boolean) {
+        viewModelScope.launchIO {
+            val request = getSearchConversationRequest(true)
+            val response = lmChatClient.searchConversation(request)
+
+            if (response.success) {
+                val conversations = response.data?.conversations.orEmpty()
+                if (conversations.size < PAGE_SIZE) {
+                    callNextApi(API_SEARCH_UNFOLLOWED_TITLES)
+                }
+                _searchLiveData.postValue(
+                    SearchViewData.Builder()
+                        .disablePagination(disablePagination)
+                        .dataList(
+                            ViewDataConverter.convertSearchConversations(
+                                conversations,
+                                true,
+                                request.search
+                            )
+                        )
+                        .keyword(request.search)
+                        .checkForSeparator(true)
+                        .build()
+                )
+            } else {
+                callNextApi(API_SEARCH_UNFOLLOWED_TITLES)
+            }
+        }
+    }
+
+    /**
+     * This function is used to getUnfollowedConversations
+     * or else
+     * update [noUnfollowedConversationsFound] if there are no conversations
+     */
+    private fun getUnfollowedConversations(disablePagination: Boolean) {
+        viewModelScope.launchIO {
+            val request = getSearchConversationRequest(false)
+            val response = lmChatClient.searchConversation(request)
+            if (response.success) {
+                val conversations = response.data?.conversations.orEmpty()
+                if (conversations.isEmpty()) {
+                    noUnfollowedConversationsFound.postValue(Pair(true, request.search))
+                } else {
+                    _searchLiveData.postValue(
+                        SearchViewData.Builder()
+                            .disablePagination(disablePagination)
+                            .dataList(
+                                ViewDataConverter.convertSearchConversations(
+                                    conversations,
+                                    false,
+                                    request.search
+                                )
+                            )
+                            .keyword(request.search)
+                            .checkForSeparator(true)
+                            .build()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getSearchChatroomRequest(
+        followStatus: Boolean,
+        searchType: String
+    ): SearchChatroomRequest {
+        return SearchChatroomRequest.Builder()
+            .search(getKeyword())
+            .followStatus(followStatus)
+            .page(currentApiPage)
+            .pageSize(PAGE_SIZE)
+            .searchType(searchType)
+            .build()
+    }
+
+    private fun getSearchConversationRequest(
+        followStatus: Boolean,
+    ): SearchConversationRequest {
+        return SearchConversationRequest.Builder()
+            .search(getKeyword())
+            .followStatus(followStatus)
+            .page(currentApiPage)
+            .pageSize(PAGE_SIZE)
+            .build()
+    }
+
+    private fun searchChatroomHeadersApi(
+        request: SearchChatroomRequest,
+        nextApi: String,
+        disablePagination: Boolean
+    ) {
+        viewModelScope.launchIO {
+            val response = lmChatClient.searchChatroom(request)
+            if (response.success) {
+                val chatrooms = response.data?.chatrooms.orEmpty()
+                if (chatrooms.size < PAGE_SIZE) {
+                    callNextApi(nextApi)
+                }
+                _searchLiveData.postValue(
+                    SearchViewData.Builder()
+                        .disablePagination(disablePagination)
+                        .dataList(
+                            ViewDataConverter.convertSearchChatroomHeaders(
+                                chatrooms,
+                                request.followStatus,
+                                request.search
+                            )
+                        )
+                        .keyword(request.search)
+                        .build()
+                )
+            } else {
+                callNextApi(nextApi)
+            }
+        }
+    }
+
+    private fun searchChatroomTitlesApi(
+        request: SearchChatroomRequest,
+        nextApi: String,
+        disablePagination: Boolean
+    ) {
+        viewModelScope.launchIO {
+            val response = lmChatClient.searchChatroom(request)
+            if (response.success) {
+                val chatrooms = response.data?.chatrooms.orEmpty()
+                if (chatrooms.size < PAGE_SIZE) {
+                    callNextApi(nextApi)
+                }
+                _searchLiveData.postValue(
+                    SearchViewData.Builder()
+                        .disablePagination(disablePagination)
+                        .dataList(
+                            ViewDataConverter.convertSearchChatroomTitles(
+                                chatrooms,
+                                request.followStatus,
+                                request.search
+                            )
+                        )
+                        .keyword(request.search)
+                        .checkForSeparator(true)
+                        .build()
+                )
+            } else {
+                callNextApi(nextApi)
+            }
+        }
+    }
+
+    /**
+     * This function is used to update api call being called
+     */
+    private fun callNextApi(nextApi: String) {
+        currentApiPage = 0
+        currentApi = nextApi
+        fetchNextPage(true)
+    }
+
+    /**
+     * first in pair is used to modify the last header view
+     * if separator already present return
+     * if headers not present only display content header messages
+     * if header is present then display line break and content header
+     */
+    fun getRequiredSeparator(list: List<BaseViewType>): Pair<Boolean, List<BaseViewType>> {
+        if (list.indexOfFirst { it is SearchContentHeaderViewData } > -1) {
+            return Pair(false, emptyList())
+        }
+        if (list.indexOfFirst { it is SearchChatroomHeaderViewData } == -1) {
+            return Pair(false, mutableListOf(getContentHeaderView()))
+        }
+        val lastItem =
+            list.lastOrNull { it is SearchChatroomHeaderViewData } as? SearchChatroomHeaderViewData
+        if (lastItem != null) {
+            val separators = mutableListOf<BaseViewType>()
+
+            separators.add(lastItem.toBuilder().isLast(true).build())
+            separators.add(getLineBreakView())
+            separators.add(getContentHeaderView())
+            return Pair(true, separators)
+        }
+        return Pair(false, emptyList())
+    }
+
+    fun setKeyword(keyword: String) {
+        currentApiPage = 0
+        currentApi = API_SEARCH_FOLLOWED_HEADERS
+        _keywordSearched.postValue(keyword)
+    }
+
+    fun setSearchedDataToNull() {
+        _searchLiveData.postValue(null)
+    }
+
+    // todo:
+    /**------------------------------------------------------------
+     * Analytics functions
+    ---------------------------------------------------------------*/
+
+    fun sendMessageClickedEvent(chatroomId: String?, communityId: String?) {
+//        LMAnalytics.track(
+//            LMAnalytics.Keys.EVENT_MESSAGE_SEARCHED,
+//            JSONObject().apply {
+//                put("chatroom_id", chatroomId)
+//                put("community_id", communityId)
+//            })
+    }
+
+    fun sendChatroomClickedEvent(chatroomId: String, communityId: String?) {
+//        LMAnalytics.track(
+//            LMAnalytics.Keys.EVENT_CHATROOM_SEARCHED,
+//            JSONObject().apply {
+//                put("chatroom_id", chatroomId)
+//                put("community_id", communityId)
+//            })
+    }
+
+    fun sendSearchIconClickedEvent() {
+//        LMAnalytics.track(
+//            LMAnalytics.Keys.EVENT_SEARCH_ICON_CLICKED,
+//            JSONObject().apply {
+//                put("source", LMAnalytics.Sources.SOURCE_HOME_FEED)
+//            })
+    }
+
+    fun sendSearchClosedEvent() {
+//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHATROOM_SEARCH_CLOSED)
+    }
+
+    fun sendSearchCrossIconClickedEvent() {
+//        LMAnalytics.track(
+//            LMAnalytics.Keys.EVENT_SEARCH_CROSS_ICON_CLICKED,
+//            JSONObject().apply {
+//                put("source", LMAnalytics.Sources.SOURCE_HOME_FEED)
+//            })
+    }
+}

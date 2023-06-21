@@ -8,6 +8,10 @@ import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.search.model.SearchChatroomHeaderViewData
+import com.likeminds.chatmm.search.model.SearchChatroomTitleViewData
+import com.likeminds.chatmm.search.model.SearchConversationViewData
+import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
@@ -17,6 +21,8 @@ import com.likeminds.likemindschat.conversation.model.Conversation
 import com.likeminds.likemindschat.conversation.model.LinkOGTags
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.helper.model.UserTag
+import com.likeminds.likemindschat.search.model.SearchChatroom
+import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.User
 
 object ViewDataConverter {
@@ -227,6 +233,182 @@ object ViewDataConverter {
             .description(linkOGTags.description)
             .title(linkOGTags.title)
             .image(linkOGTags.image)
+            .build()
+    }
+
+    fun convertSearchChatroomHeaders(
+        chatrooms: List<SearchChatroom>,
+        followStatus: Boolean,
+        keyword: String
+    ): List<SearchChatroomHeaderViewData> {
+        return chatrooms.map {
+            convertSearchChatroomHeader(it, followStatus, keyword)
+        }
+    }
+
+    private fun convertSearchChatroomHeader(
+        searchedChatroom: SearchChatroom,
+        followStatus: Boolean,
+        keyword: String
+    ): SearchChatroomHeaderViewData {
+        return SearchChatroomHeaderViewData.Builder()
+            .chatroom(convertChatroomForSearch(searchedChatroom))
+            .followStatus(followStatus)
+            .keywordMatchedInCommunityName(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchedChatroom.community.name
+                )
+            )
+            .build()
+    }
+
+    fun convertSearchChatroomTitles(
+        chatrooms: List<SearchChatroom>,
+        followStatus: Boolean,
+        keyword: String
+    ): List<SearchChatroomTitleViewData> {
+        return chatrooms.map {
+            convertSearchChatroomTitle(it, followStatus, keyword)
+        }
+    }
+
+    // todo: community
+    private fun convertSearchChatroomTitle(
+        searchChatroom: SearchChatroom,
+        followStatus: Boolean,
+        keyword: String
+    ): SearchChatroomTitleViewData {
+        return SearchChatroomTitleViewData.Builder()
+            .chatroom(convertChatroomForSearch(searchChatroom))
+//            .community(convertCommunityForSearch(searchChatroom.community))
+            .followStatus(followStatus)
+            .keywordMatchedInCommunityName(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchChatroom.community.name
+                )
+            )
+            .keywordMatchedInChatroomName(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchChatroom.chatroom.header
+                )
+            )
+            .keywordMatchedInMessageText(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchChatroom.chatroom.title,
+                    isMessage = true
+                )
+            )
+            .build()
+    }
+
+    // todo: createdAt
+    private fun convertChatroomForSearch(
+        searchChatroom: SearchChatroom
+    ): ChatroomViewData {
+        val member = MemberViewData.Builder()
+            .id(searchChatroom.member.id.toString())
+            .name(searchChatroom.member.profile.name)
+            .build()
+
+        return ChatroomViewData.Builder()
+            .id(searchChatroom.chatroom.id)
+            .communityId(searchChatroom.chatroom.communityId)
+            .communityName(searchChatroom.chatroom.communityName)
+            .memberViewData(member)
+            .dynamicViewType(0)
+//            .createdAt(searchChatroom.chatroom.createdAt)
+            .title(searchChatroom.chatroom.title)
+            .answerText(searchChatroom.chatroom.answerText)
+            .state(searchChatroom.state)
+            .type(searchChatroom.chatroom.type)
+            .header(searchChatroom.chatroom.header)
+            .muteStatus(searchChatroom.muteStatus)
+            .followStatus(searchChatroom.followStatus)
+            .date(searchChatroom.chatroom.date)
+            .isTagged(searchChatroom.isTagged)
+            .isPending(searchChatroom.chatroom.isPending)
+            .deletedBy(searchChatroom.chatroom.deletedBy)
+            .updatedAt(searchChatroom.updatedAt)
+            .isSecret(searchChatroom.chatroom.isSecret)
+            .isDisabled(searchChatroom.isDisabled)
+            .chatroomImageUrl(searchChatroom.chatroom.chatroomImageUrl)
+            .build()
+    }
+
+    fun convertSearchConversations(
+        conversations: List<SearchConversation>,
+        followStatus: Boolean,
+        keyword: String
+    ): List<SearchConversationViewData> {
+        return conversations.map {
+            convertSearchConversation(it, followStatus, keyword)
+        }
+    }
+
+    // todo: community
+    private fun convertSearchConversation(
+        searchConversation: SearchConversation,
+        followStatus: Boolean,
+        keyword: String
+    ): SearchConversationViewData {
+        return SearchConversationViewData.Builder()
+            .chatroom(convertChatroom(searchConversation.chatroom))
+//            .community(convertCommunityForSearch(searchConversation.community))
+            .chatroomAnswer(convertConversationForSearch(searchConversation))
+            .chatroomName(searchConversation.chatroom.header)
+            .senderName(searchConversation.member.profile.name)
+            .chatroomAnswerId(searchConversation.id.toString())
+            .answer(searchConversation.answer)
+            .time(TimeUtil.getLastConversationTime(searchConversation.lastUpdated))
+            .followStatus(followStatus)
+            .keywordMatchedInCommunityName(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchConversation.community.name
+                )
+            )
+            .keywordMatchedInChatroomName(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchConversation.chatroom.header
+                )
+            )
+            .keywordMatchedInMessageText(
+                SearchUtils.findMatchedKeywords(
+                    keyword,
+                    searchConversation.answer,
+                    isMessage = true
+                )
+            )
+            .build()
+    }
+
+    // todo: createdAt
+    private fun convertConversationForSearch(
+        searchConversation: SearchConversation
+    ): ConversationViewData {
+        val member = MemberViewData.Builder()
+            .id(searchConversation.member.id.toString())
+            .name(searchConversation.member.profile.name)
+            .build()
+
+        return ConversationViewData.Builder()
+            .id(searchConversation.id.toString())
+            .state(searchConversation.state)
+            .attachmentCount(searchConversation.attachmentCount)
+            .attachmentsUploaded(searchConversation.attachmentsUploaded)
+            .isEdited(searchConversation.isEdited)
+            .createdAt(searchConversation.createdAt.toString())
+            .communityId(searchConversation.community.id)
+            .memberViewData(member)
+//            .createdAt(searchConversation.chatroom.createdAt)
+            .answer(searchConversation.answer)
+            .date(searchConversation.chatroom.date)
+            .deletedBy(searchConversation.chatroom.deletedBy)
             .build()
     }
 }
