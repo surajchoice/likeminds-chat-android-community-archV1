@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.res.Resources
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
@@ -22,6 +23,14 @@ import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 object ViewUtils {
     fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
+
+    fun spToPx(sp: Int): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp.toFloat(),
+            Resources.getSystem().displayMetrics
+        )
     }
 
     fun View.hide() {

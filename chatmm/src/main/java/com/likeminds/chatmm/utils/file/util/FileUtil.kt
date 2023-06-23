@@ -160,6 +160,17 @@ object FileUtil {
         )
     }
 
+    @Throws(IOException::class)
+    fun createVideoFile(context: Context): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+        return File.createTempFile(
+            "VID_${timeStamp}_", /* prefix */
+            ".mp4", /* suffix */
+            storageDir /* directory */
+        )
+    }
+
     /**
      * returns the package of file provider, required for attachments
      **/
