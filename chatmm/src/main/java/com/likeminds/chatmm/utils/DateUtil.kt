@@ -5,6 +5,14 @@ import java.util.*
 
 object DateUtil {
 
+    /**
+     * @param milliseconds - This should be the UNIX timestamp
+     */
+    fun createDateFormat(pattern: String, milliseconds: Long): String {
+        val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        return dateFormat.format(Date(milliseconds * 1000))
+    }
+
     fun formatSeconds(timeInSeconds: Int): String {
         val hours = timeInSeconds / 3600
         val secondsLeft = timeInSeconds - hours * 3600

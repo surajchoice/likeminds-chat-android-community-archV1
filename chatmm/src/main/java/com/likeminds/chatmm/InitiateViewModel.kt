@@ -86,7 +86,7 @@ class InitiateViewModel @Inject constructor(
             saveDetailsToPrefs(
                 apiKey,
                 userUniqueId,
-                memberId,
+                memberId
             )
 
             // todo: member state

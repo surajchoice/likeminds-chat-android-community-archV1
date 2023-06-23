@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="position"
+            type="Integer" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
+            name="mediaViewData"
+            type="com.likeminds.chatmm.media.model.MediaViewData" />
+
+        <variable
+            name="isSelected"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
+
+        <View
+            android:id="@+id/icon_background"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/view_corner_radius_audio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_audio_header"
+            app:layout_constraintBottom_toBottomOf="@id/icon_background"
+            app:layout_constraintEnd_toEndOf="@id/icon_background"
+            app:layout_constraintStart_toStartOf="@id/icon_background"
+            app:layout_constraintTop_toTopOf="@id/icon_background"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_tick"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_completed"
+            android:tint="@{buttonColor}"
+            android:translationX="6dp"
+            android:translationY="6dp"
+            android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_background"
+            app:layout_constraintEnd_toEndOf="@+id/icon_background"
+            tools:ignore="ContentDescription,UseAppTint" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="21dp"
+            android:layout_marginEnd="5dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toStartOf="@id/guide_play_pause_button"
+            app:layout_constraintStart_toEndOf="@+id/icon_background"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Event Document.pdf" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/brown_grey"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="@+id/tv_audio_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_audio_name"
+            app:layout_constraintVertical_bias="0"
+            tools:text="03:21" />
+
+        <ImageView
+            android:id="@+id/iv_duration_dot"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/background_black30_50"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_audio_duration"
+            app:layout_constraintStart_toEndOf="@+id/tv_audio_duration"
+            app:layout_constraintTop_toTopOf="@+id/tv_audio_duration"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/brown_grey"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintStart_toEndOf="@+id/iv_duration_dot"
+            app:layout_constraintTop_toBottomOf="@id/tv_audio_name"
+            app:layout_constraintVertical_bias="0"
+            tools:text="3.2 MB" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_play_pause_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".86" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/audio_progress_bar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            app:indicatorColor="@{buttonColor}"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
+            app:layout_constraintEnd_toEndOf="@id/iv_play_pause"
+            app:layout_constraintStart_toStartOf="@id/iv_play_pause"
+            app:layout_constraintTop_toTopOf="@id/iv_play_pause"
+            app:trackColor="@color/cloudy_blue"
+            app:trackThickness="2dp"
+            tools:progress="10" />
+
+        <ImageView
+            android:id="@+id/iv_play_state_none"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_audio_play_grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_audio_play_grey"
+            android:tint="@{buttonColor}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,UseAppTint" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/cloudy_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/icon_background" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

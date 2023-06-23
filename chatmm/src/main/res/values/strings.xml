@@ -81,4 +81,5 @@
     <string name="failed_to_connect">Failed to connect</string>
     <string name="download_failed">Download failed</string>
     <string name="download_completed">Download complete</string>
+    <string name="browse_other_docs">Browse other docs…</string>
 </resources>

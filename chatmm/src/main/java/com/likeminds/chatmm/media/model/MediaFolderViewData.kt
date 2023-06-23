@@ -2,6 +2,8 @@ package com.likeminds.chatmm.media.model
 
 import android.net.Uri
 import android.os.Parcelable
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_MEDIA_PICKER_FOLDER
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,7 +13,10 @@ class MediaFolderViewData private constructor(
     val itemCount: Int,
     val bucketId: String,
     val folderType: MediaFolderType,
-) : Parcelable {
+) : Parcelable, BaseViewType {
+
+    override val viewType: Int
+        get() = ITEM_MEDIA_PICKER_FOLDER
 
     class Builder {
         private var thumbnailUri: Uri? = null
