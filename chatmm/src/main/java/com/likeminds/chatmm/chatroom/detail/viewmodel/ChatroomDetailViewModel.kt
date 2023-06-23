@@ -1,5 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.media.MediaRepository
+import com.likeminds.chatmm.media.model.MediaViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
@@ -28,7 +32,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatroomDetailViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences
+    private val sdkPreferences: SDKPreferences,
+    private val mediaRepository: MediaRepository
 ) : ViewModel() {
 
     companion object {
@@ -136,6 +141,14 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             null
         }
+    }
+
+    fun fetchUriDetails(
+        context: Context,
+        uris: List<Uri>,
+        callback: (media: List<MediaViewData>) -> Unit,
+    ) {
+        mediaRepository.getLocalUrisDetails(context, uris, callback)
     }
 
     fun getFirstConversationFromAdapter(items: List<BaseViewType>): ConversationViewData? {

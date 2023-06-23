@@ -1,8 +1,14 @@
 package com.likeminds.chatmm.utils
 
+import android.content.Context
+import android.net.Uri
 import android.util.Patterns
+import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.file.util.FileUtil.isLargeFile
+import java.io.File
 
 object ValueUtils {
     fun String?.containsUrl(): Boolean {
@@ -22,6 +28,34 @@ object ValueUtils {
         } else {
             this > -1
         }
+    }
+
+    fun Uri?.isValidSize(context: Context): Boolean {
+        if (this == null) {
+            return false
+        }
+        val path = FileUtil.getRealPath(context, this).path
+        if (path.isNotEmpty()) {
+            return !File(path).isLargeFile
+        }
+        return false
+    }
+
+    fun Uri?.getMediaType(context: Context): String? {
+        var mediaType: String? = null
+        this?.let {
+            mediaType = this.getMimeType(context).getMediaType()
+        }
+        return mediaType
+    }
+
+    fun Uri.getMimeType(context: Context): String? {
+        var type = context.contentResolver.getType(this)
+        if (type == null) {
+            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(this.toString())
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.lowercase())
+        }
+        return type
     }
 
     fun <T> List<T>.getItemInList(position: Int): T? {
@@ -91,6 +125,15 @@ object ValueUtils {
         if (this == null) {
             return "0"
         }
-        return if (this > 99) "99+" else this.toString()
+        return if (this > 99) {
+            "99+"
+        } else {
+            this.toString()
+        }
+    }
+
+    @JvmStatic
+    fun <K, V> getOrDefault(map: Map<K, V>, key: K, defaultValue: V): V? {
+        return if (map.containsKey(key)) map[key] else defaultValue
     }
 }

@@ -85,6 +85,10 @@ object MediaUtils {
         return null != contentType && contentType == "application/pdf"
     }
 
+    fun isAudioType(contentType: String?): Boolean {
+        return null != contentType && contentType.startsWith("audio/")
+    }
+
     fun formatSeconds(timeInSeconds: Int): String {
         val hours = timeInSeconds / 3600
         val secondsLeft = timeInSeconds - hours * 3600

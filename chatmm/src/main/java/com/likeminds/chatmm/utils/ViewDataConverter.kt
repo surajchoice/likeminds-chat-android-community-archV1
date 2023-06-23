@@ -91,9 +91,13 @@ object ViewDataConverter {
             .createdAt(conversation.createdAt.toString())
             .answer(conversation.answer)
             .state(conversation.state)
-            .attachments(conversation.attachments?.mapNotNull { attachment ->
-                convertAttachment(attachment)
-            })
+            .attachments(
+                conversation.attachments?.mapNotNull { attachment ->
+                    convertAttachment(attachment)
+                }?.let {
+                    ArrayList(it)
+                }
+            )
             .ogTags(convertOGTags(conversation.ogTags))
             .date(conversation.date)
             .deletedBy(conversation.deletedBy)

@@ -69,4 +69,16 @@
     <string name="secret_chatroom_restricted_message">Join this chat room to participate in this chat room.</string>
     <string name="direct_messages_community_manager_removed">This member has been removed as community manager. Messaging is disabled.</string>
     <string name="large_file_select_error_message">Files below 100 KB and above 100 MB are not allowed</string>
+    <string name="photo_saved_to_gallery">Photo saved to gallery</string>
+    <string name="video_saved_to_gallery">Video saved to gallery</string>
+    <string name="saved_to_gallery">Saved to gallery</string>
+    <string name="download_in_progress">Download in progress</string>
+    <string name="image_download">Image download</string>
+    <string name="video_download">Video download</string>
+    <string name="media_download">Media Download</string>
+    <string name="unknown_error_occurred">Unknown error occurred</string>
+    <string name="connection_timed_out">Connection timed out</string>
+    <string name="failed_to_connect">Failed to connect</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download_completed">Download complete</string>
 </resources>

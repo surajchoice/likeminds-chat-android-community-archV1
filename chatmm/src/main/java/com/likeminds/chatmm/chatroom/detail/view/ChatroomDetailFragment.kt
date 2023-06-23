@@ -57,14 +57,12 @@ import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.view.MediaPickerActivity
 import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.BROWSE_DOCUMENT
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.BROWSE_MEDIA
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.PICK_CAMERA
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
+import com.likeminds.chatmm.utils.ValueUtils.isValidSize
 import com.likeminds.chatmm.utils.ViewUtils.endRevealAnimation
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.startRevealAnimation
@@ -79,6 +77,7 @@ import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
 import com.likeminds.chatmm.utils.permissions.PermissionManager
 import com.vanniktech.emoji.EmojiPopup
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
@@ -655,6 +654,30 @@ class ChatroomDetailFragment :
         }
     }
 
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onImagePickedFromCamera()
+            }
+        }
+
+    private fun onImagePickedFromCamera() {
+        if (cameraPath != null) {
+            val uri = Uri.fromFile(File(cameraPath!!))
+            if (uri.isValidSize(requireContext())) {
+                val singleUri = SingleUriData.Builder().uri(uri)
+                    .fileType(uri.getMediaType(requireContext()) ?: "")
+                    .build()
+                showPickImagesListScreen(singleUri)
+            } else {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.large_file_select_error_message)
+                )
+            }
+        }
+    }
+
     /**
      * function triggers after Camera permission is allowed.
      * Also, function start a intent to launch default camera of the device
@@ -682,10 +705,7 @@ class ChatroomDetailFragment :
                             cameraFile
                         )
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(
-                            takePictureIntent,
-                            PICK_CAMERA
-                        )
+                        cameraLauncher.launch(takePictureIntent)
                     } catch (e: Exception) {
                         ViewUtils.showShortToast(requireContext(), "Image not found")
                         Log.e(SDKApplication.LOG_TAG, "provider not found, ${e.localizedMessage}")
@@ -1200,6 +1220,44 @@ class ChatroomDetailFragment :
 //        )
     }
 
+    private val browseDocumentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onPdfPicked(result.data)
+            }
+        }
+
+    private fun onPdfPicked(data: Intent?) {
+        val uris = MediaUtils.getExternalIntentPickerUris(data)
+        viewModel.fetchUriDetails(requireContext(), uris) {
+            val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
+                requireContext(), it
+            )
+            if (mediaUris.isNotEmpty()) {
+                showPickDocumentsListScreen(*mediaUris.toTypedArray(), saveInCache = true)
+            }
+        }
+    }
+
+    private val browseMediaLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onMediaPickedFromGallery(result.data)
+            }
+        }
+
+    private fun onMediaPickedFromGallery(data: Intent?) {
+        val uris = MediaUtils.getExternalIntentPickerUris(data)
+        viewModel.fetchUriDetails(requireContext(), uris) {
+            val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
+                requireContext(), it
+            )
+            if (mediaUris.isNotEmpty()) {
+                showPickImagesListScreen(*mediaUris.toTypedArray(), saveInCache = true)
+            }
+        }
+    }
+
     private fun checkMediaPickedResult(result: MediaPickerResult?) {
         if (result != null) {
             when (result.mediaPickerResultType) {
@@ -1208,18 +1266,18 @@ class ChatroomDetailFragment :
                         val intent = AndroidUtils.getExternalDocumentPickerIntent(
                             allowMultipleSelect = result.allowMultipleSelect
                         )
-                        startActivityForResult(intent, BROWSE_DOCUMENT)
+                        browseDocumentLauncher.launch(intent)
                     } else {
                         val intent = AndroidUtils.getExternalPickerIntent(
                             result.mediaTypes,
                             result.allowMultipleSelect,
                             result.browseClassName
                         )
-                        if (intent != null)
-                            startActivityForResult(intent, BROWSE_MEDIA)
+                        if (intent != null) {
+                            browseMediaLauncher.launch(intent)
+                        }
                     }
                 }
-
                 MEDIA_RESULT_PICKED -> {
                     onMediaPicked(result)
                 }

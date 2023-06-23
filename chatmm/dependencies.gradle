@@ -63,6 +63,9 @@ dependencies {
     implementation deps.aws.s3
     implementation(deps.aws.mobile_client) { transitive = true }
 
+    //workmanager
+    implementation deps.workmanager.main
+
     //relate to branch
     implementation deps.branch.main
     implementation deps.googlePlayServicesAppIdentifier.main
