@@ -25,4 +25,9 @@ class ChatroomDetailAdapter constructor(
 
 interface ChatroomDetailAdapterListener {
     fun getChatRoom(): ChatroomViewData?
+
+    /**
+     * add this function for every navigation from chatroom
+     * */
+    fun onScreenChanged()
 }

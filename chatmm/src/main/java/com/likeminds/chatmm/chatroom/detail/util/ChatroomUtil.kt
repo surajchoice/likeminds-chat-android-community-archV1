@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_INTRO
 import com.likeminds.chatmm.conversation.model.*
@@ -211,5 +212,19 @@ object ChatroomUtil {
             }
         }
         return lastConversationAnswer ?: ""
+    }
+
+    fun ChatroomViewData.getTypeName(): String {
+        return when (type) {
+            0 -> "normal"
+            1 -> "intro"
+            2 -> "event"
+            3 -> "poll"
+            6 -> "public_event"
+            7 -> "announcement"
+            9 -> "introduction_rooms"
+            10 -> "direct messages"
+            else -> "normal"
+        }
     }
 }

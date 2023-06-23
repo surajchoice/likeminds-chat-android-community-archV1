@@ -20,7 +20,7 @@ class AttachmentViewData private constructor(
     val height: Int?,
     val title: String?,
     val subTitle: String?,
-    val attachments: List<AttachmentViewData>?,
+    val attachments: ArrayList<AttachmentViewData>?,
     val parentConversation: ConversationViewData?,
     val parentChatRoom: ChatroomViewData?,
     val parentViewItemPosition: Int?,
@@ -63,7 +63,7 @@ class AttachmentViewData private constructor(
         private var height: Int? = null
         private var title: String? = null
         private var subTitle: String? = null
-        private var attachments: List<AttachmentViewData>? = null
+        private var attachments: ArrayList<AttachmentViewData>? = null
         private var parentConversation: ConversationViewData? = null
         private var parentChatRoom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
@@ -89,7 +89,7 @@ class AttachmentViewData private constructor(
         fun height(height: Int?) = apply { this.height = height }
         fun title(title: String?) = apply { this.title = title }
         fun subTitle(subTitle: String?) = apply { this.subTitle = subTitle }
-        fun attachments(attachments: List<AttachmentViewData>?) =
+        fun attachments(attachments: ArrayList<AttachmentViewData>?) =
             apply { this.attachments = attachments }
 
         fun parentConversation(parentConversation: ConversationViewData?) =

@@ -18,7 +18,7 @@ class ConversationViewData private constructor(
     val chatroomId: String?,
     val communityId: String?,
     val state: Int,
-    val attachments: List<AttachmentViewData>?,
+    val attachments: ArrayList<AttachmentViewData>?,
     val attachmentUploadProgress: Pair<Long, Long>?,
     val lastSeen: Boolean?,
     val ogTags: LinkOGTagsViewData?,
@@ -152,7 +152,7 @@ class ConversationViewData private constructor(
         private var chatroomId: String? = null
         private var communityId: String? = null
         private var state: Int = 0
-        private var attachments: List<AttachmentViewData>? = null
+        private var attachments: ArrayList<AttachmentViewData>? = null
         private var attachmentUploadProgress: Pair<Long, Long>? = null
         private var lastSeen: Boolean? = null
         private var ogTags: LinkOGTagsViewData? = null
@@ -185,7 +185,7 @@ class ConversationViewData private constructor(
         fun chatroomId(chatroomId: String?) = apply { this.chatroomId = chatroomId }
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
         fun state(state: Int) = apply { this.state = state }
-        fun attachments(attachments: List<AttachmentViewData>?) =
+        fun attachments(attachments: ArrayList<AttachmentViewData>?) =
             apply { this.attachments = attachments }
 
         fun attachmentUploadProgress(attachmentUploadProgress: Pair<Long, Long>?) =

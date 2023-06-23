@@ -11,7 +11,12 @@ const val PDF = "pdf"
 const val VOICE_NOTE = "voice_note"
 
 @StringDef(
-    IMAGE, GIF, VIDEO, PDF, AUDIO, VOICE_NOTE
+    IMAGE,
+    GIF,
+    VIDEO,
+    PDF,
+    AUDIO,
+    VOICE_NOTE
 )
 
 @Retention(AnnotationRetention.SOURCE)
@@ -129,5 +134,4 @@ annotation class InternalMediaType {
         }
 
     }
-
 }

@@ -61,4 +61,12 @@
     <string name="document">Document</string>
     <string name="poll">Poll</string>
     <string name="audio">Audio</string>
+    <string name="audio_is_played">Audio is being played in chatroom</string>
+    <string name="start_duration">00:00</string>
+    <string name="image_not_found">Image not found</string>
+    <string name="direct_messaging_member_left">The member is no longer a part of the community. Messaging is disabled.</string>
+    <string name="only_community_managers_can_respond">Only Community Managers can respond here.</string>
+    <string name="secret_chatroom_restricted_message">Join this chat room to participate in this chat room.</string>
+    <string name="direct_messages_community_manager_removed">This member has been removed as community manager. Messaging is disabled.</string>
+    <string name="large_file_select_error_message">Files below 100 KB and above 100 MB are not allowed</string>
 </resources>

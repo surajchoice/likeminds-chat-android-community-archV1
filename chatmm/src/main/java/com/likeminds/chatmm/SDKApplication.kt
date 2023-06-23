@@ -46,6 +46,14 @@ class SDKApplication {
             }
             return sdkApplicationInstance!!
         }
+
+        /**
+         * @return Singleton Instance of Call backs required
+         * */
+        @JvmStatic
+        fun getLikeMindsCallback(): LMUICallback? {
+            return lmUICallback
+        }
     }
 
     fun initSDKApplication(

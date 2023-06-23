@@ -45,6 +45,12 @@ class ChatroomDetailViewModel @Inject constructor(
      * Returns the current member object
      */
     private var currentMemberFromDb: MemberViewData? = null
+    var currentMemberDataFromMemberState: MemberViewData? = null
+
+    //default value is set to true, so that initially member can message,
+    //but after api response check for the right to respond
+    private val _canMemberRespond: MutableLiveData<Boolean> = MutableLiveData()
+    val canMemberRespond: LiveData<Boolean> = _canMemberRespond
 
     /**
      * [taggingData] contains first -> page called
@@ -94,6 +100,34 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun isVoiceNoteSupportEnabled(): Boolean {
         return sdkPreferences.isVoiceNoteSupportEnabled()
+    }
+
+    fun isAudioSupportEnabled(): Boolean {
+        return sdkPreferences.isAudioSupportEnabled()
+    }
+
+    // todo: member rights
+    fun isMicroPollsEnabled(): Boolean {
+        return sdkPreferences.isMicroPollsEnabled() /* && hasCreatePollRights() */
+    }
+
+    fun isAnnouncementChatroom(): Boolean {
+        return ChatroomType.isAnnouncementRoom(chatroomDetail.chatroom?.type)
+    }
+
+    fun canMembersCanMessage(): Boolean? {
+        return chatroomDetail.chatroom?.memberCanMessage
+    }
+
+    /**
+     * Is the current member admin of the current chatroom
+     */
+    fun isAdminMember(): Boolean {
+        return MemberState.isAdmin(currentMemberDataFromMemberState?.state)
+    }
+
+    fun hasMemberRespondRight(): Boolean {
+        return _canMemberRespond.value == true
     }
 
     fun getChatroomViewData(): ChatroomViewData? {
