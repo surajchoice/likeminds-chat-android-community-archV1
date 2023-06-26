@@ -5,9 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.util.Log
+import androidx.core.content.res.ResourcesCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.media.model.MediaViewData
 import com.likeminds.chatmm.media.model.SingleUriData
@@ -64,6 +66,30 @@ object MediaUtils {
             Log.e(TAG, "getDocumentPreview", e)
         }
         return null
+    }
+
+    fun getTextSizes(): Array<Float> {
+        return arrayOf(
+            ViewUtils.spToPx(16), ViewUtils.spToPx(20), ViewUtils.spToPx(24),
+            ViewUtils.spToPx(28), ViewUtils.spToPx(32), ViewUtils.spToPx(36)
+        )
+    }
+
+    fun getTextTypeFaces(context: Context): Array<Typeface?> {
+        val regular = ResourcesCompat.getFont(context, R.font.roboto_regular)
+        val bold = ResourcesCompat.getFont(context, R.font.roboto_bold)
+        val signature = ResourcesCompat.getFont(context, R.font.signature)
+        val condensed = ResourcesCompat.getFont(context, R.font.roboto_condensed_bold)
+        return arrayOf(regular, bold, signature, condensed)
+    }
+
+    fun getTextIcons(): Array<Int> {
+        return arrayOf(
+            R.drawable.ic_text,
+            R.drawable.ic_text_bold,
+            R.drawable.ic_text_signature,
+            R.drawable.ic_text_condensed
+        )
     }
 
     /**

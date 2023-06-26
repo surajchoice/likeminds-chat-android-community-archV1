@@ -2,6 +2,8 @@ package com.likeminds.chatmm.media.model
 
 import android.net.Uri
 import android.os.Parcelable
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_IMAGE_SWIPE
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -12,8 +14,11 @@ class MediaSwipeViewData private constructor(
     val index: Int,
     val title: String?,
     val subTitle: String?,
-    val type: String?
-) : Parcelable {
+    val type: String?,
+) : Parcelable, BaseViewType {
+    override val viewType: Int
+        get() = dynamicViewType ?: ITEM_IMAGE_SWIPE
+
     class Builder {
         private var uri: Uri = Uri.EMPTY
         private var thumbnail: String? = null
@@ -42,5 +47,15 @@ class MediaSwipeViewData private constructor(
             subTitle,
             type
         )
+    }
+
+    fun toBuilder(): Builder {
+        return Builder().uri(uri)
+            .thumbnail(thumbnail)
+            .dynamicViewType(dynamicViewType)
+            .index(index)
+            .title(title)
+            .subTitle(subTitle)
+            .type(type)
     }
 }

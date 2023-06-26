@@ -88,6 +88,13 @@ dependencies {
     //photoview
     implementation deps.photoview.main
 
+    //3rd Party Libraries included as jar or module
+    implementation deps.cropper.main
+    implementation deps.dotsindicator.main
+    implementation deps.imageCompressor.main
+    implementation deps.audioWave.main
+    implementation deps.drawableToolbox.main
+
     //testing
     testImplementation deps.junit.main
     androidTestImplementation deps.android_test.android

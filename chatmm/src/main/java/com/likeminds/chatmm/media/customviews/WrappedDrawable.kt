@@ -2,7 +2,6 @@ package com.likeminds.chatmm.media.customviews
 
 import android.graphics.Canvas
 import android.graphics.ColorFilter
-import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
 class WrappedDrawable(private val drawable: Drawable) : Drawable() {
@@ -26,7 +25,7 @@ class WrappedDrawable(private val drawable: Drawable) : Drawable() {
 
     override fun getOpacity(): Int {
         val drawable: Drawable = drawable
-        return drawable.opacity ?: PixelFormat.UNKNOWN
+        return drawable.opacity
     }
 
     override fun draw(canvas: Canvas) {

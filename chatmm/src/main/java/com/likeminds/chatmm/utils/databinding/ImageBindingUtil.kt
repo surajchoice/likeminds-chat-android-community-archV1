@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -17,6 +18,60 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.likeminds.chatmm.utils.ViewUtils
 
 object ImageBindingUtil {
+
+    /**
+     * Don't use this method while loading image programmatically, only use in data binding through xml
+     */
+    @BindingAdapter(
+        value = ["url", "drawable", "placeholder", "circle", "showGreyScale", "cornerRadius", "centerCrop"],
+        requireAll = false
+    )
+    @JvmStatic
+    fun loadImageUsingBinding(
+        view: View,
+        url: String?,
+        drawable: Drawable? = null,
+        placeholder: Drawable? = null,
+        circle: Boolean? = false,
+        showGreyScale: Boolean? = false,
+        cornerRadius: Int? = null,
+        centerCrop: Boolean? = false
+    ) {
+        var builder = when {
+            url != null -> {
+                Glide.with(view).load(url)
+            }
+            drawable != null -> {
+                Glide.with(view).load(drawable).placeholder(placeholder).error(placeholder)
+            }
+            else -> {
+                return
+            }
+        }
+        if (circle == true) {
+            builder = builder.circleCrop()
+        }
+        if (placeholder != null) {
+            builder = builder.placeholder(placeholder).error(placeholder)
+        }
+
+        if (cornerRadius != null && cornerRadius > 0) {
+            builder = builder.transform(CenterCrop(), RoundedCorners(cornerRadius))
+        } else if (centerCrop == true) {
+            builder = builder.transform(CenterCrop())
+        }
+
+        if (view is ImageView) {
+            builder.into(view)
+        } else if (view is PhotoView) {
+            builder.into(view)
+        }
+
+        if (showGreyScale == true) {
+            createImageFilter(view)
+        }
+    }
+
     /**
      * Use it to load images programmatically
      * @param view ImageView

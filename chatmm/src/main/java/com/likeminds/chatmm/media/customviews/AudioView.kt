@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
+import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapterListener
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -15,7 +18,8 @@ import com.likeminds.chatmm.utils.SDKPreferences
 class AudioView(
     context: Context,
     attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs), CollabcardItemAdapter.CollabcardDetailItemAdapterListener {
+) : ConstraintLayout(context, attrs),
+    ChatroomItemAdapterListener {
 
     var binding = LayoutAudioBinding.inflate(
         LayoutInflater.from(context),
@@ -25,7 +29,7 @@ class AudioView(
 
     private val attachments = arrayListOf<AttachmentViewData>()
 
-    private var adapter: CollabcardItemAdapter? = null
+    private var adapter: ChatroomItemAdapter? = null
 
     private lateinit var chatroomAdapterListener: ChatroomDetailAdapterListener
     private lateinit var sdkPreferences: SDKPreferences
@@ -51,11 +55,11 @@ class AudioView(
 
     private fun initRecyclerView() {
         binding.rvAudio.apply {
-            adapter = CollabcardItemAdapter(
+            adapter = ChatroomItemAdapter(
                 sdkPreferences,
-                collabcardDetailItemAdapterListener = this
+                chatroomItemAdapterListener = this@AudioView
             )
-            adapter?.replace(attachments.toList())
+            this@AudioView.adapter?.replace(attachments.toList())
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
                 false
             this.adapter = adapter
@@ -75,7 +79,7 @@ class AudioView(
         chatroomAdapterListener.onLongPressConversation(
             conversation,
             itemPosition,
-            LMAnalytics.Sources.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+            LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
         )
     }
 
@@ -105,14 +109,6 @@ class AudioView(
         )
     }
 
-    override fun onAudioChatroomActionClicked(
-        data: AttachmentViewData,
-        childPosition: Int,
-        progress: Int
-    ) {
-        chatroomAdapterListener.onAudioChatroomActionClicked(data, childPosition, progress)
-    }
-
     override fun isSelectionEnabled(): Boolean {
         return chatroomAdapterListener.isSelectionEnabled()
     }
@@ -127,18 +123,6 @@ class AudioView(
             progress,
             attachmentViewData,
             parentConversationId,
-            childPosition
-        )
-    }
-
-    override fun onChatroomSeekbarChanged(
-        progress: Int,
-        attachmentViewData: AttachmentViewData,
-        childPosition: Int
-    ) {
-        chatroomAdapterListener.onChatroomSeekbarChanged(
-            progress,
-            attachmentViewData,
             childPosition
         )
     }
