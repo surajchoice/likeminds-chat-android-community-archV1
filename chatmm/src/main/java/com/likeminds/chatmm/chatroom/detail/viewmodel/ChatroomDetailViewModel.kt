@@ -16,14 +16,10 @@ import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
-import com.likeminds.chatmm.utils.membertagging.model.TagViewData
-import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.helper.model.GetTaggingListRequest
-import com.likeminds.likemindschat.helper.model.GetTaggingListResponse
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -57,13 +53,6 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _canMemberRespond: MutableLiveData<Boolean> = MutableLiveData()
     val canMemberRespond: LiveData<Boolean> = _canMemberRespond
 
-    /**
-     * [taggingData] contains first -> page called
-     * second -> Community Members and Groups
-     */
-    private val _taggingData = MutableLiveData<Pair<Int, ArrayList<TagViewData>>?>()
-    val taggingData: LiveData<Pair<Int, ArrayList<TagViewData>>?> = _taggingData
-
     private val _linkOgTags: MutableLiveData<LinkOGTagsViewData?> = MutableLiveData()
     val linkOgTags: LiveData<LinkOGTagsViewData?> = _linkOgTags
 
@@ -79,7 +68,6 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun getChatroom() = chatroomDetail.chatroom
 
     sealed class ErrorMessageEvent {
-        data class GetTaggingList(val errorMessage: String?) : ErrorMessageEvent()
         data class DecodeUrl(val errorMessage: String?) : ErrorMessageEvent()
     }
 
@@ -241,58 +229,5 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun decodeUrl(decodeUrlResponse: DecodeUrlResponse?) {
         val ogTags = decodeUrlResponse?.ogTags ?: return
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
-    }
-
-    /**
-     * Observes for users who can be tagged
-     * live data pair of 2 list of members. First containing the community members and the second as chatroom participants
-     */
-    fun getMembersForTagging(
-        chatroomId: String,
-        page: Int,
-        searchName: String?
-    ) {
-        viewModelScope.launchIO {
-            val updatedSearchName = if (!searchName.isNullOrEmpty()) {
-                searchName
-            } else {
-                null
-            }
-            val getTaggingListRequest = GetTaggingListRequest.Builder()
-                .chatroomId(chatroomId)
-                .page(page)
-                .pageSize(MemberTaggingUtil.PAGE_SIZE)
-                .searchName(updatedSearchName)
-                .build()
-
-            val response = lmChatClient.getTaggingList(getTaggingListRequest)
-            if (response.success) {
-                taggingResponseFetched(page, response.data)
-            } else {
-                errorEventChannel.send(ErrorMessageEvent.GetTaggingList(response.errorMessage))
-            }
-        }
-    }
-
-    private fun taggingResponseFetched(
-        page: Int,
-        data: GetTaggingListResponse?
-    ) {
-        //data from api
-        val groupTags = data?.groupTags ?: emptyList()
-        val chatroomParticipants = data?.chatroomParticipants ?: emptyList()
-        val communityMembers = data?.communityMembers ?: emptyList()
-
-        //send data to view
-        _taggingData.postValue(
-            Pair(
-                page,
-                MemberTaggingUtil.getTaggingData(
-                    groupTags,
-                    chatroomParticipants,
-                    communityMembers
-                )
-            )
-        )
     }
 }

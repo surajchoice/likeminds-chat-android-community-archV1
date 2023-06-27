@@ -2,40 +2,43 @@ package com.likeminds.chatmm.media.view
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.MemberTaggingDecoder
-import com.collabmates.membertagging.MemberTaggingView
 import com.collabmates.membertagging.model.MemberTaggingExtras
-import com.collabmates.membertagging.util.MemberTaggingViewListener
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.sdk.SDKPreferences
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapter
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
+import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
+import com.likeminds.chatmm.databinding.FragmentConversationDocumentSendBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.base.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapter
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapterListener
-import com.likeminds.likemindschat.databinding.FragmentConversationDocumentSendBinding
-import com.likeminds.likemindschat.utils.*
-import com.likeminds.likemindschat.utils.membertagging.MemberTaggingUtil
+import com.likeminds.chatmm.utils.AndroidUtils
+import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.ViewUtils.hide
+import com.likeminds.chatmm.utils.ViewUtils.show
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
+import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT_SMALL
 import javax.inject.Inject
 
-internal class ConversationDocumentSendFragment :
+class ConversationDocumentSendFragment :
     BaseFragment<FragmentConversationDocumentSendBinding, MediaViewModel>(),
     ImageAdapterListener {
 
@@ -45,10 +48,10 @@ internal class ConversationDocumentSendFragment :
     private lateinit var imageAdapter: ImageAdapter
 
     @Inject
-    lateinit var loginPreferences: LoginPreferences
+    lateinit var sdkPreferences: SDKPreferences
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var helperViewModel: HelperViewModel
 
     private lateinit var memberTagging: MemberTaggingView
 
@@ -70,22 +73,12 @@ internal class ConversationDocumentSendFragment :
         }
     }
 
-    override fun getViewModelClass(): Class<MediaViewModel>? {
+    override fun getViewModelClass(): Class<MediaViewModel> {
         return MediaViewModel::class.java
     }
 
     override fun getViewBinding(): FragmentConversationDocumentSendBinding {
         return FragmentConversationDocumentSendBinding.inflate(layoutInflater)
-    }
-
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
     }
 
     override fun attachDagger() {
@@ -102,11 +95,12 @@ internal class ConversationDocumentSendFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         if (mediaExtras.isExternallyShared) {
             ProgressHelper.showProgress(binding.progressBar, true)
             viewModel.fetchExternallySharedUriData(
                 requireContext(),
-                documentURIs.map { it.uri() })
+                documentURIs.map { it.uri })
         } else {
             initRVForMedias(false)
         }
@@ -117,13 +111,10 @@ internal class ConversationDocumentSendFragment :
         MemberTaggingDecoder.decode(
             binding.etConversation,
             mediaExtras.text,
-            BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                binding.root.context,
-                R.color.pure_blue
-            )
+            LMBranding.getTextLinkColor()
         )
 
-        binding.buttonBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             val intent = Intent()
             viewModel.sendThirdPartyAbandoned(
                 "file",
@@ -135,7 +126,7 @@ internal class ConversationDocumentSendFragment :
             activity?.finish()
         }
 
-        binding.buttonAdd.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             val extras = MediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(PDF))
@@ -145,23 +136,23 @@ internal class ConversationDocumentSendFragment :
             pickerLauncher.launch(intent)
         }
 
-        binding.buttonSend.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             if (sdkPreferences.getIsGuestUser()) {
-                SDKApplication.getLikeMindsCallback()?.loginRequiredCallback()
+                SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {
                 initSendClick()
             }
         }
 
-        binding.buttonDelete.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             deleteCurrentMedia()
         }
     }
 
     override fun observeData() {
         super.observeData()
-        viewModel.taggingData.observe(viewLifecycleOwner) { result ->
+        helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }
 
@@ -172,7 +163,7 @@ internal class ConversationDocumentSendFragment :
             initRVForMedias(true)
         }
 
-        viewModel.getDocumentPreview().observe(viewLifecycleOwner) { uris ->
+        viewModel.documentPreviewLiveData.observe(viewLifecycleOwner) { uris ->
             ProgressHelper.hideProgress(binding.progressBar)
             selectedUri = if (documentURIs.size == 1) {
                 val uri = uris.firstOrNull()
@@ -185,13 +176,13 @@ internal class ConversationDocumentSendFragment :
                 val adapterItems = imageAdapter.items().filterIsInstance<SmallMediaViewData>()
                     .map { smallViewData ->
                         val uri = uris.firstOrNull { uriData ->
-                            smallViewData.singleUriData().uri() == uriData.uri()
-                        } ?: smallViewData.singleUriData()
+                            smallViewData.singleUriData.uri == uriData.uri
+                        } ?: smallViewData.singleUriData
                         smallViewData.toBuilder().singleUriData(uri).build()
                     }
                 imageAdapter.replace(adapterItems)
                 documentURIs.clear()
-                documentURIs.addAll(adapterItems.map { it.singleUriData() })
+                documentURIs.addAll(adapterItems.map { it.singleUriData })
                 documentURIs[selectedPosition]
             }
             initMedia(selectedUri)
@@ -222,6 +213,10 @@ internal class ConversationDocumentSendFragment :
         }
     }
 
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
+    }
+
     private fun initRichEditorSupport() {
         binding.etConversation.addListener(object : LikeMindsEditTextListener {
             override fun onMediaSelected(contentUri: Uri, mimeType: String) {
@@ -234,33 +229,33 @@ internal class ConversationDocumentSendFragment :
             return
         }
         invalidateDeleteMediaIcon(documentURIs.size)
-        if (singleUriData.fileType() == PDF) {
-            val name = singleUriData.name
-            val pageCount = singleUriData.pdfPageCount() ?: 0
-            val size = singleUriData.size() ?: 0
-            val thumbnail = singleUriData.thumbnailUri()
+        if (singleUriData.fileType == PDF) {
+            val name = singleUriData.mediaName
+            val pageCount = singleUriData.pdfPageCount ?: 0
+            val size = singleUriData.size
+            val thumbnail = singleUriData.thumbnailUri
 
-            binding.textViewDocumentName.text = name
+            binding.tvDocumentName.text = name
             if (pageCount > 0) {
-                binding.textViewDocumentPageCount.show()
+                binding.tvDocumentPageCount.show()
                 binding.viewDotPageCount.show()
-                binding.textViewDocumentPageCount.text =
+                binding.tvDocumentPageCount.text =
                     getString(R.string.placeholder_pages, pageCount)
             } else {
-                binding.textViewDocumentPageCount.hide()
+                binding.tvDocumentPageCount.hide()
                 binding.viewDotPageCount.hide()
             }
             if (size > 0) {
-                binding.textViewDocumentSize.show()
+                binding.tvDocumentSize.show()
                 binding.viewDotSize.show()
-                binding.textViewDocumentSize.text = MediaUtils.getFileSizeText(size)
+                binding.tvDocumentSize.text = MediaUtils.getFileSizeText(size)
             } else {
-                binding.textViewDocumentSize.hide()
+                binding.tvDocumentSize.hide()
                 binding.viewDotSize.hide()
             }
             configureMetaDataView(thumbnail != null)
             if (thumbnail != null) {
-                binding.imageViewDocumentIcon.setImageURI(singleUriData.thumbnailUri())
+                binding.ivDocumentIcon.setImageURI(singleUriData.thumbnailUri)
             }
         }
     }
@@ -273,62 +268,62 @@ internal class ConversationDocumentSendFragment :
         set.clone(binding.constraintLayout)
         if (hasThumbnail) {
             set.connect(
-                binding.imageViewDocumentIcon.id,
+                binding.ivDocumentIcon.id,
                 ConstraintSet.BOTTOM,
-                binding.textViewDocumentName.id,
+                binding.tvDocumentName.id,
                 ConstraintSet.TOP
             )
             set.connect(
-                binding.textViewDocumentName.id,
+                binding.tvDocumentName.id,
                 ConstraintSet.BOTTOM,
-                binding.textViewDocumentSize.id,
+                binding.tvDocumentSize.id,
                 ConstraintSet.TOP
             )
-            set.clear(binding.textViewDocumentName.id, ConstraintSet.TOP)
+            set.clear(binding.tvDocumentName.id, ConstraintSet.TOP)
             set.setMargin(
-                binding.textViewDocumentName.id,
+                binding.tvDocumentName.id,
                 ConstraintSet.BOTTOM,
                 ViewUtils.dpToPx(6)
             )
             set.connect(
-                binding.textViewDocumentSize.id,
+                binding.tvDocumentSize.id,
                 ConstraintSet.BOTTOM,
-                binding.buttonSend.id,
+                binding.btnSend.id,
                 ConstraintSet.TOP
             )
-            set.clear(binding.textViewDocumentSize.id, ConstraintSet.TOP)
+            set.clear(binding.tvDocumentSize.id, ConstraintSet.TOP)
             set.setMargin(
-                binding.textViewDocumentSize.id,
+                binding.tvDocumentSize.id,
                 ConstraintSet.BOTTOM,
                 ViewUtils.dpToPx(16)
             )
         } else {
             set.connect(
-                binding.imageViewDocumentIcon.id,
+                binding.ivDocumentIcon.id,
                 ConstraintSet.BOTTOM,
                 binding.bottomView.id,
                 ConstraintSet.TOP
             )
             set.connect(
-                binding.textViewDocumentName.id,
+                binding.tvDocumentName.id,
                 ConstraintSet.TOP,
-                binding.imageViewDocumentIcon.id,
+                binding.ivDocumentIcon.id,
                 ConstraintSet.BOTTOM,
                 1
             )
-            set.setMargin(binding.textViewDocumentName.id, ConstraintSet.TOP, ViewUtils.dpToPx(16))
-            set.clear(binding.textViewDocumentName.id, ConstraintSet.BOTTOM)
+            set.setMargin(binding.tvDocumentName.id, ConstraintSet.TOP, ViewUtils.dpToPx(16))
+            set.clear(binding.tvDocumentName.id, ConstraintSet.BOTTOM)
             set.connect(
-                binding.textViewDocumentSize.id,
+                binding.tvDocumentSize.id,
                 ConstraintSet.TOP,
-                binding.textViewDocumentName.id,
+                binding.tvDocumentName.id,
                 ConstraintSet.BOTTOM
             )
-            set.setMargin(binding.textViewDocumentSize.id, ConstraintSet.TOP, ViewUtils.dpToPx(6))
-            set.clear(binding.textViewDocumentSize.id, ConstraintSet.BOTTOM)
+            set.setMargin(binding.tvDocumentSize.id, ConstraintSet.TOP, ViewUtils.dpToPx(6))
+            set.clear(binding.tvDocumentSize.id, ConstraintSet.BOTTOM)
         }
         set.applyTo(binding.constraintLayout)
-        val lp = binding.imageViewDocumentIcon.layoutParams as ConstraintLayout.LayoutParams
+        val lp = binding.ivDocumentIcon.layoutParams as ConstraintLayout.LayoutParams
         if (hasThumbnail) {
             lp.width = ConstraintLayout.LayoutParams.MATCH_PARENT
             lp.height = 0
@@ -337,7 +332,7 @@ internal class ConversationDocumentSendFragment :
             lp.width = ViewUtils.dpToPx(60)
             lp.height = ViewUtils.dpToPx(70)
         }
-        binding.imageViewDocumentIcon.layoutParams = lp
+        binding.ivDocumentIcon.layoutParams = lp
     }
 
     private fun initRVForMedias(hasThumbnails: Boolean) {
@@ -364,20 +359,20 @@ internal class ConversationDocumentSendFragment :
         imageAdapter.replace(documentURIs.mapIndexed { index, singleUriData ->
             val isSelected = index == 0
             SmallMediaViewData.Builder()
-                .viewType(ITEM_DOCUMENT_SMALL)
+                .dynamicViewType(ITEM_DOCUMENT_SMALL)
                 .singleUriData(singleUriData).isSelected(isSelected)
                 .build()
         })
     }
 
     private fun invalidateDeleteMediaIcon(mediaFilesCount: Int) {
-        binding.buttonDelete.isVisible = mediaFilesCount > 1
+        binding.btnDelete.isVisible = mediaFilesCount > 1
     }
 
     private fun deleteCurrentMedia() {
         documentURIs.removeAt(selectedPosition)
         if (documentURIs.size == 0) {
-            binding.buttonBack.performClick()
+            binding.btnBack.performClick()
             return
         } else {
             if (selectedPosition == documentURIs.size) {
@@ -386,11 +381,11 @@ internal class ConversationDocumentSendFragment :
             val updatedMedias = documentURIs.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
                 val smallMediaViewData = SmallMediaViewData.Builder()
-                    .viewType(ITEM_DOCUMENT_SMALL)
+                    .dynamicViewType(ITEM_DOCUMENT_SMALL)
                     .singleUriData(singleMediaUri)
                     .isSelected(isSelected).build()
                 if (isSelected) {
-                    selectedUri = smallMediaViewData.singleUriData()
+                    selectedUri = smallMediaViewData.singleUriData
                 }
                 smallMediaViewData
             }
@@ -407,7 +402,7 @@ internal class ConversationDocumentSendFragment :
 
     private fun showUpdatedPositionData(position: Int, viewData: SmallMediaViewData) {
         selectedPosition = position
-        selectedUri = viewData.singleUriData()
+        selectedUri = viewData.singleUriData
         initMedia(selectedUri)
         val items = imageAdapter.items()
             .filterIsInstance(SmallMediaViewData::class.java)
@@ -447,10 +442,7 @@ internal class ConversationDocumentSendFragment :
                 .editText(binding.etConversation)
                 .darkMode(true)
                 .color(
-                    BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                        binding.etConversation.context,
-                        R.color.pure_blue
-                    )
+                    LMBranding.getTextLinkColor()
                 )
                 .build()
         )
@@ -458,7 +450,7 @@ internal class ConversationDocumentSendFragment :
         memberTagging.addListener(object : MemberTaggingViewListener {
             override fun callApi(page: Int, searchName: String) {
                 super.callApi(page, searchName)
-                viewModel.fetchMembersForTagging(
+                helperViewModel.getMembersForTagging(
                     mediaExtras.chatroomId,
                     page,
                     searchName
@@ -516,7 +508,7 @@ internal class ConversationDocumentSendFragment :
             imageAdapter.replace(documentURIs.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
                 SmallMediaViewData.Builder()
-                    .viewType(ITEM_DOCUMENT_SMALL)
+                    .dynamicViewType(ITEM_DOCUMENT_SMALL)
                     .singleUriData(singleMediaUri)
                     .isSelected(isSelected)
                     .build()

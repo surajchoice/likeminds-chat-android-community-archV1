@@ -31,7 +31,7 @@ import com.likeminds.likemindschat.utils.permissions.PermissionDeniedCallback
 import com.likeminds.likemindschat.utils.permissions.PermissionManager
 
 
-internal class MediaPickerItemFragment :
+class MediaPickerItemFragment :
     BaseFragment<FragmentMediaPickerItemBinding, MediaViewModel>(),
     MediaPickerAdapterListener,
     ActionModeListener<CollabcardDetailActionModeData> {

@@ -20,7 +20,7 @@ import com.likeminds.likemindschat.utils.ITEM_PDF_EXPANDED
 import com.likeminds.likemindschat.utils.ITEM_VIDEO_EXPANDED
 import javax.inject.Inject
 
-internal class MediaVerticalListFragment :
+class MediaVerticalListFragment :
     BaseFragment<FragmentMediaVerticalListBinding, Nothing>() {
 
     private var mediaExtras: MediaExtras? = null

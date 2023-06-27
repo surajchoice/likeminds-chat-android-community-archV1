@@ -10,6 +10,7 @@ import android.view.WindowInsets
 import androidx.annotation.FloatRange
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.helper.model.UserTag
 
@@ -52,6 +53,28 @@ object MemberTaggingUtil {
         listOfGroupAndMember.addAll(chatroomParticipantsViewData)
 
         return listOfGroupAndMember
+    }
+
+    /**
+     * handles result and set result to [memberTagging] view as per [page]
+     * */
+    fun setMembersInView(
+        memberTagging: MemberTaggingView,
+        result: Pair<Int, ArrayList<TagViewData>>?
+    ) {
+        if (result != null) {
+            val page = result.first
+            val list = result.second
+            if (page == 1) {
+                //clear and set in adapter
+                memberTagging.setMembersAndGroup(list)
+            } else {
+                //add to the adapter
+                memberTagging.addMembers(list)
+            }
+        } else {
+            return
+        }
     }
 
     @JvmSynthetic

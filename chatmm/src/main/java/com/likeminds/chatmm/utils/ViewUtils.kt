@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
@@ -10,6 +11,7 @@ import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -39,6 +41,26 @@ object ViewUtils {
 
     fun View.show() {
         visibility = View.VISIBLE
+    }
+
+    fun showKeyboard(context: Context, editText: EditText) {
+        editText.requestFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun hideKeyboard(context: Context) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        if (context is Activity) {
+            var view = context.currentFocus
+            if (view == null) {
+                view = View(context)
+            }
+            imm!!.hideSoftInputFromWindow(
+                view.windowToken,
+                0
+            )
+        }
     }
 
     fun hideKeyboard(view: View) {

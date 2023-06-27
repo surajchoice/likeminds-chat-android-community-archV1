@@ -5,10 +5,16 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
 import android.net.Uri
+import android.os.Build
+import android.os.CancellationSignal
 import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
+import android.util.Size
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.likeminds.chatmm.utils.file.model.FileData
@@ -205,6 +211,65 @@ object FileUtil {
         }
     }
 
+    fun getSharedAudioUri(context: Context, oldUri: Uri?): Uri? {
+        var newUri: Uri? = null
+        oldUri?.let {
+            try {
+                val parcelFileDescriptor = context.contentResolver.openFileDescriptor(oldUri, "r")!!
+                val fileDescriptor = parcelFileDescriptor.fileDescriptor
+
+                val audioFolder = File(context.cacheDir, "audios")
+                audioFolder.mkdir()
+
+                val file = File(audioFolder, "${System.currentTimeMillis()}.mp3")
+
+                val inputStream: InputStream = FileInputStream(fileDescriptor)
+                val outputStream = FileOutputStream(file)
+
+                val buf = ByteArray(1024)
+                var len: Int
+
+                while (inputStream.read(buf).also { len = it } > 0) {
+                    outputStream.write(buf, 0, len)
+                }
+
+                outputStream.flush()
+                outputStream.close()
+                inputStream.close()
+                newUri = Uri.fromFile(file)
+            } catch (e: IOException) {
+                Log.e(
+                    "FileUtils",
+                    "IOException while trying to copy audio from uri: " + e.localizedMessage
+                )
+            }
+        }
+
+        return newUri
+    }
+
+    fun getAudioThumbnail(context: Context, audioUri: Uri?): Uri? {
+        var bitmap: Bitmap? = null
+        var mediaMetadataRetriever: MediaMetadataRetriever? = null
+        val bfo = BitmapFactory.Options()
+        try {
+            mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(context, audioUri)
+            val rawArt = mediaMetadataRetriever.embeddedPicture
+            bitmap = if (rawArt != null) {
+                BitmapFactory.decodeByteArray(rawArt, 0, rawArt.size, bfo)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            mediaMetadataRetriever?.release()
+        }
+
+        return getUriFromBitmapWithRandomName(context, bitmap)
+    }
+
     fun getGifUri(context: Context, link: String): Uri? {
         try {
             val url = URL(link)
@@ -369,6 +434,34 @@ object FileUtil {
             }
         }
         return newUri
+    }
+
+    fun getVideoThumbnailUri(context: Context, videoUri: Uri?): Uri? {
+        var bitmap: Bitmap? = null
+        var mediaMetadataRetriever: MediaMetadataRetriever? = null
+        try {
+            mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(videoUri.toString(), HashMap())
+            bitmap = mediaMetadataRetriever.getFrameAtTime(1, MediaMetadataRetriever.OPTION_CLOSEST)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            mediaMetadataRetriever?.release()
+        }
+        if (bitmap == null && videoUri != null) {
+            val path = getRealPath(context, videoUri).path
+            if (path.isEmpty()) {
+                return null
+            }
+            bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ThumbnailUtils.createVideoThumbnail(
+                    File(path), Size(600, 600), CancellationSignal()
+                )
+            } else {
+                ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND)
+            }
+        }
+        return getUriFromBitmapWithRandomName(context, bitmap)
     }
 
     private fun getBitmapFromUri(uri: Uri?, context: Context): Bitmap? {

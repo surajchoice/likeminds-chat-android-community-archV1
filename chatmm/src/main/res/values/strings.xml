@@ -90,4 +90,9 @@
     <string name="sort">Sort</string>
     <string name="select_multiple">Select multiple</string>
     <string name="documents">Documents</string>
+    <string name="placeholder_pages">%d Pages</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="media_is_downloading">Media is downloading. Check notification for progress</string>
+    <string name="downloading_video">Downloading video</string>
 </resources>

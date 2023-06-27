@@ -3,7 +3,6 @@ package com.likeminds.chatmm.media.view
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -11,15 +10,17 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.MemberTaggingDecoder
-import com.collabmates.membertagging.MemberTaggingView
 import com.collabmates.membertagging.model.MemberTaggingExtras
-import com.collabmates.membertagging.util.MemberTaggingViewListener
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.sdk.SDKPreferences
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapter
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
+import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
+import com.likeminds.chatmm.databinding.FragmentConversationAudioEditSendBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMMediaPlayer
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.handler
@@ -28,25 +29,26 @@ import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
 import com.likeminds.chatmm.media.util.MediaPlayerListener
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.base.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapter
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapterListener
-import com.likeminds.likemindschat.databinding.FragmentConversationAudioEditSendBinding
-import com.likeminds.likemindschat.utils.AndroidUtils
-import com.likeminds.likemindschat.utils.ITEM_AUDIO_SMALL
-import com.likeminds.likemindschat.utils.ProgressHelper
-import com.likeminds.likemindschat.utils.ViewUtils
-import com.likeminds.likemindschat.utils.databinding.ImageBindingUtil
-import com.likeminds.likemindschat.utils.membertagging.MemberTaggingUtil
+import com.likeminds.chatmm.utils.AndroidUtils
+import com.likeminds.chatmm.utils.DateUtil
+import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
+import com.likeminds.chatmm.utils.model.ITEM_AUDIO_SMALL
 import javax.inject.Inject
 
-internal class ConversationAudioSendEditFragment :
+class ConversationAudioSendEditFragment :
     BaseFragment<FragmentConversationAudioEditSendBinding, MediaViewModel>(), ImageAdapterListener,
     MediaPlayerListener {
+
+    @Inject
+    lateinit var helperViewModel: HelperViewModel
+
     override fun getViewModelClass(): Class<MediaViewModel> {
         return MediaViewModel::class.java
     }
@@ -58,9 +60,6 @@ internal class ConversationAudioSendEditFragment :
     private lateinit var mediaExtras: MediaExtras
 
     private lateinit var imageAdapter: ImageAdapter
-
-    @Inject
-    lateinit var loginPreferences: LoginPreferences
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
@@ -87,16 +86,6 @@ internal class ConversationAudioSendEditFragment :
         }
     }
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun attachDagger() {
         super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
@@ -119,6 +108,7 @@ internal class ConversationAudioSendEditFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         initRichEditorSupport()
         initRecyclerAdapter()
         createThumbnailFromAudio()
@@ -159,13 +149,13 @@ internal class ConversationAudioSendEditFragment :
             val updatedMedias = medias?.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
                 val smallMediaViewData = SmallMediaViewData.Builder()
-                    .viewType(ITEM_AUDIO_SMALL)
+                    .dynamicViewType(ITEM_AUDIO_SMALL)
                     .singleUriData(singleMediaUri)
                     .isSelected(isSelected)
                     .build()
                 mediaUriList?.set(index, singleMediaUri)
                 if (isSelected) {
-                    selectedUri = smallMediaViewData.singleUriData()
+                    selectedUri = smallMediaViewData.singleUriData
                 }
                 smallMediaViewData
             }.orEmpty()
@@ -206,7 +196,7 @@ internal class ConversationAudioSendEditFragment :
     }
 
     private fun initListeners() {
-        binding.buttonBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             val intent = Intent()
             viewModel.sendThirdPartyAbandoned(
                 "audio",
@@ -218,7 +208,7 @@ internal class ConversationAudioSendEditFragment :
             activity?.finish()
         }
 
-        binding.buttonAdd.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             val extras = MediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(AUDIO))
@@ -230,25 +220,25 @@ internal class ConversationAudioSendEditFragment :
             pickerLauncher.launch(intent)
         }
 
-        binding.buttonSend.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             if (sdkPreferences.getIsGuestUser()) {
-                SDKApplication.getLikeMindsCallback()?.loginRequiredCallback()
+                SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {
                 initSendClick()
             }
         }
 
-        binding.buttonDelete.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             deleteCurrentMedia()
         }
 
         binding.iconAudioPlay.setOnClickListener {
             when {
                 !isDataSourceSet -> {
-                    mediaPlayer?.setMediaDataSource(selectedUri!!.uri())
+                    mediaPlayer?.setMediaDataSource(selectedUri!!.uri)
                     binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
-                    inflateWave(selectedUri!!.uri(), selectedUri!!.duration()?.toLong() ?: 0L)
+                    inflateWave(selectedUri!!.uri, selectedUri!!.duration?.toLong() ?: 0L)
                 }
                 mediaPlayer?.isPlaying() == true -> {
                     mediaPlayer?.pause()
@@ -289,7 +279,7 @@ internal class ConversationAudioSendEditFragment :
         }
 
     private fun addMembersAndParticipants() {
-        viewModel.taggingData.observe(viewLifecycleOwner) { result ->
+        helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }
     }
@@ -301,17 +291,14 @@ internal class ConversationAudioSendEditFragment :
                 .editText(binding.etConversation)
                 .darkMode(true)
                 .color(
-                    BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                        binding.etConversation.context,
-                        R.color.pure_blue
-                    )
+                    LMBranding.getTextLinkColor()
                 ).build()
         )
 
         memberTagging.addListener(object : MemberTaggingViewListener {
             override fun callApi(page: Int, searchName: String) {
                 super.callApi(page, searchName)
-                viewModel.fetchMembersForTagging(
+                helperViewModel.getMembersForTagging(
                     mediaExtras.chatroomId,
                     page,
                     searchName
@@ -322,10 +309,7 @@ internal class ConversationAudioSendEditFragment :
         MemberTaggingDecoder.decode(
             binding.etConversation,
             mediaExtras.text,
-            BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                binding.root.context,
-                R.color.pure_blue
-            )
+            LMBranding.getTextLinkColor()
         )
     }
 
@@ -345,12 +329,12 @@ internal class ConversationAudioSendEditFragment :
         mediaPlayer?.clear()
         isDataSourceSet = false
         invalidateDeleteMediaIcon(mediaUriList?.size)
-        if (selectedUri?.fileType() == AUDIO) {
-            if (selectedUri.thumbnailUri() != null) {
+        if (selectedUri?.fileType == AUDIO) {
+            if (selectedUri.thumbnailUri != null) {
                 binding.gradientView.visibility = View.VISIBLE
                 ImageBindingUtil.loadImage(
                     binding.ivAlbumCover,
-                    selectedUri.thumbnailUri()
+                    selectedUri.thumbnailUri
                 )
             } else {
                 binding.gradientView.visibility = View.GONE
@@ -360,9 +344,9 @@ internal class ConversationAudioSendEditFragment :
             binding.wave.setRawData(ByteArray(0))
             progressAnim.currentPlayTime = 0
             binding.tvTotalDuration.text =
-                ViewUtils.formatSeconds(selectedUri.duration() ?: 0)
-            binding.tvSize.text = MediaUtils.getFileSizeText(selectedUri.size() ?: 0L)
-            binding.tvAudioName.text = selectedUri.mediaName() ?: "Audio"
+                DateUtil.formatSeconds(selectedUri.duration ?: 0)
+            binding.tvSize.text = MediaUtils.getFileSizeText(selectedUri.size)
+            binding.tvAudioName.text = selectedUri.mediaName ?: "Audio"
             binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
         }
     }
@@ -386,7 +370,7 @@ internal class ConversationAudioSendEditFragment :
         imageAdapter.replace(mediaUris?.mapIndexed { index, singleUriData ->
             val isSelected = index == 0
             SmallMediaViewData.Builder()
-                .viewType(ITEM_AUDIO_SMALL)
+                .dynamicViewType(ITEM_AUDIO_SMALL)
                 .singleUriData(singleUriData)
                 .isSelected(isSelected)
                 .build()
@@ -410,13 +394,17 @@ internal class ConversationAudioSendEditFragment :
             imageAdapter.replace(mediaUriList?.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
                 SmallMediaViewData.Builder()
-                    .viewType(ITEM_AUDIO_SMALL)
+                    .dynamicViewType(ITEM_AUDIO_SMALL)
                     .singleUriData(singleMediaUri)
                     .isSelected(isSelected)
                     .build()
             })
             invalidateDeleteMediaIcon(mediaUriList?.size)
         }
+    }
+
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
     }
 
     private fun initRichEditorSupport() {
@@ -455,14 +443,14 @@ internal class ConversationAudioSendEditFragment :
     }
 
     private fun invalidateDeleteMediaIcon(mediaFilesCount: Int?) {
-        binding.buttonDelete.isVisible = mediaFilesCount ?: 0 > 1
+        binding.btnDelete.isVisible = (mediaFilesCount ?: 0) > 1
     }
 
     private fun deleteCurrentMedia() {
         mediaUriList?.removeAt(selectedPosition)
 
         if (mediaUriList?.size == 0) {
-            binding.buttonBack.performClick()
+            binding.btnBack.performClick()
             return
         } else {
             if (selectedPosition == mediaUriList?.size) {
@@ -471,13 +459,13 @@ internal class ConversationAudioSendEditFragment :
             val updatedMedias = mediaUriList?.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
                 val smallMediaViewData = SmallMediaViewData.Builder()
-                    .viewType(ITEM_AUDIO_SMALL)
+                    .dynamicViewType(ITEM_AUDIO_SMALL)
                     .singleUriData(singleMediaUri)
                     .isSelected(isSelected)
                     .build()
 
                 if (isSelected) {
-                    selectedUri = smallMediaViewData.singleUriData()
+                    selectedUri = smallMediaViewData.singleUriData
                 }
                 smallMediaViewData
             }.orEmpty()
@@ -489,7 +477,7 @@ internal class ConversationAudioSendEditFragment :
 
     private fun showUpdatedPositionData(position: Int, smallMediaViewData: SmallMediaViewData) {
         selectedPosition = position
-        selectedUri = smallMediaViewData.singleUriData()
+        selectedUri = smallMediaViewData.singleUriData
         initMedia(selectedUri)
         val items = imageAdapter.items().map { it as SmallMediaViewData }
         imageAdapter.update(
@@ -515,7 +503,7 @@ internal class ConversationAudioSendEditFragment :
             ProgressHelper.showProgress(binding.progressBar, true)
             viewModel.fetchExternallySharedUriData(
                 requireContext(),
-                mediaExtras.mediaUris!!.map { it.uri() }
+                mediaExtras.mediaUris!!.map { it.uri }
             )
         } else {
             initRVForMedia()

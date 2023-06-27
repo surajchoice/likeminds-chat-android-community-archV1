@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaMetadataRetriever
@@ -13,19 +12,19 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.collabmates.fileutil.FileUtil
-import com.collabmates.membertagging.MemberTaggingDecoder
-import com.collabmates.membertagging.MemberTaggingView
 import com.collabmates.membertagging.model.MemberTaggingExtras
-import com.collabmates.membertagging.util.MemberTaggingViewListener
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.sdk.SDKPreferences
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapter
+import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
+import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
+import com.likeminds.chatmm.databinding.FragmentConversationMediaEditBinding
 import com.likeminds.chatmm.media.customviews.ColorSeekBar
 import com.likeminds.chatmm.media.customviews.MediaEditMode
 import com.likeminds.chatmm.media.customviews.MediaEditMode.*
@@ -35,23 +34,21 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.base.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapter
-import com.likeminds.likemindschat.chatroom.create.adapter.ImageAdapterListener
-import com.likeminds.likemindschat.databinding.FragmentConversationMediaEditBinding
-import com.likeminds.likemindschat.utils.AndroidUtils
-import com.likeminds.likemindschat.utils.ProgressHelper
-import com.likeminds.likemindschat.utils.ViewUtils
-import com.likeminds.likemindschat.utils.getMediaType
-import com.likeminds.likemindschat.utils.membertagging.MemberTaggingUtil
+import com.likeminds.chatmm.utils.AndroidUtils
+import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.ValueUtils.getMediaType
+import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import javax.inject.Inject
 
-internal class ConversationMediaEditFragment :
+class ConversationMediaEditFragment :
     BaseFragment<FragmentConversationMediaEditBinding, MediaViewModel>(),
     ImageAdapterListener,
     ColorSeekBar.OnColorChangeListener, CanvasListener {
@@ -61,10 +58,10 @@ internal class ConversationMediaEditFragment :
     private lateinit var imageAdapter: ImageAdapter
 
     @Inject
-    lateinit var loginPreferences: LoginPreferences
+    lateinit var sdkPreferences: SDKPreferences
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var helperViewModel: HelperViewModel
 
     private lateinit var memberTagging: MemberTaggingView
 
@@ -104,16 +101,6 @@ internal class ConversationMediaEditFragment :
     override val keepBindingRetained: Boolean
         get() = true
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun attachDagger() {
         super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
@@ -132,6 +119,9 @@ internal class ConversationMediaEditFragment :
                 bundle.getParcelable<SingleUriData>(ImageCropFragment.BUNDLE_ARG_URI)
             initMedia(singleUriData)
             replaceItem(selectedPosition, singleUriData)
+            if (singleUriData == null) {
+                return@setFragmentResultListener
+            }
             mediaSelected(
                 selectedPosition,
                 SmallMediaViewData.Builder().singleUriData(singleUriData).build()
@@ -141,11 +131,12 @@ internal class ConversationMediaEditFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         if (mediaExtras.isExternallyShared) {
             ProgressHelper.showProgress(binding.progressBar, true)
             viewModel.fetchExternallySharedUriData(
                 requireContext(),
-                mediaExtras.mediaUris!!.map { it.uri() }
+                mediaExtras.mediaUris!!.map { it.uri }
             )
         } else {
             initRVForMedias()
@@ -159,13 +150,10 @@ internal class ConversationMediaEditFragment :
         MemberTaggingDecoder.decode(
             binding.etConversation,
             mediaExtras.text,
-            BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                binding.etConversation.context,
-                R.color.pure_blue
-            )
+            LMBranding.getTextLinkColor()
         )
 
-        binding.buttonBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             val intent = Intent()
             viewModel.sendThirdPartyAbandoned(
                 "image/video",
@@ -177,7 +165,7 @@ internal class ConversationMediaEditFragment :
             activity?.finish()
         }
 
-        binding.buttonAdd.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             val extra = MediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(IMAGE, VIDEO))
@@ -189,9 +177,9 @@ internal class ConversationMediaEditFragment :
             pickerLauncher.launch(intent)
         }
 
-        binding.buttonSend.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             if (sdkPreferences.getIsGuestUser()) {
-                SDKApplication.getLikeMindsCallback()?.loginRequiredCallback()
+                SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {
                 if (editMode != null) {
@@ -205,7 +193,7 @@ internal class ConversationMediaEditFragment :
             }
         }
 
-        binding.buttonCropRotate.setOnClickListener {
+        binding.btnCropRotate.setOnClickListener {
             if (selectedUri == null) return@setOnClickListener
             saveBitmapAndReset(false)
             findNavController().navigate(
@@ -215,11 +203,11 @@ internal class ConversationMediaEditFragment :
             )
         }
 
-        binding.buttonUndo.setOnClickListener {
+        binding.btnUndo.setOnClickListener {
             binding.canvas.undo()
         }
 
-        binding.buttonText.setOnClickListener {
+        binding.btnText.setOnClickListener {
             if (editMode == TEXT) {
                 changeTextMode()
             } else {
@@ -230,17 +218,17 @@ internal class ConversationMediaEditFragment :
                 }
                 currentTextMode = -1
                 changeTextMode()
-                binding.inputText.visibility = View.VISIBLE
-                binding.buttonTextIncrease.visibility = View.VISIBLE
-                binding.buttonTextDecrease.visibility = View.VISIBLE
-                binding.inputText.setTextColor(binding.colorSeekBar.getColor())
-                ViewUtils.showKeyboard(requireContext(), binding.inputText)
+                binding.etInput.visibility = View.VISIBLE
+                binding.btnTextIncrease.visibility = View.VISIBLE
+                binding.btnTextDecrease.visibility = View.VISIBLE
+                binding.etInput.setTextColor(binding.colorSeekBar.getColor())
+                ViewUtils.showKeyboard(requireContext(), binding.etInput)
                 showColorChooser()
                 showBackgroundDrawable(binding.colorSeekBar.getColor())
             }
         }
 
-        binding.buttonDraw.setOnClickListener {
+        binding.btnDraw.setOnClickListener {
             if (editMode == DRAW) {
                 saveBitmapAndReset(false)
             } else {
@@ -255,14 +243,14 @@ internal class ConversationMediaEditFragment :
             }
         }
 
-        binding.buttonTextIncrease.setOnClickListener {
+        binding.btnTextIncrease.setOnClickListener {
             if (currentTextSize < textSizes.size - 1) {
                 currentTextSize++
                 changeTextSize()
             }
         }
 
-        binding.buttonTextDecrease.setOnClickListener {
+        binding.btnTextDecrease.setOnClickListener {
             if (currentTextSize > 0) {
                 currentTextSize--
                 changeTextSize()
@@ -272,12 +260,12 @@ internal class ConversationMediaEditFragment :
         KeyboardVisibilityEvent.setEventListener(
             requireActivity(), viewLifecycleOwner
         ) { isOpen ->
-            if (!isOpen && binding.inputText.visibility == View.VISIBLE && editMode == TEXT) {
+            if (!isOpen && binding.etInput.visibility == View.VISIBLE && editMode == TEXT) {
                 addTextToCanvas()
             }
         }
 
-        binding.buttonDelete.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             deleteCurrentMedia()
         }
     }
@@ -294,9 +282,13 @@ internal class ConversationMediaEditFragment :
             }
         }
 
-        viewModel.taggingData.observe(viewLifecycleOwner) { result ->
+        helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }
+    }
+
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
     }
 
     private fun initRichEditorSupport() {
@@ -337,7 +329,7 @@ internal class ConversationMediaEditFragment :
         mediaExtras.mediaUris?.removeAt(selectedPosition)
 
         if (mediaExtras.mediaUris?.size == 0) {
-            binding.buttonBack.performClick()
+            binding.btnBack.performClick()
             return
         } else {
             if (selectedPosition == mediaExtras.mediaUris?.size) {
@@ -349,7 +341,7 @@ internal class ConversationMediaEditFragment :
                     .isSelected(isSelected).build()
 
                 if (isSelected) {
-                    selectedUri = smallMediaViewData.singleUriData()
+                    selectedUri = smallMediaViewData.singleUriData
                 }
                 smallMediaViewData
             })
@@ -363,9 +355,9 @@ internal class ConversationMediaEditFragment :
             return
 
         invalidateDeleteMediaIcon(mediaExtras.mediaUris?.size)
-        invalidateEditMediaIcons(singleUriData.fileType())
+        invalidateEditMediaIcons(singleUriData.fileType)
 
-        when (singleUriData.fileType()) {
+        when (singleUriData.fileType) {
             VIDEO -> {
                 binding.photoView.visibility = View.GONE
                 binding.videoView.visibility = View.VISIBLE
@@ -387,15 +379,15 @@ internal class ConversationMediaEditFragment :
                             replaceItem(
                                 selectedPosition,
                                 SingleUriData.Builder().uri(uri)
-                                    .fileType(uri.getMediaType(requireContext()))
+                                    .fileType(uri.getMediaType(requireContext()) ?: "")
                                     .build()
                             )
-                            if (videoTrimExtras?.initiatedSendMessage() == true) {
+                            if (videoTrimExtras?.initiatedSendMessage == true) {
                                 initSendClick()
-                            } else if (videoTrimExtras?.newMediaSelected() == true) {
+                            } else if (videoTrimExtras?.newMediaSelected == true) {
                                 showUpdatedPositionData(
-                                    videoTrimExtras.updatedMediaPosition()!!,
-                                    videoTrimExtras.updatedMediaData()!!
+                                    videoTrimExtras.updatedMediaPosition!!,
+                                    videoTrimExtras.updatedMediaData!!
                                 )
                             }
                         }
@@ -414,13 +406,13 @@ internal class ConversationMediaEditFragment :
                         }
 
                     })
-                    .setVideoURI(singleUriData.uri())
+                    .setVideoURI(singleUriData.uri)
                     .setVideoInformationVisibility(true)
             }
             IMAGE, GIF -> {
                 binding.videoView.visibility = View.GONE
                 binding.photoView.visibility = View.VISIBLE
-                Glide.with(binding.photoView).load(singleUriData.uri()).into(binding.photoView)
+                Glide.with(binding.photoView).load(singleUriData.uri).into(binding.photoView)
             }
         }
     }
@@ -454,16 +446,16 @@ internal class ConversationMediaEditFragment :
     }
 
     private fun invalidateEditMediaIcons(fileType: String?) {
-        binding.buttonCropRotate.isVisible = fileType != VIDEO
-        binding.buttonText.isVisible = fileType != VIDEO
-        binding.buttonDraw.isVisible = fileType != VIDEO
+        binding.btnCropRotate.isVisible = fileType != VIDEO
+        binding.btnText.isVisible = fileType != VIDEO
+        binding.btnDraw.isVisible = fileType != VIDEO
     }
 
     private fun invalidateDeleteMediaIcon(mediaFilesCount: Int?) {
         if (mediaFilesCount == 1) {
-            binding.buttonDelete.visibility = View.GONE
+            binding.btnDelete.visibility = View.GONE
         } else {
-            binding.buttonDelete.visibility = View.VISIBLE
+            binding.btnDelete.visibility = View.VISIBLE
         }
     }
 
@@ -481,7 +473,7 @@ internal class ConversationMediaEditFragment :
 
     private fun showUpdatedPositionData(position: Int, smallMediaViewData: SmallMediaViewData) {
         selectedPosition = position
-        selectedUri = smallMediaViewData.singleUriData()
+        selectedUri = smallMediaViewData.singleUriData
         initMedia(selectedUri)
         val items = imageAdapter.items().map { it as SmallMediaViewData }
         imageAdapter.update(
@@ -528,10 +520,7 @@ internal class ConversationMediaEditFragment :
             MemberTaggingExtras.Builder()
                 .editText(binding.etConversation)
                 .color(
-                    BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                        binding.etConversation.context,
-                        R.color.pure_blue
-                    )
+                    LMBranding.getTextLinkColor()
                 )
                 .darkMode(true)
                 .build()
@@ -540,7 +529,7 @@ internal class ConversationMediaEditFragment :
         memberTagging.addListener(object : MemberTaggingViewListener {
             override fun callApi(page: Int, searchName: String) {
                 super.callApi(page, searchName)
-                viewModel.fetchMembersForTagging(
+                helperViewModel.getMembersForTagging(
                     mediaExtras.chatroomId,
                     page,
                     searchName
@@ -590,8 +579,8 @@ internal class ConversationMediaEditFragment :
     //callback when color is changed with the seek bar
     override fun onColorChangeListener(color: Int) {
         showBackgroundDrawable(color)
-        if (binding.inputText.visibility == View.VISIBLE) {
-            binding.inputText.setTextColor(color)
+        if (binding.etInput.visibility == View.VISIBLE) {
+            binding.etInput.setTextColor(color)
         }
         changeColor(color)
     }
@@ -602,8 +591,8 @@ internal class ConversationMediaEditFragment :
             setColor(color)
         }
         when (editMode) {
-            DRAW -> binding.buttonDraw.background = drawable
-            TEXT -> binding.buttonText.background = drawable
+            DRAW -> binding.btnDraw.background = drawable
+            TEXT -> binding.btnText.background = drawable
         }
     }
 
@@ -639,16 +628,17 @@ internal class ConversationMediaEditFragment :
         } else {
             binding.headerView.visibility = View.GONE
             binding.bottomView.visibility = View.GONE
-            binding.buttonSend.visibility = View.GONE
+            binding.btnSend.visibility = View.GONE
             val bitmap = binding.canvas.getBitmap()
             binding.headerView.visibility = View.VISIBLE
             binding.bottomView.visibility = View.VISIBLE
-            binding.buttonSend.visibility = View.VISIBLE
+            binding.btnSend.visibility = View.VISIBLE
             val uri = FileUtil.getUriFromBitmapWithRandomName(requireContext(), bitmap)
             reset()
             replaceItem(
                 selectedPosition,
-                SingleUriData.Builder().uri(uri).fileType(uri.getMediaType(requireContext()))
+                SingleUriData.Builder().uri(uri ?: Uri.EMPTY)
+                    .fileType(uri.getMediaType(requireContext()) ?: "")
                     .build()
             )
             if (send) {
@@ -661,16 +651,17 @@ internal class ConversationMediaEditFragment :
         if (editMode == null) return
         binding.headerView.visibility = View.GONE
         binding.bottomView.visibility = View.GONE
-        binding.buttonSend.visibility = View.GONE
+        binding.btnSend.visibility = View.GONE
         val bitmap = binding.canvas.getBitmap()
         binding.headerView.visibility = View.VISIBLE
         binding.bottomView.visibility = View.VISIBLE
-        binding.buttonSend.visibility = View.VISIBLE
+        binding.btnSend.visibility = View.VISIBLE
         val uri = FileUtil.getUriFromBitmapWithRandomName(requireContext(), bitmap)
         reset()
         replaceItem(
             selectedPosition,
-            SingleUriData.Builder().uri(uri).fileType(uri.getMediaType(requireContext())).build()
+            SingleUriData.Builder().uri(uri ?: Uri.EMPTY)
+                .fileType(uri.getMediaType(requireContext()) ?: "").build()
         )
 
         editMode = mode
@@ -726,30 +717,30 @@ internal class ConversationMediaEditFragment :
         editMode = null
         currentTextMode = -1
         currentTextSize = 1
-        binding.buttonText.background = null
-        binding.buttonDraw.background = null
-        binding.buttonUndo.visibility = View.GONE
-        binding.inputText.visibility = View.GONE
-        binding.buttonTextIncrease.visibility = View.GONE
-        binding.buttonTextDecrease.visibility = View.GONE
+        binding.btnText.background = null
+        binding.btnDraw.background = null
+        binding.btnUndo.visibility = View.GONE
+        binding.etInput.visibility = View.GONE
+        binding.btnTextIncrease.visibility = View.GONE
+        binding.btnTextDecrease.visibility = View.GONE
         binding.canvas.visibility = View.GONE
         binding.photoView.visibility = View.VISIBLE
     }
 
     private fun addTextToCanvas() {
-        if (binding.inputText.visibility != View.VISIBLE) {
+        if (binding.etInput.visibility != View.VISIBLE) {
             return
         }
-        ViewUtils.hideKeyboard(binding.inputText)
-        val text = binding.inputText.text.toString().trim()
+        ViewUtils.hideKeyboard(binding.etInput)
+        val text = binding.etInput.text.toString().trim()
         if (text.isEmpty()) {
             reset()
             return
         }
         binding.canvas.textToCenter = true
         binding.canvas.text = text
-        binding.inputText.text = null
-        binding.inputText.visibility = View.GONE
+        binding.etInput.text = null
+        binding.etInput.visibility = View.GONE
     }
 
     //Showing canvas on edit on for DRAW and TEXT
@@ -781,14 +772,14 @@ internal class ConversationMediaEditFragment :
         } else {
             currentTextMode++
         }
-        binding.buttonText.setImageResource(textIcons[currentTextMode])
+        binding.btnText.setImageResource(textIcons[currentTextMode])
         binding.canvas.setTypeface(textTypefaces[currentTextMode]!!)
-        binding.inputText.typeface = textTypefaces[currentTextMode]!!
+        binding.etInput.typeface = textTypefaces[currentTextMode]!!
     }
 
     private fun changeTextSize() {
         binding.canvas.setFontSize(textSizes[currentTextSize])
-        binding.inputText.textSize = textSizes[currentTextSize]
+        binding.etInput.textSize = textSizes[currentTextSize]
     }
 
     //On canvas draw start
@@ -813,7 +804,7 @@ internal class ConversationMediaEditFragment :
     }
 
     override fun onUndoAvailable(undoAvailable: Boolean) {
-        binding.buttonUndo.visibility = if (undoAvailable) {
+        binding.btnUndo.visibility = if (undoAvailable) {
             View.VISIBLE
         } else {
             View.GONE
@@ -825,5 +816,4 @@ internal class ConversationMediaEditFragment :
             addTextToCanvas()
         }
     }
-
 }

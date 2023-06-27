@@ -131,4 +131,14 @@ class SDKApplication {
 
         return chatroomDetailComponent
     }
+
+    /**
+     * initiate and return MediaComponent: All dependencies required for media package
+     * */
+    fun mediaComponent(): MediaComponent? {
+        if (mediaComponent == null) {
+            mediaComponent = appComponent?.mediaComponent()?.create()
+        }
+        return mediaComponent
+    }
 }

@@ -14,14 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.collabmates.fileutil.FileUtil
+import com.likeminds.chatmm.databinding.FragmentImageCropBinding
 import com.likeminds.chatmm.media.model.ImageCropExtras
 import com.likeminds.chatmm.media.model.SingleUriData
-import com.likeminds.likemindschat.databinding.FragmentImageCropBinding
-import com.likeminds.likemindschat.utils.getMediaType
+import com.likeminds.chatmm.utils.ValueUtils.getMediaType
+import com.likeminds.chatmm.utils.file.util.FileUtil
 import kotlinx.coroutines.launch
 
-internal class ImageCropFragment : Fragment() {
+class ImageCropFragment : Fragment() {
 
     companion object {
         const val REQUEST_KEY = "image_edit"
@@ -67,7 +67,7 @@ internal class ImageCropFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.cropImageView.setImageUriAsync(singleUriData?.uri())
+        binding.cropImageView.setImageUriAsync(singleUriData?.uri)
         if (cropSquare) {
             binding.cropImageView.setFixedAspectRatio(true)
             binding.cropImageView.setAspectRatio(1, 1)
@@ -86,8 +86,8 @@ internal class ImageCropFragment : Fragment() {
                             setFragmentResult(
                                 REQUEST_KEY,
                                 bundleOf(
-                                    BUNDLE_ARG_URI to SingleUriData.Builder().uri(uri)
-                                        .fileType(uri.getMediaType(requireContext())).build()
+                                    BUNDLE_ARG_URI to SingleUriData.Builder().uri(uri ?: Uri.EMPTY)
+                                        .fileType(uri.getMediaType(requireContext()) ?: "").build()
                                 )
                             )
                             findNavController().navigateUp()
@@ -104,15 +104,15 @@ internal class ImageCropFragment : Fragment() {
             }
         }
 
-        binding.buttonDone.setOnClickListener {
+        binding.btnDone.setOnClickListener {
             cropImage()
         }
 
-        binding.buttonCancel.setOnClickListener {
+        binding.btnCancel.setOnClickListener {
             cancelCrop()
         }
 
-        binding.buttonRotate.setOnClickListener {
+        binding.btnRotate.setOnClickListener {
             binding.cropImageView.rotateImage(-90)
         }
 
@@ -138,5 +138,4 @@ internal class ImageCropFragment : Fragment() {
         }
         findNavController().navigateUp()
     }
-
 }

@@ -27,7 +27,7 @@ import com.likeminds.likemindschat.utils.AndroidUtils
 import com.likeminds.likemindschat.utils.recyclerview.GridSpacingItemDecoration
 import javax.inject.Inject
 
-internal class MediaPickerFolderFragment :
+class MediaPickerFolderFragment :
     BaseFragment<FragmentMediaPickerFolderBinding, MediaViewModel>(),
     MediaPickerAdapterListener {
 

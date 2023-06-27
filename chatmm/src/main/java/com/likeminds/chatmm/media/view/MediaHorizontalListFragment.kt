@@ -7,26 +7,21 @@ import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.media.model.IMAGE
-import com.collabmates.sdk.media.model.VIDEO
-import com.collabmates.sdk.sdk.SDKPreferences
-import com.likeminds.chatmm.media.adapter.ImageSwipeAdapterListener
-import com.likeminds.chatmm.media.adapter.MediaSwipeAdapter
-import com.likeminds.chatmm.media.model.MEDIA_VIDEO_PLAY_SCREEN
-import com.likeminds.chatmm.media.model.MediaExtras
-import com.likeminds.chatmm.media.model.MediaSwipeViewData
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.databinding.FragmentMediaHorizontalListBinding
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaViewUtils
+import com.likeminds.chatmm.media.view.adapter.ImageSwipeAdapterListener
+import com.likeminds.chatmm.media.view.adapter.MediaSwipeAdapter
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.databinding.FragmentMediaHorizontalListBinding
-import com.likeminds.likemindschat.utils.ITEM_IMAGE_SWIPE
-import com.likeminds.likemindschat.utils.ITEM_VIDEO_SWIPE
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.model.ITEM_IMAGE_SWIPE
+import com.likeminds.chatmm.utils.model.ITEM_VIDEO_SWIPE
 import javax.inject.Inject
 
-internal class MediaHorizontalListFragment :
+class MediaHorizontalListFragment :
     BaseFragment<FragmentMediaHorizontalListBinding, MediaViewModel>(), ImageSwipeAdapterListener {
 
     private lateinit var mediaExtras: MediaExtras
@@ -37,9 +32,6 @@ internal class MediaHorizontalListFragment :
     private var overflowMenu: PopupMenu? = null
 
     private var downloadableContentTypes: List<String>? = null
-
-    @Inject
-    lateinit var loginPreferences: LoginPreferences
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
@@ -59,7 +51,7 @@ internal class MediaHorizontalListFragment :
         }
     }
 
-    override fun getViewModelClass(): Class<MediaViewModel>? {
+    override fun getViewModelClass(): Class<MediaViewModel> {
         return MediaViewModel::class.java
     }
 
@@ -83,7 +75,7 @@ internal class MediaHorizontalListFragment :
         initViewPager()
         observeCommunity()
         getCommunity()
-        binding.buttonBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             activity?.finish()
         }
         binding.overflowMenu.setOnClickListener {
@@ -102,7 +94,7 @@ internal class MediaHorizontalListFragment :
             if (!mediaExtras.medias.isNullOrEmpty()) {
                 handleOverflowMenuIcon(
                     downloadableContentTypes,
-                    mediaExtras.medias!![binding.viewPager.currentItem].viewType()
+                    mediaExtras.medias!![binding.viewPager.currentItem].viewType
                 )
             }
         }
@@ -118,12 +110,12 @@ internal class MediaHorizontalListFragment :
         //To disable over scroll animation
         binding.viewPager.getChildAt(0)?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 
-        mediaSwipeAdapter.replace(mediaExtras.medias?.sortedBy { it.index() })
+        mediaSwipeAdapter.replace(mediaExtras.medias?.sortedBy { it.index })
 
         if (!mediaExtras.medias.isNullOrEmpty()) {
             if (mediaExtras.medias!!.size > 1) {
                 binding.dot.visibility = View.VISIBLE
-                binding.textViewSubTitle2.visibility = View.VISIBLE
+                binding.tvSubTitle2.visibility = View.VISIBLE
             }
             val pos = mediaExtras.position ?: 0
             if (pos >= 0 && pos < mediaExtras.medias!!.size) {
@@ -175,25 +167,25 @@ internal class MediaHorizontalListFragment :
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
             requireActivity(),
-            media.uri(),
+            media.uri,
             notificationIcon
         )
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateHeader(mediaSwipeViewData: MediaSwipeViewData?, position: Int) {
-        binding.textTitle.text = mediaSwipeViewData?.title()
+        binding.tvTitle.text = mediaSwipeViewData?.title
         val size = mediaExtras.medias?.size ?: 0
         if (size > 1) {
-            binding.textSubTitle.text = "${position + 1} of $size ${getMediaText()}"
-            binding.textViewSubTitle2.text = getSubTitle(mediaSwipeViewData)
+            binding.tvSubTitle.text = "${position + 1} of $size ${getMediaText()}"
+            binding.tvSubTitle2.text = getSubTitle(mediaSwipeViewData)
         } else {
-            binding.textSubTitle.text = getSubTitle(mediaSwipeViewData)
+            binding.tvSubTitle.text = getSubTitle(mediaSwipeViewData)
         }
     }
 
     private fun getSubTitle(mediaSwipeViewData: MediaSwipeViewData?): String? {
-        var subTitle = mediaSwipeViewData?.subTitle()
+        var subTitle = mediaSwipeViewData?.subTitle
 
         // Remove comma in start if added
         if (subTitle?.startsWith(",") == true && subTitle.length > 1) {
@@ -204,10 +196,10 @@ internal class MediaHorizontalListFragment :
 
     private fun getMediaText(): String {
         val imagesCount = mediaExtras.medias?.filter {
-            it.viewType() == ITEM_IMAGE_SWIPE
+            it.viewType == ITEM_IMAGE_SWIPE
         }?.size ?: 0
         val videosCount = mediaExtras.medias?.filter {
-            it.viewType() == ITEM_VIDEO_SWIPE
+            it.viewType == ITEM_VIDEO_SWIPE
         }?.size ?: 0
         return if (imagesCount > 0 && videosCount > 0) "multimedia"
         else if (imagesCount > 0) "photos"
@@ -221,7 +213,7 @@ internal class MediaHorizontalListFragment :
             updateHeader(mediaExtras.medias!![position], position)
             handleOverflowMenuIcon(
                 downloadableContentTypes,
-                mediaExtras.medias!![position].viewType()
+                mediaExtras.medias!![position].viewType
             )
         }
     }
@@ -259,12 +251,12 @@ internal class MediaHorizontalListFragment :
             .medias(
                 listOf(
                     MediaSwipeViewData.Builder()
-                        .viewType(ITEM_VIDEO_SWIPE)
-                        .uri(mediaSwipeViewData.uri())
+                        .dynamicViewType(ITEM_VIDEO_SWIPE)
+                        .uri(mediaSwipeViewData.uri)
                         .type("video")
-                        .thumbnail(mediaSwipeViewData.thumbnail())
-                        .title(mediaSwipeViewData.title())
-                        .subTitle(mediaSwipeViewData.subTitle())
+                        .thumbnail(mediaSwipeViewData.thumbnail)
+                        .title(mediaSwipeViewData.title)
+                        .subTitle(mediaSwipeViewData.subTitle)
                         .build()
                 )
             )

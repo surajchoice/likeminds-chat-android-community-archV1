@@ -6,23 +6,23 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import com.collabmates.sdk.media.model.VIDEO
-import com.collabmates.sdk.sdk.SDKPreferences
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.media.model.MediaExtras
 import com.likeminds.chatmm.media.model.MediaSwipeViewData
 import com.likeminds.chatmm.media.util.MediaViewUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
 import com.likeminds.likemindschat.databinding.FragmentPlayVideoBinding
 import javax.inject.Inject
 
-internal class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>() {
+class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>() {
 
     private lateinit var mediaExtras: MediaExtras
 
@@ -81,15 +81,15 @@ internal class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaV
 
     private fun initPlayer() {
         mediaExtras.medias?.firstOrNull()?.let { mediaSwipeViewData ->
-            binding.textTitle.text = mediaSwipeViewData.title()
+            binding.textTitle.text = mediaSwipeViewData.title
             binding.textSubTitle.text = getSubTitle(mediaSwipeViewData)
             viewModel.sendVideoPlayedEvent(
                 mediaExtras.chatroomId,
                 mediaExtras.communityId.toString(),
                 mediaExtras.conversationId,
-                mediaSwipeViewData.type()
+                mediaSwipeViewData.type
             )
-            mediaSwipeViewData.uri()?.let { videoUri ->
+            mediaSwipeViewData.uri?.let { videoUri ->
                 videoPlayer = ExoPlayer.Builder(requireContext()).build()
                 binding.playerView.player = videoPlayer
                 buildMediaSource(videoUri).let { mediaSource ->

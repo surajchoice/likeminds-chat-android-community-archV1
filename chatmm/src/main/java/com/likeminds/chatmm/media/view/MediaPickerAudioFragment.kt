@@ -14,27 +14,27 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.collabmates.sdk.media.model.MediaType
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapter
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapterListener
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.databinding.FragmentMediaPickerAudioBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMMediaPlayer
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.handler
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.isDataSourceSet
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
 import com.likeminds.chatmm.media.util.MediaPlayerListener
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.search.util.CustomSearchBar
+import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.databinding.FragmentMediaPickerAudioBinding
-import com.likeminds.likemindschat.search.util.CustomSearchBar
-import com.likeminds.likemindschat.utils.ViewUtils
 
 
-internal class MediaPickerAudioFragment :
+class MediaPickerAudioFragment :
     BaseFragment<FragmentMediaPickerAudioBinding, MediaViewModel>(),
     MediaPickerAdapterListener, MediaPlayerListener {
     private lateinit var mediaPickerAdapter: MediaPickerAdapter
@@ -227,7 +227,7 @@ internal class MediaPickerAudioFragment :
             val previousPlayed =
                 mediaPickerAdapter.items()?.get(localItemPosition) as MediaViewData
 
-            if (previousPlayed.playOrPause() == MEDIA_ACTION_PLAY) {
+            if (previousPlayed.playOrPause == MEDIA_ACTION_PLAY) {
                 handler?.removeCallbacks(runnable ?: Runnable { })
             }
             updateItem(
@@ -239,7 +239,7 @@ internal class MediaPickerAudioFragment :
             isDataSourceSet = false
         }
         try {
-            when (mediaViewData.playOrPause()) {
+            when (mediaViewData.playOrPause) {
                 MEDIA_ACTION_PLAY -> {
                     mediaPlayer?.pause()
                     updateItem(
@@ -281,7 +281,6 @@ internal class MediaPickerAudioFragment :
     }
 
     override fun doCleanup() {
-        binding.searchBar.dispose()
         mediaPlayer?.release()
         mediaPlayer = null
         super.doCleanup()
@@ -303,10 +302,10 @@ internal class MediaPickerAudioFragment :
         initializeTitle()
 
         mediaPickerAdapter = MediaPickerAdapter(this)
-        binding.recyclerView.apply {
+        binding.rvAudio.apply {
             adapter = mediaPickerAdapter
         }
-        (binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        (binding.rvAudio.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         handler = Handler(Looper.getMainLooper())
         updateSelectedCount()
 
@@ -315,7 +314,7 @@ internal class MediaPickerAudioFragment :
 
     private fun initializeTitle() {
         binding.tvToolbarTitle.text =
-            if (MediaType.isAudio(mediaPickerExtras.mediaTypes)
+            if (InternalMediaType.isAudio(mediaPickerExtras.mediaTypes)
                 && mediaPickerExtras.senderName?.isNotEmpty() == true
             ) {
                 String.format("Send to %s", mediaPickerExtras.senderName)
@@ -335,27 +334,30 @@ internal class MediaPickerAudioFragment :
     }
 
     private fun initializeSearchView() {
-        binding.searchBar.setSearchViewListener(
-            object : CustomSearchBar.SearchViewListener {
-                override fun onSearchViewClosed() {
-                    binding.searchBar.visibility = View.GONE
-                    viewModel.clearAudioFilter()
-                }
+        binding.searchBar.apply {
+            initialize(lifecycleScope)
+            setSearchViewListener(
+                object : CustomSearchBar.SearchViewListener {
+                    override fun onSearchViewClosed() {
+                        binding.searchBar.visibility = View.GONE
+                        viewModel.clearAudioFilter()
+                    }
 
-                override fun crossClicked() {
-                    viewModel.clearAudioFilter()
-                }
+                    override fun crossClicked() {
+                        viewModel.clearAudioFilter()
+                    }
 
-                override fun keywordEntered(keyword: String) {
-                    viewModel.filterAudioByKeyword(keyword)
-                }
+                    override fun keywordEntered(keyword: String) {
+                        viewModel.filterAudioByKeyword(keyword)
+                    }
 
-                override fun emptyKeywordEntered() {
-                    viewModel.clearAudioFilter()
+                    override fun emptyKeywordEntered() {
+                        viewModel.clearAudioFilter()
+                    }
                 }
-            }
-        )
-        binding.searchBar.observeSearchView(false)
+            )
+            observeSearchView(false)
+        }
     }
 
     private fun initializeListeners() {

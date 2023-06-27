@@ -2,37 +2,35 @@ package com.likeminds.chatmm.media.view
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.collabmates.fileutil.FileUtil
-import com.collabmates.membertagging.MemberTaggingView
 import com.collabmates.membertagging.model.MemberTaggingExtras
-import com.collabmates.membertagging.util.MemberTaggingViewListener
-import com.collabmates.sdk.media.model.GIF
-import com.collabmates.sdk.sdk.SDKPreferences
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
+import com.likeminds.chatmm.databinding.FragmentConversationGifSendBinding
+import com.likeminds.chatmm.media.model.GIF
 import com.likeminds.chatmm.media.model.MediaExtras
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.base.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.likemindschat.databinding.FragmentConversationGifSendBinding
-import com.likeminds.likemindschat.utils.ProgressHelper
-import com.likeminds.likemindschat.utils.databinding.ImageBindingUtil
-import com.likeminds.likemindschat.utils.membertagging.MemberTaggingUtil
+import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
+import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import javax.inject.Inject
 
-internal class ConversationGifSendFragment :
+class ConversationGifSendFragment :
     BaseFragment<FragmentConversationGifSendBinding, MediaViewModel>() {
 
     private lateinit var mediaExtras: MediaExtras
@@ -42,6 +40,9 @@ internal class ConversationGifSendFragment :
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    @Inject
+    lateinit var helperViewModel: HelperViewModel
 
     companion object {
         const val TAG = "ConversationGifSendFragment"
@@ -65,16 +66,6 @@ internal class ConversationGifSendFragment :
         return FragmentConversationGifSendBinding.inflate(layoutInflater)
     }
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun attachDagger() {
         super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
@@ -88,6 +79,7 @@ internal class ConversationGifSendFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         singleUriData = mediaExtras.mediaUris?.firstOrNull()
         initViews()
         initMemberTagging()
@@ -97,19 +89,23 @@ internal class ConversationGifSendFragment :
 
     override fun observeData() {
         super.observeData()
-        viewModel.taggingData.observe(viewLifecycleOwner) { result ->
+        helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }
     }
 
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
+    }
+
     private fun initViews() {
         initGif()
-        binding.buttonBack.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             cancelSend()
         }
-        binding.buttonSend.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             if (sdkPreferences.getIsGuestUser()) {
-                SDKApplication.getLikeMindsCallback()?.loginRequiredCallback()
+                SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {
                 saveGifThumbnail()
@@ -124,10 +120,7 @@ internal class ConversationGifSendFragment :
                 .editText(binding.etConversation)
                 .darkMode(true)
                 .color(
-                    BrandingData.currentAdvanced?.third ?: ContextCompat.getColor(
-                        binding.etConversation.context,
-                        R.color.pure_blue
-                    )
+                    LMBranding.getTextLinkColor()
                 )
                 .build()
         )
@@ -135,7 +128,7 @@ internal class ConversationGifSendFragment :
         memberTagging.addListener(object : MemberTaggingViewListener {
             override fun callApi(page: Int, searchName: String) {
                 super.callApi(page, searchName)
-                viewModel.fetchMembersForTagging(
+                helperViewModel.getMembersForTagging(
                     mediaExtras.chatroomId,
                     page,
                     searchName
@@ -148,7 +141,7 @@ internal class ConversationGifSendFragment :
         mediaExtras.giphyMedia?.let {
             viewModel.getGiphyUri(requireContext(), it)
         }
-        viewModel.getGiphyMedia().observe(viewLifecycleOwner) {
+        viewModel.giphyMedia.observe(viewLifecycleOwner) {
             it?.let { pair ->
                 if (pair.first) {
                     ProgressHelper.showProgress(binding.progressBar)
@@ -167,12 +160,12 @@ internal class ConversationGifSendFragment :
     }
 
     private fun initGif() {
-        ImageBindingUtil.loadImage(binding.imageView, singleUriData?.uri())
+        ImageBindingUtil.loadImage(binding.imageView, singleUriData?.uri)
     }
 
     private fun saveGifThumbnail() {
         singleUriData?.let {
-            Glide.with(requireContext()).asGif().load(it.uri())
+            Glide.with(requireContext()).asGif().load(it.uri)
                 .addListener(object : RequestListener<GifDrawable> {
                     override fun onLoadFailed(
                         e: GlideException?,

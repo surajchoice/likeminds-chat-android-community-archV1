@@ -23,7 +23,7 @@ import com.likeminds.likemindschat.base.BaseFragment
 import com.likeminds.likemindschat.databinding.FragmentMediaPickerDocumentBinding
 import com.likeminds.likemindschat.search.util.CustomSearchBar
 
-internal class MediaPickerDocumentFragment :
+class MediaPickerDocumentFragment :
     BaseFragment<FragmentMediaPickerDocumentBinding, MediaViewModel>(),
     MediaPickerAdapterListener {
 

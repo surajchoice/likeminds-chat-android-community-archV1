@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class SmallMediaViewData private constructor(
-    val singleUriData: SingleUriData?,
+    val singleUriData: SingleUriData,
     val isSelected: Boolean,
     val dynamicViewType: Int?
 ) : Parcelable, BaseViewType {
@@ -15,11 +15,11 @@ class SmallMediaViewData private constructor(
         get() = dynamicViewType ?: ITEM_MEDIA_SMALL
 
     class Builder {
-        private var singleUriData: SingleUriData? = null
+        private var singleUriData: SingleUriData = SingleUriData.Builder().build()
         private var isSelected: Boolean = false
         private var dynamicViewType: Int? = null
 
-        fun singleUriData(singleUriData: SingleUriData?) =
+        fun singleUriData(singleUriData: SingleUriData) =
             apply { this.singleUriData = singleUriData }
 
         fun isSelected(isSelected: Boolean) = apply { this.isSelected = isSelected }
