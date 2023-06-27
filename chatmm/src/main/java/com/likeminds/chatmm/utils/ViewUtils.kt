@@ -17,6 +17,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
@@ -189,5 +191,10 @@ object ViewUtils {
             }
         })
         anim.start()
+    }
+
+    fun FragmentManager.currentFragment(navHostId: Int): Fragment? {
+        val navHostFragment = this.findFragmentById(navHostId) as? NavHostFragment
+        return navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
     }
 }

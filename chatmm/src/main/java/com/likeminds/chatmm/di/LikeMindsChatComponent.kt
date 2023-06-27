@@ -3,10 +3,13 @@ package com.likeminds.chatmm.di
 import android.app.Application
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
+import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponentModule
 import com.likeminds.chatmm.di.explore.ExploreComponent
+import com.likeminds.chatmm.di.explore.ExploreComponentModule
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
+import com.likeminds.chatmm.di.media.MediaComponentModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -16,9 +19,9 @@ import javax.inject.Singleton
     modules = [
         AppModule::class,
         HomeFeedComponentModule::class,
-        ExploreComponent::class,
-        ChatroomDetailComponent::class,
-        MediaComponent::class
+        ExploreComponentModule::class,
+        ChatroomDetailComponentModule::class,
+        MediaComponentModule::class
     ]
 )
 interface LikeMindsChatComponent {

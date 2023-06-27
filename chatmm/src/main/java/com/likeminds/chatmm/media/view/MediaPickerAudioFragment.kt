@@ -2,8 +2,6 @@ package com.likeminds.chatmm.media.view
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.databinding.FragmentMediaPickerAudioBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMMediaPlayer
@@ -31,8 +30,6 @@ import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.search.util.CustomSearchBar
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.likemindschat.BrandingData
-
 
 class MediaPickerAudioFragment :
     BaseFragment<FragmentMediaPickerAudioBinding, MediaViewModel>(),
@@ -71,33 +68,6 @@ class MediaPickerAudioFragment :
     private val selectedMedias by lazy { HashMap<String, MediaViewData>() }
     private var localItemPosition: Int = 0
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-
-        binding.toolbar.setBackgroundColor(Color.WHITE)
-        binding.fabSend.backgroundTintList = ColorStateList.valueOf(color)
-
-        binding.tvToolbarTitle.setTextColor(Color.BLACK)
-        binding.tvToolbarSubtitle.setTextColor(Color.BLACK)
-        binding.ivBack.imageTintList = ColorStateList.valueOf(Color.BLACK)
-
-        binding.toolbar.navigationIcon?.setTint(Color.BLACK)
-        binding.toolbar.overflowIcon?.setTint(Color.BLACK)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.toolbar.setBackgroundColor(headerColor)
-        binding.fabSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-
-        binding.tvToolbarTitle.setTextColor(Color.WHITE)
-        binding.tvToolbarSubtitle.setTextColor(Color.WHITE)
-        binding.ivBack.imageTintList = ColorStateList.valueOf(Color.WHITE)
-
-        binding.toolbar.navigationIcon?.setTint(Color.WHITE)
-        binding.toolbar.overflowIcon?.setTint(Color.WHITE)
-    }
-
     override fun attachDagger() {
         super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
@@ -105,6 +75,7 @@ class MediaPickerAudioFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         initializeMediaPlayer()
         initializeUI()
         initializeListeners()
@@ -166,15 +137,13 @@ class MediaPickerAudioFragment :
     }
 
     private fun updateMenu(menu: Menu) {
-        val isBrandingBasic = BrandingData.isBrandingBasic
-
-        val item = menu.findItem(R.id.menuItemSearch)
-        item?.icon?.setTint(if (isBrandingBasic) Color.BLACK else Color.WHITE)
+        val item = menu.findItem(R.id.menu_item_search)
+        item?.icon?.setTint(LMBranding.getToolbarColor())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menuItemSearch -> {
+            R.id.menu_item_search -> {
                 showSearchToolbar()
             }
             else -> return false
@@ -184,10 +153,10 @@ class MediaPickerAudioFragment :
 
     override fun onMediaItemClicked(mediaViewData: MediaViewData, itemPosition: Int) {
         if (isMultiSelectionAllowed()) {
-            if (selectedMedias.containsKey(mediaViewData.uri().toString())) {
-                selectedMedias.remove(mediaViewData.uri().toString())
+            if (selectedMedias.containsKey(mediaViewData.uri.toString())) {
+                selectedMedias.remove(mediaViewData.uri.toString())
             } else {
-                selectedMedias[mediaViewData.uri().toString()] = mediaViewData
+                selectedMedias[mediaViewData.uri.toString()] = mediaViewData
             }
 
             mediaPickerAdapter.notifyItemChanged(itemPosition)
@@ -262,7 +231,7 @@ class MediaPickerAudioFragment :
                 }
                 MEDIA_ACTION_NONE -> {
                     localItemPosition = itemPosition
-                    mediaPlayer?.setMediaDataSource(mediaViewData.uri())
+                    mediaPlayer?.setMediaDataSource(mediaViewData.uri)
                     updateItem(
                         itemPosition, mediaViewData.toBuilder()
                             .playOrPause(MEDIA_ACTION_PLAY)
@@ -275,6 +244,12 @@ class MediaPickerAudioFragment :
         }
     }
 
+    private fun setBranding() {
+        binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
+            toolbarColor = LMBranding.getToolbarColor()
+        }
+    }
 
     private fun initializeMediaPlayer() {
         mediaPlayer = LMMediaPlayer(requireContext(), this)

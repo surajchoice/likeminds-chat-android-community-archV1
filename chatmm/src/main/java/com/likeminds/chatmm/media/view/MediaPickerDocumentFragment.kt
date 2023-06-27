@@ -2,8 +2,6 @@ package com.likeminds.chatmm.media.view
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,16 +10,17 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapter
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapterListener
+import androidx.lifecycle.lifecycleScope
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.databinding.FragmentMediaPickerDocumentBinding
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.BrandingData
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.databinding.FragmentMediaPickerDocumentBinding
-import com.likeminds.likemindschat.search.util.CustomSearchBar
+import com.likeminds.chatmm.search.util.CustomSearchBar
+import com.likeminds.chatmm.utils.customview.BaseFragment
 
 class MediaPickerDocumentFragment :
     BaseFragment<FragmentMediaPickerDocumentBinding, MediaViewModel>(),
@@ -63,24 +62,6 @@ class MediaPickerDocumentFragment :
         SDKApplication.getInstance().mediaComponent()?.inject(this)
     }
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-
-        binding.toolbar.setBackgroundColor(Color.WHITE)
-        binding.fabSend.backgroundTintList = ColorStateList.valueOf(color)
-
-        binding.toolbar.setTitleTextColor(Color.BLACK)
-        binding.toolbar.setSubtitleTextColor(Color.BLACK)
-        binding.toolbar.navigationIcon?.setTint(Color.BLACK)
-        binding.toolbar.overflowIcon?.setTint(Color.BLACK)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.toolbar.setBackgroundColor(headerColor)
-        binding.fabSend.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun receiveExtras() {
         super.receiveExtras()
         mediaPickerExtras =
@@ -90,6 +71,7 @@ class MediaPickerDocumentFragment :
     override fun setUpViews() {
         super.setUpViews()
         setHasOptionsMenu(true)
+        setBranding()
         initializeUI()
         initializeListeners()
         viewModel.fetchAllDocuments(requireContext()).observe(viewLifecycleOwner) {
@@ -104,23 +86,21 @@ class MediaPickerDocumentFragment :
     }
 
     private fun updateMenu(menu: Menu) {
-        val isBrandingBasic = BrandingData.isBrandingBasic
-
         //update search icon
-        val item = menu.findItem(R.id.menuItemSearch)
-        item?.icon?.setTint(if (isBrandingBasic) Color.BLACK else Color.WHITE)
+        val item = menu.findItem(R.id.menu_item_search)
+        item?.icon?.setTint(LMBranding.getToolbarColor())
 
         //update sort icon
-        val item2 = menu.findItem(R.id.menuItemSort)
-        item2?.icon?.setTint(if (isBrandingBasic) Color.BLACK else Color.WHITE)
+        val item2 = menu.findItem(R.id.menu_item_sort)
+        item2?.icon?.setTint(LMBranding.getToolbarColor())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menuItemSearch -> {
+            R.id.menu_item_search -> {
                 showSearchToolbar()
             }
-            R.id.menuItemSort -> {
+            R.id.menu_item_sort -> {
                 val menuItemView = requireActivity().findViewById<View>(item.itemId)
                 showSortingPopupMenu(menuItemView)
             }
@@ -129,9 +109,11 @@ class MediaPickerDocumentFragment :
         return true
     }
 
-    override fun doCleanup() {
-        binding.searchBar.dispose()
-        super.doCleanup()
+    private fun setBranding() {
+        binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
+            toolbarColor = LMBranding.getToolbarColor()
+        }
     }
 
     private fun initializeUI() {
@@ -139,7 +121,7 @@ class MediaPickerDocumentFragment :
         fragmentActivity?.setSupportActionBar(binding.toolbar)
 
         mediaPickerAdapter = MediaPickerAdapter(this)
-        binding.recyclerView.apply {
+        binding.rvDocuments.apply {
             adapter = mediaPickerAdapter
         }
 
@@ -180,10 +162,10 @@ class MediaPickerDocumentFragment :
 
     private fun updateSelectedCount() {
         if (isMediaSelectionEnabled()) {
-            binding.textViewSelectedCount.text =
+            binding.tvSelectedCount.text =
                 String.format("%s selected", selectedMedias.size)
         } else {
-            binding.textViewSelectedCount.text = getString(R.string.tap_to_select)
+            binding.tvSelectedCount.text = getString(R.string.tap_to_select)
         }
         binding.fabSend.isVisible = isMediaSelectionEnabled()
     }
@@ -196,10 +178,10 @@ class MediaPickerDocumentFragment :
 
     override fun onMediaItemClicked(mediaViewData: MediaViewData, itemPosition: Int) {
         if (isMultiSelectionAllowed()) {
-            if (selectedMedias.containsKey(mediaViewData.uri().toString())) {
-                selectedMedias.remove(mediaViewData.uri().toString())
+            if (selectedMedias.containsKey(mediaViewData.uri.toString())) {
+                selectedMedias.remove(mediaViewData.uri.toString())
             } else {
-                selectedMedias[mediaViewData.uri().toString()] = mediaViewData
+                selectedMedias[mediaViewData.uri.toString()] = mediaViewData
             }
 
             mediaPickerAdapter.notifyItemChanged(itemPosition)
@@ -245,20 +227,20 @@ class MediaPickerDocumentFragment :
         popup.menuInflater.inflate(R.menu.document_sort_menu, popup.menu)
         when (currentSort) {
             SORT_BY_NAME ->
-                popup.menu.findItem(R.id.menuItemSortName).isChecked = true
+                popup.menu.findItem(R.id.menu_item_sort_name).isChecked = true
             SORT_BY_DATE ->
-                popup.menu.findItem(R.id.menuItemSortDate).isChecked = true
+                popup.menu.findItem(R.id.menu_item_sort_date).isChecked = true
         }
         popup.setOnMenuItemClickListener { item ->
             item.isChecked = true
             when (item.itemId) {
-                R.id.menuItemSortName -> {
+                R.id.menu_item_sort_name -> {
                     if (currentSort != SORT_BY_NAME) {
                         currentSort = SORT_BY_NAME
                         viewModel.sortDocumentsByName()
                     }
                 }
-                R.id.menuItemSortDate -> {
+                R.id.menu_item_sort_date -> {
                     if (currentSort != SORT_BY_DATE) {
                         currentSort = SORT_BY_DATE
                         viewModel.sortDocumentsByDate()
@@ -271,27 +253,30 @@ class MediaPickerDocumentFragment :
     }
 
     private fun initializeSearchView() {
-        binding.searchBar.setSearchViewListener(
-            object : CustomSearchBar.SearchViewListener {
-                override fun onSearchViewClosed() {
-                    binding.searchBar.visibility = View.GONE
-                    viewModel.clearDocumentFilter()
-                }
+        binding.searchBar.apply {
+            initialize(lifecycleScope)
+            setSearchViewListener(
+                object : CustomSearchBar.SearchViewListener {
+                    override fun onSearchViewClosed() {
+                        binding.searchBar.visibility = View.GONE
+                        viewModel.clearDocumentFilter()
+                    }
 
-                override fun crossClicked() {
-                    viewModel.clearDocumentFilter()
-                }
+                    override fun crossClicked() {
+                        viewModel.clearDocumentFilter()
+                    }
 
-                override fun keywordEntered(keyword: String) {
-                    viewModel.filterDocumentsByKeyword(keyword)
-                }
+                    override fun keywordEntered(keyword: String) {
+                        viewModel.filterDocumentsByKeyword(keyword)
+                    }
 
-                override fun emptyKeywordEntered() {
-                    viewModel.clearDocumentFilter()
+                    override fun emptyKeywordEntered() {
+                        viewModel.clearDocumentFilter()
+                    }
                 }
-            }
-        )
-        binding.searchBar.observeSearchView(false)
+            )
+            observeSearchView(false)
+        }
     }
 
     private fun showSearchToolbar() {

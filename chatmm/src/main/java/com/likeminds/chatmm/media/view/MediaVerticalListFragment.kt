@@ -1,23 +1,18 @@
 package com.likeminds.chatmm.media.view
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.media.model.GIF
-import com.collabmates.sdk.media.model.IMAGE
-import com.collabmates.sdk.media.model.PDF
-import com.collabmates.sdk.media.model.VIDEO
-import com.likeminds.chatmm.media.model.MediaExtras
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.chatroom.create.adapter.CollabcardItemAdapter
-import com.likeminds.likemindschat.databinding.FragmentMediaVerticalListBinding
-import com.likeminds.likemindschat.utils.ITEM_IMAGE_EXPANDED
-import com.likeminds.likemindschat.utils.ITEM_PDF_EXPANDED
-import com.likeminds.likemindschat.utils.ITEM_VIDEO_EXPANDED
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
+import com.likeminds.chatmm.databinding.FragmentMediaVerticalListBinding
+import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.model.ITEM_IMAGE_EXPANDED
+import com.likeminds.chatmm.utils.model.ITEM_PDF_EXPANDED
+import com.likeminds.chatmm.utils.model.ITEM_VIDEO_EXPANDED
 import javax.inject.Inject
 
 class MediaVerticalListFragment :
@@ -26,7 +21,7 @@ class MediaVerticalListFragment :
     private var mediaExtras: MediaExtras? = null
 
     @Inject
-    lateinit var loginPreferences: LoginPreferences
+    lateinit var sdkPreferences: SDKPreferences
 
     companion object {
         const val TAG = "MediaVerticalListFragment"
@@ -50,21 +45,6 @@ class MediaVerticalListFragment :
         return FragmentMediaVerticalListBinding.inflate(layoutInflater)
     }
 
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.view.setBackgroundColor(Color.WHITE)
-        binding.buttonBack.imageTintList = ColorStateList.valueOf(Color.BLACK)
-        binding.textViewTitle.setTextColor(Color.BLACK)
-        binding.textViewSubtitle.setTextColor(Color.BLACK)
-        binding.textViewDate.setTextColor(Color.BLACK)
-        binding.dot.backgroundTintList = ColorStateList.valueOf(Color.BLACK)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.view.setBackgroundColor(headerColor)
-    }
-
     override fun attachDagger() {
         super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
@@ -78,49 +58,50 @@ class MediaVerticalListFragment :
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         initImageListView()
 
-        binding.textViewTitle.text = mediaExtras?.title
-        binding.textViewSubtitle.text = getSubTitleText()
-        binding.textViewDate.text = mediaExtras?.subtitle
+        binding.tvTitle.text = mediaExtras?.title
+        binding.tvSubTitle.text = getSubTitleText()
+        binding.tvDate.text = mediaExtras?.subtitle
 
-        binding.buttonBack.setOnClickListener { activity?.finish() }
+        binding.btnBack.setOnClickListener { activity?.finish() }
+    }
+
+    private fun setBranding() {
+        binding.toolbarColor = LMBranding.getToolbarColor()
+        binding.headerColor = LMBranding.getHeaderColor()
     }
 
     private fun initImageListView() {
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         binding.rvImageList.layoutManager = linearLayoutManager
-        val collabcardDocumentsItemAdapter = CollabcardItemAdapter(
-            loginPreferences,
-            null,
-            null,
-            null
-        )
-        binding.rvImageList.adapter = collabcardDocumentsItemAdapter
+        val chatroomDocumentsItemAdapter = ChatroomItemAdapter(sdkPreferences)
+        binding.rvImageList.adapter = chatroomDocumentsItemAdapter
         val attachmentList = mediaExtras?.attachments?.map { attachment ->
             val viewType = when {
-                attachment.type() == VIDEO -> ITEM_VIDEO_EXPANDED
-                attachment.type() == PDF -> ITEM_PDF_EXPANDED
+                attachment.type == VIDEO -> ITEM_VIDEO_EXPANDED
+                attachment.type == PDF -> ITEM_PDF_EXPANDED
                 else -> ITEM_IMAGE_EXPANDED
             }
             return@map attachment.toBuilder()
-                .viewType(viewType)
+                .dynamicType(viewType)
                 .attachments(mediaExtras?.attachments)
                 .communityId(mediaExtras?.communityId)
                 .build()
-        }?.sortedBy { it.index() }
+        }?.sortedBy { it.index }
         if (!attachmentList.isNullOrEmpty()) {
-            collabcardDocumentsItemAdapter.replace(attachmentList)
+            chatroomDocumentsItemAdapter.replace(attachmentList)
         }
     }
 
     private fun getSubTitleText(): CharSequence {
         val subTitleBuilder = StringBuilder()
-        val imageCount = mediaExtras?.attachments?.filter { it.type() == IMAGE }?.size ?: 0
-        val gifCount = mediaExtras?.attachments?.filter { it.type() == GIF }?.size ?: 0
-        val videoCount = mediaExtras?.attachments?.filter { it.type() == VIDEO }?.size ?: 0
-        val pdfCount = mediaExtras?.attachments?.filter { it.type() == PDF }?.size ?: 0
+        val imageCount = mediaExtras?.attachments?.filter { it.type == IMAGE }?.size ?: 0
+        val gifCount = mediaExtras?.attachments?.filter { it.type == GIF }?.size ?: 0
+        val videoCount = mediaExtras?.attachments?.filter { it.type == VIDEO }?.size ?: 0
+        val pdfCount = mediaExtras?.attachments?.filter { it.type == PDF }?.size ?: 0
         if (imageCount > 0) {
             subTitleBuilder.append(imageCount)
             if (imageCount > 1) subTitleBuilder.append(" photos")

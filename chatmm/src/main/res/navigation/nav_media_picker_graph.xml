@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mediaPickerFolderFragment"
-        android:name="com.likeminds.likemindschat.media.view.MediaPickerFolderFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaPickerFolderFragment"
         android:label="MediaPickerFolderFragment"
         tools:layout="@layout/fragment_media_picker_folder">
         <action
@@ -15,35 +15,35 @@
             app:destination="@id/mediaPickerItemFragment" />
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.likemindschat.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
     </fragment>
     <fragment
         android:id="@+id/mediaPickerItemFragment"
-        android:name="com.likeminds.likemindschat.media.view.MediaPickerItemFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaPickerItemFragment"
         android:label="MediaPickerItemFragment"
         tools:layout="@layout/fragment_media_picker_item">
         <argument
             android:name="mediaPickerItemExtras"
-            app:argType="com.likeminds.likemindschat.media.model.MediaPickerItemExtras" />
+            app:argType="com.likeminds.chatmm.media.model.MediaPickerItemExtras" />
     </fragment>
     <fragment
         android:id="@+id/mediaPickerDocumentFragment"
-        android:name="com.likeminds.likemindschat.media.view.MediaPickerDocumentFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaPickerDocumentFragment"
         android:label="MediaPickerDocumentFragment"
         tools:layout="@layout/fragment_media_picker_document">
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.likemindschat.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
     </fragment>
 
     <fragment
         android:id="@+id/mediaPickerAudioFragment"
-        android:name="com.likeminds.likemindschat.media.view.MediaPickerAudioFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaPickerAudioFragment"
         android:label="MediaPickerAudioFragment"
         tools:layout="@layout/fragment_media_picker_audio">
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.likemindschat.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
     </fragment>
 
 </navigation>

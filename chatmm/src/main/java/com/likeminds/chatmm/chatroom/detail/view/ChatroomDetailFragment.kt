@@ -44,6 +44,7 @@ import com.likeminds.chatmm.chatroom.detail.util.VoiceNoteUtils
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapter
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
+import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.DM_CM_BECOMES_MEMBER_DISABLE
@@ -109,6 +110,9 @@ class ChatroomDetailFragment :
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    @Inject
+    lateinit var helperViewModel: HelperViewModel
 
     lateinit var chatroomDetailAdapter: ChatroomDetailAdapter
     private lateinit var chatroomScrollListener: ChatroomScrollListener
@@ -752,7 +756,7 @@ class ChatroomDetailFragment :
                 }
 
                 override fun callApi(page: Int, searchName: String) {
-                    viewModel.getMembersForTagging(
+                    helperViewModel.getMembersForTagging(
                         chatroomId,
                         page,
                         searchName
@@ -1179,6 +1183,40 @@ class ChatroomDetailFragment :
 
     override fun getChatRoom(): ChatroomViewData? {
         return getChatroomViewData()
+    }
+
+    override fun isSelectionEnabled(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAudioConversationActionClicked(
+        data: AttachmentViewData,
+        parentPositionId: String,
+        childPosition: Int,
+        progress: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLongPressConversation(
+        conversation: ConversationViewData,
+        itemPosition: Int,
+        from: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConversationSeekbarChanged(
+        progress: Int,
+        attachmentViewData: AttachmentViewData,
+        parentConversationId: String,
+        childPosition: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int) {
+        TODO("Not yet implemented")
     }
 
     //add this function for every navigation from chatroom

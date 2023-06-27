@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.utils.permissions
 
 import android.os.Build
-import androidx.annotation.NonNull
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
 class PermissionManager {
@@ -10,8 +9,8 @@ class PermissionManager {
         const val REQUEST_CODE_SETTINGS_PERMISSION = 100
 
         fun performTaskWithPermission(
-            @NonNull activity: BaseAppCompatActivity,
-            @NonNull task: PermissionTask,
+            activity: BaseAppCompatActivity,
+            task: PermissionTask,
             permission: Permission,
             showInitialPopup: Boolean,
             showDeniedPopup: Boolean,

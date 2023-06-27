@@ -3,6 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="toolbarColor"
+            type="int" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,12 +46,12 @@
                     android:layout_marginTop="18dp"
                     android:layout_marginBottom="19dp"
                     android:background="?selectableItemBackgroundBorderless"
+                    android:tint="@{toolbarColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_arrow_back_white_24dp"
-                    app:tint="@color/white"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription, UseAppTint" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_title"
@@ -108,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:backgroundTint="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             android:visibility="gone"
             app:fabCustomSize="48dp"
             app:layout_constraintBottom_toBottomOf="parent"

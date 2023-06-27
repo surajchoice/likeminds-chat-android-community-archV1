@@ -13,6 +13,7 @@ import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
+import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.likemindschat.LMChatClient
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
@@ -30,6 +31,7 @@ class SDKApplication {
     private var homeFeedComponent: HomeFeedComponent? = null
     private var exploreComponent: ExploreComponent? = null
     private var chatroomDetailComponent: ChatroomDetailComponent? = null
+    private var mediaComponent: MediaComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -137,7 +139,7 @@ class SDKApplication {
      * */
     fun mediaComponent(): MediaComponent? {
         if (mediaComponent == null) {
-            mediaComponent = appComponent?.mediaComponent()?.create()
+            mediaComponent = likeMindsChatComponent?.mediaComponent()?.create()
         }
         return mediaComponent
     }

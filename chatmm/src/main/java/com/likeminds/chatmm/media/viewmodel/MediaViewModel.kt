@@ -11,9 +11,11 @@ import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.utils.GiphyUtil
+import com.likeminds.chatmm.utils.ValueUtils.filterThenMap
 import com.likeminds.chatmm.utils.coroutine.launchDefault
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -31,6 +33,9 @@ class MediaViewModel @Inject constructor(
     private val _mediaListUri by lazy { MutableLiveData<List<SingleUriData>>() }
     val mediaListUri: LiveData<List<SingleUriData>> = _mediaListUri
 
+    private val localFolders by lazy { MutableLiveData<List<MediaFolderViewData>>() }
+    private val bucketMedias by lazy { MutableLiveData<List<BaseViewType>>() }
+
     private val _audioByteArray by lazy { MutableLiveData<ByteArray>() }
     val audioByteArray: LiveData<ByteArray> = _audioByteArray
 
@@ -42,6 +47,14 @@ class MediaViewModel @Inject constructor(
 
     private val _giphyMedia by lazy { MutableLiveData<Pair<Boolean, Uri?>>() }
     val giphyMedia: LiveData<Pair<Boolean, Uri?>> = _giphyMedia
+
+    private val audioMediaList by lazy { ArrayList<MediaViewData>() }
+    private val localAudioFileLists by lazy { MutableLiveData<List<BaseViewType>>() }
+
+    private val localDocumentFiles by lazy { MutableLiveData<List<BaseViewType>>() }
+    private val documentMediaList by lazy { ArrayList<MediaViewData>() }
+
+    private val getMediaBrowserViewData by lazy { MediaBrowserViewData.Builder().build() }
 
     sealed class ErrorMessageEvent {
     }
@@ -97,6 +110,118 @@ class MediaViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun fetchAllAudioFiles(context: Context): LiveData<List<BaseViewType>> {
+        mediaRepository.getLocalAudioFiles(context) { medias ->
+            audioMediaList.clear()
+            audioMediaList.addAll(medias)
+
+            postAudioListForView(audioMediaList)
+        }
+        return localAudioFileLists
+    }
+
+    fun filterAudioByKeyword(keyword: String) {
+        val keywordList = keyword.split(" ")
+        val updatedList = audioMediaList.filterThenMap({ media ->
+            val matchedKeywords = keywordList.filter {
+                media.mediaName?.contains(it, true) == true
+            }
+            Pair(matchedKeywords.isNotEmpty(), matchedKeywords)
+        }, {
+            it.first.toBuilder().filteredKeywords(it.second).build()
+        })
+
+        postAudioListForView(updatedList)
+    }
+
+    fun clearAudioFilter() {
+        postAudioListForView(audioMediaList)
+    }
+
+    private fun postAudioListForView(audioMediaList: List<MediaViewData>) {
+        val mediaList = ArrayList<BaseViewType>()
+        mediaList.addAll(audioMediaList)
+        localAudioFileLists.value = mediaList
+    }
+
+    fun fetchAllFolders(
+        context: Context,
+        mediaTypes: List<String>,
+    ): LiveData<List<MediaFolderViewData>> {
+        mediaRepository.getLocalFolders(context, mediaTypes, localFolders::postValue)
+        return localFolders
+    }
+
+    fun fetchMediaInBucket(
+        context: Context,
+        bucketId: String,
+        mediaTypes: MutableList<String>,
+    ): LiveData<List<BaseViewType>> {
+        mediaRepository.getMediaInBucket(context, bucketId, mediaTypes) { medias ->
+            val mediaList = ArrayList<BaseViewType>()
+            var headerName = ""
+            medias.forEach { media ->
+                if (media.dateTimeStampHeader != headerName) {
+                    mediaList.add(getMediaHeader(media.dateTimeStampHeader))
+                    headerName = media.dateTimeStampHeader
+                }
+                mediaList.add(media)
+            }
+            bucketMedias.postValue(mediaList)
+        }
+        return bucketMedias
+    }
+
+    fun fetchAllDocuments(context: Context): LiveData<List<BaseViewType>> {
+        mediaRepository.getLocalDocumentFiles(context) { medias ->
+            // Update documents list to be used for various purpose like sorting
+            documentMediaList.clear()
+            documentMediaList.addAll(medias)
+
+            sortDocumentsByName()
+        }
+        return localDocumentFiles
+    }
+
+    fun sortDocumentsByName() {
+        documentMediaList.sortBy { it.mediaName }
+        postDocumentListForView(documentMediaList)
+    }
+
+    fun sortDocumentsByDate() {
+        documentMediaList.sortByDescending { it.date }
+        postDocumentListForView(documentMediaList)
+    }
+
+    fun filterDocumentsByKeyword(keyword: String) {
+        val keywordList = keyword.split(" ")
+        val updatedList = documentMediaList.filterThenMap({ media ->
+            val matchedKeywords = keywordList.filter {
+                media.mediaName?.contains(it) == true
+            }
+            Pair(matchedKeywords.isNotEmpty(), matchedKeywords)
+        }, {
+            it.first.toBuilder().filteredKeywords(it.second).build()
+        })
+
+        postDocumentListForView(updatedList)
+    }
+
+    fun clearDocumentFilter() {
+        postDocumentListForView(documentMediaList)
+    }
+
+    private fun postDocumentListForView(updatedList: List<MediaViewData>) {
+        val mediaList = ArrayList<BaseViewType>()
+        mediaList.add(getMediaBrowserViewData)
+        mediaList.addAll(updatedList)
+        localDocumentFiles.postValue(mediaList)
+    }
+
+    private fun getMediaHeader(title: String): MediaHeaderViewData {
+        return MediaHeaderViewData.Builder().title(title).build()
     }
 
     fun fetchExternallySharedUriData(context: Context, uris: List<Uri>) =

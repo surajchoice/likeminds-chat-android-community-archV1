@@ -3,6 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="toolbarColor"
+            type="int" />
+
+        <variable
+            name="headerColor"
+            type="int" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/dark_turquoise"
+            android:backgroundTint="@{headerColor}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sub_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,10 +39,11 @@
             android:layout_marginBottom="19dp"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back_white_24dp"
+            android:tint="@{toolbarColor}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sub_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_title"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription,UseAppTint" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_title"
@@ -66,6 +79,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="11dp"
             android:background="@drawable/background_circle_dot_custom_title"
+            android:backgroundTint="@{toolbarColor}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sub_title"
             app:layout_constraintStart_toEndOf="@+id/tv_sub_title"
             app:layout_constraintTop_toTopOf="@+id/tv_sub_title" />

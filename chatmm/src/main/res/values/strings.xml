@@ -95,4 +95,10 @@
     <string name="done">Done</string>
     <string name="media_is_downloading">Media is downloading. Check notification for progress</string>
     <string name="downloading_video">Downloading video</string>
+    <string name="no_audio_files">Device doesn\'t contain any audio file.</string>
+    <string name="music">Audio</string>
+    <string name="tap_to_select">Tap to select</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="sort_by_date">Sort by date</string>
+    <string name="save_to_gallery">Save to gallery</string>
 </resources>

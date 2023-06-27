@@ -20,7 +20,7 @@ class AttachmentViewData private constructor(
     val height: Int?,
     val title: String?,
     val subTitle: String?,
-    val attachments: ArrayList<AttachmentViewData>?,
+    val attachments: List<AttachmentViewData>?,
     val parentConversation: ConversationViewData?,
     val parentChatRoom: ChatroomViewData?,
     val parentViewItemPosition: Int?,
@@ -35,10 +35,11 @@ class AttachmentViewData private constructor(
     val mediaState: String?,
     val communityId: Int?,
     val createdAt: Long?,
-    val updatedAt: Long?
+    val updatedAt: Long?,
+    val dynamicType: Int?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
-        get() = when (type) {
+        get() = dynamicType ?: when (type) {
             VIDEO -> {
                 ITEM_CHATROOM_VIDEO
             }
@@ -63,7 +64,7 @@ class AttachmentViewData private constructor(
         private var height: Int? = null
         private var title: String? = null
         private var subTitle: String? = null
-        private var attachments: ArrayList<AttachmentViewData>? = null
+        private var attachments: List<AttachmentViewData>? = null
         private var parentConversation: ConversationViewData? = null
         private var parentChatRoom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
@@ -79,6 +80,7 @@ class AttachmentViewData private constructor(
         private var communityId: Int? = null
         private var createdAt: Long? = null
         private var updatedAt: Long? = null
+        private var dynamicType: Int? = null
 
         fun id(id: String?) = apply { this.id = id }
         fun name(name: String?) = apply { this.name = name }
@@ -89,7 +91,7 @@ class AttachmentViewData private constructor(
         fun height(height: Int?) = apply { this.height = height }
         fun title(title: String?) = apply { this.title = title }
         fun subTitle(subTitle: String?) = apply { this.subTitle = subTitle }
-        fun attachments(attachments: ArrayList<AttachmentViewData>?) =
+        fun attachments(attachments: List<AttachmentViewData>?) =
             apply { this.attachments = attachments }
 
         fun parentConversation(parentConversation: ConversationViewData?) =
@@ -119,6 +121,7 @@ class AttachmentViewData private constructor(
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
+        fun dynamicType(dynamicType: Int?) = apply { this.dynamicType = dynamicType }
 
         fun build() = AttachmentViewData(
             id,
@@ -145,7 +148,8 @@ class AttachmentViewData private constructor(
             mediaState,
             communityId,
             createdAt,
-            updatedAt
+            updatedAt,
+            dynamicType
         )
     }
 
@@ -175,5 +179,6 @@ class AttachmentViewData private constructor(
             .communityId(communityId)
             .createdAt(createdAt)
             .updatedAt(updatedAt)
+            .dynamicType(dynamicType)
     }
 }

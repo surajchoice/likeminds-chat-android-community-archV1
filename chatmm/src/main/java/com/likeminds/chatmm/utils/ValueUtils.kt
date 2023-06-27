@@ -136,4 +136,28 @@ object ValueUtils {
     fun <K, V> getOrDefault(map: Map<K, V>, key: K, defaultValue: V): V? {
         return if (map.containsKey(key)) map[key] else defaultValue
     }
+
+    /**
+     * This function run filter and map operation in single loop
+     */
+    fun <T, R, P> Iterable<T>.filterThenMap(
+        predicate: (T) -> Pair<Boolean, P>,
+        transform: (Pair<T, P>) -> R
+    ): List<R> {
+        return filterThenMap(ArrayList(), predicate, transform)
+    }
+
+    fun <T, R, P, C : MutableCollection<in R>>
+            Iterable<T>.filterThenMap(
+        collection: C, predicate: (T) -> Pair<Boolean, P>,
+        transform: (Pair<T, P>) -> R
+    ): C {
+        for (element in this) {
+            val response = predicate(element)
+            if (response.first) {
+                collection.add(transform(Pair(element, response.second)))
+            }
+        }
+        return collection
+    }
 }

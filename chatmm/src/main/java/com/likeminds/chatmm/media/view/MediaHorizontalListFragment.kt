@@ -85,19 +85,19 @@ class MediaHorizontalListFragment :
 
 
     private fun getCommunity() {
-        mediaExtras.communityId?.let { viewModel.getCommunity(it) }
+//        mediaExtras.communityId?.let { viewModel.getCommunity(it) }
     }
 
     private fun observeCommunity() {
-        viewModel.communityLiveData.observe(viewLifecycleOwner) { communityViewData ->
-            downloadableContentTypes = communityViewData.downloadableContentType()
-            if (!mediaExtras.medias.isNullOrEmpty()) {
-                handleOverflowMenuIcon(
-                    downloadableContentTypes,
-                    mediaExtras.medias!![binding.viewPager.currentItem].viewType
-                )
-            }
-        }
+//        viewModel.communityLiveData.observe(viewLifecycleOwner) { communityViewData ->
+//            downloadableContentTypes = communityViewData.downloadableContentType()
+//            if (!mediaExtras.medias.isNullOrEmpty()) {
+//                handleOverflowMenuIcon(
+//                    downloadableContentTypes,
+//                    mediaExtras.medias!![binding.viewPager.currentItem].viewType
+//                )
+//            }
+//        }
     }
 
     private fun initViewPager() {
@@ -163,7 +163,8 @@ class MediaHorizontalListFragment :
     private fun saveToGallery() {
         val position = binding.viewPager.currentItem
         val media = mediaSwipeAdapter.items()[position] as? MediaSwipeViewData ?: return
-        val notificationIcon = sdkPreferences.getNotificationIcon()
+        // todo:
+        val notificationIcon = R.drawable.ic_notification
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
             requireActivity(),

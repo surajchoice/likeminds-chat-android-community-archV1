@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="toolbarColor"
+            type="int" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,12 +41,12 @@
                     android:layout_marginTop="18dp"
                     android:layout_marginBottom="19dp"
                     android:background="?selectableItemBackgroundBorderless"
+                    android:tint="@{toolbarColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_arrow_back_white_24dp"
-                    app:tint="@color/white"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,UseAppTint" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_title"
@@ -62,7 +69,7 @@
         </androidx.appcompat.widget.Toolbar>
 
         <com.likeminds.chatmm.utils.recyclerview.AnimatedRecyclerView
-            android:id="@+id/rv_documents"
+            android:id="@+id/rv_folder"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"

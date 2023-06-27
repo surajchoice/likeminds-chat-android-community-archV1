@@ -3,8 +3,6 @@ package com.likeminds.chatmm.media.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,20 +10,18 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.navigation.fragment.findNavController
-import com.collabmates.sdk.auth.LoginPreferences
-import com.collabmates.sdk.media.model.MediaType
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapter
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapterListener
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.databinding.FragmentMediaPickerFolderBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.databinding.FragmentMediaPickerFolderBinding
-import com.likeminds.likemindschat.utils.AndroidUtils
-import com.likeminds.likemindschat.utils.recyclerview.GridSpacingItemDecoration
-import javax.inject.Inject
+import com.likeminds.chatmm.utils.AndroidUtils
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.file.model.LocalAppData
+import com.likeminds.chatmm.utils.recyclerview.GridSpacingItemDecoration
 
 class MediaPickerFolderFragment :
     BaseFragment<FragmentMediaPickerFolderBinding, MediaViewModel>(),
@@ -35,9 +31,6 @@ class MediaPickerFolderFragment :
 
     private lateinit var mediaPickerExtras: MediaPickerExtras
     private val appsList by lazy { ArrayList<LocalAppData>() }
-
-    @Inject
-    lateinit var loginPreferences: LoginPreferences
 
     companion object {
         const val BUNDLE_MEDIA_PICKER_FOLDER = "bundle of media picker folder"
@@ -61,20 +54,6 @@ class MediaPickerFolderFragment :
 
     override fun getViewBinding(): FragmentMediaPickerFolderBinding {
         return FragmentMediaPickerFolderBinding.inflate(layoutInflater)
-    }
-
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.toolbar.setBackgroundColor(Color.WHITE)
-
-        binding.ivBack.imageTintList = ColorStateList.valueOf(Color.BLACK)
-        binding.textViewToolbarTitle.setTextColor(Color.BLACK)
-        binding.toolbar.overflowIcon?.setTint(Color.BLACK)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.toolbar.setBackgroundColor(headerColor)
     }
 
     override fun attachDagger() {
@@ -152,15 +131,15 @@ class MediaPickerFolderFragment :
         initializeTitle()
 
         mediaPickerAdapter = MediaPickerAdapter(this)
-        binding.recyclerView.apply {
+        binding.rvFolder.apply {
             addItemDecoration(GridSpacingItemDecoration(2, 12))
             adapter = mediaPickerAdapter
         }
     }
 
     private fun initializeTitle() {
-        binding.textViewToolbarTitle.text =
-            if (MediaType.isBothImageAndVideo(mediaPickerExtras.mediaTypes)
+        binding.tvToolbarTitle.text =
+            if (InternalMediaType.isBothImageAndVideo(mediaPickerExtras.mediaTypes)
                 && mediaPickerExtras.senderName?.isNotEmpty() == true
             ) {
                 String.format("Send to %s", mediaPickerExtras.senderName)
@@ -177,13 +156,13 @@ class MediaPickerFolderFragment :
 
     private fun getExternalAppList() {
         when {
-            MediaType.isBothImageAndVideo(mediaPickerExtras.mediaTypes) -> {
+            InternalMediaType.isBothImageAndVideo(mediaPickerExtras.mediaTypes) -> {
                 appsList.addAll(AndroidUtils.getExternalMediaPickerApps(requireContext()))
             }
-            MediaType.isImage(mediaPickerExtras.mediaTypes) -> {
+            InternalMediaType.isImage(mediaPickerExtras.mediaTypes) -> {
                 appsList.addAll(AndroidUtils.getExternalImagePickerApps(requireContext()))
             }
-            MediaType.isVideo(mediaPickerExtras.mediaTypes) -> {
+            InternalMediaType.isVideo(mediaPickerExtras.mediaTypes) -> {
                 appsList.addAll(AndroidUtils.getExternalVideoPickerApps(requireContext()))
             }
         }
@@ -191,8 +170,8 @@ class MediaPickerFolderFragment :
 
     override fun onFolderClicked(folderData: MediaFolderViewData) {
         val extras = MediaPickerItemExtras.Builder()
-            .bucketId(folderData.bucketId())
-            .folderTitle(folderData.title())
+            .bucketId(folderData.bucketId)
+            .folderTitle(folderData.title)
             .mediaTypes(mediaPickerExtras.mediaTypes)
             .allowMultipleSelect(mediaPickerExtras.allowMultipleSelect)
             .build()

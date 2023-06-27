@@ -29,5 +29,4 @@ class ImageSwipeItemViewDataBinder constructor(
         listener.onImageViewed()
         binding.executePendingBindings()
     }
-
 }

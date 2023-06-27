@@ -2,7 +2,6 @@ package com.likeminds.chatmm.media.view
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,33 +9,33 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapter
-import com.likeminds.chatmm.media.adapter.MediaPickerAdapterListener
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
+import com.likeminds.chatmm.databinding.FragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.MEDIA_RESULT_PICKED
 import com.likeminds.chatmm.media.model.MediaPickerItemExtras
 import com.likeminds.chatmm.media.model.MediaPickerResult
 import com.likeminds.chatmm.media.model.MediaViewData
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
+import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
-import com.likeminds.likemindschat.R
-import com.likeminds.likemindschat.SDKApplication
-import com.likeminds.likemindschat.base.BaseAppCompatActivity
-import com.likeminds.likemindschat.base.BaseFragment
-import com.likeminds.likemindschat.chatroom.detail.model.CollabcardDetailActionModeData
-import com.likeminds.likemindschat.databinding.FragmentMediaPickerItemBinding
-import com.likeminds.likemindschat.utils.ITEM_MEDIA_PICKER_HEADER
-import com.likeminds.likemindschat.utils.actionmode.ActionModeCallback
-import com.likeminds.likemindschat.utils.actionmode.ActionModeListener
-import com.likeminds.likemindschat.utils.permissions.Permission
-import com.likeminds.likemindschat.utils.permissions.PermissionDeniedCallback
-import com.likeminds.likemindschat.utils.permissions.PermissionManager
+import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
+import com.likeminds.chatmm.utils.actionmode.ActionModeListener
+import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
+import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.model.ITEM_MEDIA_PICKER_HEADER
+import com.likeminds.chatmm.utils.permissions.Permission
+import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
+import com.likeminds.chatmm.utils.permissions.PermissionManager
 
 
 class MediaPickerItemFragment :
     BaseFragment<FragmentMediaPickerItemBinding, MediaViewModel>(),
     MediaPickerAdapterListener,
-    ActionModeListener<CollabcardDetailActionModeData> {
+    ActionModeListener<ChatroomDetailActionModeData> {
 
-    private var actionModeCallback: ActionModeCallback<CollabcardDetailActionModeData>? = null
+    private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
 
     lateinit var mediaPickerAdapter: MediaPickerAdapter
 
@@ -63,21 +62,6 @@ class MediaPickerItemFragment :
 
     override fun getViewBinding(): FragmentMediaPickerItemBinding {
         return FragmentMediaPickerItemBinding.inflate(layoutInflater)
-    }
-
-    override fun drawPrimaryColor(color: Int) {
-        super.drawPrimaryColor(color)
-        binding.toolbar.setBackgroundColor(Color.WHITE)
-
-        binding.toolbar.setTitleTextColor(Color.BLACK)
-        binding.toolbar.setSubtitleTextColor(Color.BLACK)
-        binding.toolbar.navigationIcon?.setTint(Color.BLACK)
-        binding.toolbar.overflowIcon?.setTint(Color.BLACK)
-    }
-
-    override fun drawAdvancedColor(headerColor: Int, buttonsIconsColor: Int, textLinksColor: Int) {
-        super.drawAdvancedColor(headerColor, buttonsIconsColor, textLinksColor)
-        binding.toolbar.setBackgroundColor(headerColor)
     }
 
     override fun attachDagger() {
@@ -135,7 +119,7 @@ class MediaPickerItemFragment :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.selectMultiple -> {
+            R.id.select_multiple -> {
                 startActionMode()
                 true
             }
@@ -147,10 +131,10 @@ class MediaPickerItemFragment :
         binding.toolbar.title = ""
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
-        binding.textViewToolbarTitle.text = mediaPickerItemExtras.folderTitle
+        binding.tvToolbarTitle.text = mediaPickerItemExtras.folderTitle
 
         mediaPickerAdapter = MediaPickerAdapter(this)
-        binding.recyclerView.apply {
+        binding.rvMediaSingle.apply {
             val mLayoutManager = GridLayoutManager(requireContext(), 3)
             mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -211,10 +195,10 @@ class MediaPickerItemFragment :
     }
 
     override fun onMediaItemLongClicked(mediaViewData: MediaViewData, itemPosition: Int) {
-        if (selectedMedias.containsKey(mediaViewData.uri().toString())) {
-            selectedMedias.remove(mediaViewData.uri().toString())
+        if (selectedMedias.containsKey(mediaViewData.uri.toString())) {
+            selectedMedias.remove(mediaViewData.uri.toString())
         } else {
-            selectedMedias[mediaViewData.uri().toString()] = mediaViewData
+            selectedMedias[mediaViewData.uri.toString()] = mediaViewData
         }
 
         mediaPickerAdapter.notifyItemChanged(itemPosition)
