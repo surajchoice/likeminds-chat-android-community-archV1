@@ -202,6 +202,7 @@ class ChatroomDetailFragment :
     companion object {
         const val ARG_CHATROOM_DETAIL_RESULT_EXTRAS = "ARG_CHATROOM_DETAIL_RESULT_EXTRAS"
         const val CHATROOM_DETAIL_EXTRAS = "CHATROOM_DETAIL_EXTRAS"
+        const val SOURCE_CHAT_ROOM_TELESCOPE = "chatroom_telescope"
 
         const val REQUEST_GIFS = 3004
     }
@@ -277,7 +278,7 @@ class ChatroomDetailFragment :
         initGiphy()
         initAttachmentClick()
         initAttachmentsView()
-        disableAnswerPosting()
+//        disableAnswerPosting()
         initReplyView()
     }
 

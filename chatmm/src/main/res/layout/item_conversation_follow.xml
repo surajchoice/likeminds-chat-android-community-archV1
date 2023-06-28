@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="39dp">
+
+        <ImageView
+            android:id="@+id/iv_follow_telescope_const"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_follow_telescope"
+            tools:ignore="ContentDescription" />
+
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_follow_const"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:gravity="center"
+            android:text="@string/join_chatroom_message"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_follow_telescope_const" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            android:id="@+id/btn_follow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/turquoise"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="10dp"
+            android:text="@string/join_small"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:cornerRadius="10dp"
+            app:font_type="regular"
+            app:icon="@drawable/ic_follow_v1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_follow_const" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

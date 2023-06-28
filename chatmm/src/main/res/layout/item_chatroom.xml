@@ -162,7 +162,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
-            android:id="@+id/messageReactionsGridLayout"
+            android:id="@+id/message_reactions_grid_layout"
             layout="@layout/grid_message_reactions"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
@@ -183,10 +183,10 @@
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/cl_bubble"
-            app:layout_constraintTop_toBottomOf="@id/messageReactionsGridLayout" />
+            app:layout_constraintTop_toBottomOf="@id/message_reactions_grid_layout" />
 
         <View
-            android:id="@+id/viewSelection"
+            android:id="@+id/view_selection"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0.16"
@@ -199,7 +199,7 @@
             tools:visibility="visible" />
 
         <View
-            android:id="@+id/viewSelectionAnimation"
+            android:id="@+id/view_selection_animation"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0"

@@ -121,6 +121,12 @@ object ValueUtils {
         return mediaType
     }
 
+    fun String.getValidTextForLinkify(): String {
+        return this.replace("\u202C", "")
+            .replace("\u202D", "")
+            .replace("\u202E", "")
+    }
+
     fun Int?.getMaxCountNumberText(): String {
         if (this == null) {
             return "0"
@@ -130,6 +136,18 @@ object ValueUtils {
         } else {
             this.toString()
         }
+    }
+
+    /**
+     * http://www.youtube.com/watch?v=-wtIMTCHWuI
+     * http://www.youtube.com/v/-wtIMTCHWuI
+     * http://youtu.be/-wtIMTCHWuI
+     */
+    fun String.isValidYoutubeLink(): Boolean {
+        val uri = Uri.parse(this)
+        return uri.host.equals("youtube") ||
+                uri.host.equals("youtu.be") ||
+                uri.host.equals("www.youtube.com")
     }
 
     @JvmStatic

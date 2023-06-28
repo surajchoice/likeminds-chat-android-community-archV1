@@ -5,15 +5,26 @@ import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 object MemberUtil {
 
     fun getFirstNameToShow(
-        SDKPreferences: SDKPreferences,
+        sdkPreferences: SDKPreferences,
         memberViewData: MemberViewData?
     ): String {
         val memberID = memberViewData?.id
         return if (memberViewData == null) ""
-        else if (SDKPreferences.getMemberId() == memberID) "You:"
+        else if (sdkPreferences.getMemberId() == memberID) "You:"
         else {
             val name = memberViewData.name?.trim()?.split(" ")?.get(0)
             if (name != null) "$name:" else ""
+        }
+    }
+
+    fun getMemberNameForDisplay(
+        member: MemberViewData,
+        currentMemberId: String
+    ): String {
+        return if (currentMemberId == member.id) {
+            "You"
+        } else {
+            member.name ?: ""
         }
     }
 }

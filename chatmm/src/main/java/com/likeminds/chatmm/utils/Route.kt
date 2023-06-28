@@ -12,10 +12,56 @@ object Route {
     const val ROUTE_CHATROOM_DETAIL = "chatroom_detail"
     const val ROUTE_BROWSER = "browser"
     const val ROUTE_MAIL = "mail"
+    const val ROUTE_MEMBER = "member"
+    const val ROUTE_MEMBER_PROFILE = "member_profile"
 
     const val PARAM_SOURCE_CHATROOM_ID = "source_chatroom_id"
     const val PARAM_SOURCE_COMMUNITY_ID = "source_community_id"
     private const val PARAM_COHORT_ID = "cohort_id"
+
+    fun handleDeepLink(context: Context, url: String?): Intent? {
+        val data = Uri.parse(url) ?: return null
+        if (data.pathSegments.isNullOrEmpty()) {
+            return null
+        }
+        val firstPath = getRouteFromDeepLink(data) ?: return null
+        return getRouteIntent(
+            context,
+            firstPath,
+            0
+        )
+    }
+
+    //create route string as per uri with check for the host (likeminds)
+    private fun getRouteFromDeepLink(data: Uri?): String? {
+        val host = data?.host ?: return null
+        val firstPathSegment = data.pathSegments.firstOrNull()
+        if (host == getLmWebHost() && firstPathSegment == DEEP_LINK_CHATROOM) {
+            return createCollabcardRoute(data)
+        }
+        if (!isLMHost(host)) {
+            return createWebsiteRoute(data)
+        }
+        return when {
+            data.scheme == DEEP_LINK_SCHEME -> {
+                when (firstPathSegment) {
+                    DEEP_LINK_COMMUNITY_FEED -> {
+                        createCommunityFeedRoute(data)
+                    }
+                    DEEP_LINK_CREATE_COMMUNITY -> {
+                        createCommunityCreateRoute()
+                    }
+                    else -> null
+                }
+            }
+            firstPathSegment == DEEP_LINK_CHATROOM -> {
+                createCollabcardRoute(data)
+            }
+            else -> {
+                createWebsiteRoute(data)
+            }
+        }
+    }
 
     // todo: removed profle routes
     fun getRouteIntent(
@@ -163,5 +209,14 @@ object Route {
             return Intent.createChooser(intent, "Select an email client")
         }
         return null
+    }
+
+    fun Uri.getNullableQueryParameter(key: String): String? {
+        val value = this.getQueryParameter(key)
+        return if (value == "null") {
+            null
+        } else {
+            value
+        }
     }
 }

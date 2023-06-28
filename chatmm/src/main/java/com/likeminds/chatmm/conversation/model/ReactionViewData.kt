@@ -13,6 +13,7 @@ class ReactionViewData private constructor(
     val chatroomId: String?,
     val conversationId: String?
 ) : BaseViewType, Parcelable {
+
     override val viewType: Int
         get() = ITEM_MESSAGE_REACTION
 }

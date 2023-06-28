@@ -101,4 +101,19 @@
     <string name="sort_by_name">Sort by name</string>
     <string name="sort_by_date">Sort by date</string>
     <string name="save_to_gallery">Save to gallery</string>
+    <string name="retry">Retry</string>
+    <string name="gif">GIF</string>
+    <string name="stay_joined">Stay Joined</string>
+    <string name="chat_room_auto_joined_message">You were tagged and added as a participant here. As a result this chatroom got added in your joined chat rooms.</string>
+    <string name="chat_room_auto_joined">Chat room auto joined</string>
+    <string name="leave">Leave</string>
+    <string name="join_chatroom_message">Track this conversation and\nparticipate by joining this chatroom.</string>
+    <string name="join_small">Join</string>
+    <string name="chat_room_created">Chat room created.</string>
+    <string name="share_button">Share</string>
+    <string name="add_participants">Add Participants</string>
+    <string name="chat_room_created_info">Although this chat room is open and discoverable\nto all community members, you can choose to add\nthem yourself.</string>
+    <string name="uploading_progress_placeholder">%s / %s</string>
+    <string name="link">Link</string>
+    <string name="tag_button_text">Tag ‘@’</string>
 </resources>

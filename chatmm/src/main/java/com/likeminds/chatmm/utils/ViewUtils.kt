@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -15,7 +16,10 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
@@ -191,6 +195,30 @@ object ViewUtils {
             }
         })
         anim.start()
+    }
+
+    fun getDrawable(
+        context: Context,
+        resource: Int,
+        sizeInDp: Int,
+        colorResource: Int? = null,
+    ): Drawable? {
+        val drawable = ResourcesCompat.getDrawable(
+            context.resources,
+            resource,
+            null
+        ) ?: return null
+        val size = dpToPx(sizeInDp)
+        if (colorResource != null) {
+            val color = ResourcesCompat.getColor(context.resources, colorResource, null)
+            drawable.setTint(color)
+        }
+        drawable.setBounds(0, 0, size, size)
+        return drawable
+    }
+
+    fun Context.fetchDrawable(@DrawableRes resId: Int): Drawable {
+        return ContextCompat.getDrawable(this, resId)!!
     }
 
     fun FragmentManager.currentFragment(navHostId: Int): Fragment? {

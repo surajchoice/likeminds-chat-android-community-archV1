@@ -11,11 +11,19 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.github.chrisbanes.photoview.PhotoView
 import com.likeminds.chatmm.utils.ViewUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object ImageBindingUtil {
 
@@ -138,6 +146,64 @@ object ImageBindingUtil {
                 view.clearColorFilter()
             }
         }
+    }
+
+    fun loadFirstFrameOfGif(
+        view: ImageView,
+        file: Any?,
+        placeholder: Any?,
+        cornerRadius: Int = 0
+    ) {
+        if ((file == null && placeholder == null)
+            || (file != null && file !is String &&
+                    file !is Uri && file !is Drawable &&
+                    file !is Int && file !is Bitmap)
+        ) {
+            return
+        }
+        var builder = Glide.with(view)
+            .asGif()
+            .load(file)
+
+        //Set the placeholder
+        if (placeholder != null && placeholder is Int) {
+            builder = builder.placeholder(placeholder).error(placeholder)
+        } else if (placeholder != null && placeholder is Drawable) {
+            builder = builder.placeholder(placeholder).error(placeholder)
+        }
+
+        if (cornerRadius > 0) {
+            builder = builder.transform(
+                CenterCrop(), RoundedCorners(cornerRadius)
+            )
+        }
+
+        builder.addListener(object : RequestListener<GifDrawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<GifDrawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: GifDrawable,
+                model: Any?,
+                target: Target<GifDrawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                if (isValidContextForGlide(view.context)) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        view.scaleType = ImageView.ScaleType.CENTER_CROP
+                        view.setImageBitmap(resource.firstFrame)
+                    }
+                }
+                return false
+            }
+        }).submit()
     }
 
     private fun createImageFilter(view: View) {

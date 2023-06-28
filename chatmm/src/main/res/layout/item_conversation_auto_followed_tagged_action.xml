@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/iv_tagged_auto_join"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_auto_followed_tagged"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/chat_room_auto_joined"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:fontType="medium"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_tagged_auto_join" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/chat_room_auto_joined_message"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            android:id="@+id/btn_keep_following"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="@color/turquoise"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:minWidth="150dp"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="9dp"
+            android:text="@string/stay_joined"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:cornerRadius="10dp"
+            app:font_type="regular"
+            app:layout_constraintEnd_toStartOf="@+id/btn_unfollow"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_subtitle" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            android:id="@+id/btn_unfollow"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="18dp"
+            android:backgroundTint="@color/white"
+            android:gravity="center"
+            android:letterSpacing="0"
+            android:minWidth="150dp"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="9dp"
+            android:text="@string/leave"
+            android:textAllCaps="false"
+            android:textColor="@color/turquoise"
+            android:textSize="16sp"
+            app:cornerRadius="10dp"
+            app:font_type="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/btn_keep_following"
+            app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
+            app:strokeColor="@color/turquoise"
+            app:strokeWidth="1dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
