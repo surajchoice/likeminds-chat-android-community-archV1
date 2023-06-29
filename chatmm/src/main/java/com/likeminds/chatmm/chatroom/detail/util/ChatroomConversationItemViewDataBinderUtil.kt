@@ -39,6 +39,7 @@ import com.likeminds.chatmm.utils.ValueUtils.getValidTextForLinkify
 import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
+import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.link.LMLinkMovementMethod
 import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
