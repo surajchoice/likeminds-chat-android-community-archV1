@@ -18,6 +18,14 @@
         <variable
             name="isSelected"
             type="Boolean" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
+            name="textLinkColor"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -167,6 +175,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:textColor="@{textLinkColor}"
                     android:textSize="14sp"
                     android:visibility="gone"
                     app:fontType="regular"
@@ -327,7 +336,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0.16"
-            android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -340,7 +349,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0"
-            android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

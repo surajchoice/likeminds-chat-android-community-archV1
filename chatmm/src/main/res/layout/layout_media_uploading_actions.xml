@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
-        <ProgressBar
+        <com.likeminds.chatmm.branding.customview.LikeMindsProgressBar
             android:id="@+id/progress_bar_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

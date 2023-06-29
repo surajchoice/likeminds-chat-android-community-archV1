@@ -10,6 +10,10 @@
         <variable
             name="chatReplyData"
             type="com.likeminds.chatmm.chatroom.detail.model.ChatReplyViewData" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -35,6 +39,7 @@
                 android:layout_width="4dp"
                 android:layout_height="0dp"
                 android:background="@drawable/preview_line_turquoise"
+                android:backgroundTint="@{buttonColor}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +54,7 @@
                 android:letterSpacing="-0.02"
                 android:maxLines="1"
                 android:text="@{chatReplyData.isEditMessage ? `Edit message` : chatReplyData.memberName}"
-                android:textColor="#11c5b2"
+                android:textColor="@{buttonColor}"
                 android:textSize="13sp"
                 app:fontType="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tv_conversation"
