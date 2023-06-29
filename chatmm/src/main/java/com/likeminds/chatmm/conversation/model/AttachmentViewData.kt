@@ -36,6 +36,7 @@ class AttachmentViewData private constructor(
     val communityId: Int?,
     val createdAt: Long?,
     val updatedAt: Long?,
+    val mediaLeft: Int?,
     val dynamicType: Int?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
@@ -80,6 +81,7 @@ class AttachmentViewData private constructor(
         private var communityId: Int? = null
         private var createdAt: Long? = null
         private var updatedAt: Long? = null
+        private var mediaLeft: Int? = null
         private var dynamicType: Int? = null
 
         fun id(id: String?) = apply { this.id = id }
@@ -121,6 +123,7 @@ class AttachmentViewData private constructor(
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
+        fun mediaLeft(mediaLeft: Int?) = apply { this.mediaLeft = mediaLeft }
         fun dynamicType(dynamicType: Int?) = apply { this.dynamicType = dynamicType }
 
         fun build() = AttachmentViewData(
@@ -149,6 +152,7 @@ class AttachmentViewData private constructor(
             communityId,
             createdAt,
             updatedAt,
+            mediaLeft,
             dynamicType
         )
     }
@@ -179,6 +183,7 @@ class AttachmentViewData private constructor(
             .communityId(communityId)
             .createdAt(createdAt)
             .updatedAt(updatedAt)
+            .mediaLeft(mediaLeft)
             .dynamicType(dynamicType)
     }
 }

@@ -29,6 +29,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.conversation.model.ReportLinkExtras
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
 import com.likeminds.chatmm.media.model.*
@@ -372,7 +373,11 @@ object ChatroomConversationItemViewDataBinderUtil {
                         chatRoom?.memberViewData?.id ?: conversation?.memberViewData?.id
                     CustomTabIntent.open(
                         tvConversation.context, url,
-                        ReportLinkExtras(chatRoomId!!, conversation?.id, memberId)
+                        ReportLinkExtras.Builder()
+                            .chatroomId(chatRoomId!!)
+                            .conversationId(conversation?.id)
+                            .reportedMemberId(memberId)
+                            .build()
                     )
                 } else {
                     try {
@@ -991,19 +996,18 @@ object ChatroomConversationItemViewDataBinderUtil {
         var reportLinkExtras: ReportLinkExtras? = null
         when (data) {
             is ConversationViewData -> {
-                reportLinkExtras = ReportLinkExtras(
-                    data.chatroomId!!,
-                    data.id,
-                    data.memberViewData.id
-                )
+                reportLinkExtras = ReportLinkExtras.Builder()
+                    .chatroomId(data.chatroomId!!)
+                    .conversationId(data.id)
+                    .reportedMemberId(data.memberViewData.id)
+                    .build()
             }
             is ChatroomViewData -> {
-                reportLinkExtras =
-                    ReportLinkExtras(
-                        data.id,
-                        null,
-                        data.memberViewData.id
-                    )
+                reportLinkExtras = ReportLinkExtras.Builder()
+                    .chatroomId(data.id)
+                    .conversationId(null)
+                    .reportedMemberId(data.memberViewData?.id)
+                    .build()
             }
         }
         return reportLinkExtras
@@ -1076,7 +1080,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                             if (index == 3) {
                                 return@mapIndexed attachmentViewData.toBuilder()
                                     .mediaLeft(attachmentLeft)
-                                    .viewType(viewType)
+                                    .dynamicType(viewType)
                                     .attachments(attachmentList)
                                     .parentConversation(parentConversation)
                                     .parentChatRoom(parentChatRoom)
