@@ -1,9 +1,9 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.databinding.ItemConversationFollowBinding
@@ -34,6 +34,7 @@ internal class ConversationFollowItemViewDataBinder constructor(
         position: Int,
     ) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
             val context = root.context
             if (adapterListener.getChatRoom()?.isSecret == true) {
                 tvFollowConst.text =
@@ -45,20 +46,5 @@ internal class ConversationFollowItemViewDataBinder constructor(
                 btnFollow.text = context.getString(R.string.join_small)
             }
         }
-    }
-
-    override fun drawPrimaryColor(binding: ItemConversationFollowBinding, color: Int) {
-        super.drawPrimaryColor(binding, color)
-        binding.buttonFollow.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(
-        binding: ItemConversationFollowBinding,
-        headerColor: Int,
-        buttonsIconsColor: Int,
-        textLinksColor: Int,
-    ) {
-        super.drawAdvancedColor(binding, headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonFollow.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
     }
 }

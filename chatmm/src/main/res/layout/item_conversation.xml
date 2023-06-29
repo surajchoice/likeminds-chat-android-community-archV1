@@ -12,6 +12,10 @@
             type="Boolean" />
 
         <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
             name="conversation"
             type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
     </data>
@@ -285,6 +289,7 @@
             android:layout_height="0dp"
             android:alpha="0.16"
             android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -298,6 +303,7 @@
             android:layout_height="0dp"
             android:alpha="0"
             android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

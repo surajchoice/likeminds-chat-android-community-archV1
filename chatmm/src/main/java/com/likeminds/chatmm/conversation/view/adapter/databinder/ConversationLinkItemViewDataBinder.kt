@@ -1,10 +1,10 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -23,31 +23,6 @@ internal class ConversationLinkItemViewDataBinder constructor(
     override val viewType: Int
         get() = ITEM_CONVERSATION_LINK
 
-    override fun drawPrimaryColor(binding: ItemConversationLinkBinding, color: Int) {
-        super.drawPrimaryColor(binding, color)
-        binding.viewReply.viewVerticalLine.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewReply.tvConversationMemberName.setTextColor(color)
-
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewSelectionAnimation.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(
-        binding: ItemConversationLinkBinding,
-        headerColor: Int,
-        buttonsIconsColor: Int,
-        textLinksColor: Int,
-    ) {
-        super.drawAdvancedColor(binding, headerColor, buttonsIconsColor, textLinksColor)
-        binding.viewReply.viewVerticalLine.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewReply.tvConversationMemberName.setTextColor(buttonsIconsColor)
-
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewSelectionAnimation.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun createBinder(parent: ViewGroup): ItemConversationLinkBinding {
         return ItemConversationLinkBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -58,6 +33,8 @@ internal class ConversationLinkItemViewDataBinder constructor(
 
     override fun bindData(binding: ItemConversationLinkBinding, data: BaseViewType, position: Int) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
+            viewReply.buttonColor = LMBranding.getButtonsColor()
             conversation = data as ConversationViewData
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,

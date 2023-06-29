@@ -2,6 +2,7 @@ package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.databinding.ItemConversationAutoFollowedTaggedActionBinding
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -32,12 +33,16 @@ internal class ConversationAutoFollowedTaggedActionViewDataBinder constructor(
     }
 
     private fun setButtonClick(binding: ItemConversationAutoFollowedTaggedActionBinding) {
-        binding.btnKeepFollowing.setOnClickListener {
-            chatroomDetailAdapterListener.keepFollowingChatRoomClicked()
-        }
+        binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
 
-        binding.btnUnfollow.setOnClickListener {
-            chatroomDetailAdapterListener.unFollowChatRoomClicked()
+            btnKeepFollowing.setOnClickListener {
+                chatroomDetailAdapterListener.keepFollowingChatRoomClicked()
+            }
+
+            btnUnfollow.setOnClickListener {
+                chatroomDetailAdapterListener.unFollowChatRoomClicked()
+            }
         }
     }
 }

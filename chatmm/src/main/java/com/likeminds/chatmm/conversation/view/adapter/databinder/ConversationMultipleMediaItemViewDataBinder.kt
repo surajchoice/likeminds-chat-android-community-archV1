@@ -1,11 +1,11 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapterListener
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
@@ -29,35 +29,6 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
     override val viewType: Int
         get() = ITEM_CONVERSATION_MULTIPLE_MEDIA
 
-    override fun drawPrimaryColor(binding: ItemConversationMultipleMediaBinding, color: Int) {
-        super.drawPrimaryColor(binding, color)
-        binding.viewMediaUploadingActions.progressBarLoading.progressTintList =
-            ColorStateList.valueOf(color)
-
-        binding.viewReply.viewVerticalLine.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewReply.tvConversationMemberName.setTextColor(color)
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewSelectionAnimation.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(
-        binding: ItemConversationMultipleMediaBinding,
-        headerColor: Int,
-        buttonsIconsColor: Int,
-        textLinksColor: Int,
-    ) {
-        super.drawAdvancedColor(binding, headerColor, buttonsIconsColor, textLinksColor)
-        binding.viewMediaUploadingActions.progressBarLoading.progressTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-
-        binding.viewReply.viewVerticalLine.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewReply.tvConversationMemberName.setTextColor(buttonsIconsColor)
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewSelectionAnimation.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun createBinder(parent: ViewGroup): ItemConversationMultipleMediaBinding {
         val inflater = LayoutInflater.from(parent.context)
         return ItemConversationMultipleMediaBinding.inflate(inflater, parent, false)
@@ -69,6 +40,8 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
         position: Int,
     ) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
+            viewReply.buttonColor = LMBranding.getButtonsColor()
             conversation = data as ConversationViewData
             itemPosition = position
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(

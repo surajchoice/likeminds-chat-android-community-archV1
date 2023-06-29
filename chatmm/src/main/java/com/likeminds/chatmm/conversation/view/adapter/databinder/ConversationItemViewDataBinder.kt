@@ -1,11 +1,11 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -30,29 +30,6 @@ internal class ConversationItemViewDataBinder constructor(
         const val ADD_REACTION_CHARACTER_CHECK = 100
     }
 
-    override fun drawPrimaryColor(binding: ItemConversationBinding, color: Int) {
-        super.drawPrimaryColor(binding, color)
-        binding.viewReply.viewVerticalLine.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewReply.tvConversationMemberName.setTextColor(color)
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(color)
-        binding.viewSelectionAnimation.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(
-        binding: ItemConversationBinding,
-        headerColor: Int,
-        buttonsIconsColor: Int,
-        textLinksColor: Int,
-    ) {
-        super.drawAdvancedColor(binding, headerColor, buttonsIconsColor, textLinksColor)
-        binding.viewReply.viewVerticalLine.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewReply.tvConversationMemberName.setTextColor(buttonsIconsColor)
-        binding.viewSelection.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-        binding.viewSelectionAnimation.backgroundTintList =
-            ColorStateList.valueOf(buttonsIconsColor)
-    }
-
     override fun createBinder(parent: ViewGroup): ItemConversationBinding {
         val inflater = LayoutInflater.from(parent.context)
         return DataBindingUtil.inflate(
@@ -69,6 +46,8 @@ internal class ConversationItemViewDataBinder constructor(
         position: Int,
     ) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
+            viewReply.buttonColor = LMBranding.getButtonsColor()
             conversation = data as ConversationViewData
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
@@ -141,7 +120,6 @@ internal class ConversationItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                position,
                 sdkPreferences.getMemberId(),
                 adapterListener,
                 conversationViewData = data
