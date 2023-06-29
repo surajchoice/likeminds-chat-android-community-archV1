@@ -1,6 +1,5 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
@@ -41,27 +40,4 @@ internal class ConversationAutoFollowedTaggedActionViewDataBinder constructor(
             chatroomDetailAdapterListener.unFollowChatRoomClicked()
         }
     }
-
-    override fun drawPrimaryColor(
-        binding: ItemConversationAutoFollowedTaggedActionBinding,
-        color: Int,
-    ) {
-        super.drawPrimaryColor(binding, color)
-        binding.buttonKeepFollowing.backgroundTintList = ColorStateList.valueOf(color)
-        binding.buttonUnfollow.setTextColor(color)
-        binding.buttonUnfollow.strokeColor = ColorStateList.valueOf(color)
-    }
-
-    override fun drawAdvancedColor(
-        binding: ItemConversationAutoFollowedTaggedActionBinding,
-        headerColor: Int,
-        buttonsIconsColor: Int,
-        textLinksColor: Int,
-    ) {
-        super.drawAdvancedColor(binding, headerColor, buttonsIconsColor, textLinksColor)
-        binding.buttonKeepFollowing.backgroundTintList = ColorStateList.valueOf(buttonsIconsColor)
-        binding.buttonUnfollow.setTextColor(buttonsIconsColor)
-        binding.buttonUnfollow.strokeColor = ColorStateList.valueOf(buttonsIconsColor)
-    }
-
 }

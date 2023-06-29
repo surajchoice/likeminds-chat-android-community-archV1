@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:layout_marginEnd="4dp"
-            android:backgroundTint="@color/turquoise"
+            android:backgroundTint="@{buttonColor}"
             android:gravity="center"
             android:letterSpacing="0"
             android:minWidth="150dp"
@@ -94,7 +103,7 @@
             android:paddingVertical="9dp"
             android:text="@string/leave"
             android:textAllCaps="false"
-            android:textColor="@color/turquoise"
+            android:textColor="@{buttonColor}"
             android:textSize="16sp"
             app:cornerRadius="10dp"
             app:font_type="regular"
@@ -102,7 +111,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/btn_keep_following"
             app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
-            app:strokeColor="@color/turquoise"
+            app:strokeColor="@{buttonColor}"
             app:strokeWidth="1dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
