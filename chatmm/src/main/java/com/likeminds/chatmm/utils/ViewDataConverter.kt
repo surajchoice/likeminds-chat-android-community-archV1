@@ -32,7 +32,7 @@ object ViewDataConverter {
             .communityId(chatroom.communityId)
             .communityName(chatroom.communityName)
             .memberViewData(convertMember(chatroom.member))
-//            .createdAt(chatroom.createdAt)
+            .createdAt(chatroom.createdAt)
             .title(chatroom.title)
             .answerText(chatroom.answerText)
             .state(chatroom.state)
@@ -108,10 +108,10 @@ object ViewDataConverter {
             .build()
     }
 
-    private fun convertMember(member: Member?): MemberViewData? {
+    private fun convertMember(member: Member?): MemberViewData {
         // todo: uid
         if (member == null) {
-            return null
+            return MemberViewData.Builder().build()
         }
         return MemberViewData.Builder()
             .id(member.id)

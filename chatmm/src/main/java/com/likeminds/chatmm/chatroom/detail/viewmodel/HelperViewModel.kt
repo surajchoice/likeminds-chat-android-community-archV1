@@ -78,6 +78,7 @@ class HelperViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launchIO {
             val updatedSearchName = searchName.ifEmpty { null } ?: searchName
             val request = GetTaggingListRequest.Builder()
+                .chatroomId(chatroomId)
                 .page(page)
                 .pageSize(MemberTaggingUtil.PAGE_SIZE)
                 .searchName(updatedSearchName)

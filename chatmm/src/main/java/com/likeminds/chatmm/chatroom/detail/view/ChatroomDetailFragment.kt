@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -45,10 +46,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapter
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
-import com.likeminds.chatmm.conversation.model.AttachmentViewData
-import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.model.DM_CM_BECOMES_MEMBER_DISABLE
-import com.likeminds.chatmm.conversation.model.DM_MEMBER_REMOVED_OR_LEFT
+import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMVoiceRecorder
@@ -77,6 +75,7 @@ import com.likeminds.chatmm.utils.permissions.Permission
 import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
 import com.likeminds.chatmm.utils.permissions.PermissionManager
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
 import java.io.IOException
@@ -98,15 +97,18 @@ class ChatroomDetailFragment :
 
     private var isAttachmentsSheetHiding = false
 
-    private var reportedConversationId: String = ""
-    private var searchedConversationId: String = ""
-    private var scrollToHighlightTitle: Boolean = false
-
     //-----------For scroll and Fab experience------------
     private var unSeenConversationsSet = HashSet<String>()
     private var unSeenCount = 0
     private var visibleBottomConversationIndex = -1
     //-----------For scroll and FAb experience------------
+
+    private var selectedChatRoom: ChatroomViewData? = null
+    private val selectedConversations by lazy { HashMap<String, ConversationViewData>() }
+    private var scrolledConversationPosition = -1
+    private var reportedConversationId: String = ""
+    private var searchedConversationId: String = ""
+    private var scrollToHighlightTitle: Boolean = false
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
@@ -203,6 +205,8 @@ class ChatroomDetailFragment :
         const val ARG_CHATROOM_DETAIL_RESULT_EXTRAS = "ARG_CHATROOM_DETAIL_RESULT_EXTRAS"
         const val CHATROOM_DETAIL_EXTRAS = "CHATROOM_DETAIL_EXTRAS"
         const val SOURCE_CHAT_ROOM_TELESCOPE = "chatroom_telescope"
+        const val SOURCE_HOME_FEED = "home_feed"
+        const val SOURCE_TAGGED_AUTO_FOLLOWED = "tagged_auto_followed"
 
         const val REQUEST_GIFS = 3004
     }
@@ -906,6 +910,22 @@ class ChatroomDetailFragment :
         }
     }
 
+    /**
+     * Show the count of unseen conversations on scroll counter floating action button
+     * @param showBlank Show the scroll FAB even though there are no unseen conversations
+     */
+    private fun showUnseenCount(showBlank: Boolean) {
+        when {
+            unSeenCount != 0 -> {
+                showScrollBottomFab(unSeenCount.getMaxCountNumberText())
+            }
+
+            showBlank -> {
+                showScrollBottomFab(null)
+            }
+        }
+    }
+
     private fun fadeInTopChatroomView() {
         binding.apply {
             if (viewModel.isDmChatroom()) {
@@ -1102,15 +1122,6 @@ class ChatroomDetailFragment :
         }
     }
 
-    fun setChatroomDetailActivityResult() {
-        val intent = Intent().apply {
-            putExtras(Bundle().apply {
-                putParcelable(ARG_CHATROOM_DETAIL_RESULT_EXTRAS, chatroomResultExtras)
-            })
-        }
-        activity?.setResult(Activity.RESULT_OK, intent)
-    }
-
     private fun stopAudioService() {
         mediaAudioServiceBound = false
         mediaAudioService?.stopMedia()
@@ -1182,75 +1193,6 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun getChatRoom(): ChatroomViewData? {
-        return getChatroomViewData()
-    }
-
-    override fun isSelectionEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAudioConversationActionClicked(
-        data: AttachmentViewData,
-        parentPositionId: String,
-        childPosition: Int,
-        progress: Int
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongPressConversation(
-        conversation: ConversationViewData,
-        itemPosition: Int,
-        from: String
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onConversationSeekbarChanged(
-        progress: Int,
-        attachmentViewData: AttachmentViewData,
-        parentConversationId: String,
-        childPosition: Int
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int) {
-        TODO("Not yet implemented")
-    }
-
-    //add this function for every navigation from chatroom
-    override fun onScreenChanged() {
-        if (isVoiceNoteLocked) {
-            isVoiceNoteLocked = false
-            voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCK_DONE)
-        }
-
-        if (mediaAudioServiceBound && mediaAudioService?.isPlaying() == true) {
-            stopAudioService()
-
-            val item =
-                chatroomDetailAdapter.items().firstOrNull {
-                    ((it is ConversationViewData) && (it.id == localParentConversationId))
-                } as? ConversationViewData
-
-            var attachment = item?.attachments?.get(localChildPosition) ?: return
-
-            attachment = attachment.toBuilder()
-                .progress(0)
-                .mediaState(MEDIA_ACTION_NONE)
-                .currentDuration(requireContext().getString(R.string.start_duration))
-                .build()
-
-            updateAudioVoiceNoteBinder(
-                attachment,
-                localParentConversationId,
-                localChildPosition
-            )
-        }
-    }
-
     private fun postConversationWithMedia(mediaExtras: MediaExtras?) {
         // todo: in conversation
 //        postConversation(
@@ -1258,6 +1200,10 @@ class ChatroomDetailFragment :
 //            fileUris = mediaExtras?.mediaUris
 //        )
     }
+
+    /**--------------------------------
+     * Media Picker Utility
+    ---------------------------------*/
 
     private val browseDocumentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -1524,6 +1470,252 @@ class ChatroomDetailFragment :
         }
     }
 
+    private fun updateChatroomFollowStatus(updatedFollowStatus: Boolean) {
+        chatroomResultExtras = chatroomResultExtras?.also {
+            chatroomResultExtras?.toBuilder()
+                ?.chatroomId(chatroomId)
+                ?.isChatroomFollowChanged(true)
+                ?.updatedFollowStatus(updatedFollowStatus)
+                ?.build()
+        } ?: run {
+            ChatroomDetailResultExtras.Builder()
+                .chatroomId(chatroomId)
+                .isChatroomFollowChanged(true)
+                .updatedFollowStatus(updatedFollowStatus)
+                .build()
+        }
+        setChatroomDetailActivityResult()
+    }
+
+    fun setChatroomDetailActivityResult() {
+        val intent = Intent().apply {
+            putExtras(Bundle().apply {
+                putParcelable(ARG_CHATROOM_DETAIL_RESULT_EXTRAS, chatroomResultExtras)
+            })
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
+    }
+
+    /**--------------------------------
+     * Remove graphic utility functions
+    ---------------------------------*/
+
+    private fun removeFollowView(): Boolean {
+        if (getChatroomViewData()?.showFollowTelescope == true) {
+            val index = chatroomDetailAdapter.items().indexOfLast {
+                it is FollowItemViewData
+            }
+            if (index.isValidIndex(chatroomDetailAdapter.items())) {
+                chatroomDetailAdapter.removeIndex(index)
+                return true
+            }
+        }
+        return false
+    }
+
+    /**------------------------------------------------------------
+     * Adapter listeners
+    ---------------------------------------------------------------*/
+
+    override fun follow(value: Boolean, source: String) {
+        if (value) {
+            removeFollowView()
+            if (!isSecretChatRoom()) {
+                ViewUtils.showShortSnack(
+                    binding.root,
+                    getString(R.string.added_to_your_joined_chat_rooms)
+                )
+            }
+        } else {
+            ViewUtils.showShortSnack(
+                binding.root,
+                getString(R.string.removed_from_your_joined_chat_rooms)
+            )
+        }
+        viewModel.followChatroom(
+            chatroomDetailExtras.chatroomId,
+            value,
+            source
+        )
+        updateChatroomFollowStatus(value)
+
+        if (isSecretChatRoom() && value) {
+            setChatInputBoxViewType(CHAT_BOX_NORMAL)
+        }
+    }
+
+    override fun getChatRoomType(): Int? {
+        return getChatroomViewData()?.type
+    }
+
+    override fun getChatRoom(): ChatroomViewData? {
+        return getChatroomViewData()
+    }
+
+    override fun updateSeenFullConversation(position: Int, alreadySeenFullConversation: Boolean) {
+        val item = chatroomDetailAdapter[position]
+        if (item is ConversationViewData) {
+            val newViewData = item.toBuilder()
+                .alreadySeenFullConversation(alreadySeenFullConversation)
+                .build()
+            chatroomDetailAdapter.update(position, newViewData)
+        } else if (item is ChatroomViewData) {
+            val newViewData = item.toBuilder()
+                .alreadySeenFullConversation(alreadySeenFullConversation)
+                .build()
+            chatroomDetailAdapter.update(position, newViewData)
+        }
+    }
+
+    override fun isSelectionEnabled(): Boolean {
+        return !selectedConversations.isEmpty() || selectedChatRoom != null
+    }
+
+    override fun isChatRoomSelected(chatRoomId: String): Boolean {
+        return selectedChatRoom?.id == chatRoomId
+    }
+
+    override fun isConversationSelected(conversationId: String): Boolean {
+        return selectedConversations.containsKey(conversationId)
+    }
+
+    /**
+     * Invoked on click of a replied conversation. The motive is to scroll the recyclerview to the
+     * original conversation so that it comes in the viewport of the screen and gets highlighted.
+     * @param conversation The current clicked conversation object
+     * @param repliedConversationId Id of the original conversation in which [conversation] was replied.
+     */
+    override fun scrollToRepliedAnswer(
+        conversation: ConversationViewData,
+        repliedConversationId: String,
+    ) {
+        if (!highlightConversation(repliedConversationId)) {
+            // todo:
+//            viewModel.fetchRepliedConversationOnClick(
+//                conversation,
+//                repliedConversationId,
+//                chatroomDetailAdapter.items()
+//            )
+        }
+    }
+
+    /**
+     * Invoked on click of a replied chatRoom. The motive is to scroll the recyclerview to the
+     * original chatroom so that it comes in the viewport of the screen and gets highlighted.
+     * @param repliedChatRoomId Id of the original chatRoom in which conversation was replied.
+     */
+    override fun scrollToRepliedChatRoom(repliedChatRoomId: String) {
+        if (!highlightChatRoom(repliedChatRoomId)) {
+            scrollToExtremeTop(repliedChatRoomId)
+        }
+    }
+
+    override fun isScrolledConversation(position: Int): Boolean {
+        if (scrolledConversationPosition != -1 && scrolledConversationPosition == position) {
+            scrolledConversationPosition = -1
+            return true
+        }
+        return false
+    }
+
+    override fun isReportedConversation(conversationId: String?): Boolean {
+        return reportedConversationId == conversationId
+    }
+
+    override fun showActionDialogForReportedMessage() {
+        takeActionOnReportedMessage()
+        activity?.onBackPressed()
+    }
+
+    override fun keepFollowingChatRoomClicked() {
+        removeAutoFollowedTaggedView()
+        viewModel.muteChatroom(chatroomId, false)
+        viewModel.sendChatroomMuted(false)
+        viewModel.followChatroom(
+            chatroomDetailExtras.chatroomId,
+            true,
+            SOURCE_TAGGED_AUTO_FOLLOWED
+        )
+        ViewUtils.showShortSnack(
+            binding.root,
+            getString(R.string.you_are_joining_this_chat_room)
+        )
+    }
+
+    override fun unFollowChatRoomClicked() {
+        removeAutoFollowedTaggedView()
+        viewModel.followChatroom(
+            chatroomDetailExtras.chatroomId,
+            false,
+            SOURCE_TAGGED_AUTO_FOLLOWED
+        )
+        ViewUtils.showShortSnack(
+            binding.root,
+            getString(R.string.removed_from_your_joined_chat_rooms)
+        )
+    }
+
+    override fun onAudioConversationActionClicked(
+        data: AttachmentViewData,
+        parentPositionId: String,
+        childPosition: Int,
+        progress: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLongPressConversation(
+        conversation: ConversationViewData,
+        itemPosition: Int,
+        from: String
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConversationSeekbarChanged(
+        progress: Int,
+        attachmentViewData: AttachmentViewData,
+        parentConversationId: String,
+        childPosition: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int) {
+        TODO("Not yet implemented")
+    }
+
+    //add this function for every navigation from chatroom
+    override fun onScreenChanged() {
+        if (isVoiceNoteLocked) {
+            isVoiceNoteLocked = false
+            voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCK_DONE)
+        }
+
+        if (mediaAudioServiceBound && mediaAudioService?.isPlaying() == true) {
+            stopAudioService()
+
+            val item =
+                chatroomDetailAdapter.items().firstOrNull {
+                    ((it is ConversationViewData) && (it.id == localParentConversationId))
+                } as? ConversationViewData
+
+            var attachment = item?.attachments?.get(localChildPosition) ?: return
+
+            attachment = attachment.toBuilder()
+                .progress(0)
+                .mediaState(MEDIA_ACTION_NONE)
+                .currentDuration(requireContext().getString(R.string.start_duration))
+                .build()
+
+            updateAudioVoiceNoteBinder(
+                attachment,
+                localParentConversationId,
+                localChildPosition
+            )
+        }
+    }
+
     /**------------------------------------------------------------
      * Voice note listeners
     ---------------------------------------------------------------*/
@@ -1542,13 +1734,12 @@ class ChatroomDetailFragment :
                     .mediaState(MEDIA_ACTION_PLAY)
                     .build()
 
-                // todo: conversation
-//                onAudioConversationActionClicked(
-//                    attachment,
-//                    localParentConversationId,
-//                    localChildPosition,
-//                    0
-//                )
+                onAudioConversationActionClicked(
+                    attachment,
+                    localParentConversationId,
+                    localChildPosition,
+                    0
+                )
             }
         }
 
@@ -1617,5 +1808,141 @@ class ChatroomDetailFragment :
 
     override fun stopTrackingVoiceNoteAction(value: Boolean) {
         stopTrackingVoiceNoteAction = value
+    }
+
+    /**------------------------------------------------------------
+     * Adapter utility functions
+    ---------------------------------------------------------------*/
+
+    /**
+     * Highlight the conversation view. This is usually used to highlight the replied conversation's parent
+     * @param conversationId The conversation id to highlight
+     * @return true if successfully highlighted
+     */
+    private fun highlightConversation(conversationId: String?): Boolean {
+        if (!conversationId.isNullOrEmpty()) {
+            val index = getIndexOfConversation(conversationId)
+            if (index.isValidIndex()) {
+                scrolledConversationPosition = index
+                scrollToPositionWithOffset(index)
+                chatroomDetailAdapter.notifyItemChanged(index)
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Highlight the chatRoom view. This is usually used to highlight the replied conversation's parent
+     * @param chatRoomId The chatRoom id to highlight
+     */
+    private fun highlightChatRoom(chatRoomId: String?): Boolean {
+        if (!chatRoomId.isNullOrEmpty()) {
+            val index = getIndexOfChatRoom(chatRoomId)
+            if (index.isValidIndex()) {
+                scrolledConversationPosition = index
+                scrollToPositionWithOffset(index)
+                chatroomDetailAdapter.notifyItemChanged(index)
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Returns the current index of the conversation from the recyclerview
+     * @param id Conversation id
+     */
+    private fun getIndexOfConversation(id: String): Int {
+        return chatroomDetailAdapter.items().indexOfFirst {
+            it is ConversationViewData && it.id == id
+        }
+    }
+
+    /**
+     * Returns the current index of the chatRoom from the recyclerview
+     * @param id ChatRoom id
+     */
+    private fun getIndexOfChatRoom(id: String): Int {
+        return chatroomDetailAdapter.items().indexOfFirst {
+            it is ChatroomViewData && it.id == id
+        }
+    }
+
+    /**
+     * Scroll to a position with offset from the top header
+     * @param position Index of the item to scroll to
+     */
+    private fun scrollToPositionWithOffset(position: Int) {
+        binding.apply {
+            val px = if (viewTopBackground.height == 0) {
+                (ViewUtils.dpToPx(75) * 1.5).toInt()
+            } else {
+                (viewTopBackground.height * 1.5).toInt()
+            }
+            (rvChatroom.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
+                position,
+                px
+            )
+        }
+    }
+
+    /**
+     * Scroll to the top of the chatroom, where chatroom object is present
+     * Check if chatroom object is already added or else add it
+     * @param repliedChatRoomId Id of the original chatRoom in which conversation was replied.
+     */
+    private fun scrollToExtremeTop(repliedChatRoomId: String? = null) = lifecycleScope.launch {
+        if (chatroomScrollListener.containsChatRoom()) {
+            fadeOutTopChatroomView()
+            scrollToPosition(SCROLL_UP)
+            showUnseenCount(true)
+        } else {
+            val topConversation = getTopConversation()
+            if (topConversation == null) {
+                scrollToPosition(SCROLL_UP)
+                showUnseenCount(true)
+            } else {
+                chatroomScrollListener.bottomLoadingDone()
+                // todo:
+//                viewModel.fetchTopConversationsOnClick(
+//                    topConversation,
+//                    chatroomDetailAdapter.items(),
+//                    repliedChatRoomId
+//                )
+            }
+        }
+    }
+
+    /**------------------------------------------------------------
+     * Utility functions
+    ---------------------------------------------------------------*/
+
+    private fun takeActionOnReportedMessage() {
+        chatroomResultExtras = chatroomResultExtras?.also {
+            chatroomResultExtras?.toBuilder()
+                ?.chatroomId(chatroomId)
+                ?.takeActionOnReportedMessage(true)
+                ?.reportedConversationId(reportedConversationId)
+                ?.build()
+        } ?: run {
+            ChatroomDetailResultExtras.Builder()
+                .chatroomId(chatroomId)
+                .takeActionOnReportedMessage(true)
+                .reportedConversationId(reportedConversationId)
+                .build()
+        }
+        setChatroomDetailActivityResult()
+    }
+
+    private fun removeAutoFollowedTaggedView() {
+        if (getChatroomViewData()?.showFollowAutoTag == true) {
+            val index = chatroomDetailAdapter.items().indexOfLast {
+                it is AutoFollowedTaggedActionViewData
+            }
+            if (index.isValidIndex(chatroomDetailAdapter.items())) {
+                chatroomDetailAdapter.removeIndex(index)
+            }
+        }
     }
 }

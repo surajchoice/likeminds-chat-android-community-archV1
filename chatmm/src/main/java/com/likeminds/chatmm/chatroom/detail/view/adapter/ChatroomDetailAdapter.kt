@@ -4,6 +4,7 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.conversation.model.ReportLinkExtras
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -33,6 +34,8 @@ interface ChatroomDetailAdapterListener {
     fun getChatRoom(): ChatroomViewData?
     fun updateSeenFullConversation(position: Int, alreadySeenFullConversation: Boolean)
     fun isSelectionEnabled(): Boolean
+    fun isChatRoomSelected(chatRoomId: String): Boolean
+    fun isConversationSelected(conversationId: String): Boolean
     fun scrollToRepliedAnswer(conversation: ConversationViewData, repliedConversationId: String)
     fun scrollToRepliedChatRoom(repliedChatRoomId: String)
     fun isScrolledConversation(position: Int): Boolean
@@ -73,7 +76,6 @@ interface ChatroomDetailAdapterListener {
     fun observeMediaUpload(uuid: UUID, conversation: ConversationViewData)
     fun onRetryConversationMediaUpload(conversationId: String, attachmentCount: Int)
     fun onFailedConversationClick(conversation: ConversationViewData, itemPosition: Int)
-    fun isConversationSelected(conversationId: String): Boolean
     fun showMemberProfile(member: MemberViewData)
 
     /**

@@ -116,4 +116,7 @@
     <string name="uploading_progress_placeholder">%s / %s</string>
     <string name="link">Link</string>
     <string name="tag_button_text">Tag ‘@’</string>
+    <string name="added_to_your_joined_chat_rooms">Added to your joined chat rooms</string>
+    <string name="removed_from_your_joined_chat_rooms">Removed from your joined chat rooms</string>
+    <string name="you_are_joining_this_chat_room">You are joining this chat room</string>
 </resources>

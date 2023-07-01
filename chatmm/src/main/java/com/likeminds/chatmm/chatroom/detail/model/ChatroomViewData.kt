@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class ChatroomViewData private constructor(
     val id: String,
-    val memberViewData: MemberViewData?,
+    val memberViewData: MemberViewData,
     val title: String,
     val createdAt: Long?,
     val alreadySeenFullConversation: Boolean?,
@@ -80,7 +80,7 @@ class ChatroomViewData private constructor(
 
     class Builder {
         private var id: String = ""
-        private var memberViewData: MemberViewData? = null
+        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var title: String = ""
         private var createdAt: Long? = null
         private var alreadySeenFullConversation: Boolean? = null
@@ -127,7 +127,7 @@ class ChatroomViewData private constructor(
         private var dynamicViewType: Int? = null
 
         fun id(id: String) = apply { this.id = id }
-        fun memberViewData(memberViewData: MemberViewData?) =
+        fun memberViewData(memberViewData: MemberViewData) =
             apply { this.memberViewData = memberViewData }
 
         fun title(title: String) = apply { this.title = title }

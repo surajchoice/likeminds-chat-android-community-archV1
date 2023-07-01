@@ -1,6 +1,6 @@
 package com.likeminds.chatmm.chatroom.detail.model
 
-class ChatroomDetailData private constructor(
+class ChatroomDetailViewData private constructor(
     var chatroom: ChatroomViewData?,
     var currentMember: MemberViewData?,
     var isMemberNotPartOfCommunity: Boolean,
@@ -35,7 +35,7 @@ class ChatroomDetailData private constructor(
         fun canAccessSecretChatRoom(canAccessSecretChatRoom: Boolean?) =
             apply { this.canAccessSecretChatRoom = canAccessSecretChatRoom }
 
-        fun build() = ChatroomDetailData(
+        fun build() = ChatroomDetailViewData(
             chatroom,
             currentMember,
             isMemberNotPartOfCommunity,

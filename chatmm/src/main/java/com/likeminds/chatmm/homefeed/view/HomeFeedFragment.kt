@@ -13,6 +13,7 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
@@ -239,12 +240,11 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun openChatroom(chatroom: ChatroomViewData) {
-        // todo:
         val extra = ChatroomDetailExtras.Builder()
-//            .collabcardViewData(chatroom)
-//            .chatroomId(chatroom.id)
-//            .communityId(chatroom.communityId)
-//            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
+            .chatroomViewData(chatroom)
+            .chatroomId(chatroom.id)
+            .communityId(chatroom.communityId)
+            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
             .build()
         ChatroomDetailActivity.start(requireContext(), extra)
     }

@@ -2,10 +2,12 @@ package com.likeminds.chatmm.chatroom.detail.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
@@ -18,6 +20,8 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.chatroom.model.FollowChatroomRequest
+import com.likeminds.likemindschat.chatroom.model.MuteChatroomRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import kotlinx.coroutines.Job
@@ -39,7 +43,7 @@ class ChatroomDetailViewModel @Inject constructor(
     private val lmChatClient = LMChatClient.getInstance()
 
     //Contains all chatroom data, community data and more
-    lateinit var chatroomDetail: ChatroomDetailData
+    lateinit var chatroomDetail: ChatroomDetailViewData
 
     // todo: update this in initial data only
     /**
@@ -56,6 +60,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _linkOgTags: MutableLiveData<LinkOGTagsViewData?> = MutableLiveData()
     val linkOgTags: LiveData<LinkOGTagsViewData?> = _linkOgTags
 
+    private val _chatroomDetailLiveData by lazy { MutableLiveData<ChatroomDetailViewData?>() }
+    val chatroomDetailLiveData: LiveData<ChatroomDetailViewData?> = _chatroomDetailLiveData
+
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageFlow = errorEventChannel.receiveAsFlow()
 
@@ -69,6 +76,8 @@ class ChatroomDetailViewModel @Inject constructor(
 
     sealed class ErrorMessageEvent {
         data class DecodeUrl(val errorMessage: String?) : ErrorMessageEvent()
+        data class FollowChatroom(val errorMessage: String?) : ErrorMessageEvent()
+        data class MuteChatroom(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     /**
@@ -181,6 +190,85 @@ class ChatroomDetailViewModel @Inject constructor(
 //        )
     }
 
+    // follow/unfollow a chatroom
+    fun followChatroom(
+        chatroomId: String,
+        value: Boolean,
+        source: String
+    ) {
+        viewModelScope.launchIO {
+            // create request
+            val request = FollowChatroomRequest.Builder()
+                .chatroomId(chatroomId)
+                .memberId(sdkPreferences.getMemberId())
+                .value(value)
+                .build()
+
+            // call api
+            val response = lmChatClient.followChatroom(request)
+            if (response.success) {
+                // Update the ChatRoom actions once CM joins the chatroom
+                if (value && getChatroom()?.isSecret == true) {
+                    // todo: ask
+//                    fetchChatroomFromNetwork()
+                }
+                if (value) {
+                    sendChatroomFollowed(source)
+                } else {
+                    sendChatroomUnfollowed(source)
+                }
+
+                val oldChatroomViewData = chatroomDetail.chatroom
+                if (oldChatroomViewData != null) {
+
+                    //change follow status for chatroom
+                    val followStatus = oldChatroomViewData.followStatus ?: return@launchIO
+                    val newChatroomViewData = oldChatroomViewData.toBuilder()
+                        .followStatus(!followStatus)
+                        .build()
+
+                    chatroomDetail =
+                        chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
+                    _chatroomDetailLiveData.postValue(chatroomDetail)
+                }
+            } else {
+                // api failed send error message to ui
+                val errorMessage = response.errorMessage
+                Log.e(
+                    SDKApplication.LOG_TAG,
+                    "follow chatroom failed, $errorMessage"
+                )
+                errorEventChannel.send(ErrorMessageEvent.FollowChatroom(errorMessage))
+            }
+        }
+    }
+
+    // mute/un-mute a chatroom
+    fun muteChatroom(
+        chatroomId: String,
+        value: Boolean
+    ) {
+        viewModelScope.launchIO {
+            // create request
+            val request = MuteChatroomRequest.Builder()
+                .chatroomId(chatroomId.toInt())
+                .value(value)
+                .build()
+
+            // call api
+            val response = lmChatClient.muteChatroom(request)
+            if (!response.success) {
+                // api failed send error message to ui
+                val errorMessage = response.errorMessage
+                Log.e(
+                    SDKApplication.LOG_TAG,
+                    "mute chatroom failed, $errorMessage"
+                )
+                errorEventChannel.send(ErrorMessageEvent.MuteChatroom(errorMessage))
+            }
+        }
+    }
+
     fun clearLinkPreview() {
         previewLinkJob?.cancel()
         previewLink = null
@@ -229,5 +317,59 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun decodeUrl(decodeUrlResponse: DecodeUrlResponse?) {
         val ogTags = decodeUrlResponse?.ogTags ?: return
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
+    }
+
+    /**------------------------------------------------------------
+     * Analytics events
+    ---------------------------------------------------------------*/
+
+    /**
+     * Triggers when the current user un-follows the current chatroom
+     * @param source Source of the event
+     */
+    private fun sendChatroomUnfollowed(source: String) {
+        // todo:
+//        getChatroom()?.let { chatroomViewData ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_UN_FOLLOWED, JSONObject().apply {
+//                put("chatroom_id", chatroomViewData.id)
+//                put("community_id", chatroomViewData.communityViewData?.id)
+//                put("source", source)
+//            })
+//        }
+    }
+
+    /**
+     * Triggers when the current user follows the current chatroom
+     * @param source Source of the event
+     */
+    private fun sendChatroomFollowed(source: String) {
+        getChatroom()?.let { chatroomViewData ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_FOLLOWED, JSONObject().apply {
+//                put("chatroom_id", chatroomViewData.id)
+//                put("community_id", chatroomViewData.communityViewData?.id)
+//                put("source", source)
+//                put(
+//                    "member_state", MemberState.getMemberState(
+//                        chatroomViewData.memberState
+//                    )
+//                )
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the current chatroom is muted or un-muted
+     * @param isChatroomMuted Chatroom is muted or not
+     */
+    fun sendChatroomMuted(isChatroomMuted: Boolean) {
+//        LMAnalytics.track(
+//            if (isChatroomMuted) {
+//                LMAnalytics.Keys.CHATROOM_MUTED
+//            } else {
+//                LMAnalytics.Keys.CHATROOM_UNMUTED
+//            }, JSONObject().apply {
+//                put("chatroom_name", getChatroom()?.header)
+//                put("community_id", getChatroom()?.id)
+//            })
     }
 }

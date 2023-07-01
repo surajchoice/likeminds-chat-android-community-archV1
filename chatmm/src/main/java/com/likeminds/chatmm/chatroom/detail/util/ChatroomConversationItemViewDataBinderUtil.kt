@@ -52,6 +52,65 @@ import java.util.*
 
 object ChatroomConversationItemViewDataBinderUtil {
 
+    fun initChatRoomBubbleView(
+        clBubble: ConstraintLayout,
+        memberImage: ImageView,
+        tvConversationMemberName: TextView,
+        tvCustomTitle: TextView,
+        customTitleDot: View,
+        memberViewData: MemberViewData,
+        chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
+        itemPosition: Int,
+        chatRoom: ChatroomViewData,
+    ) {
+        setMessageSenderDetails(
+            memberViewData,
+            memberImage,
+            tvConversationMemberName,
+            tvCustomTitle,
+            customTitleDot,
+            itemPosition,
+            chatroomDetailAdapterListener,
+            chatRoom = chatRoom
+        )
+        clBubble.background = ContextCompat.getDrawable(
+            clBubble.context,
+            R.drawable.background_chat_other
+        )
+    }
+
+    /**
+     * @param viewList - The list of all the views whose click listener is implemented separately.
+     * */
+    fun initChatRoomSelection(
+        rootView: View,
+        viewList: List<View>,
+        chatRoom: ChatroomViewData,
+        itemPosition: Int,
+        adapterListener: ChatroomDetailAdapterListener,
+    ): Boolean {
+        val isSelectionEnabled = adapterListener.isSelectionEnabled()
+        val isSelected = if (isSelectionEnabled) {
+            adapterListener.isChatRoomSelected(chatRoom.id)
+        } else {
+            false
+        }
+
+        viewList.forEach {
+            it.setOnLongClickListener {
+                adapterListener.onLongPressChatRoom(chatRoom, itemPosition)
+                return@setOnLongClickListener true
+            }
+        }
+
+        rootView.setOnClickListener {
+            if (adapterListener.isSelectionEnabled()) {
+                adapterListener.onLongPressChatRoom(chatRoom, itemPosition)
+            }
+        }
+        return isSelected
+    }
+
     /**
      * @param itemPosition - This is only needed if view is a conversation
      * @param conversationViewData - This is only needed if view is a conversation
