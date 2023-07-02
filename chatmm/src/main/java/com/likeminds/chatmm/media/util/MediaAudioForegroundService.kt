@@ -42,12 +42,12 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
     }
 
     private fun registerPlayNewAudio() {
-        val filter = IntentFilter(Broadcast_PLAY_NEW_AUDIO)
+        val filter = IntentFilter(BROADCAST_PLAY_NEW_AUDIO)
         registerReceiver(newAudioBroadcastReceiver, filter)
     }
 
     private fun registerSeekbarDragged() {
-        val filter = IntentFilter(Broadcast_SEEKBAR_DRAGGED)
+        val filter = IntentFilter(BROADCAST_SEEKBAR_DRAGGED)
         registerReceiver(seekbarDraggedReceiver, filter)
     }
 
@@ -55,7 +55,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
         super.onAudioComplete()
         isDataSourceSet = false
         stopMedia()
-        val completeIntent = Intent(Broadcast_COMPLETE)
+        val completeIntent = Intent(BROADCAST_COMPLETE)
         completeIntent.putExtra(AUDIO_IS_COMPLETE_EXTRA, true)
         sendBroadcast(completeIntent)
         stopSelf()
@@ -88,7 +88,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
 
     override fun onProgressChanged(currentDuration: String, playedPercentage: Int) {
         super.onProgressChanged(currentDuration, playedPercentage)
-        val progressIntent = Intent(Broadcast_PROGRESS)
+        val progressIntent = Intent(BROADCAST_PROGRESS)
         progressIntent.putExtra(AUDIO_DURATION_STRING_EXTRA, currentDuration)
         progressIntent.putExtra(AUDIO_DURATION_INT_EXTRA, playedPercentage)
         sendBroadcast(progressIntent)
@@ -176,12 +176,12 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
         const val AUDIO_SERVICE_URI_EXTRA = "extra uri of audio"
         const val AUDIO_SERVICE_PROGRESS_EXTRA = "extra progress of audio"
 
-        const val Broadcast_PROGRESS = "com.collabmates.app.Progress"
-        const val Broadcast_BUFFER = "com.collabmates.app.Buffer"
-        const val Broadcast_COMPLETE = "com.collabmates.app.Complete"
+        const val BROADCAST_PROGRESS = "com.likeminds.app.Progress"
+        const val BROADCAST_BUFFER = "com.likeminds.app.Buffer"
+        const val BROADCAST_COMPLETE = "com.likeminds.app.Complete"
         const val PROGRESS_SEEKBAR_DRAGGED = "progress of seekbar after drag"
-        const val Broadcast_PLAY_NEW_AUDIO = "com.collabmates.app.PlayNewAudio"
-        const val Broadcast_SEEKBAR_DRAGGED = "com.collabmates.app.SeekbarDragged"
+        const val BROADCAST_PLAY_NEW_AUDIO = "com.likeminds.app.PlayNewAudio"
+        const val BROADCAST_SEEKBAR_DRAGGED = "com.likeminds.app.SeekbarDragged"
     }
 
     inner class MediaBinder : Binder() {

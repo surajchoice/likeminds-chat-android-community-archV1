@@ -63,13 +63,12 @@ interface ChatroomDetailAdapterListener {
         childPosition: Int,
     )
 
+    fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int)
     fun externalLinkClicked(
         conversationId: String?,
         url: String,
         reportLinkExtras: ReportLinkExtras?
     )
-
-    fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int)
 
     fun onMultipleItemsExpanded(conversation: ConversationViewData, position: Int) {}
 

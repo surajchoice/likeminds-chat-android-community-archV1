@@ -140,6 +140,18 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    private fun isChatroomCreator(): Boolean {
+        return getChatroomViewData()?.memberViewData?.id == sdkPreferences.getMemberId()
+    }
+
+    /**
+     * is current member can set a message as Chatroom Topic
+     * Only allow when [User] is CM of the Community or he/she is the creator of chatroom
+     **/
+    fun canSetChatroomTopic(): Boolean {
+        return isAdminMember() || isChatroomCreator()
+    }
+
     fun fetchUriDetails(
         context: Context,
         uris: List<Uri>,
@@ -371,5 +383,87 @@ class ChatroomDetailViewModel @Inject constructor(
 //                put("chatroom_name", getChatroom()?.header)
 //                put("community_id", getChatroom()?.id)
 //            })
+    }
+
+    /**
+     * Triggers when the user records a voice message
+     **/
+    fun sendVoiceNoteRecorded() {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_RECORDED, JSONObject().apply {
+//                put("chatroom_id", chatroom.id)
+//                put("community_id", chatroom.communityId)
+//                put("chatroom_type", chatroom.type)
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the user previews a voice message
+     **/
+    fun sendVoiceNotePreviewed() {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_PREVIEWED, JSONObject().apply {
+//                put("chatroom_id", chatroom.id)
+//                put("community_id", chatroom.communityId)
+//                put("chatroom_type", chatroom.type)
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the user removes a recorded voice message
+     **/
+    fun sendVoiceNoteCanceled() {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_CANCELED, JSONObject().apply {
+//                put("chatroom_id", chatroom.id)
+//                put("community_id", chatroom.communityId)
+//                put("chatroom_type", chatroom.type)
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the user sends a voice message
+     **/
+    private fun sendVoiceNoteSent(conversationId: String?) {
+        if (conversationId.isNullOrEmpty()) return
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_SENT, JSONObject().apply {
+//                put("chatroom_id", chatroom.id)
+//                put("community_id", chatroom.communityId)
+//                put("chatroom_type", chatroom.type)
+//                put("message_id", conversationId)
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the user plays a voice message
+     **/
+    fun sendVoiceNotePlayed(conversationId: String) {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_PLAYED, JSONObject().apply {
+//                put("chatroom_id", chatroom.id)
+//                put("community_id", chatroom.communityId)
+//                put("chatroom_type", chatroom.type)
+//                put("message_id", conversationId)
+//            })
+        }
+    }
+
+    /**
+     * Triggers when the user plays the audio message
+     **/
+    fun sendAudioPlayedEvent(messageId: String) {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(
+//                LMAnalytics.Keys.EVENT_AUDIO_PLAYED,
+//                "chatroom_id" to chatroom.id,
+//                "community_id" to chatroom.communityId,
+//                "message_id" to messageId,
+//            )
+        }
     }
 }

@@ -150,6 +150,12 @@ object ValueUtils {
                 uri.host.equals("www.youtube.com")
     }
 
+    fun String.getValidYoutubeVideoId(): String {
+        val uri = Uri.parse(this)
+        return uri.getQueryParameter("v")
+            ?: uri.lastPathSegment ?: ""
+    }
+
     @JvmStatic
     fun <K, V> getOrDefault(map: Map<K, V>, key: K, defaultValue: V): V? {
         return if (map.containsKey(key)) map[key] else defaultValue

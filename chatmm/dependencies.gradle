@@ -82,6 +82,9 @@ dependencies {
     //Giphy
     implementation deps.giphy.main
 
+    //Youtube Player
+    implementation deps.youtube_player.main
+
     //Balloons: Tooltips
     implementation deps.balloons.main
 

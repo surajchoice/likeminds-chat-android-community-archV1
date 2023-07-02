@@ -3,6 +3,7 @@ package com.likeminds.chatmm.chatroom.detail.view
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.net.Uri
@@ -39,6 +40,7 @@ import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomScrollListener
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.chatroom.detail.util.VoiceNoteInterface
 import com.likeminds.chatmm.chatroom.detail.util.VoiceNoteUtils
@@ -51,6 +53,11 @@ import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMVoiceRecorder
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_URI_EXTRA
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PLAY_NEW_AUDIO
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
@@ -60,11 +67,16 @@ import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
+import com.likeminds.chatmm.utils.ValueUtils.getValidYoutubeVideoId
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ValueUtils.isValidSize
+import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
 import com.likeminds.chatmm.utils.ViewUtils.endRevealAnimation
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.startRevealAnimation
+import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
+import com.likeminds.chatmm.utils.actionmode.ActionModeListener
+import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.file.util.FileUtil
@@ -84,7 +96,10 @@ import javax.inject.Inject
 class ChatroomDetailFragment :
     BaseFragment<FragmentChatroomDetailBinding, ChatroomDetailViewModel>(),
     VoiceNoteInterface,
-    ChatroomDetailAdapterListener {
+    ChatroomDetailAdapterListener,
+    ActionModeListener<ChatroomDetailActionModeData> {
+
+    private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
 
     private lateinit var chatroomDetailExtras: ChatroomDetailExtras
 
@@ -128,6 +143,7 @@ class ChatroomDetailFragment :
     private var serviceConnection: ServiceConnection? = null
     private var localParentConversationId: String = ""
     private var localChildPosition: Int = 0
+    private var isAudioComplete = false
 
     //Variable for Voice Note
     private var singleUriDataOfVoiceNote: SingleUriData? = null
@@ -151,6 +167,8 @@ class ChatroomDetailFragment :
     private var stopTrackingVoiceNoteAction = false
     private var isDeletingVoiceNote = false
     private var isVoiceNoteRecording = false
+
+    private var inAppVideoPlayerPopup: YouTubeVideoPlayerPopup? = null
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -1661,7 +1679,90 @@ class ChatroomDetailFragment :
         childPosition: Int,
         progress: Int
     ) {
-        TODO("Not yet implemented")
+        if (localParentConversationId != parentPositionId || localChildPosition != childPosition) {
+
+            val item =
+                chatroomDetailAdapter.items().firstOrNull {
+                    ((it is ConversationViewData) && (it.id == localParentConversationId))
+                } as? ConversationViewData
+
+            if (item != null && (item.attachmentCount ?: 0) >= 1) {
+                val attachment = item.attachments?.get(localChildPosition)
+
+                if (attachment != null) {
+                    isAudioComplete = false
+                    if (attachment.mediaState == MEDIA_ACTION_PLAY) {
+                        mediaAudioService?.removeHandler()
+                    }
+                    updateAudioVoiceNoteBinder(
+                        attachment.toBuilder()
+                            .progress(0)
+                            .currentDuration(requireContext().getString(R.string.start_duration))
+                            .mediaState(MEDIA_ACTION_NONE)
+                            .build(),
+                        localParentConversationId,
+                        localChildPosition
+                    )
+                }
+            }
+        }
+
+        when (data.mediaState) {
+            MEDIA_ACTION_NONE -> {
+                if (voiceRecorder.isRecording()) {
+                    voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCK_DONE)
+                }
+                if (isVoiceNotePlaying) {
+                    mediaAudioService?.stopMedia()
+                    binding.inputBox.tvVoiceNoteTime.text =
+                        DateUtil.formatSeconds(singleUriDataOfVoiceNote?.duration ?: 0)
+                    isVoiceNotePlaying = false
+                    binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                }
+                localParentConversationId = parentPositionId
+                localChildPosition = childPosition
+                isVoiceNotePlaying = false
+
+                playAudio(data.uri, progress)
+                when (data.type) {
+                    VOICE_NOTE -> {
+                        viewModel.sendVoiceNotePlayed(parentPositionId)
+                    }
+
+                    AUDIO -> {
+                        viewModel.sendAudioPlayedEvent(parentPositionId)
+                    }
+                }
+                isAudioComplete = false
+                updateAudioVoiceNoteBinder(
+                    data.toBuilder()
+                        .progress(progress)
+                        .currentDuration(DateUtil.formatSeconds(progress))
+                        .mediaState(MEDIA_ACTION_PLAY)
+                        .build(),
+                    parentPositionId,
+                    childPosition
+                )
+            }
+
+            MEDIA_ACTION_PLAY -> {
+                mediaAudioService?.pauseAudio()
+                updateAudioVoiceNoteBinder(
+                    data.toBuilder().mediaState(MEDIA_ACTION_PAUSE).build(),
+                    parentPositionId,
+                    childPosition
+                )
+            }
+
+            MEDIA_ACTION_PAUSE -> {
+                mediaAudioService?.playAudio()
+                updateAudioVoiceNoteBinder(
+                    data.toBuilder().mediaState(MEDIA_ACTION_PLAY).build(),
+                    parentPositionId,
+                    childPosition
+                )
+            }
+        }
     }
 
     override fun onLongPressConversation(
@@ -1669,7 +1770,37 @@ class ChatroomDetailFragment :
         itemPosition: Int,
         from: String
     ) {
-        TODO("Not yet implemented")
+        if (conversation.isSending()) {
+            return
+        }
+
+        /**
+         * Reaction popup will show only when already selected conversations size is 0,
+         * meaning a new conversation is just selected
+         */
+        if (selectedConversations.size == 0) {
+            if (emojiPopup.isShowing) {
+                emojiPopup.dismiss()
+            }
+            if (conversation.deletedBy == null && selectedChatRoom == null) {
+                // todo: reactions
+//                showReactionsPopup(
+//                    itemPosition,
+//                    conversation.id,
+//                    from
+//                )
+            }
+        }
+
+        if (selectedConversations.containsKey(conversation.id)) {
+            selectedConversations.remove(conversation.id)
+        } else {
+            selectedConversations[conversation.id] = conversation
+        }
+
+        chatroomDetailAdapter.notifyItemChanged(itemPosition)
+
+        invalidateActionMenu()
     }
 
     override fun onConversationSeekbarChanged(
@@ -1678,11 +1809,42 @@ class ChatroomDetailFragment :
         parentConversationId: String,
         childPosition: Int
     ) {
-        TODO("Not yet implemented")
+        if (localParentConversationId == parentConversationId && childPosition == localChildPosition) {
+            sendProgressBroadcast(progress)
+        }
     }
 
     override fun onLongPressChatRoom(chatRoom: ChatroomViewData, itemPosition: Int) {
-        TODO("Not yet implemented")
+        selectedChatRoom = if (selectedChatRoom?.id == chatRoom.id) null else chatRoom
+
+        if (selectedChatRoom != null && selectedConversations.isEmpty()) {
+            // todo: reaction
+//            showChatroomReactionPopup(itemPosition)
+        }
+
+        chatroomDetailAdapter.notifyItemChanged(itemPosition)
+
+        invalidateActionMenu()
+    }
+
+    override fun externalLinkClicked(
+        conversationId: String?,
+        url: String,
+        reportLinkExtras: ReportLinkExtras?
+    ) {
+        if (url.isValidYoutubeLink() &&
+            url.getValidYoutubeVideoId().isNotEmpty()
+        ) {
+            showVideoPlayerPopup(url.getValidYoutubeVideoId())
+        } else {
+            viewModel.sendChatLinkClickedEvent(conversationId, url)
+            val intent = Route.handleDeepLink(requireContext(), url)
+            if (intent == null) {
+                CustomTabIntent.open(requireContext(), url, reportLinkExtras)
+            } else {
+                startActivity(intent)
+            }
+        }
     }
 
     //add this function for every navigation from chatroom
@@ -1944,5 +2106,192 @@ class ChatroomDetailFragment :
                 chatroomDetailAdapter.removeIndex(index)
             }
         }
+    }
+
+    private fun playAudio(uri: Uri, progress: Int) {
+        if (serviceConnection == null) return
+        if (!mediaAudioServiceBound) {
+            val serviceIntent =
+                Intent(requireContext(), MediaAudioForegroundService::class.java)
+            serviceIntent.putExtra(AUDIO_SERVICE_URI_EXTRA, uri)
+            serviceIntent.putExtra(AUDIO_SERVICE_PROGRESS_EXTRA, progress)
+            activity?.startService(serviceIntent)
+            activity?.bindService(serviceIntent, serviceConnection!!, Context.BIND_AUTO_CREATE)
+        } else {
+            val broadcastNewAudio = Intent(BROADCAST_PLAY_NEW_AUDIO)
+            broadcastNewAudio.putExtra(AUDIO_SERVICE_URI_EXTRA, uri)
+            broadcastNewAudio.putExtra(AUDIO_SERVICE_PROGRESS_EXTRA, progress)
+            activity?.sendBroadcast(broadcastNewAudio)
+        }
+    }
+
+    /**
+     * showCopyAction -> This will be true if either of the selected chatroom or conversation has title/answer text and is not deleted.
+     * showReplyAction -> This will be true if either only chatroom is selected or single conversation is selected.
+     * showEditAction -> This will be true if either only chatroom is selected or single conversation is selected.
+     *                    Also selected chatroom or conversation should have title/answer text and is should not be deleted.
+     * showDeleteAction -> This will be true if Chatroom is not selected and any of the following case is true:
+     *     Case 1: Multiple conversations are selected then all these should be true.
+     *          -> Each conversation should be user's own message.
+     *          -> Selected conversations shouldn't contain any deleted message.
+     *     Case 2: If Single conversation is selected then all these should be true.
+     *          -> Conversation should be user's own message.
+     *          -> Selected conversation shouldn't be a deleted message.
+     *
+     * showReportAction -> This will be true if ChatRoom is not selected & only 1 conversation is selected of another member.
+     * showSetAsTopic -> This will be true if only single conversation is selected and Member is the creator of the chatroom.
+     * */
+    private fun invalidateActionMenu() {
+        val isChatRoomSelected = selectedChatRoom != null
+        if (!isChatRoomSelected && selectedConversations.isEmpty()) {
+            actionModeCallback?.finishActionMode()
+        } else {
+            startActionMode()
+
+            var showReplyAction = false
+            var showCopyAction = false
+            var showEditAction = false
+            var showDeleteAction = false
+            var showReportAction = false
+            var showSetAsTopic = false
+
+            if (isChatRoomSelected && selectedConversations.isEmpty()) {
+                if (!isNotAdminInAnnouncementRoom()) {
+                    showReplyAction = true
+                }
+                showReportAction = false
+                showCopyAction = selectedChatRoom?.hasTitle() == true
+                showDeleteAction = false
+
+                showEditAction = if (viewModel.isAnnouncementChatroom()) {
+                    !isNotAdminInAnnouncementRoom() && viewModel.hasEditCommunityDetailRight()
+                } else {
+                    selectedChatRoom?.memberViewData?.id == sdkPreferences.getMemberId()
+                            && selectedChatRoom?.hasTitle() == true
+                }
+
+            } else if (!isChatRoomSelected && selectedConversations.size == 1) {
+                val conversation = selectedConversations[selectedConversations.keys.first()]!!
+
+                showReplyAction = conversation.isNotDeleted()
+                showSetAsTopic =
+                    (viewModel.canSetChatroomTopic())
+                            && (conversation.isNotDeleted())
+                            && (conversation.id != getChatroomViewData()?.topic?.id)
+
+                showCopyAction = conversation.hasAnswer() && conversation.isNotDeleted()
+
+                when {
+                    conversation.memberViewData.id == sdkPreferences.getMemberId() -> {
+                        showReportAction = false
+                        showDeleteAction = conversation.isNotDeleted()
+                        showEditAction = conversation.hasAnswer() && conversation.isNotDeleted()
+                    }
+
+                    viewModel.hasDeleteChatRoomRight() -> {
+                        showReportAction = true
+                        showDeleteAction = conversation.isNotDeleted()
+                        showEditAction = false
+                    }
+
+                    else -> {
+                        showReportAction = true
+                        showDeleteAction = false
+                        showEditAction = false
+                    }
+                }
+
+            } else if (!isChatRoomSelected && selectedConversations.size > 1) {
+                showReplyAction = false
+                showReportAction = false
+                showSetAsTopic = false
+
+                if (selectedConversations.values.any { it.hasAnswer() && it.isNotDeleted() }) {
+                    showCopyAction = true
+                }
+
+                if (selectedConversations.values.none {
+                        it.memberViewData.id != sdkPreferences.getMemberId()
+                                || it.deletedBy != null
+                                || !ChatroomUtil.hasOriginalConversationId(it)
+                    }) {
+                    showDeleteAction = true
+                }
+
+                showEditAction = false
+
+            } else if (isChatRoomSelected && selectedConversations.size > 0) {
+                showReplyAction = false
+                showReportAction = false
+
+                if (selectedChatRoom?.hasTitle() == true
+                    || selectedConversations.values.any { it.hasAnswer() && it.isNotDeleted() }
+                ) {
+                    showCopyAction = true
+                }
+
+                showDeleteAction = false
+                showEditAction = false
+            }
+
+            actionModeCallback?.invalidate(
+                ChatroomDetailActionModeData.Builder()
+                    .showReplyAction(showReplyAction)
+                    .showCopyAction(showCopyAction)
+                    .showEditAction(showEditAction)
+                    .showDeleteAction(showDeleteAction)
+                    .showReportAction(showReportAction)
+                    .showSetAsTopic(showSetAsTopic)
+                    .build()
+            )
+        }
+    }
+
+    /**
+     * Start action mode on toolbar and show menu items. This gets triggered on selecting conversations via long click
+     */
+    private fun startActionMode() {
+        if (actionModeCallback == null) {
+            actionModeCallback = ActionModeCallback()
+        }
+        if (actionModeCallback?.isActionModeEnabled() != true) {
+            actionModeCallback?.startActionMode(
+                this,
+                requireActivity() as AppCompatActivity,
+                R.menu.message_actions_menu
+            )
+        }
+        val selectedSize = (if (selectedChatRoom != null) 1 else 0) + selectedConversations.size
+        actionModeCallback?.updateTitle(selectedSize.toString())
+    }
+
+    private fun sendProgressBroadcast(progress: Int) {
+        val broadcastSeekBarDragged = Intent(BROADCAST_SEEKBAR_DRAGGED)
+        broadcastSeekBarDragged.putExtra(PROGRESS_SEEKBAR_DRAGGED, progress)
+        activity?.sendBroadcast(broadcastSeekBarDragged)
+    }
+
+    private fun showVideoPlayerPopup(videoId: String) {
+        if (inAppVideoPlayerPopup?.isShowing == true && inAppVideoPlayerPopup?.videoId != videoId) {
+            dismissVideoPlayerPopup()
+        }
+        if (inAppVideoPlayerPopup == null) {
+            inAppVideoPlayerPopup =
+                YouTubeVideoPlayerPopup(
+                    requireContext(),
+                    binding.rvChatroom,
+                    requireActivity()
+                )
+            inAppVideoPlayerPopup!!.attachListener(this)
+            inAppVideoPlayerPopup!!.contentView = null
+            if (videoId.isNotBlank()) {
+                inAppVideoPlayerPopup!!.showPopup(lifecycle, videoId)
+            }
+        }
+    }
+
+    private fun dismissVideoPlayerPopup() {
+        inAppVideoPlayerPopup?.dismiss()
+        inAppVideoPlayerPopup = null
     }
 }

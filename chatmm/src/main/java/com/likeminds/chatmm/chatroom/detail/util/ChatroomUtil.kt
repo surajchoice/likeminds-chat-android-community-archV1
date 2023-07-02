@@ -80,6 +80,11 @@ object ChatroomUtil {
         return Triple(spannableStringBuilder, firstMediaType, drawableList)
     }
 
+    fun hasOriginalConversationId(conversation: ConversationViewData?): Boolean {
+        return !conversation?.id.isNullOrEmpty()
+                && conversation?.id?.startsWith("-") == false
+    }
+
     fun getFirstMediaType(attachmentList: List<AttachmentViewData>?): String {
         return when (val viewData = attachmentList?.minByOrNull { it.index ?: 0 }) {
             is AttachmentViewData -> viewData.type

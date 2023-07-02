@@ -119,4 +119,9 @@
     <string name="added_to_your_joined_chat_rooms">Added to your joined chat rooms</string>
     <string name="removed_from_your_joined_chat_rooms">Removed from your joined chat rooms</string>
     <string name="you_are_joining_this_chat_room">You are joining this chat room</string>
+    <string name="copy">Copy</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="set_as_current_topic">Set as current topic</string>
+    <string name="report_message">Report Message</string>
 </resources>
