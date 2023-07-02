@@ -1,17 +1,25 @@
 package com.likeminds.chatmm.chatroom.detail.util
 
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
+import android.util.DisplayMetrics
+import android.view.WindowInsets
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_INTRO
+import com.likeminds.chatmm.chatroom.detail.view.YouTubeVideoPlayerPopup
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ValueUtils.containsUrl
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 
 object ChatroomUtil {
@@ -331,6 +339,50 @@ object ChatroomUtil {
             9 -> "introduction_rooms"
             10 -> "direct messages"
             else -> "normal"
+        }
+    }
+
+    fun setVidePlayerDimensions(
+        activity: Activity,
+        inAppYouTubePlayer: YouTubeVideoPlayerPopup?,
+        isFullScreen: Boolean,
+    ) {
+        val fullWidth: Int
+        val fullHeight: Int
+        fullWidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets =
+                windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            fullHeight = windowMetrics.bounds.height() - insets.top - insets.bottom
+            windowMetrics.bounds.width()
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            fullHeight = displayMetrics.heightPixels
+            displayMetrics.widthPixels
+        }
+        if (isFullScreen) {
+            inAppYouTubePlayer?.update(
+                fullWidth, fullHeight
+            )
+        } else {
+            val height = ViewUtils.dpToPx(208)
+            val margin = ViewUtils.dpToPx(16)
+            inAppYouTubePlayer?.update(
+                fullWidth - margin, height
+            )
+        }
+    }
+
+    fun setStatusBarColor(activity: Activity, context: Context, isFullScreen: Boolean) {
+        val window = activity.window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        if (isFullScreen) {
+            window.statusBarColor = ContextCompat.getColor(context, R.color.black)
+        } else {
+            window.statusBarColor =
+                ContextCompat.getColor(context, R.color.colorPrimaryDark)
         }
     }
 }

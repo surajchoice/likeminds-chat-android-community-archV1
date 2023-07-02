@@ -26,6 +26,7 @@ import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWo
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.FollowChatroomRequest
+import com.likeminds.likemindschat.chatroom.model.LeaveSecretChatroomRequest
 import com.likeminds.likemindschat.chatroom.model.MuteChatroomRequest
 import com.likeminds.likemindschat.chatroom.model.SetChatroomTopicRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
@@ -75,6 +76,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _setTopicResponse = MutableLiveData<ConversationViewData>()
     val setTopicResponse: LiveData<ConversationViewData> = _setTopicResponse
 
+    private val _leaveSecretChatroomResponse = MutableLiveData<Boolean>()
+    val leaveSecretChatroomResponse: LiveData<Boolean> = _leaveSecretChatroomResponse
+
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageFlow = errorEventChannel.receiveAsFlow()
 
@@ -91,6 +95,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class FollowChatroom(val errorMessage: String?) : ErrorMessageEvent()
         data class MuteChatroom(val errorMessage: String?) : ErrorMessageEvent()
         data class SetChatroomTopic(val errorMessage: String?) : ErrorMessageEvent()
+        data class LeaveSecretChatroom(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     /**
@@ -119,6 +124,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun isAudioSupportEnabled(): Boolean {
         return sdkPreferences.isAudioSupportEnabled()
+    }
+
+    fun isGifSupportEnabled(): Boolean {
+        return sdkPreferences.isGifSupportEnabled()
     }
 
     // todo: member rights
@@ -349,6 +358,25 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    fun leaveChatRoom(chatroomId: String) {
+        viewModelScope.launchIO {
+            val request = LeaveSecretChatroomRequest.Builder()
+                .chatroomId(chatroomId.toInt())
+                .isSecret(getChatroom()?.isSecret == true)
+                .build()
+
+            val response = lmChatClient.leaveSecretChatroom(request)
+            if (response.success) {
+                _leaveSecretChatroomResponse.postValue(true)
+                sendChatRoomLeftEvent()
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(SDKApplication.LOG_TAG, "secret leave failed: $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.LeaveSecretChatroom(errorMessage))
+            }
+        }
+    }
+
     fun deleteConversations(conversations: List<ConversationViewData>) {
         viewModelScope.launchIO {
             // todo
@@ -363,6 +391,14 @@ class ChatroomDetailViewModel @Inject constructor(
                     ?.build()
             )
             .build()
+    }
+
+    fun updateChatRoomFollowStatus(value: Boolean) {
+        val newChatroomViewData = getChatroom()?.toBuilder()
+            ?.followStatus(value)
+            ?.showFollowTelescope(!value)
+            ?.build()
+        chatroomDetail = chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
     }
 
     fun createRetryConversationMediaWorker(
@@ -632,6 +668,31 @@ class ChatroomDetailViewModel @Inject constructor(
 //            put("chatroom_id", chatroomId)
 //            put("conversationId", conversationId)
 //            put("topic", topic)
+//        })
+    }
+
+    /**
+     * Triggers when the current user leave the current chatroom
+     */
+    private fun sendChatRoomLeftEvent() {
+//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_LEFT, JSONObject().apply {
+//            put("community_id", chatroomDetail.chatroom?.communityId)
+//            put("chatroom_id", chatroomDetail.chatroom?.id)
+//            put("chatroom_name", chatroomDetail.chatroom?.header)
+//            put("chatroom_type", chatroomDetail.chatroom?.getTypeName())
+//            put("chatroom_category", "secret")
+//        })
+    }
+
+    /**
+     * Triggers when the current user starts sharing the chatroom
+     */
+    fun sendChatroomShared() {
+//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_SHARED, JSONObject().apply {
+//            put("chatroom_id", getChatroom()?.id)
+//            put("chatroom_name", getChatroom()?.header)
+//            put("community_id", getChatroom()?.communityId)
+//            put("community_name", getChatroom()?.communityName)
 //        })
     }
 }

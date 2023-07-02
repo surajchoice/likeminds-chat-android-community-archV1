@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
+import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
 import android.util.Base64
@@ -25,6 +26,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -73,8 +75,10 @@ import com.likeminds.chatmm.media.view.MediaPickerActivity
 import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
+import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getValidYoutubeVideoId
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ValueUtils.isValidSize
@@ -98,6 +102,8 @@ import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.permissions.Permission
 import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
 import com.likeminds.chatmm.utils.permissions.PermissionManager
+import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
+import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
@@ -109,12 +115,15 @@ import kotlin.math.abs
 
 class ChatroomDetailFragment :
     BaseFragment<FragmentChatroomDetailBinding, ChatroomDetailViewModel>(),
-    VoiceNoteInterface,
     ChatroomDetailAdapterListener,
     ActionModeListener<ChatroomDetailActionModeData>,
+    YouTubeVideoPlayerPopup.VideoPlayerListener,
+    VoiceNoteInterface,
+    LeaveSecretChatroomDialogListener,
     DeleteMessageListener {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
+    private var lmSwipeController: LMSwipeController? = null
 
     private lateinit var chatroomDetailExtras: ChatroomDetailExtras
 
@@ -148,7 +157,10 @@ class ChatroomDetailFragment :
 
     lateinit var chatroomDetailAdapter: ChatroomDetailAdapter
     private lateinit var chatroomScrollListener: ChatroomScrollListener
+    private var updatedMuteActionTitle: String? = null
+    private var updatedFollowActionTitle: String? = null
     private var blockedAccessPopUp: AlertDialog? = null
+    private var isTagClickedFlow: Boolean = false
 
     private var cameraPath: String? = null
 
@@ -338,6 +350,15 @@ class ChatroomDetailFragment :
         const val SOURCE_HOME_FEED = "home_feed"
         const val SOURCE_TAGGED_AUTO_FOLLOWED = "tagged_auto_followed"
 
+        const val MUTE_ACTION_TITLE = "Mute notifications"
+        const val UNMUTE_ACTION_TITLE = "Unmute notifications"
+        const val UNMUTE_ACTION_IDENTIFIER = "unmute"
+
+        const val FOLLOW_ACTION_TITLE = "Join chatroom"
+        const val UNFOLLOW_ACTION_TITLE = "Leave chatroom"
+
+        const val SOURCE_CHAT_ROOM_OVERFLOW_MENU = "chatroom_overflow_menu"
+
         const val REQUEST_GIFS = 3004
     }
 
@@ -410,6 +431,7 @@ class ChatroomDetailFragment :
         initView()
         initEmojiView()
         initGiphy()
+        initEnterClick()
         initAttachmentClick()
         initAttachmentsView()
 //        disableAnswerPosting()
@@ -475,8 +497,7 @@ class ChatroomDetailFragment :
                 }
             }
 
-            // todo:
-//            initSwipeController()
+            initSwipeController()
             initRichEditorSupport()
 
             fabScrollBottom.setOnClickListener {
@@ -1253,6 +1274,198 @@ class ChatroomDetailFragment :
         recyclerView.addOnScrollListener(chatroomScrollListener)
     }
 
+    private fun initEnterClick() {
+        binding.apply {
+            fabSend.setOnClickListener {
+                if (isGuestUser) {
+                    callGuestFlowCallback()
+                } else {
+                    var editableText = inputBox.etAnswer.editableText
+                    if (isReplyViewVisible()) {
+                        val chatReplyData = inputBox.viewReply.chatReplyData
+                        if (chatReplyData?.isEditMessage == true) {
+                            postEditConversation(editableText)
+                            return@setOnClickListener
+                        }
+                    }
+
+                    if (viewModel.isVoiceNoteSupportEnabled()) {
+                        if (isVoiceNotePlaying && serviceConnection != null) {
+                            stopAudioService()
+                        }
+
+                        if (isVoiceNoteLocked) {
+                            isVoiceNoteLocked = false
+                            singleUriDataOfVoiceNote = voiceRecorder.stopRecording(requireContext())
+                            voiceNoteUtils.stopVoiceNote(this, RECORDING_LOCK_SEND)
+                        }
+                    }
+
+                    val listUris =
+                        if (singleUriDataOfVoiceNote != null) {
+                            listOf(singleUriDataOfVoiceNote!!)
+                        } else null
+
+                    editableText = if (singleUriDataOfVoiceNote != null) {
+                        null
+                    } else {
+                        inputBox.etAnswer.editableText
+                    }
+
+                    val inputText = inputBox.etAnswer.editableText.toString().trim()
+                    val shareLink = if (inputText.getEmailIfExist().isNullOrEmpty())
+                        inputText.getUrlIfExist()
+                    else {
+                        chatroomDetailExtras.shareExternalData?.sharedLink
+                    }
+
+                    if (viewModel.isVoiceNoteSupportEnabled()) {
+                        isVoiceNotePlaying = false
+                        voiceNoteUtils.stopVoiceNote(this, RECORDING_SEND)
+                    }
+
+                    postConversation(
+                        editableConversation = editableText,
+                        shareLink = shareLink,
+                        fileUris = listUris
+                    )
+                }
+            }
+        }
+    }
+
+    private fun postConversation(
+        editableConversation: Editable? = null,
+        conversation: String? = null,
+        fileUris: List<SingleUriData>? = null,
+        shareLink: String? = null,
+    ) {
+        binding.apply {
+            val shareTextLink = shareLink?.trim()
+
+            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false) {
+
+                scrollToExtremeBottom()
+
+                // Update Chatroom follow status
+                if (getChatroomViewData()?.followStatus == false) {
+                    removeFollowView()
+                    viewModel.updateChatRoomFollowStatus(true)
+                    updateChatroomFollowStatus(true)
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.added_to_your_joined_chat_rooms)
+                    )
+                }
+
+                if (isTagClickedFlow) {
+                    if (memberTagging.getTaggedMemberCount() > 0) {
+                        removeTagAndShareView()
+                        isTagClickedFlow = false
+                    }
+                }
+                val updatedConversation = conversation?.trim()
+                    ?: memberTagging.replaceSelectedMembers(editableConversation).trim()
+
+                var replyConversationId: String? = null
+                var replyChatRoomId: String? = null
+                var replyChatData: ChatReplyViewData? = null
+
+                if (isReplyViewVisible()) {
+                    when (inputBox.viewReply.replySourceType) {
+                        REPLY_SOURCE_CHATROOM -> {
+                            val repliedChatRoom = inputBox.viewReply.chatRoomViewData
+                            replyChatRoomId = repliedChatRoom?.id
+                        }
+
+                        REPLY_SOURCE_CONVERSATION -> {
+                            val repliedConversation =
+                                inputBox.viewReply.conversationViewData
+                            replyConversationId = repliedConversation?.id
+                        }
+                    }
+                    replyChatData = inputBox.viewReply.chatReplyData
+                }
+
+                chatroomDetailExtras = chatroomDetailExtras.toBuilder()
+                    .shareExternalData(null)
+                    .build()
+
+                viewModel.createConversation(
+                    requireContext(),
+                    updatedConversation,
+                    fileUris,
+                    shareTextLink,
+                    Route.isInternalLink(shareTextLink) || (chatroomDetailExtras.shareExternalData?.isInternalLink == true),
+                    replyConversationId,
+                    replyChatRoomId,
+                    memberTagging.getTaggedMembers(),
+                    replyChatData
+                )
+                clearEditTextAnswer()
+                updateDmMessaged()
+                if (isLinkViewVisible() || isReplyViewVisible()) {
+                    setChatInputBoxViewType(CHAT_BOX_NORMAL)
+                }
+            } else {
+                ViewUtils.showShortSnack(root, "Please enter your response")
+            }
+        }
+    }
+
+    private fun postEditConversation(editableText: Editable?) {
+        if (!editableText.isNullOrEmpty()) {
+            val updatedText = memberTagging.replaceSelectedMembers(editableText).trim()
+            when (binding.inputBox.viewReply.replySourceType) {
+                REPLY_SOURCE_CHATROOM -> {
+                    val chatRoom = binding.inputBox.viewReply.chatRoomViewData
+                    if (chatRoom != null) {
+                        viewModel.postEditedChatRoom(updatedText, chatRoom)
+                    } else {
+                        ViewUtils.showShortSnack(binding.root, "Please enter your response")
+                    }
+                }
+
+                REPLY_SOURCE_CONVERSATION -> {
+                    val conversation = binding.inputBox.viewReply.conversationViewData
+                    if (conversation != null) {
+                        val link =
+                            binding.inputBox.etAnswer.editableText.toString().trim().getUrlIfExist()
+                        val shareLink = if (Route.isInternalLink(link)) null else link
+                        viewModel.postEditedConversation(
+                            updatedText,
+                            shareLink,
+                            conversation
+                        )
+                        //to check if we are editing a message which set as current topic
+                        if (conversation.id == viewModel.getCurrentTopic()
+                                ?.id
+                        ) {
+                            viewModel.updateChatroomWhileEditingTopic(
+                                conversation,
+                                updatedText
+                            )
+                            initTopChatroomView(getChatroomViewData()!!)
+                        }
+                    } else {
+                        ViewUtils.showShortSnack(binding.root, "Please enter your response")
+                    }
+                }
+            }
+            clearEditTextAnswer()
+            updateDmMessaged()
+            if (isReplyViewVisible()) {
+                setChatInputBoxViewType(CHAT_BOX_NORMAL)
+            }
+        } else {
+            ViewUtils.showShortSnack(binding.root, "Please enter your response")
+        }
+    }
+
+    private fun updateDmMessaged() {
+        // todo:
+    }
+
     /**
      * Check if the recyclerview can scroll up or down
      */
@@ -1442,6 +1655,30 @@ class ChatroomDetailFragment :
         }
     }
 
+    private fun initSwipeController() {
+        lmSwipeController = LMSwipeController(
+            requireContext(),
+            swipeControllerActions = SwipeControllerActions { position ->
+                val chatItem =
+                    chatroomDetailAdapter[position] ?: return@SwipeControllerActions
+                if (chatItem is ConversationViewData) {
+                    if (chatItem.isFailed()) {
+                        showFailedConversationMenu(chatItem, position)
+                    } else if (chatItem.isSent()) {
+                        setChatInputBoxViewType(CHAT_BOX_REPLY)
+                        setReplyViewConversationData(chatItem, "swipe")
+                    }
+                } else if (chatItem is ChatroomViewData) {
+                    setChatInputBoxViewType(CHAT_BOX_REPLY)
+                    setReplyViewChatRoomData(chatItem, "swipe")
+                }
+            }
+        )
+
+        val itemTouchHelper = ItemTouchHelper(lmSwipeController!!)
+        itemTouchHelper.attachToRecyclerView(binding.rvChatroom)
+    }
+
     private fun initRichEditorSupport() {
         binding.inputBox.etAnswer.addListener(object : LikeMindsEditTextListener {
             override fun onMediaSelected(contentUri: Uri, mimeType: String) {
@@ -1450,21 +1687,20 @@ class ChatroomDetailFragment :
         })
     }
 
-    // todo:
     private fun openMedia(contentUri: Uri, mimeType: String) {
-//        val singleUri = SingleUriData.builder()
-//            .uri(contentUri)
-//            .fileType(mimeType)
-//            .build()
-//        when {
-//            viewModel.isGifSupportEnabled() && singleUri.fileType() == GIF -> {
-//                showGifEditScreen(singleUri)
-//            }
-//
-//            singleUri.fileType() == IMAGE -> {
-//                showPickImagesListScreen(singleUri)
-//            }
-//        }
+        val singleUri = SingleUriData.Builder()
+            .uri(contentUri)
+            .fileType(mimeType)
+            .build()
+        when {
+            viewModel.isGifSupportEnabled() && singleUri.fileType == GIF -> {
+                showGifEditScreen(singleUri)
+            }
+
+            singleUri.fileType == IMAGE -> {
+                showPickImagesListScreen(singleUri)
+            }
+        }
     }
 
     /**
@@ -1693,11 +1929,6 @@ class ChatroomDetailFragment :
         }
     }
 
-    override fun onStop() {
-        setLastSeenTrueAndSaveDraftResponse()
-        super.onStop()
-    }
-
     private fun setLastSeenTrueAndSaveDraftResponse() {
         // todo:
     }
@@ -1713,6 +1944,15 @@ class ChatroomDetailFragment :
 
             isAttachmentsBarVisible() -> {
                 initVisibilityOfAttachmentsBar(View.GONE)
+                return true
+            }
+
+            inAppVideoPlayerPopup?.isShowing == true -> {
+                if (!inAppVideoPlayerPopup!!.isFullScreen) {
+                    dismissVideoPlayerPopup()
+                } else {
+                    changeVideoPlayerToPopupScreen()
+                }
                 return true
             }
         }
@@ -2836,6 +3076,10 @@ class ChatroomDetailFragment :
      * Utility functions
     ---------------------------------------------------------------*/
 
+    private fun invalidateActionsMenu() {
+        activity?.invalidateOptionsMenu()
+    }
+
     private fun takeActionOnReportedMessage() {
         chatroomResultExtras = chatroomResultExtras?.also {
             chatroomResultExtras?.toBuilder()
@@ -2879,6 +3123,12 @@ class ChatroomDetailFragment :
             broadcastNewAudio.putExtra(AUDIO_SERVICE_PROGRESS_EXTRA, progress)
             activity?.sendBroadcast(broadcastNewAudio)
         }
+    }
+
+    private fun changeVideoPlayerToPopupScreen() {
+        fullScreenClicked(isFullScreen = false)
+        inAppVideoPlayerPopup?.setPopupWindowConstraints(false)
+        inAppVideoPlayerPopup?.setPopupWindowUI()
     }
 
     /**
@@ -3409,6 +3659,200 @@ class ChatroomDetailFragment :
         if (mediaAudioService != null && mediaAudioService?.isPlaying() == true && audioPlayingConversation != null) {
             stopAudioService()
         }
+    }
+
+    override fun positiveButtonClick() {
+        viewModel.leaveChatRoom(chatroomId)
+    }
+
+    override fun crossClicked() {
+        dismissVideoPlayerPopup()
+    }
+
+    override fun fullScreenClicked(isFullScreen: Boolean) {
+        ChatroomUtil.setVidePlayerDimensions(
+            requireActivity(),
+            inAppVideoPlayerPopup,
+            isFullScreen
+        )
+        ChatroomUtil.setStatusBarColor(requireActivity(), requireContext(), isFullScreen)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed()
+            }
+
+            R.id.view_participants -> {
+                openViewParticipantsActivity()
+            }
+
+            R.id.mute_unmute_notifications -> {
+                muteUnmuteNotifications(item)
+            }
+
+            R.id.view_community -> {
+                // todo:
+//                redirectToCommunityDetail()
+            }
+
+            R.id.join_leave_chatroom -> {
+                joinLeaveChatroom()
+            }
+
+            R.id.report_chatroom -> {
+                performReportAbuse()
+            }
+
+            R.id.invite -> {
+                shareChatroom()
+            }
+
+            R.id.share_chatroom_icon -> {
+                shareChatroom()
+            }
+
+            R.id.leave_chatroom -> {
+                showLeaveChatroomConfirmationPopup()
+            }
+
+            // todo: profile
+//            R.id.view_profile -> {
+//                redirectToProfile()
+//            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun openViewParticipantsActivity() {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            val chatroomViewData = getChatroomViewData() ?: return
+            onScreenChanged()
+            // todo: in participants
+//            val extras = ViewParticipantsExtra.Builder()
+//                .chatroomId(chatroomViewData.id)
+//                .communityId(chatroomViewData.communityId ?: "")
+//                .isSecretChatroom(chatroomViewData.isSecret ?: false)
+//                .chatroomName(chatroomViewData.header ?: "")
+//                .build()
+//            ViewParticipantsActivity.start(requireContext(), extras)
+        }
+    }
+
+    private fun muteUnmuteNotifications(item: MenuItem) {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            val value: Boolean
+            if (item.title.toString().lowercase()
+                    .contains(UNMUTE_ACTION_IDENTIFIER)
+            ) {
+                updatedMuteActionTitle = MUTE_ACTION_TITLE
+                value = false
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    "Notifications unmuted for this chatroom"
+                )
+            } else {
+                updatedMuteActionTitle = UNMUTE_ACTION_TITLE
+                value = true
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    "Notifications muted for this chatroom"
+                )
+            }
+            invalidateActionsMenu()
+            viewModel.muteChatroom(
+                chatroomId,
+                value
+            )
+            viewModel.sendChatroomMuted(value)
+            updateChatroomMuteStatus(value)
+        }
+    }
+
+    private fun updateChatroomMuteStatus(updatedMuteStatus: Boolean) {
+        chatroomResultExtras = chatroomResultExtras?.also {
+            chatroomResultExtras?.toBuilder()
+                ?.chatroomId(chatroomId)
+                ?.isChatroomMutedChanged(true)
+                ?.updatedMuteStatus(updatedMuteStatus)
+                ?.build()
+        } ?: run {
+            ChatroomDetailResultExtras.Builder()
+                .chatroomId(chatroomId)
+                .isChatroomMutedChanged(true)
+                .updatedMuteStatus(updatedMuteStatus)
+                .build()
+        }
+        setChatroomDetailActivityResult()
+    }
+
+    private fun joinLeaveChatroom() {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            val value: Boolean
+            if (getChatroomViewData()?.followStatus == true) {
+                updatedFollowActionTitle = FOLLOW_ACTION_TITLE
+                value = false
+            } else {
+                updatedFollowActionTitle = UNFOLLOW_ACTION_TITLE
+                value = true
+            }
+            invalidateActionsMenu()
+            follow(value, SOURCE_CHAT_ROOM_OVERFLOW_MENU)
+        }
+    }
+
+    private fun performReportAbuse() {
+        if (context == null) {
+            return
+        }
+        onScreenChanged()
+        //todo figure it out
+    }
+
+    private fun shareChatroom() {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            ViewUtils.hideKeyboard(requireActivity())
+            ShareUtils.shareChatroom(
+                requireContext(),
+                (viewModel.chatroomDetail.chatroom?.id ?: ""),
+                ShareUtils.domain
+            )
+            viewModel.sendChatroomShared()
+        }
+    }
+
+    private fun showLeaveChatroomConfirmationPopup() {
+        val dialog = LeaveSecretChatroomDialog(this)
+        dialog.show(childFragmentManager, LeaveSecretChatroomDialog.TAG)
+    }
+
+    /**------------------------------------------------------------
+     * Lifecycle functions
+    ---------------------------------------------------------------*/
+
+    override fun onPause() {
+        super.onPause()
+        if (inAppVideoPlayerPopup?.isShowing == true) {
+            inAppVideoPlayerPopup?.playOrPauseVideo(play = false)
+        }
+    }
+
+    override fun onStop() {
+        setLastSeenTrueAndSaveDraftResponse()
+        if (isVoiceNoteLocked) {
+            isVoiceNoteLocked = false
+            voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCK_DONE)
+        }
+        super.onStop()
     }
 
     override fun onDestroy() {

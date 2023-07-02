@@ -133,4 +133,16 @@
     <string name="delete_single_message">Are you sure you want to delete this message? This action can not be reversed.</string>
     <string name="delete_multiple_message">Are you sure you want to delete these messages? This action can not be reversed.</string>
     <string name="current_topic_text">Current Topic</string>
+    <string name="view_participants">View participants</string>
+    <string name="invite_small">Invite</string>
+    <string name="add_all_member">Add all member</string>
+    <string name="join_chatroom">Join chatroom</string>
+    <string name="view_profile">View Profile</string>
+    <string name="view_community">View community</string>
+    <string name="mute_notifications">Mute notifications</string>
+    <string name="leave_chatroom">Leave chatroom</string>
+    <string name="report">Report</string>
+    <string name="share_chatroom">Share Chatroom</string>
+    <string name="leave_chat_room">Leave chat room?</string>
+    <string name="are_you_sure_you_want_to_leave_this_chat_room">Are you sure you want to leave this chat room?</string>
 </resources>
