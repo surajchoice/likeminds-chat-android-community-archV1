@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.chatroom.detail.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -7,21 +8,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkContinuation
+import androidx.work.WorkManager
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.MediaViewData
+import com.likeminds.chatmm.utils.CommunityRightsUtil
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
+import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.FollowChatroomRequest
 import com.likeminds.likemindschat.chatroom.model.MuteChatroomRequest
+import com.likeminds.likemindschat.chatroom.model.SetChatroomTopicRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import kotlinx.coroutines.Job
@@ -52,6 +58,8 @@ class ChatroomDetailViewModel @Inject constructor(
     private var currentMemberFromDb: MemberViewData? = null
     var currentMemberDataFromMemberState: MemberViewData? = null
 
+    private val managementRights: ArrayList<ManagementRightPermissionViewData> = ArrayList()
+
     //default value is set to true, so that initially member can message,
     //but after api response check for the right to respond
     private val _canMemberRespond: MutableLiveData<Boolean> = MutableLiveData()
@@ -62,6 +70,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private val _chatroomDetailLiveData by lazy { MutableLiveData<ChatroomDetailViewData?>() }
     val chatroomDetailLiveData: LiveData<ChatroomDetailViewData?> = _chatroomDetailLiveData
+
+    //To set topic
+    private val _setTopicResponse = MutableLiveData<ConversationViewData>()
+    val setTopicResponse: LiveData<ConversationViewData> = _setTopicResponse
 
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageFlow = errorEventChannel.receiveAsFlow()
@@ -78,6 +90,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class DecodeUrl(val errorMessage: String?) : ErrorMessageEvent()
         data class FollowChatroom(val errorMessage: String?) : ErrorMessageEvent()
         data class MuteChatroom(val errorMessage: String?) : ErrorMessageEvent()
+        data class SetChatroomTopic(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     /**
@@ -132,12 +145,24 @@ class ChatroomDetailViewModel @Inject constructor(
         return _canMemberRespond.value == true
     }
 
+    fun hasDeleteChatRoomRight(): Boolean {
+        return CommunityRightsUtil.hasDeleteChatRoomRight(managementRights)
+    }
+
+    fun hasEditCommunityDetailRight(): Boolean {
+        return CommunityRightsUtil.hasEditCommunityDetailRight(managementRights)
+    }
+
     fun getChatroomViewData(): ChatroomViewData? {
         return if (this::chatroomDetail.isInitialized) {
             chatroomDetail.chatroom
         } else {
             null
         }
+    }
+
+    fun getCurrentTopic(): ConversationViewData? {
+        return getChatroom()?.topic
     }
 
     private fun isChatroomCreator(): Boolean {
@@ -150,6 +175,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun canSetChatroomTopic(): Boolean {
         return isAdminMember() || isChatroomCreator()
+    }
+
+    fun getSlideUpVoiceNoteToast(): Boolean {
+        return sdkPreferences.getSlideUpVoiceNoteToast()
+    }
+
+    fun setSlideUpVoiceNoteToast(value: Boolean) {
+        sdkPreferences.setSlideUpVoiceNoteToast(value)
     }
 
     fun fetchUriDetails(
@@ -200,6 +233,10 @@ class ChatroomDetailViewModel @Inject constructor(
 //        return chatroomRepository.getConversationsBelowCount(
 //            realm, chatroomId()?.toInt() ?: 0, bottomConversation
 //        )
+    }
+
+    fun getContentDownloadSettings(communityId: String) {
+        // todo:
     }
 
     // follow/unfollow a chatroom
@@ -279,6 +316,91 @@ class ChatroomDetailViewModel @Inject constructor(
                 errorEventChannel.send(ErrorMessageEvent.MuteChatroom(errorMessage))
             }
         }
+    }
+
+    /** Set a conversation as current topic
+     * @param chatroomId Id of the chatroom
+     * @param conversation conversation object of the selected conversation
+     */
+    fun setChatroomTopic(
+        chatroomId: String,
+        conversation: ConversationViewData,
+    ) {
+        viewModelScope.launchIO {
+            val request = SetChatroomTopicRequest.Builder()
+                .chatroomId(chatroomId.toInt())
+                .conversationId(conversation.id.toInt())
+                .build()
+            val response = lmChatClient.setChatroomTopic(request)
+            if (response.success) {
+                chatroomDetail = chatroomDetail.toBuilder()
+                    .chatroom(
+                        getChatroom()?.toBuilder()
+                            ?.topic(conversation)
+                            ?.build()
+                    ).build()
+                _setTopicResponse.postValue(conversation)
+                sendSetChatroomTopicEvent(chatroomId, conversation.id, conversation.answer)
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(SDKApplication.LOG_TAG, "set chatroom topic api failed: $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.SetChatroomTopic(errorMessage))
+            }
+        }
+    }
+
+    fun deleteConversations(conversations: List<ConversationViewData>) {
+        viewModelScope.launchIO {
+            // todo
+        }
+    }
+
+    fun updateChatroomWhileDeletingTopic() {
+        chatroomDetail = chatroomDetail.toBuilder()
+            .chatroom(
+                getChatroom()?.toBuilder()
+                    ?.topic(null)
+                    ?.build()
+            )
+            .build()
+    }
+
+    fun createRetryConversationMediaWorker(
+        context: Context,
+        conversationId: String,
+        attachmentCount: Int,
+    ) {
+        if (conversationId.isEmpty() || attachmentCount <= 0) {
+            return
+        }
+        val uploadData = uploadFilesViaWorker(context, conversationId, attachmentCount)
+        // todo: update uuid
+//        chatroomRepository.updateConversationUploadWorkerUUID(conversationId, uploadData.second)
+        uploadData.first.enqueue()
+    }
+
+    @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
+    private fun uploadFilesViaWorker(
+        context: Context,
+        conversationId: String,
+        fileUriCount: Int,
+    ): Pair<WorkContinuation, String> {
+        val oneTimeWorkRequest =
+            ConversationMediaUploadWorker.getInstance(conversationId, fileUriCount)
+        val workContinuation = WorkManager.getInstance(context).beginWith(oneTimeWorkRequest)
+        return Pair(workContinuation, oneTimeWorkRequest.id.toString())
+    }
+
+    fun resendFailedConversation(context: Context, conversation: ConversationViewData) {
+        postFailedConversation(context, conversation)
+    }
+
+    private fun postFailedConversation(context: Context, conversation: ConversationViewData) {
+        // todo:
+    }
+
+    fun deleteFailedConversation(conversationId: String) {
+        // todo:
     }
 
     fun clearLinkPreview() {
@@ -465,5 +587,51 @@ class ChatroomDetailViewModel @Inject constructor(
 //                "message_id" to messageId,
 //            )
         }
+    }
+
+    /**
+     * Triggers when the user clicks on a link
+     **/
+    fun sendChatLinkClickedEvent(messageId: String?, url: String) {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(
+//                LMAnalytics.Keys.EVENT_CHAT_LINK_CLICKED,
+//                "chatroom_id" to chatroom.id,
+//                "community_id" to chatroom.communityId,
+//                "user_id" to sdkPreferences.getMemberId(),
+//                "message_id" to messageId,
+//                "url" to url,
+//                "type" to "link"
+//            )
+        }
+    }
+
+    /**
+     * Triggers when the user copy messages
+     **/
+    fun sendMessageCopyEvent(message: String) {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(
+//                LMAnalytics.Keys.EVENT_MESSAGE_COPIED,
+//                "chatroom_id" to chatroom.id,
+//                "community_id" to chatroom.communityId,
+//                "messages" to message
+//            )
+        }
+    }
+
+    /**
+     * Triggers when topic of chatroom is changed
+     */
+    private fun sendSetChatroomTopicEvent(
+        chatroomId: String,
+        conversationId: String,
+        topic: String,
+    ) {
+//        LMAnalytics.track(LMAnalytics.Keys.EVENT_SET_CHATROOM_TOPIC, JSONObject().apply {
+//            put("chatroom_id", chatroomId)
+//            put("conversationId", conversationId)
+//            put("topic", topic)
+//        })
     }
 }

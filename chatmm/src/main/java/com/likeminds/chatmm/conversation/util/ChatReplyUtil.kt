@@ -268,4 +268,20 @@ object ChatReplyUtil {
         }
         return ""
     }
+
+    fun getEditChatRoomData(chatRoom: ChatroomViewData): ChatReplyViewData {
+        return ChatReplyViewData.Builder()
+            .conversationText(chatRoom.title)
+            .isEditMessage(true)
+            .attachmentType("")
+            .build()
+    }
+
+    fun getEditConversationData(conversation: ConversationViewData): ChatReplyViewData {
+        return ChatReplyViewData.Builder()
+            .conversationText(conversation.answer)
+            .isEditMessage(true)
+            .attachmentType("")
+            .build()
+    }
 }

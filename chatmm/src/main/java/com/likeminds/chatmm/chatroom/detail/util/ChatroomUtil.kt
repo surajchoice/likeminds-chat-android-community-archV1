@@ -12,6 +12,7 @@ import com.likeminds.chatmm.chatroom.detail.model.TYPE_INTRO
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ValueUtils.containsUrl
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 
 object ChatroomUtil {
     fun getMediaCount(mediaType: String, attachments: List<AttachmentViewData>?): Int {
@@ -33,6 +34,30 @@ object ChatroomUtil {
             return true
         }
         return false
+    }
+
+    /**
+     * Get conversation type based on the conversation data
+     */
+    fun getConversationType(conversation: ConversationViewData?): String {
+        if (conversation == null) return ""
+        val imageCount = getMediaCount(IMAGE, conversation.attachments)
+        val gifCount = getMediaCount(GIF, conversation.attachments)
+        val videoCount = getMediaCount(VIDEO, conversation.attachments)
+        val pdfCount = getMediaCount(PDF, conversation.attachments)
+        val audioCount = getMediaCount(AUDIO, conversation.attachments)
+        val voiceNoteCount = getMediaCount(VOICE_NOTE, conversation.attachments)
+        return when {
+            imageCount > 0 && videoCount > 0 -> "image, video"
+            imageCount > 0 -> "image"
+            gifCount > 0 -> "gif"
+            videoCount > 0 -> "video"
+            pdfCount > 0 -> "doc"
+            audioCount > 0 -> "audio"
+            voiceNoteCount > 0 -> "voice note"
+            conversation.ogTags?.url != null -> "link"
+            else -> "text"
+        }
     }
 
     /**
@@ -98,6 +123,62 @@ object ChatroomUtil {
             (videosCount > 0) -> Pair(R.drawable.ic_video_header, videosCount)
             else -> null
         }
+    }
+
+    fun getTopicMediaData(
+        context: Context,
+        conversation: ConversationViewData?
+    ): SpannableStringBuilder {
+        val tripleOfSpannableAndMedia = getHomeScreenAttachmentData(context, conversation)
+        val firstMediaType = tripleOfSpannableAndMedia.second
+        val hasAnswer = !conversation?.answer.isNullOrEmpty()
+        val hasLink = conversation?.ogTags != null
+        val hasPDFs = conversation?.attachments?.any { it.type == PDF }
+
+        val spannableStringBuilder = tripleOfSpannableAndMedia.first
+        val drawableList = tripleOfSpannableAndMedia.third
+        if (drawableList.size > 0) {
+            drawableList.forEach { pair ->
+                if (pair.second > 1 || drawableList.size > 1) {
+                    when {
+                        hasAnswer -> {
+                            val decodeString = MemberTaggingDecoder.decode(conversation?.answer)
+                            spannableStringBuilder.append(decodeString)
+                        }
+                        firstMediaType == IMAGE -> spannableStringBuilder.append("Photos")
+                        firstMediaType == VIDEO -> spannableStringBuilder.append("Videos")
+                        firstMediaType == GIF -> spannableStringBuilder.append("GIFs")
+                        firstMediaType == AUDIO -> spannableStringBuilder.append("Audios")
+                        firstMediaType == VOICE_NOTE -> spannableStringBuilder.append("Voice Notes")
+                        hasLink -> {
+                            spannableStringBuilder.append(conversation?.answer)
+                        }
+                        hasPDFs == true -> {
+                            spannableStringBuilder.append("Documents")
+                        }
+                    }
+                } else {
+                    when {
+                        hasAnswer -> {
+                            val decodeString = MemberTaggingDecoder.decode(conversation?.answer)
+                            spannableStringBuilder.append(decodeString)
+                        }
+                        firstMediaType == IMAGE -> spannableStringBuilder.append("Photo")
+                        firstMediaType == VIDEO -> spannableStringBuilder.append("Video")
+                        firstMediaType == GIF -> spannableStringBuilder.append("GIF")
+                        firstMediaType == AUDIO -> spannableStringBuilder.append("Audio")
+                        firstMediaType == VOICE_NOTE -> spannableStringBuilder.append("Voice Note")
+                        hasLink -> {
+                            spannableStringBuilder.append(conversation?.answer)
+                        }
+                        hasPDFs == true -> {
+                            spannableStringBuilder.append("Document")
+                        }
+                    }
+                }
+            }
+        }
+        return spannableStringBuilder
     }
 
     private fun getAttachmentTypeDrawable(conversation: ConversationViewData?): Pair<Int, Int>? {

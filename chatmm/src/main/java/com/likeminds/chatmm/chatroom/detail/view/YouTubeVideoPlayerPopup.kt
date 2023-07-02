@@ -18,12 +18,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.chatroom.detail.util.CustomPlayerUiController
+import com.likeminds.chatmm.databinding.DialogMiniYoutubePlayerBinding
+import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import kotlin.math.roundToInt
 
-internal class YouTubeVideoPlayerPopup(
+class YouTubeVideoPlayerPopup(
     private val context: Context,
     private val recyclerView: RecyclerView,
     private val activity: Activity,
@@ -60,26 +63,28 @@ internal class YouTubeVideoPlayerPopup(
     }
 
     private fun initClickListeners() {
-        binding.ivClosePlayer.setOnClickListener {
-            videoPlayerListener?.crossClicked()
-            binding.youtubePlayerView.release()
-        }
-        binding.ivEnterExitFullscreen.setOnClickListener {
-            isFullScreen = !isFullScreen
-            enterExitFullScreen()
-        }
-        binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
-                    formatSeconds(progress, binding.tvVideoCurrentTime)
-                    customPlayerUiController?.seekVideo(progress.toFloat())
-                }
+        binding.apply {
+            ivClosePlayer.setOnClickListener {
+                videoPlayerListener?.crossClicked()
+                youtubePlayerView.release()
             }
-        })
+            ivEnterExitFullscreen.setOnClickListener {
+                isFullScreen = !isFullScreen
+                enterExitFullScreen()
+            }
+            seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    if (fromUser) {
+                        formatSeconds(progress, tvVideoCurrentTime)
+                        customPlayerUiController?.seekVideo(progress.toFloat())
+                    }
+                }
+            })
+        }
     }
 
     fun setPopupWindowConstraints(isFullScreen: Boolean) {
@@ -122,7 +127,7 @@ internal class YouTubeVideoPlayerPopup(
     }
 
     fun formatSeconds(timeInSeconds: Int, textView: TextView) {
-        val formattedTime = ViewUtils.formatSeconds(timeInSeconds)
+        val formattedTime = DateUtil.formatSeconds(timeInSeconds)
         textView.text = formattedTime
     }
 
@@ -211,27 +216,31 @@ internal class YouTubeVideoPlayerPopup(
     }
 
     private fun enterExitFullScreen() {
-        customPlayerUiController?.fullscreen = isFullScreen
+        binding.apply {
+            customPlayerUiController?.fullscreen = isFullScreen
 
-        if (isFullScreen) {
-            customPlayerUiController?.enterFullScreen()
-            binding.ivEnterExitFullscreen.setImageResource(R.drawable.ic_full_screen_exit)
-            showSeekBar()
-            binding.cardLayout.radius = 0f
-        } else {
-            customPlayerUiController?.exitFullScreen()
-            binding.ivEnterExitFullscreen.setImageResource(R.drawable.ic_switch_to_full_screen)
-            hideSeekBar()
-            binding.cardLayout.radius = 20f
+            if (isFullScreen) {
+                customPlayerUiController?.enterFullScreen()
+                ivEnterExitFullscreen.setImageResource(R.drawable.ic_full_screen_exit)
+                showSeekBar()
+                cardLayout.radius = 0f
+            } else {
+                customPlayerUiController?.exitFullScreen()
+                ivEnterExitFullscreen.setImageResource(R.drawable.ic_switch_to_full_screen)
+                hideSeekBar()
+                cardLayout.radius = 20f
+            }
+            setPopupWindowConstraints(isFullScreen)
+            videoPlayerListener?.fullScreenClicked(isFullScreen)
         }
-        setPopupWindowConstraints(isFullScreen)
-        videoPlayerListener?.fullScreenClicked(isFullScreen)
     }
 
     private fun showSeekBar() {
-        binding.seekBar.visibility = View.VISIBLE
-        binding.tvVideoDuration.visibility = View.VISIBLE
-        binding.tvVideoCurrentTime.visibility = View.VISIBLE
+        binding.apply {
+            seekBar.visibility = View.VISIBLE
+            tvVideoDuration.visibility = View.VISIBLE
+            tvVideoCurrentTime.visibility = View.VISIBLE
+        }
     }
 
     private fun hideSeekBar() {

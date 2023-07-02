@@ -1,6 +1,8 @@
 package com.likeminds.chatmm.utils.mediauploader.model
 
+import android.util.Base64
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
+import com.likeminds.chatmm.utils.mediauploader.utils.AWSKeys
 
 class AWSFileResponse private constructor(
     val name: String,
@@ -17,6 +19,9 @@ class AWSFileResponse private constructor(
     val duration: Int?,
     val uuid: String?
 ) {
+    val downloadUrl: String
+        get() = String(Base64.decode(AWSKeys.getBucketBaseUrl(), Base64.DEFAULT)) + awsFolderPath
+
     class Builder {
 
         private var name: String = ""

@@ -142,6 +142,14 @@ class ConversationViewData private constructor(
         return answer.isNotEmpty()
     }
 
+    fun attachmentsToUpload() = attachments?.filter {
+        !it.awsFolderPath.isNullOrEmpty()
+    }
+
+    fun thumbnailsToUpload() = attachments?.filter {
+        !it.thumbnailAWSFolderPath.isNullOrEmpty()
+    }
+
     class Builder {
         private var id: String = ""
         private var memberViewData: MemberViewData = MemberViewData.Builder().build()

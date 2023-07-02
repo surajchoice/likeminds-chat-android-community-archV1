@@ -2,20 +2,23 @@ package com.likeminds.chatmm.chatroom.detail.view
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
+import android.graphics.Typeface
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.provider.MediaStore
+import android.text.Spannable
+import android.text.style.ImageSpan
 import android.util.Base64
 import android.util.Log
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.View
+import android.view.*
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -25,6 +28,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.ui.GPHContentType
 import com.giphy.sdk.ui.GPHSettings
@@ -49,13 +54,16 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
+import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.LMVoiceRecorder
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_URI_EXTRA
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_COMPLETE
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PLAY_NEW_AUDIO
+import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PROGRESS
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaUtils
@@ -73,13 +81,17 @@ import com.likeminds.chatmm.utils.ValueUtils.isValidSize
 import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
 import com.likeminds.chatmm.utils.ViewUtils.endRevealAnimation
 import com.likeminds.chatmm.utils.ViewUtils.hide
+import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.ViewUtils.startRevealAnimation
 import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
 import com.likeminds.chatmm.utils.actionmode.ActionModeListener
 import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
@@ -91,13 +103,16 @@ import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.io.File
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 class ChatroomDetailFragment :
     BaseFragment<FragmentChatroomDetailBinding, ChatroomDetailViewModel>(),
     VoiceNoteInterface,
     ChatroomDetailAdapterListener,
-    ActionModeListener<ChatroomDetailActionModeData> {
+    ActionModeListener<ChatroomDetailActionModeData>,
+    DeleteMessageListener {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
 
@@ -133,6 +148,7 @@ class ChatroomDetailFragment :
 
     lateinit var chatroomDetailAdapter: ChatroomDetailAdapter
     private lateinit var chatroomScrollListener: ChatroomScrollListener
+    private var blockedAccessPopUp: AlertDialog? = null
 
     private var cameraPath: String? = null
 
@@ -143,7 +159,6 @@ class ChatroomDetailFragment :
     private var serviceConnection: ServiceConnection? = null
     private var localParentConversationId: String = ""
     private var localChildPosition: Int = 0
-    private var isAudioComplete = false
 
     //Variable for Voice Note
     private var singleUriDataOfVoiceNote: SingleUriData? = null
@@ -167,6 +182,103 @@ class ChatroomDetailFragment :
     private var stopTrackingVoiceNoteAction = false
     private var isDeletingVoiceNote = false
     private var isVoiceNoteRecording = false
+    private var isAudioComplete = false
+
+    private val progressReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.extras != null) {
+                val audioDurationString =
+                    intent.extras!!.getString(
+                        MediaAudioForegroundService.AUDIO_DURATION_STRING_EXTRA
+                    )
+                val audioDurationInt =
+                    intent.extras!!.getInt(
+                        MediaAudioForegroundService.AUDIO_DURATION_INT_EXTRA
+                    )
+
+                when {
+                    isVoiceNotePlaying -> {
+                        binding.inputBox.tvVoiceNoteTime.text = audioDurationString
+                    }
+
+                    else -> {
+                        val item =
+                            chatroomDetailAdapter.items().firstOrNull {
+                                ((it is ConversationViewData) && (it.id == localParentConversationId))
+                            } as? ConversationViewData ?: return
+
+                        if ((item.attachmentCount ?: 0) >= 1) {
+                            var attachment =
+                                item.attachments?.get(localChildPosition) ?: return
+
+                            attachment = attachment.toBuilder()
+                                .progress(audioDurationInt)
+                                .currentDuration(audioDurationString)
+                                .build()
+
+                            updateAudioVoiceNoteBinder(
+                                attachment,
+                                localParentConversationId,
+                                localChildPosition
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private val audioCompleteReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.extras != null) {
+                isAudioComplete =
+                    intent.extras!!.getBoolean(
+                        MediaAudioForegroundService.AUDIO_IS_COMPLETE_EXTRA,
+                        false
+                    )
+
+                when {
+                    isVoiceNotePlaying -> {
+                        binding.inputBox.tvVoiceNoteTime.text =
+                            DateUtil.formatSeconds(
+                                singleUriDataOfVoiceNote?.duration ?: 0
+                            )
+                        isVoiceNotePlaying = false
+                        binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                    }
+
+                    else -> {
+                        val item =
+                            chatroomDetailAdapter.items().firstOrNull {
+                                ((it is ConversationViewData) && (it.id == localParentConversationId))
+                            } as? ConversationViewData ?: return
+
+                        if ((item.attachmentCount ?: 0) >= 1) {
+                            var attachment =
+                                item.attachments?.get(localChildPosition) ?: return
+
+                            if (isAudioComplete) {
+                                attachment = attachment.toBuilder()
+                                    .progress(0)
+                                    .currentDuration(context?.getString(R.string.start_duration))
+                                    .mediaState(MEDIA_ACTION_NONE)
+                                    .build()
+                            }
+                            updateAudioVoiceNoteBinder(
+                                attachment,
+                                localParentConversationId,
+                                localChildPosition
+                            )
+                            localParentConversationId = ""
+                            localChildPosition = 0
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private val workersMap by lazy { ArrayList<UUID>() }
 
     private var inAppVideoPlayerPopup: YouTubeVideoPlayerPopup? = null
 
@@ -302,6 +414,13 @@ class ChatroomDetailFragment :
         initAttachmentsView()
 //        disableAnswerPosting()
         initReplyView()
+        getContentDownloadSettings()
+        initMediaAudioServiceConnection()
+        registerAudioCompleteBroadcast()
+        registerProgressBroadcast()
+        initTouchListenerOnMic()
+        initVoiceNotes()
+        initVoiceNoteControl()
     }
 
     // initializes the toolbar
@@ -553,6 +672,298 @@ class ChatroomDetailFragment :
             }
             setChatInputBoxViewType(CHAT_BOX_NORMAL)
         }
+    }
+
+    private fun getContentDownloadSettings() {
+        communityId?.let { viewModel.getContentDownloadSettings(it) }
+    }
+
+    private fun initMediaAudioServiceConnection() {
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                val binder = service as MediaAudioForegroundService.MediaBinder
+                mediaAudioService = binder.getService()
+                mediaAudioServiceBound = true
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                mediaAudioServiceBound = false
+                mediaAudioService = null
+            }
+        }
+    }
+
+    private fun registerAudioCompleteBroadcast() {
+        val filter = IntentFilter(BROADCAST_COMPLETE)
+        activity?.registerReceiver(audioCompleteReceiver, filter)
+    }
+
+    private fun registerProgressBroadcast() {
+        val filter = IntentFilter(BROADCAST_PROGRESS)
+        activity?.registerReceiver(progressReceiver, filter)
+    }
+
+    /**------------------------------------------------------------
+     * Code for Voice Notes
+    ---------------------------------------------------------------*/
+
+    private fun initVoiceNotes() {
+        voiceRecorder = LMVoiceRecorder()
+    }
+
+    private fun initVoiceNoteControl() {
+        binding.inputBox.apply {
+            ivStopVoice.setOnClickListener {
+                isVoiceNoteLocked = false
+                voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCK_DONE)
+            }
+            ivCancelVoice.setOnClickListener {
+                isVoiceNoteLocked = false
+                if (isVoiceNotePlaying && serviceConnection != null) {
+                    stopAudioService()
+                }
+                viewModel.sendVoiceNoteCanceled()
+                voiceNoteUtils.stopVoiceNote(binding, RECORDING_CANCELLED)
+            }
+
+            ivPlayRecording.setOnClickListener {
+                if (mediaAudioService?.isPlaying() == true && !isVoiceNotePlaying) {
+                    mediaAudioService?.stopMedia()
+                    val item =
+                        chatroomDetailAdapter.items().firstOrNull {
+                            ((it is ConversationViewData) && (it.id == localParentConversationId))
+                        } as? ConversationViewData ?: return@setOnClickListener
+
+                    if ((item.attachmentCount ?: 0) >= 1) {
+                        var attachment =
+                            item.attachments?.get(localChildPosition) ?: return@setOnClickListener
+
+                        attachment = attachment.toBuilder()
+                            .progress(0)
+                            .currentDuration(context?.getString(R.string.start_duration))
+                            .mediaState(MEDIA_ACTION_NONE)
+                            .build()
+
+                        updateAudioVoiceNoteBinder(
+                            attachment,
+                            localParentConversationId,
+                            localChildPosition
+                        )
+
+                        localParentConversationId = ""
+                        localChildPosition = 0
+                    }
+                }
+                if (singleUriDataOfVoiceNote != null) {
+                    when {
+                        !isVoiceNotePlaying -> {
+                            isVoiceNotePlaying = true
+                            playAudio(singleUriDataOfVoiceNote?.uri!!, 0)
+                            viewModel.sendVoiceNotePreviewed()
+                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                        }
+
+                        mediaAudioService?.isPlaying() == true -> {
+                            mediaAudioService?.pauseAudio()
+                            ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                        }
+
+                        mediaAudioService?.isPlaying() == false -> {
+                            mediaAudioService?.playAudio()
+                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initTouchListenerOnMic() {
+        binding.fabMic.setOnTouchListener { _, event ->
+
+            if (isDeletingVoiceNote || isVoiceNoteLocked) return@setOnTouchListener true
+
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    if (isGuestUser) {
+                        callGuestFlowCallback()
+                    } else {
+                        showTapAndHoldToast = true
+                        motionDownHandler = Handler(Looper.getMainLooper())
+                        PermissionManager.performTaskWithPermission(
+                            activity as BaseAppCompatActivity,
+                            { },
+                            Permission.getRecordAudioPermissionData(),
+                            showInitialPopup = true,
+                            showDeniedPopup = true,
+                            permissionDeniedCallback = object : PermissionDeniedCallback {
+                                override fun onDeny() {}
+
+                                override fun onCancel() {}
+                            }
+                        )
+                        motionDownHandler?.postDelayed({
+                            showTapAndHoldToast = false
+                            stopTrackingVoiceNoteAction = false
+                            if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                                startVoiceNote()
+                            }
+                        }, 400)
+                        firstX = event.rawX
+                        firstY = event.rawY
+                        val screenWidth = ViewUtils.getDeviceDimension(requireContext()).first
+                        cancelOffSet = (screenWidth / 2.8).toFloat()
+                        lockOffSet = (screenWidth / 2.5).toFloat()
+                    }
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                        if (showTapAndHoldToast) {
+                            ViewUtils.showAnchoredToast(binding.voiceNoteTapHoldToast.layoutToast)
+
+                            requireView().performHapticFeedback(
+                                HapticFeedbackConstants.LONG_PRESS,
+                                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                            )
+
+                        } else {
+                            if (isVoiceNoteRecording) {
+                                resetVoiceNoteVariables()
+                                voiceNoteUtils.stopVoiceNote(binding, RECORDING_RELEASED)
+                            }
+                        }
+                        motionDownHandler?.removeCallbacksAndMessages(null)
+                        motionDownHandler = null
+                    }
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    if (stopTrackingVoiceNoteAction || !voiceRecorder.isRecording()) {
+                        return@setOnTouchListener true
+                    }
+
+                    var direction = USER_NONE
+                    val motionX = abs(firstX - event.rawX)
+                    val motionY = abs(firstY - event.rawY)
+
+                    if (motionX > directionOffSet && lastX < firstX && lastY < firstY) {
+                        if (motionX > motionY && lastX < firstX) {
+                            direction = USER_CANCELING
+                        } else if (motionY > motionX && lastY < firstY) {
+                            direction = USER_LOCKING
+                        }
+                    } else if (motionX > motionY && motionX > directionOffSet && lastX < firstX) {
+                        direction = USER_CANCELING
+                    } else if (motionY > motionX && motionY > directionOffSet && lastY < firstY) {
+                        direction = USER_LOCKING
+                    }
+
+                    if (direction == USER_CANCELING) {
+                        if (userBehaviours == USER_NONE || event.rawY + binding.fabMic.width / 2 > firstX) {
+                            userBehaviours = USER_CANCELING
+                        }
+
+                        if (userBehaviours == USER_CANCELING) {
+                            translateX(-(firstX - event.rawX))
+                        }
+                    } else if (direction == USER_LOCKING) {
+                        if (userBehaviours == USER_NONE || event.rawX + binding.fabMic.width / 2 > firstX) {
+                            userBehaviours = USER_LOCKING
+                        }
+
+                        if (userBehaviours == USER_LOCKING) {
+                            translateY(-(firstY - event.rawY))
+                        }
+                    }
+                    lastX = event.rawX
+                    lastY = event.rawY
+                }
+            }
+            return@setOnTouchListener true
+        }
+    }
+
+    private fun startVoiceNote() {
+        isVoiceNoteRecording = true
+        voiceNoteUtils.startVoiceNote(binding)
+        if (sdkPreferences.getSlideUpVoiceNoteToast()) {
+            viewModel.setSlideUpVoiceNoteToast(false)
+            ViewUtils.showAnchoredToast(binding.voiceNoteSlideUpToast.layoutToast)
+        }
+        requireView().performHapticFeedback(
+            HapticFeedbackConstants.LONG_PRESS,
+            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+        )
+        viewModel.sendVoiceNoteRecorded()
+        motionDownHandler?.removeCallbacksAndMessages(null)
+        motionDownHandler = null
+    }
+
+    private fun translateX(x: Float) {
+        binding.apply {
+            if (x < -cancelOffSet) {
+                voiceNoteCancelled()
+                fabMic.translationX = 0f
+                cardCancel.translationX = 0f
+                return
+            }
+
+            fabMic.translationX = x
+            cardLock.translationY = 0f
+            fabMic.translationY = 0f
+
+            if (abs(x) < binding.ivMicRecording.width / 2) {
+                if (cardLock.visibility != View.VISIBLE) {
+                    cardLock.show()
+                }
+            } else {
+                if (cardLock.visibility != View.GONE) {
+                    cardLock.hide()
+                    voiceNoteSlideUpToast.layoutToast.hide()
+                }
+            }
+        }
+    }
+
+    private fun translateY(y: Float) {
+        binding.apply {
+            if (y < -lockOffSet) {
+                voiceNoteLocked()
+                fabMic.translationY = 0f
+                return
+            }
+
+            if (cardLock.visibility != View.VISIBLE) {
+                cardLock.show()
+            }
+
+            fabMic.translationY = y
+            fabMic.translationX = 0f
+        }
+    }
+
+    private fun voiceNoteCancelled() {
+        stopTrackingVoiceNoteAction = true
+        resetVoiceNoteVariables()
+        viewModel.sendVoiceNoteCanceled()
+        voiceNoteUtils.stopVoiceNote(binding, RECORDING_CANCELLED)
+    }
+
+    private fun voiceNoteLocked() {
+        stopTrackingVoiceNoteAction = true
+        resetVoiceNoteVariables()
+        voiceNoteUtils.stopVoiceNote(binding, RECORDING_LOCKED)
+        isVoiceNoteLocked = true
+    }
+
+    private fun resetVoiceNoteVariables() {
+        firstX = 0f
+        firstY = 0f
+        lastX = 0f
+        lastY = 0f
+        userBehaviours = USER_NONE
     }
 
     private fun isEditConversationViewVisible(): Boolean {
@@ -1057,6 +1468,210 @@ class ChatroomDetailFragment :
     }
 
     /**
+     * Initialize the top chatroom overlay, which shows if the chatroom header item is not in the screen viewport
+     * @param chatroomViewData Chatroom object
+     */
+    private fun initTopChatroomView(chatroomViewData: ChatroomViewData) {
+        binding.apply {
+            if (viewModel.isDmChatroom()) {
+                showTopView(false)
+                return
+            }
+
+            val topic = chatroomViewData.topic
+            if (topic == null) {
+                setTopViewToChatroom(chatroomViewData)
+            } else {
+                tvChatroomMemberName.apply {
+                    text = getString(R.string.current_topic_text)
+                    setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
+                }
+                when {
+                    topic.isDeleted() -> {
+                        setTopViewToChatroom(chatroomViewData)
+                    }
+
+                    topic.ogTags != null -> {
+                        setTopViewMemberImage(topic.memberViewData)
+
+                        if (topic.ogTags.image != null) {
+                            ImageBindingUtil.loadImage(
+                                topicImage,
+                                topic.ogTags.image
+                            )
+                        }
+                        val answer =
+                            ChatroomUtil.getTopicMediaData(requireContext(), topic)
+                        tvChatroom.setText(answer, TextView.BufferType.SPANNABLE)
+                    }
+
+                    chatroomViewData.topic.attachmentCount!! > 0 -> {
+                        setTopViewMemberImage(topic.memberViewData)
+
+                        val answer =
+                            ChatroomUtil.getTopicMediaData(requireContext(), topic)
+                        tvChatroom.setText(answer, TextView.BufferType.SPANNABLE)
+
+                        when (topic.attachments?.firstOrNull()?.type) {
+                            IMAGE -> {
+                                ImageBindingUtil.loadImage(
+                                    topicImage,
+                                    topic.attachments.firstOrNull()?.uri
+                                )
+                            }
+
+                            VIDEO -> {
+                                ImageBindingUtil.loadImage(
+                                    topicImage,
+                                    topic.attachments.firstOrNull()?.thumbnail
+                                )
+                            }
+
+                            GIF -> {
+                                ImageBindingUtil.loadImage(
+                                    topicImage,
+                                    topic.attachments.firstOrNull()?.thumbnail
+                                )
+                            }
+                        }
+                    }
+
+                    topic.state == STATE_POLL -> {
+                        setTopViewMemberImage(topic.memberViewData)
+
+                        val answer = ChatroomUtil.getTopicMediaData(requireContext(), topic)
+                        tvChatroom.setText(answer, TextView.BufferType.SPANNABLE)
+                    }
+
+                    else -> {
+                        setTopViewMemberImage(topic.memberViewData)
+                        MemberTaggingDecoder.decode(
+                            tvChatroom,
+                            topic.answer,
+                            false,
+                            LMBranding.getTextLinkColor()
+                        )
+                    }
+                }
+            }
+
+            initTopViewClick(topic)
+            removeExtraViewAfterTopic(chatroomViewData)
+
+            if (chatroomScrollListener.shouldShowTopChatRoom()) {
+                fadeInTopChatroomView()
+            }
+        }
+    }
+
+    private fun setTopViewMemberImage(member: MemberViewData?) {
+        if (viewModel.isDmChatroom()) {
+            showTopView(false)
+        } else {
+            showTopView(true)
+            if (chatroomScrollListener.shouldShowTopChatRoom()) {
+                binding.memberImage.visibility = View.VISIBLE
+                MemberImageUtil.setImage(
+                    member?.imageUrl,
+                    member?.name,
+                    member?.id,
+                    binding.memberImage
+                )
+            }
+        }
+    }
+
+    private fun showTopView(show: Boolean) {
+        if (chatroomScrollListener.shouldShowTopChatRoom() && show) {
+            fadeInTopChatroomView()
+        } else if (!show) {
+            fadeOutTopChatroomView()
+        }
+    }
+
+    private fun setTopViewToChatroom(chatroom: ChatroomViewData) {
+        binding.apply {
+            if (viewModel.isDmChatroom()) {
+                showTopView(false)
+            } else {
+                showTopView(true)
+                val creator = chatroom.memberViewData
+                MemberImageUtil.setImage(
+                    creator.imageUrl,
+                    creator.name,
+                    creator.id,
+                    memberImage
+                )
+
+                tvChatroomMemberName.apply {
+                    text = creator.name
+                    setTypeface(
+                        tvChatroomMemberName.typeface,
+                        Typeface.NORMAL
+                    )
+                }
+
+                tvChatroomDate.text = chatroom.cardCreationTime
+                MemberTaggingDecoder.decode(
+                    tvChatroom,
+                    chatroom.title,
+                    false,
+                    LMBranding.getTextLinkColor()
+                )
+            }
+        }
+    }
+
+    private fun initTopViewClick(topic: ConversationViewData?) {
+        binding.viewTopBackground.setOnClickListener {
+            if (topic == null || topic.isDeleted()) {
+                scrollToExtremeTop()
+            } else {
+                scrollToRepliedAnswer(topic, topic.id)
+            }
+        }
+    }
+
+    private fun removeExtraViewAfterTopic(chatroomViewData: ChatroomViewData) {
+        binding.apply {
+            val topic = chatroomViewData.topic
+            if (topic == null) {
+                topicImage.visibility = View.GONE
+            } else {
+                tvChatroomDate.visibility = View.GONE
+                ivDateDot.visibility = View.GONE
+                when {
+                    topic.isDeleted() -> {
+                        topicImage.visibility = View.GONE
+                    }
+
+                    topic.ogTags != null -> {
+                        if (topic.ogTags.image == null) {
+                            topicImage.visibility = View.GONE
+                        }
+                    }
+
+                    chatroomViewData.topic.attachmentCount!! > 0 -> {
+                        when (topic.attachments?.firstOrNull()?.type) {
+                            PDF, AUDIO, VOICE_NOTE -> {
+                                topicImage.visibility = View.GONE
+                            }
+                        }
+                    }
+
+                    topic.state == STATE_POLL -> {
+                        topicImage.visibility = View.GONE
+                    }
+
+                    else -> {
+                        topicImage.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Scroll to the bottom of the chatroom
      * Check if all bottom conversations are already added or else add it
      */
@@ -1217,6 +1832,10 @@ class ChatroomDetailFragment :
 //            conversation = mediaExtras?.conversation?.trim() ?: "",
 //            fileUris = mediaExtras?.mediaUris
 //        )
+    }
+
+    override fun observeData() {
+        super.observeData()
     }
 
     /**--------------------------------
@@ -1529,6 +2148,93 @@ class ChatroomDetailFragment :
             }
         }
         return false
+    }
+
+    /**------------------------------------------------------------
+     * Action mode listeners
+    ---------------------------------------------------------------*/
+
+    /**
+     * Performs action based on menu item click from action mode on toolbar
+     * @param item Menu item
+     */
+    override fun onActionItemClick(item: MenuItem?) {
+        when (item?.itemId) {
+            R.id.menu_item_reply -> {
+                if (selectedConversations.isNotEmpty()) {
+                    val conversation = selectedConversations.values.firstOrNull()
+                    if (conversation != null) {
+                        setChatInputBoxViewType(CHAT_BOX_REPLY)
+                        setReplyViewConversationData(conversation, "press")
+                    }
+                } else {
+                    selectedChatRoom?.let {
+                        setChatInputBoxViewType(CHAT_BOX_REPLY)
+                        setReplyViewChatRoomData(it, "press")
+                    }
+                }
+            }
+
+            R.id.menu_item_copy -> {
+                copyConversations()
+            }
+
+            R.id.menu_item_edit -> {
+                if (selectedConversations.isNotEmpty()) {
+                    val conversation = selectedConversations.values.firstOrNull()
+                    if (conversation != null) {
+                        setChatInputBoxViewType(CHAT_BOX_REPLY)
+                        setEditMessageViewConversationData(conversation)
+                    }
+                } else {
+                    selectedChatRoom?.let {
+                        when {
+                            ChatroomType.isAnnouncementRoom(it.type) -> {
+                                //todo
+//                                editAnnouncementMessageClicked(it)
+                            }
+                            else -> {
+                                setChatInputBoxViewType(CHAT_BOX_REPLY)
+                                setEditMessageViewChatRoomData(it)
+                            }
+                        }
+                    }
+                }
+            }
+
+            R.id.menu_item_delete -> {
+                showDeleteMessageConfirmationPopup(selectedConversations.values.toList())
+            }
+
+            R.id.menu_item_report -> {
+                reportConversation()
+            }
+
+            R.id.menu_item_set_topic -> {
+                setChatroomTopic()
+            }
+        }
+    }
+
+    override fun onActionItemUpdate(
+        item: Menu?,
+        actionModeData: ChatroomDetailActionModeData?,
+    ) {
+        actionModeData?.let {
+            item?.findItem(R.id.menu_item_reply)?.isVisible = it.showReplyAction
+            item?.findItem(R.id.menu_item_copy)?.isVisible = it.showCopyAction
+            item?.findItem(R.id.menu_item_edit)?.isVisible = it.showEditAction
+            item?.findItem(R.id.menu_item_delete)?.isVisible = it.showDeleteAction
+            item?.findItem(R.id.menu_item_report)?.isVisible = it.showReportAction
+            item?.findItem(R.id.menu_item_set_topic)?.isVisible = it.showSetAsTopic
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onActionModeDestroyed() {
+        selectedChatRoom = null
+        selectedConversations.clear()
+        chatroomDetailAdapter.notifyDataSetChanged()
     }
 
     /**------------------------------------------------------------
@@ -1847,6 +2553,51 @@ class ChatroomDetailFragment :
         }
     }
 
+    override fun onMultipleItemsExpanded(
+        conversation: ConversationViewData,
+        position: Int,
+    ) {
+        if (position == chatroomDetailAdapter.items().size - 1) {
+            binding.rvChatroom.post {
+                scrollToPositionWithOffset(position)
+            }
+        }
+
+        chatroomDetailAdapter.update(
+            position,
+            conversation.toBuilder().isExpanded(true).build()
+        )
+    }
+
+    override fun observeMediaUpload(uuid: UUID, conversation: ConversationViewData) {
+        if (!workersMap.contains(uuid)) {
+            workersMap.add(uuid)
+            WorkManager.getInstance(requireContext()).getWorkInfoByIdLiveData(uuid)
+                .observe(viewLifecycleOwner) { workInfo ->
+                    observeConversationWorkerLiveData(workInfo, conversation)
+                }
+        }
+    }
+
+    override fun onRetryConversationMediaUpload(conversationId: String, attachmentCount: Int) {
+        viewModel.createRetryConversationMediaWorker(
+            requireContext(),
+            conversationId,
+            attachmentCount
+        )
+    }
+
+    override fun onFailedConversationClick(
+        conversation: ConversationViewData,
+        itemPosition: Int,
+    ) {
+        showFailedConversationMenu(conversation, itemPosition)
+    }
+
+    override fun showMemberProfile(member: MemberViewData) {
+        // todo: show member profile
+    }
+
     //add this function for every navigation from chatroom
     override fun onScreenChanged() {
         if (isVoiceNoteLocked) {
@@ -1876,6 +2627,11 @@ class ChatroomDetailFragment :
                 localChildPosition
             )
         }
+    }
+
+    override fun onLinkClicked(conversationId: String?, url: String) {
+        super.onLinkClicked(conversationId, url)
+        viewModel.sendChatLinkClickedEvent(conversationId, url)
     }
 
     /**------------------------------------------------------------
@@ -2293,5 +3049,384 @@ class ChatroomDetailFragment :
     private fun dismissVideoPlayerPopup() {
         inAppVideoPlayerPopup?.dismiss()
         inAppVideoPlayerPopup = null
+    }
+
+    private fun observeConversationWorkerLiveData(
+        workInfo: WorkInfo,
+        conversation: ConversationViewData,
+    ) {
+        when (workInfo.state) {
+            WorkInfo.State.SUCCEEDED -> {
+                val position = getIndexOfConversation(conversation.id)
+                if (position >= 0) {
+                    val oldConversation = chatroomDetailAdapter[position]
+                            as? ConversationViewData
+                        ?: return
+                    val updatedConversation = oldConversation.toBuilder()
+                        .attachmentsUploaded(true)
+                        .uploadWorkerUUID("")
+                        .attachmentUploadProgress(null)
+                        .attachments(
+                            oldConversation.attachments?.map { attachment ->
+                                attachment.toBuilder()
+                                    .awsFolderPath("")
+                                    .build()
+                            } as ArrayList<AttachmentViewData>?)
+                        .build()
+                    chatroomDetailAdapter.update(position, updatedConversation)
+                }
+            }
+
+            WorkInfo.State.FAILED -> {
+                val position = getIndexOfConversation(conversation.id)
+                if (position >= 0) {
+                    val oldConversation = chatroomDetailAdapter[position]
+                            as? ConversationViewData
+                        ?: return
+                    val indexList = workInfo.outputData.getIntArray(
+                        MediaUploadWorker.ARG_MEDIA_INDEX_LIST
+                    )
+                    val updatedConversation = oldConversation.toBuilder()
+                        .attachments(
+                            oldConversation.attachments?.map { attachment ->
+                                if (indexList?.contains(attachment.index ?: -1) == true) {
+                                    attachment
+                                } else {
+                                    attachment.toBuilder()
+                                        .awsFolderPath("")
+                                        .build()
+                                }
+                            } as ArrayList<AttachmentViewData>?)
+                        .build()
+                    chatroomDetailAdapter.update(position, updatedConversation)
+                }
+            }
+
+            WorkInfo.State.CANCELLED -> {
+                val position = getIndexOfConversation(conversation.id)
+                if (position >= 0) {
+                    chatroomDetailAdapter.notifyItemChanged(position)
+                }
+            }
+
+            else -> {
+                val progress = MediaUploadWorker.getProgress(workInfo) ?: return
+                val position = getIndexOfConversation(conversation.id)
+                if (position.isValidIndex()) {
+                    val oldConversation = chatroomDetailAdapter[position]
+                            as? ConversationViewData ?: return
+                    val updatedConversation = oldConversation.toBuilder()
+                        .attachmentUploadProgress(progress)
+                        .build()
+                    chatroomDetailAdapter.update(position, updatedConversation)
+                }
+            }
+        }
+    }
+
+    private fun showFailedConversationMenu(
+        conversation: ConversationViewData,
+        position: Int,
+    ) {
+        val view = binding.rvChatroom.layoutManager?.findViewByPosition(position) ?: return
+        val popUpMenu = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            PopupMenu(requireContext(), view, Gravity.END, 0, R.style.PopupMenu)
+        } else {
+            PopupMenu(requireContext(), view, Gravity.END)
+        }
+        popUpMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_resend -> {
+                    resendFailedConversation(conversation, position)
+                }
+
+                R.id.menu_delete -> {
+                    deleteFailedConversation(conversation.id, position)
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
+        popUpMenu.menuInflater.inflate(R.menu.conversation_menu, popUpMenu.menu)
+        popUpMenu.show()
+    }
+
+    private fun resendFailedConversation(conversation: ConversationViewData, index: Int) {
+        val updatedConversation = conversation.toBuilder()
+            .localCreatedEpoch(System.currentTimeMillis())
+            .build()
+        viewModel.resendFailedConversation(requireContext(), updatedConversation)
+        chatroomDetailAdapter.update(index, updatedConversation)
+    }
+
+    private fun deleteFailedConversation(conversationId: String, index: Int) {
+        viewModel.deleteFailedConversation(conversationId)
+        chatroomDetailAdapter.removeIndex(index)
+    }
+
+    /**
+     * Initializes the reply view in input box when the user tries to reply on a conversation
+     * @param conversation Conversation object
+     */
+    private fun setReplyViewConversationData(conversation: ConversationViewData, type: String) {
+        binding.inputBox.viewReply.apply {
+            replySourceType = REPLY_SOURCE_CONVERSATION
+            conversationViewData = conversation
+            val replyData = ChatReplyUtil.getConversationReplyData(
+                conversation,
+                sdkPreferences.getMemberId(),
+                requireContext(),
+                type = type
+            )
+            setReplyViewData(replyData)
+        }
+    }
+
+    /**
+     * Initializes the reply view in input box when the user tries to reply on a ChatRoom
+     * @param chatRoom ChatRoom object
+     */
+    private fun setReplyViewChatRoomData(chatRoom: ChatroomViewData, type: String) {
+        binding.inputBox.viewReply.apply {
+            replySourceType = REPLY_SOURCE_CHATROOM
+            chatRoomViewData = chatRoom
+            val replyData = ChatReplyUtil.getChatRoomReplyData(
+                chatRoom,
+                sdkPreferences.getMemberId(),
+                requireContext(),
+                type = type
+            )
+            setReplyViewData(replyData)
+        }
+    }
+
+    private fun setReplyViewData(replyData: ChatReplyViewData) {
+        binding.inputBox.viewReply.apply {
+            chatReplyData = replyData
+
+            val placeholder = if (replyData.attachmentType == AUDIO) {
+                R.drawable.placeholder_audio
+            } else {
+                R.drawable.image_placeholder
+            }
+
+            if (replyData.imageUrl.isNullOrEmpty()) {
+                ivReplyAttachment.visibility = View.GONE
+            } else {
+                ivReplyAttachment.visibility = View.VISIBLE
+                ImageBindingUtil.loadImage(
+                    ivReplyAttachment,
+                    replyData.imageUrl,
+                    placeholder
+                )
+            }
+
+            when {
+                replyData.isMessageDeleted -> {
+                    tvConversation.text = replyData.deleteMessage
+                }
+
+                else -> {
+                    MemberTaggingDecoder.decode(
+                        tvConversation,
+                        replyData.conversationText,
+                        false,
+                        LMBranding.getTextLinkColor()
+                    )
+                }
+            }
+            if (replyData.drawable != null && tvConversation.editableText != null) {
+                tvConversation.editableText.setSpan(
+                    ImageSpan(requireContext(), replyData.drawable),
+                    0,
+                    1,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
+            }
+            ViewUtils.showKeyboard(requireContext(), binding.inputBox.etAnswer)
+        }
+    }
+
+    private fun copyConversations() {
+        val conversations = selectedConversations.values.filter { conversation ->
+            !conversation.isDeleted() && conversation.answer.isNotEmpty()
+        }
+
+        val chatRoom = if (selectedChatRoom != null && selectedChatRoom?.hasTitle() == true) {
+            selectedChatRoom
+        } else null
+
+        if (chatRoom != null && conversations.isEmpty()) {
+            copyConversationText(chatRoom.title, true)
+        } else if (chatRoom == null && conversations.size == 1) {
+            val conversation = conversations.firstOrNull() ?: return
+            copyConversationText(conversation.answer, true)
+        } else {
+            val message = StringBuilder()
+            if (chatRoom != null)
+                message.append("[")
+                    .append(chatRoom.date)
+                    .append(", ")
+                    .append(DateUtil.createDateFormat("hh:mm", chatRoom.createdAt ?: 0))
+                    .append("] ")
+                    .append(chatRoom.memberViewData.name).append(": ")
+                    .append(MemberTaggingDecoder.decode(chatRoom.title))
+                    .append("\n")
+
+            conversations.forEach {
+                message.append("[")
+                    .append(it.date)
+                    .append(", ")
+                    .append(it.createdAt).append("] ")
+                    .append(it.memberViewData.name).append(": ")
+                    .append(MemberTaggingDecoder.decode(it.answer))
+                    .append("\n")
+            }
+            if (message.isNotEmpty())
+                copyConversationText(message.toString(), false)
+        }
+    }
+
+    private fun copyConversationText(text: String, isSingleConversation: Boolean) {
+        val message = if (isSingleConversation) {
+            requireContext().getString(R.string.message_copied)
+        } else {
+            requireContext().getString(R.string.messages_copied)
+        }
+        viewModel.sendMessageCopyEvent(text)
+        ViewUtils.copyToClipboard(
+            requireContext(),
+            MemberTaggingDecoder.decode(text),
+            message,
+            "chat_message"
+        )
+    }
+
+    /**
+     * Initializes the edit conversation view in input box when the user tries to edit their own conversation
+     * @param conversation Conversation object
+     */
+    private fun setEditMessageViewConversationData(conversation: ConversationViewData) {
+        binding.inputBox.apply {
+            ivAttachment.visibility = View.INVISIBLE
+            viewReply.replySourceType = REPLY_SOURCE_CONVERSATION
+            viewReply.conversationViewData = conversation
+            val editData = ChatReplyUtil.getEditConversationData(conversation)
+            setEditViewData(editData)
+        }
+    }
+
+    /**
+     * Initializes the edit chatroom view in input box when the user tries to edit their own chatroom
+     * @param chatRoom ChatRoom object
+     */
+    private fun setEditMessageViewChatRoomData(chatRoom: ChatroomViewData) {
+        binding.inputBox.apply {
+            ivAttachment.visibility = View.INVISIBLE
+            viewReply.replySourceType = REPLY_SOURCE_CHATROOM
+            viewReply.chatRoomViewData = chatRoom
+            val editData = ChatReplyUtil.getEditChatRoomData(chatRoom)
+            setEditViewData(editData)
+        }
+    }
+
+    private fun setEditViewData(editData: ChatReplyViewData) {
+        binding.inputBox.apply {
+            viewReply.chatReplyData = editData
+            MemberTaggingDecoder.decode(
+                viewReply.tvConversation,
+                editData.conversationText,
+                false,
+                LMBranding.getTextLinkColor()
+            )
+            MemberTaggingDecoder.decode(
+                etAnswer,
+                editData.conversationText,
+                LMBranding.getTextLinkColor()
+            )
+            etAnswer.setSelection(etAnswer.text?.length ?: 0)
+            ViewUtils.showKeyboard(requireContext(), etAnswer)
+        }
+    }
+
+    /**
+     * Shows a dialog to confirm the deletion of the selected conversations
+     * @param conversations List of all the selected conversations to delete
+     */
+    private fun showDeleteMessageConfirmationPopup(conversations: List<ConversationViewData>) {
+        val topic = conversations.firstOrNull { conversation ->
+            (conversation.id == viewModel.getCurrentTopic()?.id)
+        }
+
+        val dialog = DeleteMessagesDialog(this, conversations, topic)
+        dialog.show(childFragmentManager, DeleteMessagesDialog.TAG)
+    }
+
+    private fun reportConversation() {
+        //get conversation to be reported
+        val conversation = selectedConversations.values.firstOrNull() ?: return
+
+        //create analytics data object
+//        val analyticsData = ReportAnalyticsEventData.Builder()
+//            .conversationType(ChatroomUtil.getConversationType(conversation))
+//            .chatroomId(getChatroomViewData()?.id)
+//            .chatroomName(getChatroomViewData()?.header)
+//            .build()
+//
+//        //create extras for [ReportActivity]
+//        val reportExtras = ReportExtras.Builder()
+//            .conversationId(conversation.id)
+//            .type(REPORT_TYPE_CONVERSATION)
+//            .analyticsData(analyticsData)
+//            .build()
+//
+//        //get Intent for [ReportActivity]
+//        val intent = ReportActivity.getIntent(requireContext(), reportExtras)
+//
+//        //start [ReportActivity] and check for result
+//        reportConversationLauncher.launch(intent)
+    }
+
+    private fun setChatroomTopic() {
+        val conversation = selectedConversations.values.firstOrNull() ?: return
+        viewModel.setChatroomTopic(chatroomId, conversation)
+    }
+
+    /**------------------------------------------------------------
+     * Other listeners
+    ---------------------------------------------------------------*/
+
+    override fun deleteMessages(
+        conversations: List<ConversationViewData>,
+        topic: ConversationViewData?
+    ) {
+        viewModel.deleteConversations(conversations)
+        if (topic != null) {
+            viewModel.updateChatroomWhileDeletingTopic()
+            initTopChatroomView(getChatroomViewData()!!)
+        }
+        val audioPlayingConversation =
+            conversations.firstOrNull { it.id == localParentConversationId }
+        if (mediaAudioService != null && mediaAudioService?.isPlaying() == true && audioPlayingConversation != null) {
+            stopAudioService()
+        }
+    }
+
+    override fun onDestroy() {
+        if (blockedAccessPopUp != null && blockedAccessPopUp?.isShowing == true) {
+            blockedAccessPopUp?.dismiss()
+        }
+        if (mediaAudioServiceBound) {
+            requireActivity().unregisterReceiver(progressReceiver)
+            requireActivity().unregisterReceiver(audioCompleteReceiver)
+            stopAudioService()
+            mediaAudioService = null
+            serviceConnection = null
+        }
+        if (isVoiceNoteLocked) {
+            isVoiceNoteLocked = false
+            voiceRecorder.stopRecording()
+        }
+        voiceNoteUtils.clear()
+        super.onDestroy()
     }
 }
