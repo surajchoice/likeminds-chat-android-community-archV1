@@ -78,7 +78,6 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         }
     }
 
-    // todo: ask about IntroActiveThread
     override fun onBackPressed() {
         val chatroomDetailFragment = getChatroomDetailFragment()
 

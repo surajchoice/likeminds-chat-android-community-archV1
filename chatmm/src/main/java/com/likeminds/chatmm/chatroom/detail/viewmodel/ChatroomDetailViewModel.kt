@@ -15,14 +15,17 @@ import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
 import com.likeminds.chatmm.media.MediaRepository
-import com.likeminds.chatmm.media.model.MediaViewData
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.CommunityRightsUtil
 import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.ValueUtils
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
+import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
+import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.FollowChatroomRequest
@@ -401,6 +404,57 @@ class ChatroomDetailViewModel @Inject constructor(
         chatroomDetail = chatroomDetail.toBuilder().chatroom(newChatroomViewData).build()
     }
 
+    @SuppressLint("CheckResult")
+    fun createConversation(
+        context: Context,
+        text: String,
+        fileUris: List<SingleUriData>?,
+        shareLink: String?,
+        replyConversationId: String?,
+        replyChatRoomId: String?,
+        taggedUsers: List<TagViewData>,
+        replyChatData: ChatReplyViewData?
+    ) {
+        viewModelScope.launchIO {
+            val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
+            val communityId = chatroomDetail.chatroom?.communityId
+            val temporaryId = ValueUtils.getTemporaryId()
+            val updatedFileUris = includeAttachmentMetaData(context, fileUris)
+
+            // todo:
+        }
+    }
+
+    /**
+     * Includes attachment's meta data such as dimensions, thumbnails, etc
+     * @param context
+     * @param files List<SingleUriData>?
+     */
+    private fun includeAttachmentMetaData(
+        context: Context,
+        files: List<SingleUriData>?,
+    ): List<SingleUriData>? {
+        return files?.map {
+            when (it.fileType) {
+                IMAGE, GIF -> {
+                    val dimensions = FileUtil.getImageDimensions(context, it.uri)
+                    it.toBuilder().width(dimensions.first).height(dimensions.second).build()
+                }
+
+                VIDEO -> {
+                    val thumbnailUri = FileUtil.getVideoThumbnailUri(context, it.uri)
+                    if (thumbnailUri != null) {
+                        it.toBuilder().thumbnailUri(thumbnailUri).build()
+                    } else {
+                        it
+                    }
+                }
+
+                else -> it
+            }
+        }
+    }
+
     fun createRetryConversationMediaWorker(
         context: Context,
         conversationId: String,
@@ -427,6 +481,31 @@ class ChatroomDetailViewModel @Inject constructor(
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
 
+    fun postEditedChatRoom(text: String, chatroom: ChatroomViewData) {
+        viewModelScope.launchIO {
+            // todo:
+//            val request = EditChatroomRequest.Builder()
+//                .text(text)
+//                .chatroomId(chatroom.id())
+//                .build()
+        }
+    }
+
+    fun postEditedConversation(
+        text: String,
+        shareLink: String?,
+        conversation: ConversationViewData,
+    ) {
+        viewModelScope.launchIO {
+            // todo:
+//            val request = EditConversationRequest.Builder()
+//                .conversationId(conversation.id)
+//                .text(text)
+//                .shareLink(shareLink)
+//                .build()
+        }
+    }
+
     fun resendFailedConversation(context: Context, conversation: ConversationViewData) {
         postFailedConversation(context, conversation)
     }
@@ -437,6 +516,24 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun deleteFailedConversation(conversationId: String) {
         // todo:
+    }
+
+    fun updateChatroomWhileEditingTopic(
+        conversation: ConversationViewData,
+        text: String,
+    ) {
+        val updatedConversation = conversation.toBuilder()
+            .answer(text)
+            .isEdited(true)
+            .build()
+
+        chatroomDetail = chatroomDetail.toBuilder()
+            .chatroom(
+                getChatroom()?.toBuilder()
+                    ?.topic(updatedConversation)
+                    ?.build()
+            )
+            .build()
     }
 
     fun clearLinkPreview() {

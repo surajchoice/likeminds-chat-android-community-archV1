@@ -160,7 +160,6 @@ class ChatroomDetailFragment :
     private var updatedMuteActionTitle: String? = null
     private var updatedFollowActionTitle: String? = null
     private var blockedAccessPopUp: AlertDialog? = null
-    private var isTagClickedFlow: Boolean = false
 
     private var cameraPath: String? = null
 
@@ -512,7 +511,8 @@ class ChatroomDetailFragment :
             val linearLayoutManager = LinearLayoutManager(context)
             linearLayoutManager.orientation = RecyclerView.VERTICAL
             layoutManager = linearLayoutManager
-            chatroomDetailAdapter = ChatroomDetailAdapter(this@ChatroomDetailFragment)
+            chatroomDetailAdapter =
+                ChatroomDetailAdapter(sdkPreferences, this@ChatroomDetailFragment)
             adapter = chatroomDetailAdapter
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
                 false
@@ -1313,10 +1313,10 @@ class ChatroomDetailFragment :
                     }
 
                     val inputText = inputBox.etAnswer.editableText.toString().trim()
-                    val shareLink = if (inputText.getEmailIfExist().isNullOrEmpty())
+                    val shareLink = if (inputText.getEmailIfExist().isNullOrEmpty()) {
                         inputText.getUrlIfExist()
-                    else {
-                        chatroomDetailExtras.shareExternalData?.sharedLink
+                    } else {
+                        null
                     }
 
                     if (viewModel.isVoiceNoteSupportEnabled()) {
@@ -1358,12 +1358,6 @@ class ChatroomDetailFragment :
                     )
                 }
 
-                if (isTagClickedFlow) {
-                    if (memberTagging.getTaggedMemberCount() > 0) {
-                        removeTagAndShareView()
-                        isTagClickedFlow = false
-                    }
-                }
                 val updatedConversation = conversation?.trim()
                     ?: memberTagging.replaceSelectedMembers(editableConversation).trim()
 
@@ -1387,16 +1381,11 @@ class ChatroomDetailFragment :
                     replyChatData = inputBox.viewReply.chatReplyData
                 }
 
-                chatroomDetailExtras = chatroomDetailExtras.toBuilder()
-                    .shareExternalData(null)
-                    .build()
-
                 viewModel.createConversation(
                     requireContext(),
                     updatedConversation,
                     fileUris,
                     shareTextLink,
-                    Route.isInternalLink(shareTextLink) || (chatroomDetailExtras.shareExternalData?.isInternalLink == true),
                     replyConversationId,
                     replyChatRoomId,
                     memberTagging.getTaggedMembers(),
@@ -1414,51 +1403,53 @@ class ChatroomDetailFragment :
     }
 
     private fun postEditConversation(editableText: Editable?) {
-        if (!editableText.isNullOrEmpty()) {
-            val updatedText = memberTagging.replaceSelectedMembers(editableText).trim()
-            when (binding.inputBox.viewReply.replySourceType) {
-                REPLY_SOURCE_CHATROOM -> {
-                    val chatRoom = binding.inputBox.viewReply.chatRoomViewData
-                    if (chatRoom != null) {
-                        viewModel.postEditedChatRoom(updatedText, chatRoom)
-                    } else {
-                        ViewUtils.showShortSnack(binding.root, "Please enter your response")
-                    }
-                }
-
-                REPLY_SOURCE_CONVERSATION -> {
-                    val conversation = binding.inputBox.viewReply.conversationViewData
-                    if (conversation != null) {
-                        val link =
-                            binding.inputBox.etAnswer.editableText.toString().trim().getUrlIfExist()
-                        val shareLink = if (Route.isInternalLink(link)) null else link
-                        viewModel.postEditedConversation(
-                            updatedText,
-                            shareLink,
-                            conversation
-                        )
-                        //to check if we are editing a message which set as current topic
-                        if (conversation.id == viewModel.getCurrentTopic()
-                                ?.id
-                        ) {
-                            viewModel.updateChatroomWhileEditingTopic(
-                                conversation,
-                                updatedText
-                            )
-                            initTopChatroomView(getChatroomViewData()!!)
+        binding.apply {
+            if (!editableText.isNullOrEmpty()) {
+                val updatedText = memberTagging.replaceSelectedMembers(editableText).trim()
+                when (inputBox.viewReply.replySourceType) {
+                    REPLY_SOURCE_CHATROOM -> {
+                        val chatRoom = inputBox.viewReply.chatRoomViewData
+                        if (chatRoom != null) {
+                            viewModel.postEditedChatRoom(updatedText, chatRoom)
+                        } else {
+                            ViewUtils.showShortSnack(root, "Please enter your response")
                         }
-                    } else {
-                        ViewUtils.showShortSnack(binding.root, "Please enter your response")
+                    }
+
+                    REPLY_SOURCE_CONVERSATION -> {
+                        val conversation = inputBox.viewReply.conversationViewData
+                        if (conversation != null) {
+                            val link =
+                                inputBox.etAnswer.editableText.toString().trim().getUrlIfExist()
+
+                            viewModel.postEditedConversation(
+                                updatedText,
+                                link,
+                                conversation
+                            )
+                            //to check if we are editing a message which set as current topic
+                            if (conversation.id == viewModel.getCurrentTopic()
+                                    ?.id
+                            ) {
+                                viewModel.updateChatroomWhileEditingTopic(
+                                    conversation,
+                                    updatedText
+                                )
+                                initTopChatroomView(getChatroomViewData()!!)
+                            }
+                        } else {
+                            ViewUtils.showShortSnack(root, "Please enter your response")
+                        }
                     }
                 }
+                clearEditTextAnswer()
+                updateDmMessaged()
+                if (isReplyViewVisible()) {
+                    setChatInputBoxViewType(CHAT_BOX_NORMAL)
+                }
+            } else {
+                ViewUtils.showShortSnack(root, "Please enter your response")
             }
-            clearEditTextAnswer()
-            updateDmMessaged()
-            if (isReplyViewVisible()) {
-                setChatInputBoxViewType(CHAT_BOX_NORMAL)
-            }
-        } else {
-            ViewUtils.showShortSnack(binding.root, "Please enter your response")
         }
     }
 

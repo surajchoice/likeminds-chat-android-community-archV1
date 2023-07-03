@@ -21,7 +21,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
 import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT
 
-internal class ConversationMultipleDocumentBinder constructor(
+internal class ConversationMultipleDocumentViewDataBinder constructor(
     private val sdkPreferences: SDKPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationMultipleDocumentBinding, BaseViewType>(),
@@ -171,7 +171,7 @@ internal class ConversationMultipleDocumentBinder constructor(
         binding.apply {
             val documentsItemAdapter = ChatroomItemAdapter(
                 sdkPreferences,
-                chatroomItemAdapterListener = this@ConversationMultipleDocumentBinder
+                chatroomItemAdapterListener = this@ConversationMultipleDocumentViewDataBinder
             )
             rvDocuments.adapter = documentsItemAdapter
 

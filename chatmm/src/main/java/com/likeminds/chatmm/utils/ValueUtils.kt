@@ -11,6 +11,11 @@ import com.likeminds.chatmm.utils.file.util.FileUtil.isLargeFile
 import java.io.File
 
 object ValueUtils {
+
+    fun getTemporaryId(): String {
+        return "-${System.currentTimeMillis()}"
+    }
+
     fun String?.containsUrl(): Boolean {
         this?.let {
             return Patterns.WEB_URL.matcher(this).matches()

@@ -248,6 +248,20 @@ object FileUtil {
         return newUri
     }
 
+    fun getImageDimensions(context: Context, uri: Uri): Pair<Int, Int> {
+        return try {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")!!
+            val fileDescriptor = parcelFileDescriptor.fileDescriptor
+            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options)
+            Pair(options.outWidth, options.outHeight)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            Pair(0, 0)
+        }
+    }
+
     fun getAudioThumbnail(context: Context, audioUri: Uri?): Uri? {
         var bitmap: Bitmap? = null
         var mediaMetadataRetriever: MediaMetadataRetriever? = null
