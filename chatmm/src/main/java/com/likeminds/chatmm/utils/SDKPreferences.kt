@@ -13,7 +13,6 @@ class SDKPreferences @Inject constructor(
         const val SDK_PREFS = "sdk_prefs"
 
         private const val API_KEY = "API_KEY"
-        private const val IS_GUEST = "IS_GUEST"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -22,13 +21,5 @@ class SDKPreferences @Inject constructor(
 
     fun getAPIKey(): String {
         return getPreference(API_KEY, "") ?: ""
-    }
-
-    fun setIsGuestUser(isGuest: Boolean?) {
-        putPreference(IS_GUEST, isGuest ?: false)
-    }
-
-    fun getIsGuestUser(): Boolean {
-        return getPreference(IS_GUEST, false)
     }
 }

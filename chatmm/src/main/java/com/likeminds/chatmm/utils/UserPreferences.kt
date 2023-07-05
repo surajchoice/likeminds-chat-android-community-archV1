@@ -15,6 +15,7 @@ class UserPreferences @Inject constructor(
     companion object {
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
+        private const val IS_GUEST = "IS_GUEST"
     }
 
     fun getUserUniqueId(): String {
@@ -25,9 +26,21 @@ class UserPreferences @Inject constructor(
         putPreference(USER_UNIQUE_ID, memberId)
     }
 
+    fun setIsGuestUser(isGuest: Boolean?) {
+        putPreference(IS_GUEST, isGuest ?: false)
+    }
+
+    fun getIsGuestUser(): Boolean {
+        return getPreference(IS_GUEST, false)
+    }
+
     @SuppressLint("HardwareIds")
     fun getDeviceId(): String {
         return Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
             ?: ""
+    }
+
+    fun clearPrefs() {
+        saveUserUniqueId("")
     }
 }
