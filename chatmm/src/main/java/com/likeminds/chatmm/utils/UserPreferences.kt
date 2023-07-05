@@ -15,7 +15,7 @@ class UserPreferences @Inject constructor(
     companion object {
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
-        private const val IS_GUEST = "IS_GUEST"
+        private const val IS_GUEST = "is_guest"
     }
 
     fun getUserUniqueId(): String {
