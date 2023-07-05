@@ -1,26 +1,16 @@
 package com.likeminds.chatmm.utils
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.provider.Settings
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SDKPreferences @Inject constructor(
-    private val application: Application
+    application: Application,
 ) : BasePreferences(SDK_PREFS, application) {
-
     companion object {
         const val SDK_PREFS = "sdk_prefs"
-        const val USER_UNIQUE_ID = "user_unique_id"
-        const val MEMBER_ID = "member_id"
-        const val MICRO_POLLS_ENABLED = "MICRO_POLLS_ENABLED"
-        const val GIF_SUPPORT_ENABLED = "GIF_SUPPORT_ENABLED"
-        const val AUDIO_SUPPORT_ENABLED = "AUDIO_SUPPORT_ENABLED"
-        const val VOICE_NOTE_ENABLED = "VOICE_NOTE_SUPPORT_ENABLED"
-        const val HIDE_SECRET_CHATROOM_LOCK_ICON = "HIDE_SECRET_CHATROOM_LOCK_ICON"
 
         private const val API_KEY = "API_KEY"
         private const val IS_GUEST = "IS_GUEST"

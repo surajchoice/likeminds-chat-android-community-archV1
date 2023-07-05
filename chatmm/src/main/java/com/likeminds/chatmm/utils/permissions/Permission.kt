@@ -14,7 +14,6 @@ class Permission private constructor(
 ) {
     companion object {
 
-        private const val LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         private const val WRITE_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         private const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
         private const val CAMERA = Manifest.permission.CAMERA

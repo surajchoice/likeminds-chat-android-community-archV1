@@ -60,16 +60,6 @@ class ChatroomViewData private constructor(
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_HOME_CHAT_ROOM
 
-    fun answerTextUpdated(): String {
-        return if (type != null && type == TYPE_UN_VERIFY) {
-            "This user is not verified yet"
-        } else if (answerText == null || answerText.isEmpty()) {
-            "Be the first to respond"
-        } else {
-            answerText
-        }
-    }
-
     fun isDeleted(): Boolean {
         return deletedBy != null
     }

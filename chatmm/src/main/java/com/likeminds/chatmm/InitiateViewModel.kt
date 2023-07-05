@@ -45,8 +45,9 @@ class InitiateViewModel @Inject constructor(
 
             //If user is guest take user unique id from local prefs
             val userUniqueId = if (isGuest) {
-                val user = lmChatClient.getUser()
-                user.data?.userUniqueId
+                val userResponse = lmChatClient.getUser()
+                val user = userResponse.data?.user
+                user?.userUniqueId
             } else {
                 userId
             }
@@ -72,7 +73,7 @@ class InitiateViewModel @Inject constructor(
     private fun handleInitiateResponse(apiKey: String, data: InitiateUserResponse) {
         if (data.logoutResponse != null) {
             //user is invalid
-            sdkPreferences.clearAuthPrefs()
+            userPreferences.clearPrefs()
             _logoutResponse.postValue(true)
         } else {
             val user = data.user
