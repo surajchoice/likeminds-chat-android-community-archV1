@@ -12,8 +12,11 @@ class SDKPreferences @Inject constructor(
     companion object {
         const val SDK_PREFS = "sdk_prefs"
 
-        private const val API_KEY = "API_KEY"
-        private const val IS_GUEST = "IS_GUEST"
+        private const val API_KEY = "api_key"
+        private const val GIF_SUPPORT_ENABLED = "gif_support_enabled"
+        private const val MICRO_POLLS_ENABLED = "micro_polls_enabled"
+        private const val AUDIO_SUPPORT_ENABLED = "audio_support_enabled"
+        private const val VOICE_NOTE_ENABLED = "voice_note_enabled"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -22,30 +25,6 @@ class SDKPreferences @Inject constructor(
 
     fun getAPIKey(): String {
         return getPreference(API_KEY, "") ?: ""
-    }
-
-    fun getUserUniqueId(): String {
-        return getPreference(USER_UNIQUE_ID, "") ?: ""
-    }
-
-    fun setUserUniqueId(userUniqueId: String) {
-        putPreference(USER_UNIQUE_ID, userUniqueId)
-    }
-
-    fun getMemberId(): String {
-        return getPreference(MEMBER_ID, "") ?: ""
-    }
-
-    fun setMemberId(memberId: String) {
-        putPreference(MEMBER_ID, memberId)
-    }
-
-    fun setIsGuestUser(isGuest: Boolean?) {
-        putPreference(IS_GUEST, isGuest ?: false)
-    }
-
-    fun getIsGuestUser(): Boolean {
-        return getPreference(IS_GUEST, false)
     }
 
     fun setGifSupportEnabled(value: Boolean?) {
@@ -78,19 +57,6 @@ class SDKPreferences @Inject constructor(
 
     fun isVoiceNoteSupportEnabled(): Boolean {
         return getPreference(VOICE_NOTE_ENABLED, false)
-    }
-
-    @SuppressLint("HardwareIds")
-    fun getDeviceId(): String {
-        return Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
-            ?: ""
-    }
-
-    fun clearAuthPrefs() {
-        setAPIKey("")
-        setUserUniqueId("")
-        setMemberId("")
-        setIsGuestUser(false)
     }
 
     fun setDefaultConfigPrefs() {

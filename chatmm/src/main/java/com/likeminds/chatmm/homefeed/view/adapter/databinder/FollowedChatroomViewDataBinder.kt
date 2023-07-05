@@ -12,7 +12,7 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemFollowedChatRoomBinding
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -22,7 +22,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 
 class FollowedChatroomViewDataBinder(
-    val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val homeAdapterListener: HomeFeedAdapter.HomeFeedAdapterListener
 ) : ViewDataBinder<ItemFollowedChatRoomBinding, BaseViewType>() {
 
@@ -186,7 +186,7 @@ class FollowedChatroomViewDataBinder(
                 tvLastConversation.text = ChatroomUtil.getDeletedMessage(
                     root.context,
                     lastConversation,
-                    sdkPreferences.getMemberId()
+                    userPreferences.getMemberId()
                 )
             }
         }

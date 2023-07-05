@@ -9,6 +9,7 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
 import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.UserPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
@@ -20,7 +21,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences
+    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     companion object {
@@ -137,7 +139,7 @@ class ExploreViewModel @Inject constructor(
             val sortIndex = ((page * 10) + index)
             ViewDataConverter.convertChatroom(
                 chatroom,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 sortIndex
             )?.apply {
                 baseViewTypeList.add(this)
@@ -155,7 +157,7 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launchIO {
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(exploreViewData.id)
-                .memberId(sdkPreferences.getMemberId())
+                .memberId(userPreferences.getMemberId())
                 .value(follow)
                 .build()
 

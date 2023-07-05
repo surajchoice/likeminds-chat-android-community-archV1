@@ -39,6 +39,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     lateinit var sdkPreferences: SDKPreferences
 
     @Inject
+    lateinit var userPreferences: UserPreferences
+
+    @Inject
     lateinit var homeFeedPreferences: HomeFeedPreferences
 
     @Inject
@@ -206,7 +209,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(sdkPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(sdkPreferences, userPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)

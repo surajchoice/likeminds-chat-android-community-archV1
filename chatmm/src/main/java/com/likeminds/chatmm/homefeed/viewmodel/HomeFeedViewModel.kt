@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
     private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
     companion object {
@@ -160,7 +161,7 @@ class HomeFeedViewModel @Inject constructor(
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
-            sdkPreferences,
+            userPreferences,
             lastConversation?.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)

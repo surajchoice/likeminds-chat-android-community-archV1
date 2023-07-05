@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.UserPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
@@ -16,7 +17,8 @@ import com.likeminds.likemindschat.initiateUser.model.RegisterDeviceRequest
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences
+    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
 ) : ViewModel() {
 
     private val lmChatClient = LMChatClient.getInstance()
@@ -54,7 +56,7 @@ class InitiateViewModel @Inject constructor(
 
             val request = InitiateUserRequest.Builder()
                 .apiKey(apiKey)
-                .deviceId(sdkPreferences.getDeviceId())
+                .deviceId(userPreferences.getDeviceId())
                 .userName(userName)
                 .userId(userUniqueId)
                 .isGuest(isGuest)
@@ -101,8 +103,8 @@ class InitiateViewModel @Inject constructor(
         userUniqueId: String,
         memberId: String
     ) {
-        sdkPreferences.apply {
-            setAPIKey(apiKey)
+        sdkPreferences.setAPIKey(apiKey)
+        userPreferences.apply {
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
             setMemberId(memberId)
@@ -130,7 +132,7 @@ class InitiateViewModel @Inject constructor(
         viewModelScope.launchIO {
             //create request
             val request = RegisterDeviceRequest.Builder()
-                .deviceId(sdkPreferences.getDeviceId())
+                .deviceId(userPreferences.getDeviceId())
                 .token(token)
                 .build()
 

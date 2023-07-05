@@ -34,6 +34,9 @@ class ChatroomExploreFragment :
     @Inject
     lateinit var sdkPreferences: SDKPreferences
 
+    @Inject
+    lateinit var userPreferences: UserPreferences
+
     private val overflowMenu: OverflowMenuPopup by lazy {
         OverflowMenuPopup.create(requireContext(), this)
     }
@@ -274,7 +277,7 @@ class ChatroomExploreFragment :
     //Handles Join/Joined button clicks
     override fun onJoinClick(follow: Boolean, position: Int, exploreViewData: ExploreViewData) {
         //Check for guest flow
-        if (sdkPreferences.getIsGuestUser()) {
+        if (userPreferences.getIsGuestUser()) {
             //User is Guest
             // todo: login callback
             activity?.finish()

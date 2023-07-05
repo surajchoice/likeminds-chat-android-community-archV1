@@ -3,13 +3,15 @@ package com.likeminds.chatmm.homefeed.view.adapter
 import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.view.adapter.databinder.*
 import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.UserPreferences
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 class HomeFeedAdapter constructor(
-    val sdkPreferences: SDKPreferences,
-    val listener: HomeFeedAdapterListener
+    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
+    private val listener: HomeFeedAdapterListener
 ) : BaseRecyclerAdapter<BaseViewType>() {
 
     init {
@@ -20,7 +22,7 @@ class HomeFeedAdapter constructor(
         val viewDataBinders = ArrayList<ViewDataBinder<*, *>>(8)
 
         val followedChatroomViewDataBinder =
-            FollowedChatroomViewDataBinder(sdkPreferences, listener)
+            FollowedChatroomViewDataBinder(userPreferences, listener)
         viewDataBinders.add(followedChatroomViewDataBinder)
 
         val emptyViewDataBinder = EmptyViewDataBinder()

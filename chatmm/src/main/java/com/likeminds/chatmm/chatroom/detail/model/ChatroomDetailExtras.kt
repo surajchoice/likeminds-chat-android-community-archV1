@@ -1,166 +1,146 @@
 package com.likeminds.chatmm.chatroom.detail.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_MEMBER
 import kotlinx.parcelize.Parcelize
 
-// todo: removed a few keys
 @Parcelize
-class MemberViewData private constructor(
-    val id: String?,
-    val uid: String?,
-    val name: String?,
-    val email: String?,
-    val headline: String?,
-    val imageUrl: String?,
-    val dynamicViewType: Int,
-//    val state: Int,
+class ChatroomDetailExtras private constructor(
+    val chatroomId: String,
+    val fromNotification: Boolean,
+    val chatroomViewData: ChatroomViewData?,
     val communityId: String?,
-    val communityName: String?,
-    val removeState: Int?,
-    val isGuest: Boolean?,
-    val isOwner: Boolean?,
-    val hideBottomLine: Boolean?,
-    val customTitle: String?,
-    val customIntroText: String?,
-    val customClickText: String?,
-    val memberSince: String?,
-//    val listOfMenu: List<MemberActionViewData>?,
-    val parentChatroom: ChatroomViewData?,
-    val parentViewItemPosition: Int?,
-    val showMoreView: Boolean?,
-    val screenType: Int?,
-    val updatedAt: Long?,
-    val userUniqueId: String?
-) : Parcelable, BaseViewType {
-    override val viewType: Int
-        get() = dynamicViewType
-
+    val showNewChatInfo: Boolean?,
+    val source: String?,
+    val reportedConversationId: String?,
+    val conversationId: String?,
+    val openedFromLink: Boolean?,
+    val isFromSearchMessage: Boolean?,
+    val isFromSearchChatroom: Boolean?,
+    val scrollToExtremeTopForHighlightingTitle: Boolean?,
+    val sourceChatroomId: String?,
+    val sourceCommunityId: String?,
+    val loadFromTop: Boolean?,
+    val loadingAfterSync: Boolean,
+    val searchKey: String?,
+    val openAttachmentsScreen: Boolean,
+    val sourceLinkOrRoute: String?,
+    val cohortId: String?
+) : Parcelable {
     class Builder {
-        private var id: String? = null
-        private var uid: String? = null
-        private var name: String? = null
-        private var email: String? = null
-        private var headline: String? = null
-        private var imageUrl: String? = null
-        private var dynamicViewType: Int = ITEM_MEMBER
-
-        //        private var state: Int = STATE_NOTHING
+        private var chatroomId: String = ""
+        private var fromNotification: Boolean = false
+        private var chatroomViewData: ChatroomViewData? = null
         private var communityId: String? = null
-        private var removeState: Int? = null
-        private var isGuest: Boolean? = null
-        private var hideBottomLine: Boolean? = null
-        private var customIntroText: String? = null
-        private var customClickText: String? = null
-        private var memberSince: String? = null
-        private var communityName: String? = null
-        private var isOwner: Boolean? = null
-        private var customTitle: String? = null
+        private var showNewChatInfo: Boolean? = null
+        private var source: String? = null
+        private var reportedConversationId: String? = null
+        private var conversationId: String? = null
+        private var openedFromLink: Boolean? = null
+        private var isFromSearchMessage: Boolean? = null
+        private var isFromSearchChatroom: Boolean? = null
+        private var scrollToExtremeTopForHighlightingTitle: Boolean? = null
+        private var sourceChatroomId: String? = null
+        private var sourceCommunityId: String? = null
+        private var loadFromTop: Boolean? = false
+        private var loadingAfterSync: Boolean = false
+        private var searchKey: String? = null
+        private var openAttachmentsScreen: Boolean = false
+        private var sourceLinkOrRoute: String? = null
+        private var cohortId: String? = null
 
-        //        private var listOfMenu: List<MemberActionViewData>? = null
-        private var parentChatroom: ChatroomViewData? = null
-        private var parentViewItemPosition: Int? = null
-        private var showMoreView: Boolean? = null
-        private var screenType: Int? = null
-        private var updatedAt: Long? = null
-        private var userUniqueId: String? = null
+        fun chatroomId(chatroomId: String) = apply { this.chatroomId = chatroomId }
+        fun fromNotification(fromNotification: Boolean) =
+            apply { this.fromNotification = fromNotification }
 
-        fun id(id: String?) = apply { this.id = id }
-        fun uid(uid: String?) = apply { this.uid = uid }
-        fun name(name: String?) = apply { this.name = name }
-        fun email(email: String?) = apply { this.email = email }
-        fun headline(headline: String?) = apply { this.headline = headline }
-        fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
-        fun dynamicViewType(dynamicViewType: Int) = apply { this.dynamicViewType = dynamicViewType }
+        fun chatroomViewData(chatroomViewData: ChatroomViewData?) =
+            apply { this.chatroomViewData = chatroomViewData }
 
-        //        fun state(state: Int) = apply { this.state = state }
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
-        fun communityName(communityName: String?) = apply { this.communityName = communityName }
+        fun showNewChatInfo(showNewChatInfo: Boolean?) =
+            apply { this.showNewChatInfo = showNewChatInfo }
 
-        fun removeState(removeState: Int?) = apply { this.removeState = removeState }
-        fun isGuest(isGuest: Boolean?) = apply { this.isGuest = isGuest }
-        fun isOwner(isOwner: Boolean?) = apply { this.isOwner = isOwner }
-        fun hideBottomLine(hideBottomLine: Boolean?) =
-            apply { this.hideBottomLine = hideBottomLine }
+        fun source(source: String?) = apply { this.source = source }
+        fun reportedConversationId(reportedConversationId: String?) =
+            apply { this.reportedConversationId = reportedConversationId }
 
-        fun customTitle(customTitle: String?) = apply { this.customTitle = customTitle }
-        fun customIntroText(customIntroText: String?) =
-            apply { this.customIntroText = customIntroText }
+        fun conversationId(conversationId: String?) = apply { this.conversationId = conversationId }
+        fun openedFromLink(openedFromLink: Boolean?) =
+            apply { this.openedFromLink = openedFromLink }
 
-        fun customClickText(customClickText: String?) =
-            apply { this.customClickText = customClickText }
+        fun isFromSearchMessage(isFromSearchMessage: Boolean?) =
+            apply { this.isFromSearchMessage = isFromSearchMessage }
 
-        fun memberSince(memberSince: String?) = apply { this.memberSince = memberSince }
-//        fun listOfMenu(listOfMenu: List<MemberActionViewData>?) =
-//            apply { this.listOfMenu = listOfMenu }
+        fun isFromSearchChatroom(isFromSearchChatroom: Boolean?) =
+            apply { this.isFromSearchChatroom = isFromSearchChatroom }
 
-        fun parentChatroom(parentChatroom: ChatroomViewData?) =
-            apply { this.parentChatroom = parentChatroom }
+        fun scrollToExtremeTopForHighlightingTitle(scrollToExtremeTopForHighlightingTitle: Boolean?) =
+            apply {
+                this.scrollToExtremeTopForHighlightingTitle = scrollToExtremeTopForHighlightingTitle
+            }
 
-        fun parentViewItemPosition(parentViewItemPosition: Int?) =
-            apply { this.parentViewItemPosition = parentViewItemPosition }
+        fun sourceChatroomId(sourceChatroomId: String?) =
+            apply { this.sourceChatroomId = sourceChatroomId }
 
-        fun showMoreView(showMoreView: Boolean?) = apply { this.showMoreView = showMoreView }
-        fun screenType(screenType: Int?) = apply { this.screenType = screenType }
-        fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
+        fun sourceCommunityId(sourceCommunityId: String?) =
+            apply { this.sourceCommunityId = sourceCommunityId }
 
-        fun userUniqueId(userUniqueId: String?) = apply { this.userUniqueId = userUniqueId }
+        fun loadFromTop(loadFromTop: Boolean?) = apply { this.loadFromTop = loadFromTop }
+        fun loadingAfterSync(loadingAfterSync: Boolean) =
+            apply { this.loadingAfterSync = loadingAfterSync }
+
+        fun searchKey(searchKey: String?) = apply { this.searchKey = searchKey }
+        fun openAttachmentsScreen(openAttachmentsScreen: Boolean) =
+            apply { this.openAttachmentsScreen = openAttachmentsScreen }
+
+        fun sourceLinkOrRoute(sourceLinkOrRoute: String?) =
+            apply { this.sourceLinkOrRoute = sourceLinkOrRoute }
+
+        fun cohortId(cohortId: String?) = apply { this.cohortId = cohortId }
 
         fun build() = ChatroomDetailExtras(
-            id,
-            uid,
-            name,
-            email,
-            headline,
-            imageUrl,
-            dynamicViewType,
-//            state,
+            chatroomId,
+            fromNotification,
+            chatroomViewData,
             communityId,
-            communityName,
-            removeState,
-            isGuest,
-            isOwner,
-            hideBottomLine,
-            customTitle,
-            customIntroText,
-            customClickText,
-            memberSince,
-//            listOfMenu,
-            parentChatroom,
-            parentViewItemPosition,
-            showMoreView,
-            screenType,
-            updatedAt,
-            userUniqueId
+            showNewChatInfo,
+            source,
+            reportedConversationId,
+            conversationId,
+            openedFromLink,
+            isFromSearchMessage,
+            isFromSearchChatroom,
+            scrollToExtremeTopForHighlightingTitle,
+            sourceChatroomId,
+            sourceCommunityId,
+            loadFromTop,
+            loadingAfterSync,
+            searchKey,
+            openAttachmentsScreen,
+            sourceLinkOrRoute,
+            cohortId
         )
     }
 
     fun toBuilder(): Builder {
-        return Builder().id(id)
-            .uid(uid)
-            .name(name)
-            .email(email)
-            .headline(headline)
-            .imageUrl(imageUrl)
-            .dynamicViewType(dynamicViewType)
-//            .state(state)
+        return Builder().chatroomId(chatroomId)
+            .fromNotification(fromNotification)
+            .chatroomViewData(chatroomViewData)
             .communityId(communityId)
-            .communityName(communityName)
-            .removeState(removeState)
-            .isGuest(isGuest)
-            .isOwner(isOwner)
-            .hideBottomLine(hideBottomLine)
-            .customTitle(customTitle)
-            .customIntroText(customIntroText)
-            .customClickText(customClickText)
-            .memberSince(memberSince)
-//            .listOfMenu(listOfMenu)
-            .parentChatroom(parentChatroom)
-            .parentViewItemPosition(parentViewItemPosition)
-            .showMoreView(showMoreView)
-            .screenType(screenType)
-            .updatedAt(updatedAt)
-            .userUniqueId(userUniqueId)
+            .showNewChatInfo(showNewChatInfo)
+            .source(source)
+            .reportedConversationId(reportedConversationId)
+            .conversationId(conversationId)
+            .openedFromLink(openedFromLink)
+            .isFromSearchMessage(isFromSearchMessage)
+            .isFromSearchChatroom(isFromSearchChatroom)
+            .scrollToExtremeTopForHighlightingTitle(scrollToExtremeTopForHighlightingTitle)
+            .sourceChatroomId(sourceChatroomId)
+            .sourceCommunityId(sourceCommunityId)
+            .loadFromTop(loadFromTop)
+            .loadingAfterSync(loadingAfterSync)
+            .searchKey(searchKey)
+            .openAttachmentsScreen(openAttachmentsScreen)
+            .sourceLinkOrRoute(sourceLinkOrRoute)
+            .cohortId(cohortId)
     }
 }
