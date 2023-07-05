@@ -1,0 +1,10 @@
+dependencies {
+    //core
+    implementation deps.android_core.core
+    implementation deps.android_core.appcompat
+    implementation deps.ktx.fragment
+
+    implementation deps.colorPicker.main
+
+    implementation project(":chatmm")
+}

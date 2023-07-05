@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_no_internet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/no_wifi"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_no_wifi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cl_no_internet"
+            app:layout_constraintTop_toTopOf="@id/cl_no_internet"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_noInternet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="1dp"
+            android:text="@string/no_internet"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:fontType="medium"
+            app:layout_constraintBottom_toTopOf="@+id/tv_check_your_connection"
+            app:layout_constraintStart_toEndOf="@id/no_wifi"
+            app:layout_constraintTop_toTopOf="@+id/cl_no_internet"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_check_your_connection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="16dp"
+            android:alpha="0.8"
+            android:ellipsize="end"
+            android:lineSpacingExtra="3sp"
+            android:maxLines="1"
+            android:text="@string/check_your_connection_and_try_again"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_no_internet"
+            app:layout_constraintEnd_toStartOf="@id/iv_close"
+            app:layout_constraintStart_toEndOf="@id/no_wifi"
+            app:layout_constraintTop_toBottomOf="@id/tv_noInternet"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageButton
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_cross"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/cl_no_internet"
+            app:layout_constraintTop_toTopOf="@id/cl_no_internet"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
