@@ -47,8 +47,8 @@ class InitiateViewModel @Inject constructor(
 
             //If user is guest take user unique id from local prefs
             val userUniqueId = if (isGuest) {
-                val user = lmChatClient.getUser()
-                user.data?.userUniqueId
+                val userResponse = lmChatClient.getUser()
+                userResponse.data?.user?.userUniqueId
             } else {
                 userId
             }

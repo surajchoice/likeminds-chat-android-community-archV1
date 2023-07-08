@@ -21,8 +21,23 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ValueUtils.containsUrl
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM
+import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM_ANNOUNCEMENT
+import com.likeminds.likemindschat.chatroom.model.Chatroom
 
 object ChatroomUtil {
+
+    /**
+     * Get chatroom view type based on the chatroom data
+     */
+    fun getChatroomViewType(chatroom: Chatroom?): Int {
+        return if (chatroom?.type == TYPE_ANNOUNCEMENT) {
+            ITEM_CHAT_ROOM_ANNOUNCEMENT
+        } else {
+            ITEM_CHAT_ROOM
+        }
+    }
+
     fun getMediaCount(mediaType: String, attachments: List<AttachmentViewData>?): Int {
         return attachments?.count { it.type == mediaType } ?: 0
     }

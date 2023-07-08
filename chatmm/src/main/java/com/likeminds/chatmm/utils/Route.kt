@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 
 object Route {
@@ -36,31 +37,32 @@ object Route {
     private fun getRouteFromDeepLink(data: Uri?): String? {
         val host = data?.host ?: return null
         val firstPathSegment = data.pathSegments.firstOrNull()
-        if (host == getLmWebHost() && firstPathSegment == DEEP_LINK_CHATROOM) {
-            return createCollabcardRoute(data)
-        }
-        if (!isLMHost(host)) {
-            return createWebsiteRoute(data)
-        }
-        return when {
-            data.scheme == DEEP_LINK_SCHEME -> {
-                when (firstPathSegment) {
-                    DEEP_LINK_COMMUNITY_FEED -> {
-                        createCommunityFeedRoute(data)
-                    }
-                    DEEP_LINK_CREATE_COMMUNITY -> {
-                        createCommunityCreateRoute()
-                    }
-                    else -> null
-                }
-            }
-            firstPathSegment == DEEP_LINK_CHATROOM -> {
-                createCollabcardRoute(data)
-            }
-            else -> {
-                createWebsiteRoute(data)
-            }
-        }
+//        if (host == getLmWebHost() && firstPathSegment == DEEP_LINK_CHATROOM) {
+//            return createCollabcardRoute(data)
+//        }
+//        if (!isLMHost(host)) {
+//            return createWebsiteRoute(data)
+//        }
+        return null
+//        return when {
+//            data.scheme == DEEP_LINK_SCHEME -> {
+//                when (firstPathSegment) {
+//                    DEEP_LINK_COMMUNITY_FEED -> {
+//                        createCommunityFeedRoute(data)
+//                    }
+//                    DEEP_LINK_CREATE_COMMUNITY -> {
+//                        createCommunityCreateRoute()
+//                    }
+//                    else -> null
+//                }
+//            }
+//            firstPathSegment == DEEP_LINK_CHATROOM -> {
+//                createCollabcardRoute(data)
+//            }
+//            else -> {
+//                createWebsiteRoute(data)
+//            }
+//        }
     }
 
     // todo: removed profle routes
@@ -209,6 +211,10 @@ object Route {
             return Intent.createChooser(intent, "Select an email client")
         }
         return null
+    }
+
+    fun createRouteForMemberProfile(member: MemberViewData?, communityId: String?): String {
+        return "<<${member?.name}|route://member/${member?.id}?community_id=${communityId}>>"
     }
 
     fun Uri.getNullableQueryParameter(key: String): String? {

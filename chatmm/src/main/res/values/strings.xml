@@ -18,6 +18,10 @@
         <item quantity="one">%d Chatroom</item>
         <item quantity="other">%d Chatrooms</item>
     </plurals>
+    <plurals name="participants_s">
+        <item quantity="one">%d participant</item>
+        <item quantity="other">%d participants</item>
+    </plurals>
     <string name="max_two_digit_number">99+</string>
     <string name="you_deleted_this_message">You deleted this message.</string>
     <string name="your_message_was_deleted_by_cm">Your message was deleted by a community manager.</string>
@@ -145,4 +149,18 @@
     <string name="share_chatroom">Share Chatroom</string>
     <string name="leave_chat_room">Leave chat room?</string>
     <string name="are_you_sure_you_want_to_leave_this_chat_room">Are you sure you want to leave this chat room?</string>
+    <string name="you_have_left_the_chat_room">You have left the chat room.</string>
+    <string name="message_deleted">Message deleted</string>
+    <string name="messages_deleted">Messages deleted</string>
+    <string name="changed_current_topic_to">changed current topic to</string>
+    <string name="set_a_photo_message_to_current_topic">set a photo message to current topic</string>
+    <string name="set_a_video_message_to_current_topic">set a video message to current topic</string>
+    <string name="set_a_document_message_to_current_topic">set a document message to current topic</string>
+    <string name="set_a_gif_message_to_current_topic">set a GIF message to current topic</string>
+    <string name="set_an_audio_message_to_current_topic">set an audio message to current topic</string>
+    <string name="set_a_voice_note_to_current_topic">set a voice note to current topic</string>
+    <string name="notifications_unmuted_for_this_chatroom">Notifications unmuted for this chatroom</string>
+    <string name="notifications_muted_for_this_chatroom">"Notifications muted for this chatroom"</string>
+    <string name="warning_multimedia_and_document_share_error">PDF, images, videos and gifs cannot be uploaded together. Please upload these one by one.</string>
+    <string name="third_party_share">LikeMinds Share</string>
 </resources>

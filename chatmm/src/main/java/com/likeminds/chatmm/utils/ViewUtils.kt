@@ -63,6 +63,12 @@ object ViewUtils {
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
+    fun showKeyboard(context: Context) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
     fun hideKeyboard(context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         if (context is Activity) {

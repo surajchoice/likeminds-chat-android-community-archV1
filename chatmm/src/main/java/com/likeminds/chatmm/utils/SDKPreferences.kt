@@ -20,7 +20,6 @@ class SDKPreferences @Inject constructor(
         const val GIF_SUPPORT_ENABLED = "GIF_SUPPORT_ENABLED"
         const val AUDIO_SUPPORT_ENABLED = "AUDIO_SUPPORT_ENABLED"
         const val VOICE_NOTE_ENABLED = "VOICE_NOTE_SUPPORT_ENABLED"
-        const val HIDE_SECRET_CHATROOM_LOCK_ICON = "HIDE_SECRET_CHATROOM_LOCK_ICON"
         const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
 
         private const val API_KEY = "API_KEY"

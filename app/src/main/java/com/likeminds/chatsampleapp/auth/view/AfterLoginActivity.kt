@@ -57,8 +57,8 @@ class AfterLoginActivity : AppCompatActivity() {
             authPreferences.getUserId(),
             false
         ) {
-            val userId = it?.user?.userUniqueId ?: ""
-            authPreferences.saveUserId(userId)
+//            val userId = it?.user?.userUniqueId ?: ""
+//            authPreferences.saveUserId(userId)
         }
     }
 }

@@ -14,6 +14,7 @@ import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
@@ -155,13 +156,13 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     private fun getChatRoomViewData(chatroom: Chatroom): ChatViewData {
-        val chatroomViewData = ViewDataConverter.convertChatroom(chatroom)
+        val chatroomViewData = ViewDataConverter.convertChatroom(chatroom, ITEM_HOME_CHAT_ROOM)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
             sdkPreferences,
-            lastConversation?.memberViewData
+            lastConversation.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
         val lastConversationTime = if (chatroom.isDraft == true) {

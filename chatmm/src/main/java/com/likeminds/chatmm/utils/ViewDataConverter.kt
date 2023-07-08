@@ -1,20 +1,17 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
-import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
-import com.likeminds.chatmm.conversation.model.AttachmentViewData
-import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.conversation.model.*
+import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
-import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
+import com.likeminds.likemindschat.chatroom.model.ChatroomAction
 import com.likeminds.likemindschat.community.model.Member
-import com.likeminds.likemindschat.conversation.model.Attachment
-import com.likeminds.likemindschat.conversation.model.Conversation
-import com.likeminds.likemindschat.conversation.model.LinkOGTags
+import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.helper.model.UserTag
 import com.likeminds.likemindschat.user.model.User
@@ -25,22 +22,25 @@ object ViewDataConverter {
      * Network Model -> View Data Model
     --------------------------------*/
 
-    fun convertChatroom(chatroom: Chatroom): ChatroomViewData {
-        // todo: member state
+    fun convertChatroom(
+        chatroom: Chatroom,
+        dynamicViewType: Int? = null
+    ): ChatroomViewData {
+        // todo: member state, createdAt
         return ChatroomViewData.Builder()
             .id(chatroom.id)
-            .communityId(chatroom.communityId)
-            .communityName(chatroom.communityName)
+            .communityId(chatroom.communityId ?: "")
+            .communityName(chatroom.communityName ?: "")
             .memberViewData(convertMember(chatroom.member))
-            .createdAt(chatroom.createdAt)
+            .createdAt(chatroom.createdAt ?: 0)
             .title(chatroom.title)
             .answerText(chatroom.answerText)
             .state(chatroom.state)
             .type(chatroom.type)
             .header(chatroom.header)
-            .dynamicViewType(ITEM_HOME_CHAT_ROOM)
-            .muteStatus(chatroom.muteStatus)
-            .followStatus(chatroom.followStatus)
+            .dynamicViewType(dynamicViewType)
+            .muteStatus(chatroom.muteStatus ?: false)
+            .followStatus(chatroom.followStatus ?: false)
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
             .isPending(chatroom.isPending)
@@ -81,9 +81,18 @@ object ViewDataConverter {
     /**
      * convert [Conversation] to [ConversationViewData]
      */
-    fun convertConversation(conversation: Conversation?): ConversationViewData? {
+    fun convertConversations(conversations: List<Conversation>): List<ConversationViewData> {
+        return conversations.map {
+            convertConversation(it)
+        }
+    }
+
+    /**
+     * convert [Conversation] to [ConversationViewData]
+     */
+    fun convertConversation(conversation: Conversation?): ConversationViewData {
         if (conversation == null) {
-            return null
+            return ConversationViewData.Builder().build()
         }
         return ConversationViewData.Builder()
             .id(conversation.id ?: "")
@@ -231,6 +240,105 @@ object ViewDataConverter {
             .description(linkOGTags.description)
             .title(linkOGTags.title)
             .image(linkOGTags.image)
+            .build()
+    }
+
+    /**
+     * convert [LinkOGTags] to [LinkOGTagsViewData]
+     * @param linkOGTags: object of [LinkOGTags]
+     **/
+    fun convertChatroomActions(chatroomActions: List<ChatroomAction>): List<ChatroomActionViewData> {
+        return chatroomActions.map {
+            convertChatroomAction(it)
+        }
+    }
+
+    private fun convertChatroomAction(chatroomAction: ChatroomAction): ChatroomActionViewData {
+        return ChatroomActionViewData.Builder()
+            .id(chatroomAction.id.toString())
+            .title(chatroomAction.title)
+            .route(chatroomAction.route)
+            .build()
+    }
+
+    /**--------------------------------
+     * View Data Model -> Network Model
+    --------------------------------*/
+
+    // created a Conversation network model
+    fun convertConversation(
+        memberId: String,
+        communityId: String?,
+        request: PostConversationRequest,
+        fileUris: List<SingleUriData>?
+    ): Conversation {
+        return Conversation.Builder()
+            .id(request.temporaryId)
+            .chatroomId(request.chatroomId)
+            .communityId(communityId)
+            .answer(request.text)
+            .state(STATE_NORMAL)
+            .createdEpoch(System.currentTimeMillis())
+            .memberId(memberId)
+            .createdAt(TimeUtil.generateCreatedAt())
+            .attachments(convertAttachments(fileUris))
+            .lastSeen(true)
+            .ogTags(request.ogTags)
+            .date(TimeUtil.generateDate())
+            .replyConversationId(request.repliedConversationId)
+            .attachmentCount(request.attachmentCount ?: 0)
+            .localCreatedEpoch(System.currentTimeMillis())
+            .temporaryId(request.temporaryId)
+            .isEdited(false)
+            .replyChatroomId(request.repliedChatroomId)
+            .attachmentUploaded(false)
+            .build()
+    }
+
+    // converts list of SingleUriData to list of network Attachment model
+    private fun convertAttachments(fileUris: List<SingleUriData>?): List<Attachment>? {
+        return fileUris?.mapIndexed { index, singleUriData ->
+            convertAttachment(singleUriData, index)
+        }
+    }
+
+    // converts SingleUriData to network Attachment model
+    private fun convertAttachment(
+        singleUriData: SingleUriData,
+        index: Int
+    ): Attachment {
+        return Attachment.Builder()
+            .name(singleUriData.mediaName)
+            .url(singleUriData.uri.toString())
+            .type(singleUriData.fileType)
+            .index(index)
+            .width(singleUriData.width)
+            .height(singleUriData.height)
+            .localFilePath(singleUriData.uri.toString())
+            .thumbnailUrl(singleUriData.thumbnailUri.toString())
+            .thumbnailLocalFilePath(singleUriData.thumbnailUri.toString())
+            .meta(
+                AttachmentMeta.Builder()
+                    .numberOfPage(singleUriData.pdfPageCount)
+                    .duration(singleUriData.duration)
+                    .size(singleUriData.size)
+                    .build()
+            )
+            .build()
+    }
+
+    // converts LinkOGTags view data model to network model
+    fun convertLinkOGTags(
+        linkOGTagsViewData: LinkOGTagsViewData?
+    ): LinkOGTags? {
+        if (linkOGTagsViewData == null) {
+            return null
+        }
+        return LinkOGTags.Builder()
+            .title(linkOGTagsViewData.title)
+            .image(linkOGTagsViewData.image)
+            .description(linkOGTagsViewData.description)
+            .url(linkOGTagsViewData.url)
             .build()
     }
 }
