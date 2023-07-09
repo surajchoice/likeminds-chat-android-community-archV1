@@ -29,6 +29,7 @@ import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.ConversationChangeListener
+import com.likeminds.likemindschat.conversation.util.GetConversationCountType
 import com.likeminds.likemindschat.conversation.util.GetConversationType
 import com.likeminds.likemindschat.conversation.util.LoadConversationType
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
@@ -84,9 +85,16 @@ class ChatroomDetailViewModel @Inject constructor(
     val chatroomDetailLiveData: LiveData<ChatroomDetailViewData?> = _chatroomDetailLiveData
 
     //Chatroom, Data, Scroll position
-    private val _initialData = MutableLiveData<InitialViewData?>()
+    private val _initialData by lazy { MutableLiveData<InitialViewData?>() }
     val initialData: LiveData<InitialViewData?> = _initialData
-//    private val paginatedData by lazy { MutableLiveData<PaginatedData>() }
+
+    private val _paginatedData by lazy { MutableLiveData<PaginatedViewData>() }
+    val paginatedData: LiveData<PaginatedViewData> = _paginatedData
+
+    //Data, Scroll state
+    private val _scrolledData by lazy { MutableLiveData<PaginatedViewData>() }
+    val scrolledData: LiveData<PaginatedViewData> = _scrolledData
+
 
     //Data, Scroll state
 //    private val scrolledData by lazy { MutableLiveData<PaginatedData>() }
@@ -141,6 +149,8 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
+
+    fun getChatroomActions(): List<ChatroomActionViewData>? = chatroomDetail.actions
 
     private fun getConversationListShimmerView() = ConversationListShimmerViewData()
 
@@ -253,6 +263,13 @@ class ChatroomDetailViewModel @Inject constructor(
 //        }
     }
 
+    //get first normal or poll conversation for list
+    fun getFirstNormalOrPollConversation(items: List<BaseViewType>): ConversationViewData? {
+        return items.firstOrNull {
+            it is ConversationViewData && ConversationsState.isPollOrNormal(it.state)
+        } as? ConversationViewData
+    }
+
     fun fetchUriDetails(
         context: Context,
         uris: List<Uri>,
@@ -311,7 +328,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
     /**
      * Fetches the initial data for the current chatroom and pass it to fragment using live data
-     * @param extras Chatroom Intent Extras
+     * @param chatroomDetailExtras Chatroom Intent Extras
      *
      * 1st case ->
      * chatroom is not present
@@ -364,6 +381,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 return@launchIO
             }
 
+            // todo:
 //            currentMemberFromDb = lmChatClient.getMember(
 //                chatroom.communityId,
 //                chatroomId,
@@ -372,8 +390,9 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val chatroomViewData = ViewDataConverter.convertChatroom(
                 chatroom,
+                sdkPreferences.getMemberId(),
                 ChatroomUtil.getChatroomViewType(chatroom)
-            )
+            ) ?: return@launchIO
             chatroomDetail = ChatroomDetailViewData.Builder()
                 .isMemberNotPartOfCommunity(currentMemberFromDb == null)
                 .chatroom(chatroomViewData)
@@ -590,7 +609,8 @@ class ChatroomDetailViewModel @Inject constructor(
                 conversations = conversations.drop(1)
             }
         } else {
-            val aboveTopConversationsCount = aboveConversationsViewData.size
+            val aboveTopConversationsCount =
+                getConversationsAboveCount(aboveConversationsViewData.firstOrNull())
             if (aboveTopConversationsCount == 0) {
                 dataList.add(chatroomViewData)
                 val headerConversation = getHeaderConversation(conversations)
@@ -660,19 +680,28 @@ class ChatroomDetailViewModel @Inject constructor(
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        sendConversationUpdatesToUI(conversations)
+                        Log.d(TAG, "getChangedConversations: ")
+                        val conversationsViewData =
+                            ViewDataConverter.convertConversations(conversations)
+                        sendConversationUpdatesToUI(conversationsViewData)
                     }
                 }
 
                 override fun getNewConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        sendNewConversationsToUI(conversations)
+                        Log.d(TAG, "getNewConversations: ")
+                        val conversationsViewData =
+                            ViewDataConverter.convertConversations(conversations)
+                        sendNewConversationsToUI(conversationsViewData)
                     }
                 }
 
                 override fun getPostedConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        sendConversationUpdatesToUI(conversations)
+                        Log.d(TAG, "getPostedConversations: ")
+                        val conversationsViewData =
+                            ViewDataConverter.convertConversations(conversations)
+                        sendConversationUpdatesToUI(conversationsViewData)
                     }
                 }
             }
@@ -689,9 +718,8 @@ class ChatroomDetailViewModel @Inject constructor(
      * Send updates to UI using live data
      * @param conversations List of conversations
      */
-    private fun sendConversationUpdatesToUI(conversations: List<Conversation>) {
-        val conversationsViewData = ViewDataConverter.convertConversations(conversations)
-        val value = conversationsViewData.sortedBy {
+    private fun sendConversationUpdatesToUI(conversations: List<ConversationViewData>) {
+        val value = conversations.sortedBy {
             it.createdEpoch
         }
         viewModelScope.launchDefault {
@@ -703,15 +731,226 @@ class ChatroomDetailViewModel @Inject constructor(
      * Send updates to UI using live data
      * @param conversations List of conversations
      */
-    private fun sendNewConversationsToUI(conversations: List<Conversation>) {
+    private fun sendNewConversationsToUI(conversations: List<ConversationViewData>) {
         if (isFirstSyncOngoing) return
-        val conversationsViewData = ViewDataConverter.convertConversations(conversations)
-        val value = conversationsViewData.sortedBy {
+        val value = conversations.sortedBy {
             it.createdEpoch
         }
         viewModelScope.launchDefault {
             conversationEventChannel.send(ConversationEvent.NewConversation(value))
         }
+    }
+
+    /**
+     * Fetch the top conversations on header click
+     */
+    fun fetchTopConversationsOnClick(
+        topConversation: ConversationViewData,
+        oldConversations: List<BaseViewType>,
+        repliedChatRoomId: String? = null,
+    ) {
+        viewModelScope.launchIO {
+            val topConversationsCount = getConversationsAboveCount(topConversation)
+            if (topConversationsCount <= CONVERSATIONS_LIMIT) {
+                val data = fetchPaginatedData(
+                    SCROLL_UP,
+                    topConversation,
+                    oldConversations,
+                    SCROLL_UP,
+                    repliedChatRoomId = repliedChatRoomId
+                )
+                if (data != null) {
+                    viewModelScope.launchMain {
+                        _paginatedData.value = data
+                    }
+                }
+            } else {
+                val conversations = fetchTopConversations(getChatroomViewData())
+                viewModelScope.launchMain {
+                    _scrolledData.value = PaginatedViewData.Builder()
+                        .scrollState(SCROLL_UP)
+                        .data(conversations)
+                        .repliedChatRoomId(repliedChatRoomId)
+                        .build()
+                }
+            }
+        }
+    }
+
+    /**
+     * Fetch the top conversations on header click
+     */
+    fun fetchBottomConversationsOnClick(
+        bottomConversation: ConversationViewData,
+        oldConversations: List<BaseViewType>,
+    ) {
+        viewModelScope.launchIO {
+            val bottomConversationsCount = getConversationsBelowCount(bottomConversation)
+            if (bottomConversationsCount <= CONVERSATIONS_LIMIT) {
+                val data = fetchPaginatedData(
+                    SCROLL_DOWN,
+                    bottomConversation,
+                    oldConversations,
+                    SCROLL_DOWN
+                )
+                if (data != null) {
+                    viewModelScope.launchMain {
+                        _paginatedData.value = data
+                    }
+                }
+            } else {
+                val conversations = fetchBottomConversations(getChatroomViewData()!!)
+                viewModelScope.launchMain {
+                    _scrolledData.value = PaginatedViewData.Builder()
+                        .scrollState(SCROLL_DOWN)
+                        .data(conversations)
+                        .build()
+                }
+            }
+        }
+    }
+
+    fun fetchPaginatedDataOnScroll(
+        @ScrollState scrollState: Int,
+        conversationKey: ConversationViewData,
+        oldConversations: List<BaseViewType>,
+    ) {
+        viewModelScope.launchIO {
+            val data = fetchPaginatedData(
+                scrollState,
+                conversationKey,
+                oldConversations
+            )
+            if (data != null) {
+                viewModelScope.launchMain {
+                    _paginatedData.value = data
+                }
+            }
+        }
+    }
+
+    private fun fetchPaginatedData(
+        @ScrollState scrollState: Int,
+        conversationKey: ConversationViewData,
+        oldConversations: List<BaseViewType>,
+        @ScrollState extremeScrollTo: Int? = null,
+        repliedConversationId: String? = null,
+        repliedChatRoomId: String? = null,
+    ): PaginatedViewData? {
+        val chatroom = getChatroom() ?: return null
+        val chatroomId = chatroom.id.toInt()
+        val conversationForRequest = ViewDataConverter.convertConversation(conversationKey)
+        val getConversationsResponse = if (scrollState == SCROLL_UP) {
+            lmChatClient.getConversations(
+                GetConversationsRequest.Builder()
+                    .chatroomId(chatroomId.toString())
+                    .conversation(conversationForRequest)
+                    .type(GetConversationType.ABOVE)
+                    .limit(CONVERSATIONS_LIMIT)
+                    .build()
+            )
+        } else {
+            lmChatClient.getConversations(
+                GetConversationsRequest.Builder()
+                    .chatroomId(chatroomId.toString())
+                    .conversation(conversationForRequest)
+                    .type(GetConversationType.BELOW)
+                    .limit(CONVERSATIONS_LIMIT)
+                    .build()
+            )
+        }
+        val conversations = getConversationsResponse.data?.conversations ?: emptyList()
+        var conversationsViewData = ViewDataConverter.convertConversations(conversations)
+        if (conversationsViewData.isNotEmpty()) {
+            /**
+             * If there are no more conversations, and is scrolling up, add the chatroom to the list
+             * Also add the header conversation at the top of the chatroom item
+             */
+            val oldConversationsCount = getConversationsCount(oldConversations)
+            val totalConversationsCount = oldConversationsCount + conversationsViewData.size
+            val totalAllResponseCount = chatroom.totalAllResponseCount
+            return if (
+                scrollState == SCROLL_UP &&
+                totalConversationsCount == totalAllResponseCount
+            ) {
+                val dataList = mutableListOf<BaseViewType>()
+                dataList.add(getDateView(chatroom.date))
+                dataList.add(chatroom)
+                val header = getHeaderConversation(conversationsViewData)
+                if (header != null) {
+                    dataList.add(0, header)
+                    conversationsViewData = conversationsViewData.drop(1)
+                }
+                dataList.addAll(
+                    addDateViewToList(
+                        conversationsViewData,
+                        chatroomDetail.chatroom,
+                        null
+                    )
+                )
+                PaginatedViewData.Builder()
+                    .scrollState(scrollState)
+                    .data(dataList)
+                    .extremeScrollTo(extremeScrollTo)
+                    .repliedChatRoomId(repliedChatRoomId)
+                    .repliedConversationId(repliedConversationId)
+                    .build()
+            } else {
+                PaginatedViewData.Builder()
+                    .scrollState(scrollState)
+                    .data(
+                        addDateViewToList(
+                            conversationsViewData,
+                            chatroomDetail.chatroom,
+                            oldConversations.lastOrNull()
+                        )
+                    )
+                    .extremeScrollTo(extremeScrollTo)
+                    .repliedChatRoomId(repliedChatRoomId)
+                    .repliedConversationId(repliedConversationId)
+                    .build()
+            }
+        }
+        return null
+    }
+
+    private fun getConversationsCount(items: List<BaseViewType>) = items.count {
+        it is ConversationViewData
+    }
+
+    /**
+     * chatroom is present and conversation is present, chatroom opened for the first time
+     * ---chatroom will load from top with chatroom object and limited conversations---
+     * 1. Fetch the chatroom and append it at top
+     * 2. Fetch limited conversations sorted by ascending on TIMESTAMP & ID and append it at bottom
+     */
+    private fun fetchTopConversations(
+        chatroom: ChatroomViewData?,
+    ): List<BaseViewType> {
+        if (chatroom == null) {
+            return emptyList()
+        }
+        val dataList = mutableListOf<BaseViewType>()
+        dataList.add(getDateView(chatroom.date))
+        dataList.add(chatroom)
+        val getConversationsResponse = lmChatClient.getConversations(
+            GetConversationsRequest.Builder()
+                .chatroomId(chatroom.id)
+                .type(GetConversationType.TOP)
+                .limit(CONVERSATIONS_LIMIT)
+                .build()
+        )
+        val topConversations = getConversationsResponse.data?.conversations ?: emptyList()
+        var topConversationsViewData = ViewDataConverter.convertConversations(topConversations)
+        val headerConversation = getHeaderConversation(topConversationsViewData)
+        if (headerConversation != null) {
+            dataList.add(0, headerConversation)
+            topConversationsViewData = topConversationsViewData.drop(1)
+        }
+        dataList.addAll(
+            addDateViewToList(topConversationsViewData, chatroom, null)
+        )
+        return dataList
     }
 
     private fun getHeaderConversation(
@@ -819,17 +1058,35 @@ class ChatroomDetailViewModel @Inject constructor(
         return getConversationsBelowCount(bottomConversation) == 0
     }
 
+    private fun getConversationsAboveCount(
+        aboveConversation: ConversationViewData?,
+    ): Int {
+        if (aboveConversation == null) {
+            return 0
+        }
+        val conversation = ViewDataConverter.convertConversation(aboveConversation)
+        val getConversationsCountRequest = GetConversationsCountRequest.Builder()
+            .chatroomId(getChatroom()?.id ?: "")
+            .conversation(conversation)
+            .type(GetConversationCountType.ABOVE)
+            .build()
+        return lmChatClient.getConversationsCount(getConversationsCountRequest).data?.count ?: 0
+    }
+
+
     private fun getConversationsBelowCount(
         bottomConversation: ConversationViewData?,
     ): Int {
         if (bottomConversation == null) {
             return 0
         }
-        // todo:
-        return 1
-//        return chatroomRepository.getConversationsBelowCount(
-//            realm, chatroomId()?.toInt() ?: 0, bottomConversation
-//        )
+        val conversation = ViewDataConverter.convertConversation(bottomConversation)
+        val getConversationsCountRequest = GetConversationsCountRequest.Builder()
+            .chatroomId(getChatroom()?.id ?: "")
+            .conversation(conversation)
+            .type(GetConversationCountType.BELOW)
+            .build()
+        return lmChatClient.getConversationsCount(getConversationsCountRequest).data?.count ?: 0
     }
 
     fun getContentDownloadSettings(communityId: String) {
@@ -843,6 +1100,12 @@ class ChatroomDetailViewModel @Inject constructor(
         // todo:
 //        chatroomRepository.setLastSeenTrueAndSaveDraftResponse(chatroomId.toInt(), draftText)
 //        markChatroomAsRead(chatroomId)
+    }
+
+    fun observeLiveConversations(context: Context, chatroomId: String) {
+        viewModelScope.launchIO {
+            lmChatClient.observeLiveConversations(context, chatroomId)
+        }
     }
 
     // follow/unfollow a chatroom
@@ -1017,8 +1280,30 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun deleteConversations(conversations: List<ConversationViewData>) {
         viewModelScope.launchIO {
-            // todo
+            viewModelScope.launchIO {
+                val conversationIds = conversations.map {
+                    it.id
+                }
+                val request = DeleteConversationsRequest.Builder()
+                    .conversationIds(conversationIds)
+                    .build()
+
+                val response = lmChatClient.deleteConversations(request)
+                if (response.success) {
+                    postConversationsDeleted(conversations)
+                    _deleteConversationsResponse.postValue(response.data?.conversations?.size)
+                    sendMessageDeletedEvent(conversations)
+                } else {
+                    errorEventChannel.send(ErrorMessageEvent.DeleteConversation(response.errorMessage))
+                }
+            }
         }
+    }
+
+    private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
+        sendConversationUpdatesToUI(conversations.map {
+            it.toBuilder().deletedBy(sdkPreferences.getMemberId()).build()
+        })
     }
 
     fun updateChatroomWhileDeletingTopic() {
@@ -1548,6 +1833,21 @@ class ChatroomDetailViewModel @Inject constructor(
 //                "message_id" to messageId,
 //                "url" to url,
 //                "type" to "link"
+//            )
+        }
+    }
+
+    /**
+     * Triggers when the user deletes messages
+     **/
+    private fun sendMessageDeletedEvent(conversations: List<ConversationViewData>) {
+        getChatroomViewData()?.let { chatroom ->
+//            LMAnalytics.track(
+//                LMAnalytics.Keys.EVENT_MESSAGE_DELETED,
+//                "type" to ChatroomUtil.getConversationType(conversations.firstOrNull()),
+//                "chatroom_id" to chatroom.id,
+//                "community_id" to chatroom.communityId,
+//                "message_ids" to conversations.joinToString { it.id }
 //            )
         }
     }

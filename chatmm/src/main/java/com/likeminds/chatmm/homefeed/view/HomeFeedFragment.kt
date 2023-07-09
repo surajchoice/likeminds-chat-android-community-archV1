@@ -2,6 +2,7 @@ package com.likeminds.chatmm.homefeed.view
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +27,15 @@ import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
+import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
-    HomeFeedAdapter.HomeFeedAdapterListener {
+    HomeFeedAdapter.HomeFeedAdapterListener,
+    ConnectivityReceiverListener {
 
     private lateinit var extras: HomeFeedExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
@@ -40,10 +44,15 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     lateinit var sdkPreferences: SDKPreferences
 
     @Inject
+    lateinit var snackBar: CustomSnackBar
+
+    @Inject
     lateinit var homeFeedPreferences: HomeFeedPreferences
 
     @Inject
     lateinit var initiateViewModel: InitiateViewModel
+
+    private var wasNetworkGone = false
 
     companion object {
         const val TAG = "HomeFeedFragment"
@@ -94,7 +103,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         initiateUser()
         initRecyclerView()
         initToolbar()
-        fetchData()
+        // todo: removed fetch data from here
     }
 
     override fun observeData() {
@@ -144,7 +153,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     //observe user data
     private fun observeInitiateUserResponse(user: MemberViewData?) {
         initToolbar()
-        viewModel.observeChatrooms(requireContext())
+        fetchData()
         viewModel.getConfig()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(user?.communityId, user?.communityName)
@@ -183,7 +192,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         super.onResume()
         // todo: check ad make exposed function in data
 //        if (!LikeMindsDB.isEmpty() && !sdkPreferences.getIsGuestUser()) {
-        viewModel.observeChatrooms(requireContext())
+        fetchData()
 //        }
     }
 
@@ -253,5 +262,21 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         // todo: Analytics
         ChatroomExploreActivity.start(requireContext())
 //        viewModel.sendCommunityFeedClickedEvent(communityId, communityName)
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        val parentView = activity?.findViewById<ViewGroup>(android.R.id.content) ?: return
+        if (parentView.childCount > 0) {
+            parentView.getChildAt(0)?.let { view ->
+                if (isConnected && wasNetworkGone) {
+                    wasNetworkGone = false
+                    snackBar.showMessage(view, "Internet connection restored", true)
+                }
+                if (!isConnected) {
+                    wasNetworkGone = true
+                    snackBar.showNoInternet(view)
+                }
+            }
+        }
     }
 }

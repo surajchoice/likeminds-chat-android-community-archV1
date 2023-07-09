@@ -63,7 +63,6 @@ class SDKApplication {
         lmUICallback: LMUICallback,
         brandingRequest: SetBrandingRequest
     ) {
-        // todo: set domain
         LMChatClient.Builder(application)
             .build()
         SDKApplication.lmUICallback = lmUICallback

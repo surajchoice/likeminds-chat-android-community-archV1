@@ -80,7 +80,6 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:text="@string/explore_chatroom"
                     android:textSize="20sp"
                     app:fontType="medium"
                     app:layout_constraintBottom_toTopOf="@+id/tv_toolbar_sub_title"
@@ -104,7 +103,7 @@
                     app:layout_constraintStart_toEndOf="@+id/tv_toolbar_title"
                     app:layout_constraintTop_toTopOf="@+id/tv_toolbar_title"
                     app:layout_constraintVertical_chainStyle="packed"
-                    tools:ignore="ContentDescription"
+                    tools:ignore="ContentDescription,UseAppTint"
                     tools:visibility="visible" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView

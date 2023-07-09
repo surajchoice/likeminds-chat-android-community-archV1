@@ -2,7 +2,6 @@ package com.likeminds.chatmm.chatroom.detail.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.model.PollInfoData
 import com.likeminds.chatmm.conversation.model.ReactionViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
@@ -46,7 +45,6 @@ class ChatroomViewData private constructor(
     val secretChatroomParticipants: List<Int>?,
     val secretChatroomLeft: Boolean?,
     val unseenCount: Int?,
-    val pollInfoData: PollInfoData?,
     val isEdited: Boolean?,
     val topic: ConversationViewData?,
     val reactions: List<ReactionViewData>?,
@@ -115,7 +113,6 @@ class ChatroomViewData private constructor(
         private var secretChatroomParticipants: List<Int>? = null
         private var secretChatroomLeft: Boolean? = null
         private var unseenCount: Int? = null
-        private var pollInfoData: PollInfoData? = null
         private var isEdited: Boolean? = null
         private var topic: ConversationViewData? = null
         private var reactions: List<ReactionViewData>? = null
@@ -186,7 +183,6 @@ class ChatroomViewData private constructor(
             apply { this.secretChatroomLeft = secretChatroomLeft }
 
         fun unseenCount(unseenCount: Int?) = apply { this.unseenCount = unseenCount }
-        fun pollInfoData(pollInfoData: PollInfoData?) = apply { this.pollInfoData = pollInfoData }
         fun isEdited(isEdited: Boolean?) = apply { this.isEdited = isEdited }
         fun topic(topic: ConversationViewData?) = apply { this.topic = topic }
         fun reactions(reactions: List<ReactionViewData>?) = apply { this.reactions = reactions }
@@ -243,7 +239,6 @@ class ChatroomViewData private constructor(
             secretChatroomParticipants,
             secretChatroomLeft,
             unseenCount,
-            pollInfoData,
             isEdited,
             topic,
             reactions,
@@ -293,7 +288,6 @@ class ChatroomViewData private constructor(
             .secretChatroomParticipants(secretChatroomParticipants)
             .secretChatroomLeft(secretChatroomLeft)
             .unseenCount(unseenCount)
-            .pollInfoData(pollInfoData)
             .isEdited(isEdited)
             .topic(topic)
             .reactions(reactions)

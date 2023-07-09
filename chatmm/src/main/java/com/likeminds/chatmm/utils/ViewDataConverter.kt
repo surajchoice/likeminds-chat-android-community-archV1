@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
+import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
@@ -23,10 +24,99 @@ object ViewDataConverter {
     --------------------------------*/
 
     fun convertChatroom(
+        chatroom: Chatroom?,
+        currentMemberId: String? = null,
+        viewType: Int = 0,
+    ): ChatroomViewData? {
+        if (chatroom == null) {
+            return null
+        }
+
+        Log.d("ChatroomDetail", "totalAllResponseCount: ${chatroom.communityName}")
+        var showFollowTelescope = false
+        var showFollowAutoTag = false
+        if (chatroom.followStatus == false) {
+            showFollowTelescope = true
+        }
+        if (chatroom.member?.id == currentMemberId) {
+            showFollowTelescope = false
+        }
+        if (chatroom.isTagged == true) {
+            showFollowTelescope = false
+            showFollowAutoTag = true
+        }
+        if (chatroom.followStatus == true) {
+            showFollowTelescope = false
+            showFollowAutoTag = false
+        }
+
+        return ChatroomViewData.Builder()
+            .id(chatroom.id)
+            .communityId(chatroom.communityId.toString())
+            .communityName(chatroom.communityName ?: "")
+            .memberViewData(convertMember(chatroom.member))
+            .createdAt(chatroom.createdAt ?: 0)
+            .title(chatroom.title)
+            .answerText(chatroom.answerText)
+            .state(chatroom.state)
+            .shareUrl(chatroom.shareUrl)
+            .type(chatroom.type)
+            .date(chatroom.date)
+            .about(chatroom.about)
+            .header(chatroom.header)
+            .showFollowTelescope(showFollowTelescope)
+            .showFollowAutoTag(showFollowAutoTag)
+            .cardCreationTime(chatroom.cardCreationTime)
+            .totalResponseCount(chatroom.totalResponseCount)
+            .totalAllResponseCount(chatroom.totalAllResponseCount ?: 0)
+            .dynamicViewType(viewType)
+            .muteStatus(chatroom.muteStatus ?: false)
+            .followStatus(chatroom.followStatus ?: false)
+            .hasBeenNamed(chatroom.hasBeenNamed)
+            .date(chatroom.date)
+            .isTagged(chatroom.isTagged)
+            .isPending(chatroom.isPending)
+            .deletedBy(chatroom.deletedBy)
+            .updatedAt(chatroom.updatedAt)
+            .draftConversation(chatroom.draftConversation)
+            .isSecret(chatroom.isSecret)
+            .secretChatroomParticipants(chatroom.secretChatroomParticipants?.toList())
+            .secretChatroomLeft(chatroom.secretChatroomLeft)
+            .unseenCount(chatroom.unseenCount)
+            .isEdited(chatroom.isEdited)
+            .autoFollowDone(chatroom.autoFollowDone)
+            .topic(convertConversation(chatroom.topic))
+            .reactions(chatroom.reactions?.mapNotNull { reaction ->
+                convertChatroomReactions(reaction, chatroom.id)
+            })
+            .access(chatroom.access)
+            .memberCanMessage(chatroom.memberCanMessage)
+            .unreadConversationCount(chatroom.unreadConversationCount)
+            .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .build()
+    }
+
+    private fun convertChatroomReactions(
+        reactionRO: Reaction?,
+        id: String,
+    ): ReactionViewData? {
+        if (reactionRO == null) {
+            return null
+        }
+        val memberViewData = convertMember(reactionRO.member) ?: return null
+        return ReactionViewData.Builder()
+            .reaction(reactionRO.reaction)
+            .memberViewData(memberViewData)
+            .chatroomId(id)
+            .build()
+    }
+
+    fun convertChatroomForHome(
         chatroom: Chatroom,
         dynamicViewType: Int? = null
     ): ChatroomViewData {
-        // todo: member state, createdAt
+        // todo: member state
+        Log.d("TAG", "convertChatroomForHome--: ${chatroom.lastConversation?.answer}")
         return ChatroomViewData.Builder()
             .id(chatroom.id)
             .communityId(chatroom.communityId ?: "")
@@ -54,7 +144,7 @@ object ViewDataConverter {
     }
 
     // todo: member to uuid
-    fun convertChatroom(
+    fun convertChatroomForExplore(
         chatroom: Chatroom?,
         memberId: String,
         sortIndex: Int
@@ -110,7 +200,7 @@ object ViewDataConverter {
             .ogTags(convertOGTags(conversation.ogTags))
             .date(conversation.date)
             .deletedBy(conversation.deletedBy)
-            .attachmentCount(conversation.attachmentCount)
+            .attachmentCount(conversation.attachmentCount ?: 0)
             .attachmentsUploaded(conversation.attachmentUploaded)
             .uploadWorkerUUID(conversation.uploadWorkerUUID)
             .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
@@ -265,7 +355,7 @@ object ViewDataConverter {
      * View Data Model -> Network Model
     --------------------------------*/
 
-    // created a Conversation network model
+    // creates a Conversation network model for posting a conversation
     fun convertConversation(
         memberId: String,
         communityId: String?,
@@ -322,6 +412,63 @@ object ViewDataConverter {
                     .numberOfPage(singleUriData.pdfPageCount)
                     .duration(singleUriData.duration)
                     .size(singleUriData.size)
+                    .build()
+            )
+            .build()
+    }
+
+    // converts [ConversationViewData] to [Conversation] model
+    fun convertConversation(
+        conversationViewData: ConversationViewData
+    ): Conversation {
+        return Conversation.Builder()
+            .id(conversationViewData.id)
+            .chatroomId(conversationViewData.chatroomId)
+            .communityId(conversationViewData.communityId)
+            .answer(conversationViewData.answer)
+            .createdEpoch(conversationViewData.createdEpoch)
+            .memberId(conversationViewData.memberViewData.id)
+            .createdAt(conversationViewData.createdAt)
+            .attachments(convertAttachmentViewDataList(conversationViewData.attachments))
+            .lastSeen(conversationViewData.lastSeen)
+            .ogTags(convertLinkOGTags(conversationViewData.ogTags))
+            .date(conversationViewData.date)
+            .replyConversationId(conversationViewData.replyConversation?.id)
+            .attachmentCount(conversationViewData.attachmentCount)
+            .localCreatedEpoch(conversationViewData.localCreatedEpoch)
+            .temporaryId(conversationViewData.temporaryId)
+            .isEdited(conversationViewData.isEdited)
+            .replyChatroomId(conversationViewData.replyChatroomId)
+            .attachmentUploaded(conversationViewData.attachmentsUploaded)
+            .build()
+    }
+
+    // converts list of AttachmentViewData to list of network Attachment model
+    private fun convertAttachmentViewDataList(attachmentViewDataList: List<AttachmentViewData>?): List<Attachment>? {
+        return attachmentViewDataList?.map { attachmentViewData ->
+            convertAttachmentViewData(attachmentViewData)
+        }
+    }
+
+    // converts AttachmentViewData to network Attachment model
+    private fun convertAttachmentViewData(
+        attachmentViewData: AttachmentViewData,
+    ): Attachment {
+        return Attachment.Builder()
+            .name(attachmentViewData.name)
+            .url(attachmentViewData.uri.toString())
+            .type(attachmentViewData.type)
+            .index(attachmentViewData.index)
+            .width(attachmentViewData.width)
+            .height(attachmentViewData.height)
+            .localFilePath(attachmentViewData.uri.toString())
+            .thumbnailUrl(attachmentViewData.thumbnail.toString())
+            .thumbnailLocalFilePath(attachmentViewData.thumbnailLocalFilePath.toString())
+            .meta(
+                AttachmentMeta.Builder()
+                    .numberOfPage(attachmentViewData.meta?.numberOfPage)
+                    .duration(attachmentViewData.meta?.duration)
+                    .size(attachmentViewData.meta?.size)
                     .build()
             )
             .build()

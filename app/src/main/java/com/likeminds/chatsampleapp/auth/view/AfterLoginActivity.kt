@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.LikeMindsChatUI
 import com.likeminds.chatsampleapp.ChatMMApplication
 import com.likeminds.chatsampleapp.R
-import com.likeminds.chatsampleapp.auth.model.LoginExtra
+import com.likeminds.chatsampleapp.auth.model.LoginExtras
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
 import com.likeminds.chatsampleapp.databinding.ActivityAfterLoginBinding
 
 class AfterLoginActivity : AppCompatActivity() {
 
-    private var extra: LoginExtra? = null
+    private var extra: LoginExtras? = null
 
     private val authPreferences: AuthPreferences by lazy {
         AuthPreferences(this)

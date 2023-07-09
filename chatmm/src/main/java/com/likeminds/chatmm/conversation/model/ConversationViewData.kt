@@ -26,11 +26,11 @@ class ConversationViewData private constructor(
     val replyConversation: ConversationViewData?,
     val isEdited: Boolean?,
     val deletedBy: String?,
-    val attachmentCount: Int?,
+    val attachmentCount: Int,
     val attachmentsUploaded: Boolean?,
     val uploadWorkerUUID: String?,
     val temporaryId: String?,
-    val createdEpoch: Long?,
+    val createdEpoch: Long,
     val localCreatedEpoch: Long?,
     val reactions: List<ReactionViewData>?,
     val replyChatroomId: String?,
@@ -120,7 +120,7 @@ class ConversationViewData private constructor(
         if (isTemporaryConversation()) {
             return true
         }
-        return if (attachmentCount != null && attachmentCount > 0) {
+        return if (attachmentCount > 0) {
             attachmentsUploaded == null || !attachmentsUploaded
         } else {
             false
@@ -131,7 +131,7 @@ class ConversationViewData private constructor(
         if (isTemporaryConversation()) {
             return false
         }
-        return if (attachmentCount != null && attachmentCount > 0) {
+        return if (attachmentCount > 0) {
             attachmentsUploaded != null && attachmentsUploaded
         } else {
             true
@@ -168,11 +168,11 @@ class ConversationViewData private constructor(
         private var replyConversation: ConversationViewData? = null
         private var isEdited: Boolean? = null
         private var deletedBy: String? = null
-        private var attachmentCount: Int? = null
+        private var attachmentCount: Int = 0
         private var attachmentsUploaded: Boolean? = null
         private var uploadWorkerUUID: String? = null
         private var temporaryId: String? = null
-        private var createdEpoch: Long? = null
+        private var createdEpoch: Long = 0
         private var localCreatedEpoch: Long? = null
         private var reactions: List<ReactionViewData>? = null
         private var replyChatroomId: String? = null
@@ -207,7 +207,7 @@ class ConversationViewData private constructor(
 
         fun isEdited(isEdited: Boolean?) = apply { this.isEdited = isEdited }
         fun deletedBy(deletedBy: String?) = apply { this.deletedBy = deletedBy }
-        fun attachmentCount(attachmentCount: Int?) =
+        fun attachmentCount(attachmentCount: Int) =
             apply { this.attachmentCount = attachmentCount }
 
         fun attachmentsUploaded(attachmentsUploaded: Boolean?) =
@@ -217,7 +217,7 @@ class ConversationViewData private constructor(
             apply { this.uploadWorkerUUID = uploadWorkerUUID }
 
         fun temporaryId(temporaryId: String?) = apply { this.temporaryId = temporaryId }
-        fun createdEpoch(createdEpoch: Long?) = apply { this.createdEpoch = createdEpoch }
+        fun createdEpoch(createdEpoch: Long) = apply { this.createdEpoch = createdEpoch }
         fun localCreatedEpoch(localCreatedEpoch: Long?) =
             apply { this.localCreatedEpoch = localCreatedEpoch }
 

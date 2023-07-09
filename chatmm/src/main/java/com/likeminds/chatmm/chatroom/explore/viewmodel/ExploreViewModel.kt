@@ -135,7 +135,7 @@ class ExploreViewModel @Inject constructor(
 
         exploreFeedData.chatrooms.forEachIndexed { index, chatroom ->
             val sortIndex = ((page * 10) + index)
-            ViewDataConverter.convertChatroom(
+            ViewDataConverter.convertChatroomForExplore(
                 chatroom,
                 sdkPreferences.getMemberId(),
                 sortIndex
