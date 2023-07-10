@@ -6,7 +6,7 @@ import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
 class GenericFileRequest private constructor(
     val name: String?,
     val fileUri: Uri?,
-    val fileType: Int,
+    val fileType: String,
     val awsFolderPath: String,
     val localFilePath: String?,
     val index: Int,
@@ -23,7 +23,7 @@ class GenericFileRequest private constructor(
 
         private var name: String? = null
         private var fileUri: Uri? = null
-        private var fileType: Int = 1
+        private var fileType: String = ""
         private var awsFolderPath: String = ""
         private var localFilePath: String? = null
         private var index: Int = 0
@@ -38,7 +38,7 @@ class GenericFileRequest private constructor(
 
         fun name(name: String?) = apply { this.name = name }
         fun fileUri(fileUri: Uri?) = apply { this.fileUri = fileUri }
-        fun fileType(fileType: Int) = apply { this.fileType = fileType }
+        fun fileType(fileType: String) = apply { this.fileType = fileType }
         fun awsFolderPath(awsFolderPath: String) = apply { this.awsFolderPath = awsFolderPath }
         fun localFilePath(localFilePath: String?) = apply { this.localFilePath = localFilePath }
         fun index(index: Int) = apply { this.index = index }

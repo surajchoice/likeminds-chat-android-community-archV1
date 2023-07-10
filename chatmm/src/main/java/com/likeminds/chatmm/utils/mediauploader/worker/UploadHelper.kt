@@ -1,9 +1,14 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
+import com.likeminds.chatmm.media.model.InternalMediaType
 import com.likeminds.chatmm.utils.mediauploader.model.AWSFileResponse
+import java.io.File
 
 object UploadHelper {
     private val awsFileResponses: ArrayList<AWSFileResponse> = arrayListOf()
+
+    private const val FOLDER_COLLABCARD = "files/collabcard"
+    private const val FOLDER_CONVERSATION = "conversation"
 
     fun addAWSFileResponse(awsFileResponse: AWSFileResponse) {
         awsFileResponses.add(awsFileResponse)
@@ -25,5 +30,19 @@ object UploadHelper {
 
     fun getAWSFileResponses(uuid: String?): List<AWSFileResponse> {
         return awsFileResponses.filter { it.uuid == uuid }
+    }
+
+    fun getConversationAttachmentFilePath(
+        chatroomId: String?,
+        conversationId: String?,
+        attachmentType: String,
+        file: File,
+        isThumbnail: Boolean = false
+    ): String {
+        return "$FOLDER_COLLABCARD/$chatroomId/$FOLDER_CONVERSATION/$conversationId/${
+            InternalMediaType.getMediaFileInitial(attachmentType, isThumbnail)
+        }${System.currentTimeMillis()}.${
+            InternalMediaType.getMediaFileExtension(attachmentType, file, isThumbnail)
+        }"
     }
 }

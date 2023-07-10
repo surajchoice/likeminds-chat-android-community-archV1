@@ -26,6 +26,7 @@ import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
 import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
+import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
@@ -41,6 +42,7 @@ import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
@@ -1516,15 +1518,14 @@ class ChatroomDetailViewModel @Inject constructor(
             val requestList = ArrayList<GenericFileRequest>()
             if (!updatedFileUris.isNullOrEmpty()) {
                 uploadData = uploadFilesViaWorker(context, response.id!!, updatedFileUris.size)
-                // todo
-//                requestList.addAll(
-//                    getUploadFileRequestList(
-//                        context,
-//                        updatedFileUris,
-//                        chatroomDetail.chatroom?.id,
-//                        response.id
-//                    )
-//                )
+                requestList.addAll(
+                    getUploadFileRequestList(
+                        context,
+                        updatedFileUris,
+                        chatroomDetail.chatroom?.id,
+                        response.id
+                    )
+                )
             }
             postedConversation(
                 taggedUsers,
@@ -1538,56 +1539,56 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
-//    private fun getUploadFileRequestList(
-//        context: Context,
-//        fileUris: List<SingleUriData>,
-//        chatroomId: String?,
-//        conversationId: String?,
-//    ): List<GenericFileRequest> {
-//        return fileUris.mapIndexed { index, attachment ->
-//            val attachmentMeta = AttachmentMetaViewData.Builder()
-//                .duration(attachment.duration)
-//                .numberOfPage(attachment.pdfPageCount)
-//                .size(attachment.size)
-//                .build()
-//            var builder = GenericFileRequest.Builder()
-//                .name(attachment.mediaName)
-//                .fileUri(attachment.uri)
-//                .fileType(attachment.fileType)
-//                .width(attachment.width)
-//                .height(attachment.height)
-//                .meta(attachmentMeta)
-//                .index(index)
-//
-//            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
-//            val file = File(localFilePath)
-//            val serverPath = FileReceiver.getConversationAttachmentFilePath(
-//                chatroomId,
-//                conversationId,
-//                attachment.fileType,
-//                file
-//            )
-//
-//            //Add thumbnail is present
-//            if (attachment.thumbnailUri != null) {
-//                val thumbnailUri = attachment.thumbnailUri
-//                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
-//                val thumbnailFile = File(thumbnailLocalFilePath)
-//                val thumbnailAWSFolderPath = FileReceiver.getConversationAttachmentFilePath(
-//                    chatroomId,
-//                    conversationId,
-//                    attachment.fileType,
-//                    thumbnailFile,
-//                    isThumbnail = true
-//                )
-//                builder = builder.thumbnailUri(thumbnailUri)
-//                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
-//                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
-//            }
-//
-//            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
-//        }
-//    }
+    private fun getUploadFileRequestList(
+        context: Context,
+        fileUris: List<SingleUriData>,
+        chatroomId: String?,
+        conversationId: String?,
+    ): List<GenericFileRequest> {
+        return fileUris.mapIndexed { index, attachment ->
+            val attachmentMeta = AttachmentMetaViewData.Builder()
+                .duration(attachment.duration)
+                .numberOfPage(attachment.pdfPageCount)
+                .size(attachment.size)
+                .build()
+            var builder = GenericFileRequest.Builder()
+                .name(attachment.mediaName)
+                .fileUri(attachment.uri)
+                .fileType(attachment.fileType)
+                .width(attachment.width)
+                .height(attachment.height)
+                .meta(attachmentMeta)
+                .index(index)
+
+            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
+            val file = File(localFilePath)
+            val serverPath = UploadHelper.getConversationAttachmentFilePath(
+                chatroomId,
+                conversationId,
+                attachment.fileType,
+                file
+            )
+
+            //Add thumbnail is present
+            if (attachment.thumbnailUri != null) {
+                val thumbnailUri = attachment.thumbnailUri
+                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
+                val thumbnailFile = File(thumbnailLocalFilePath)
+                val thumbnailAWSFolderPath = UploadHelper.getConversationAttachmentFilePath(
+                    chatroomId,
+                    conversationId,
+                    attachment.fileType,
+                    thumbnailFile,
+                    isThumbnail = true
+                )
+                builder = builder.thumbnailUri(thumbnailUri)
+                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
+                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+            }
+
+            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
+        }
+    }
 
     private fun postedConversation(
         taggedUsers: List<TagViewData>,
@@ -1689,11 +1690,113 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun postFailedConversation(context: Context, conversation: ConversationViewData) {
-        // todo:
+        viewModelScope.launchIO {
+            val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
+            val postConversationRequest = PostConversationRequest.Builder()
+                .chatroomId(chatroomId)
+                .text(conversation.answer)
+                .shareLink(conversation.ogTags?.url)
+                .ogTags(ViewDataConverter.convertLinkOGTags(conversation.ogTags))
+                .repliedConversationId(conversation.replyConversation?.id)
+                .repliedChatroomId(conversation.replyChatroomId)
+                .attachmentCount(conversation.attachments?.size)
+                .temporaryId(conversation.temporaryId)
+                .build()
+
+            val updateTemporaryConversationRequest = UpdateTemporaryConversationRequest.Builder()
+                .conversationId(conversation.id)
+                .localSavedEpoch(conversation.localCreatedEpoch ?: System.currentTimeMillis())
+                .build()
+            lmChatClient.updateTemporaryConversation(updateTemporaryConversationRequest)
+
+            val response = lmChatClient.postConversation(postConversationRequest)
+            if (response.success) {
+                onFailedConversationPosted(
+                    context,
+                    conversation,
+                    response.data
+                )
+            }
+        }
+    }
+
+    private fun onFailedConversationPosted(
+        context: Context,
+        conversation: ConversationViewData,
+        response: PostConversationResponse?,
+    ) {
+        if (response?.conversation != null) {
+            var uploadData: Pair<WorkContinuation?, String>? = null
+            val requestList = ArrayList<GenericFileRequest>()
+            if (!conversation.attachments.isNullOrEmpty()) {
+                uploadData = uploadFilesViaWorker(
+                    context,
+                    response.id!!,
+                    conversation.attachmentCount ?: 0
+                )
+                requestList.addAll(getUploadFileRequestList(context, conversation))
+            }
+
+            postedConversation(
+                emptyList(),
+                conversation
+            )
+
+            // Start Uploading Files
+            uploadData?.first?.enqueue()
+        }
+    }
+
+    private fun getUploadFileRequestList(
+        context: Context,
+        conversation: ConversationViewData,
+    ): List<GenericFileRequest> {
+        return conversation.attachments.orEmpty().mapIndexed { index, attachment ->
+            var builder = GenericFileRequest.Builder()
+                .name(attachment.name ?: attachment.uri.lastPathSegment)
+                .fileUri(attachment.uri)
+                .fileType(attachment.type)
+                .width(attachment.width)
+                .height(attachment.height)
+                .meta(attachment.meta)
+                .index(index)
+
+            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
+            val file = File(localFilePath)
+            val serverPath = UploadHelper.getConversationAttachmentFilePath(
+                conversation.chatroomId,
+                conversation.id,
+                attachment.type,
+                file
+            )
+
+            //Add thumbnail is present
+            if (!attachment.thumbnail.isNullOrEmpty()) {
+                val thumbnailUri = Uri.parse(attachment.thumbnail)
+                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
+                val thumbnailFile = File(thumbnailLocalFilePath)
+                val thumbnailAWSFolderPath = UploadHelper.getConversationAttachmentFilePath(
+                    conversation.chatroomId,
+                    conversation.id,
+                    attachment.type,
+                    thumbnailFile,
+                    isThumbnail = true
+                )
+                builder = builder.thumbnailUri(thumbnailUri)
+                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
+                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+            }
+
+            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
+        }
     }
 
     fun deleteFailedConversation(conversationId: String) {
-        // todo:
+        val deleteConversationPermanentlyRequest = DeleteConversationPermanentlyRequest.Builder()
+            .chatroomId(getChatroom()?.id ?: "")
+            .conversationId(conversationId)
+            .build()
+        lmChatClient.deleteConversationPermanently(deleteConversationPermanentlyRequest)
     }
 
     fun updateChatroomWhileEditingTopic(
