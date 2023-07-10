@@ -180,13 +180,16 @@ object ViewDataConverter {
     /**
      * convert [Conversation] to [ConversationViewData]
      */
-    fun convertConversation(conversation: Conversation?): ConversationViewData {
+    fun convertConversation(
+        conversation: Conversation?,
+        memberViewData: MemberViewData? = null
+    ): ConversationViewData {
         if (conversation == null) {
             return ConversationViewData.Builder().build()
         }
         return ConversationViewData.Builder()
             .id(conversation.id ?: "")
-            .memberViewData(convertMember(conversation.member))
+            .memberViewData(memberViewData ?: convertMember(conversation.member))
             .createdAt(conversation.createdAt.toString())
             .answer(conversation.answer)
             .state(conversation.state)
@@ -207,7 +210,7 @@ object ViewDataConverter {
             .build()
     }
 
-    private fun convertMember(member: Member?): MemberViewData {
+    fun convertMember(member: Member?): MemberViewData {
         // todo: uid
         if (member == null) {
             return MemberViewData.Builder().build()

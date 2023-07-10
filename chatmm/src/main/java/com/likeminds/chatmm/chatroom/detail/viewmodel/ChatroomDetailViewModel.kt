@@ -9,9 +9,11 @@ import androidx.lifecycle.*
 import androidx.work.WorkContinuation
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
@@ -22,11 +24,13 @@ import com.likeminds.chatmm.utils.coroutine.launchDefault
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.file.util.FileUtil
+import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
 import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.*
+import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.ConversationChangeListener
 import com.likeminds.likemindschat.conversation.util.GetConversationCountType
@@ -381,12 +385,11 @@ class ChatroomDetailViewModel @Inject constructor(
                 return@launchIO
             }
 
-            // todo:
-//            currentMemberFromDb = lmChatClient.getMember(
-//                chatroom.communityId,
-//                chatroomId,
-//                loginPreferences.getMemberId()
-//            )
+            val getMemberRequest = GetMemberRequest.Builder()
+                .memberId(sdkPreferences.getMemberId())
+                .build()
+            currentMemberFromDb =
+                ViewDataConverter.convertMember(lmChatClient.getMember(getMemberRequest).data?.member)
 
             val chatroomViewData = ViewDataConverter.convertChatroom(
                 chatroom,
@@ -1377,7 +1380,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 postConversationRequest,
                 updatedFileUris
             )
-//            sendPostedConversationsToUI(temporaryConversation)
+            sendPostedConversationsToUI(temporaryConversation)
 
             val response = lmChatClient.postConversation(postConversationRequest)
             if (response.success) {
@@ -1474,16 +1477,28 @@ class ChatroomDetailViewModel @Inject constructor(
             null
         }
 
-        // todo: add member from db
-//        val member = memberDb.getMemberByUid(
-//            conversation.memberId,
-//            conversation.communityId,
-//            conversation.chatroomId
-//        )
-//        val memberViewData = ViewDataConverter.convertMember(member) ?: return null
-        return ViewDataConverter.convertConversation(conversation /*memberViewData*/).toBuilder()
+        val getMemberRequest = GetMemberRequest.Builder()
+            .memberId(conversation.memberId ?: "")
+            .build()
+        val member = lmChatClient.getMember(getMemberRequest).data?.member
+        val memberViewData = ViewDataConverter.convertMember(member)
+        return ViewDataConverter.convertConversation(conversation, memberViewData)
+            .toBuilder()
             .replyConversation(ViewDataConverter.convertConversation(replyConversation))
             .build()
+    }
+
+    /**
+     * Send updates to UI using live data
+     * @param conversation conversation object
+     */
+    private fun sendPostedConversationsToUI(conversation: ConversationViewData?) {
+        if (conversation == null) {
+            return
+        }
+        viewModelScope.launchDefault {
+            conversationEventChannel.send(ConversationEvent.PostedConversation(conversation))
+        }
     }
 
     private fun onConversationPosted(
@@ -1496,7 +1511,104 @@ class ChatroomDetailViewModel @Inject constructor(
         replyConversationId: String?,
         replyChatRoomId: String?
     ) {
+        if (response?.conversation != null) {
+            var uploadData: Pair<WorkContinuation?, String>? = null
+            val requestList = ArrayList<GenericFileRequest>()
+            if (!updatedFileUris.isNullOrEmpty()) {
+                uploadData = uploadFilesViaWorker(context, response.id!!, updatedFileUris.size)
+                // todo
+//                requestList.addAll(
+//                    getUploadFileRequestList(
+//                        context,
+//                        updatedFileUris,
+//                        chatroomDetail.chatroom?.id,
+//                        response.id
+//                    )
+//                )
+            }
+            postedConversation(
+                taggedUsers,
+                tempConversation,
+                replyChatData,
+                replyConversationId,
+                replyChatRoomId
+            )
+            // Start Uploading Files
+            uploadData?.first?.enqueue()
+        }
+    }
 
+//    private fun getUploadFileRequestList(
+//        context: Context,
+//        fileUris: List<SingleUriData>,
+//        chatroomId: String?,
+//        conversationId: String?,
+//    ): List<GenericFileRequest> {
+//        return fileUris.mapIndexed { index, attachment ->
+//            val attachmentMeta = AttachmentMetaViewData.Builder()
+//                .duration(attachment.duration)
+//                .numberOfPage(attachment.pdfPageCount)
+//                .size(attachment.size)
+//                .build()
+//            var builder = GenericFileRequest.Builder()
+//                .name(attachment.mediaName)
+//                .fileUri(attachment.uri)
+//                .fileType(attachment.fileType)
+//                .width(attachment.width)
+//                .height(attachment.height)
+//                .meta(attachmentMeta)
+//                .index(index)
+//
+//            val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
+//            val file = File(localFilePath)
+//            val serverPath = FileReceiver.getConversationAttachmentFilePath(
+//                chatroomId,
+//                conversationId,
+//                attachment.fileType,
+//                file
+//            )
+//
+//            //Add thumbnail is present
+//            if (attachment.thumbnailUri != null) {
+//                val thumbnailUri = attachment.thumbnailUri
+//                val thumbnailLocalFilePath = FileUtil.getRealPath(context, thumbnailUri).path
+//                val thumbnailFile = File(thumbnailLocalFilePath)
+//                val thumbnailAWSFolderPath = FileReceiver.getConversationAttachmentFilePath(
+//                    chatroomId,
+//                    conversationId,
+//                    attachment.fileType,
+//                    thumbnailFile,
+//                    isThumbnail = true
+//                )
+//                builder = builder.thumbnailUri(thumbnailUri)
+//                    .thumbnailLocalFilePath(thumbnailLocalFilePath)
+//                    .thumbnailAWSFolderPath(thumbnailAWSFolderPath)
+//            }
+//
+//            builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
+//        }
+//    }
+
+    private fun postedConversation(
+        taggedUsers: List<TagViewData>,
+        conversationViewData: ConversationViewData?,
+        replyChatData: ChatReplyViewData? = null,
+        replyConversationId: String? = null,
+        replyChatRoomId: String? = null
+    ) {
+        if (replyChatData != null) {
+            sendMessageReplyEvent(
+                conversationViewData,
+                replyChatData.repliedMemberId,
+                replyChatData.repliedMemberState,
+                replyConversationId ?: replyChatRoomId,
+                replyChatData.type
+            )
+        }
+        sendChatroomResponded(taggedUsers, conversationViewData)
+        if (ChatroomUtil.getConversationType(conversationViewData) == VOICE_NOTE) {
+            sendVoiceNoteSent(conversationViewData?.id)
+        }
     }
 
     fun createRetryConversationMediaWorker(
@@ -1508,8 +1620,12 @@ class ChatroomDetailViewModel @Inject constructor(
             return
         }
         val uploadData = uploadFilesViaWorker(context, conversationId, attachmentCount)
-        // todo: update uuid
-//        chatroomRepository.updateConversationUploadWorkerUUID(conversationId, uploadData.second)
+        val updateConversationUploadWorkerUUIDRequest =
+            UpdateConversationUploadWorkerUUIDRequest.Builder()
+                .conversationId(conversationId)
+                .uuid(uploadData.second)
+                .build()
+        lmChatClient.updateConversationUploadWorkerUUID(updateConversationUploadWorkerUUIDRequest)
         uploadData.first.enqueue()
     }
 
@@ -1541,13 +1657,31 @@ class ChatroomDetailViewModel @Inject constructor(
         conversation: ConversationViewData,
     ) {
         viewModelScope.launchIO {
-            // todo:
-//            val request = EditConversationRequest.Builder()
-//                .conversationId(conversation.id)
-//                .text(text)
-//                .shareLink(shareLink)
-//                .build()
+            val request = EditConversationRequest.Builder()
+                .conversationId(conversation.id)
+                .text(text)
+                .shareLink(shareLink)
+                .build()
+
+            val response = lmChatClient.editConversation(request)
+            if (response.success) {
+                postedEditedConversation(text, conversation)
+                sendMessageEditedEvent(conversation)
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.EditConversation(response.errorMessage))
+            }
         }
+    }
+
+    private fun postedEditedConversation(
+        text: String,
+        conversation: ConversationViewData,
+    ) {
+        val updatedConversation = conversation.toBuilder()
+            .answer(text)
+            .isEdited(true)
+            .build()
+        sendConversationUpdatesToUI(listOf(updatedConversation))
     }
 
     fun resendFailedConversation(context: Context, conversation: ConversationViewData) {
@@ -1642,50 +1776,35 @@ class ChatroomDetailViewModel @Inject constructor(
         if (extras == null) {
             return
         }
-//        val chatRoom = getChatroom()
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHAT_ROOM_OPENED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatRoom?.id)
-//                put("chatroom_type", chatRoom?.getTypeName())
-//                put("chatroom_name", chatRoom?.header)
-//                put("community_id", chatRoom?.communityId)
-//                put("source", extras.source)
-//                if (!extras.sourceChatroomId.isNullOrEmpty()) {
-//                    put("source_chatroom_id", extras.sourceChatroomId)
-//                }
-//                if (!extras.sourceCommunityId.isNullOrEmpty()) {
-//                    put("source_community_id", extras.sourceCommunityId)
-//                }
-//                if (extras.openedFromLink == true) {
-//                    put("link", extras.sourceLinkOrRoute)
-//                }
-//                if (extras.fromNotification) {
-//                    put("route", extras.sourceLinkOrRoute)
-//                }
-//            }
-//        )
-//        if (extras.openedFromLink == true) {
-//            LMAnalytics.track(LMAnalytics.Keys.CHATROOM_LINK_CLICKED,
-//                JSONObject().apply {
-//                    put("chatroom_id", chatRoom?.id)
-//                    put("chatroom_type", chatRoom?.getTypeName())
-//                    put("community_id", chatRoom?.communityId)
-//                    if (extras.source.equals(ChatroomDetailFragment.SOURCE_PREVIEW_ACTION)) {
-//                        put("source", "internal_link")
-//                    } else {
-//                        put("source", extras.source)
-//                        put("link", extras.sourceLinkOrRoute)
-//                    }
-//                    if (!extras.sourceChatroomId.isNullOrEmpty()) {
-//                        put("source_chatroom_id", extras.sourceChatroomId)
-//                    }
-//                    if (!extras.sourceCommunityId.isNullOrEmpty()) {
-//                        put("source_community_id", extras.sourceCommunityId)
-//                    }
-//                }
-//            )
-//        }
+        val chatroom = getChatroom()
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_OPENED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroom?.id,
+                LMAnalytics.Keys.CHATROOM_TYPE to chatroom?.getTypeName(),
+                LMAnalytics.Keys.CHATROOM_NAME to chatroom?.header,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroom?.communityId,
+                LMAnalytics.Keys.SOURCE to extras.source,
+                "source_chatroom_id" to extras.sourceChatroomId,
+                "source_community_id" to extras.sourceCommunityId,
+                "link" to extras.sourceLinkOrRoute,
+                "route" to extras.sourceLinkOrRoute,
+            )
+        )
+        if (extras.openedFromLink == true) {
+            LMAnalytics.track(
+                LMAnalytics.Events.CHATROOM_LINK_CLICKED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom?.id,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom?.getTypeName(),
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom?.communityId,
+                    LMAnalytics.Keys.SOURCE to extras.source,
+                    "source_chatroom_id" to extras.sourceChatroomId,
+                    "source_community_id" to extras.sourceCommunityId,
+                    "link" to extras.sourceLinkOrRoute
+                )
+            )
+        }
     }
 
     /**
@@ -1693,14 +1812,16 @@ class ChatroomDetailViewModel @Inject constructor(
      * @param source Source of the event
      */
     private fun sendChatroomUnfollowed(source: String) {
-        // todo:
-//        getChatroom()?.let { chatroomViewData ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_UN_FOLLOWED, JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityViewData?.id)
-//                put("source", source)
-//            })
-//        }
+        getChatroom()?.let { chatroomViewData ->
+            LMAnalytics.track(
+                LMAnalytics.Events.CHAT_ROOM_UN_FOLLOWED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                    LMAnalytics.Keys.SOURCE to source,
+                )
+            )
+        }
     }
 
     /**
@@ -1709,16 +1830,17 @@ class ChatroomDetailViewModel @Inject constructor(
      */
     private fun sendChatroomFollowed(source: String) {
         getChatroom()?.let { chatroomViewData ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_FOLLOWED, JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityViewData?.id)
-//                put("source", source)
-//                put(
-//                    "member_state", MemberState.getMemberState(
-//                        chatroomViewData.memberState
-//                    )
-//                )
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.CHAT_ROOM_FOLLOWED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                    LMAnalytics.Keys.SOURCE to source,
+                    "member_state" to MemberState.getMemberState(
+                        chatroomViewData.state
+                    )
+                )
+            )
         }
     }
 
@@ -1727,15 +1849,17 @@ class ChatroomDetailViewModel @Inject constructor(
      * @param isChatroomMuted Chatroom is muted or not
      */
     fun sendChatroomMuted(isChatroomMuted: Boolean) {
-//        LMAnalytics.track(
-//            if (isChatroomMuted) {
-//                LMAnalytics.Keys.CHATROOM_MUTED
-//            } else {
-//                LMAnalytics.Keys.CHATROOM_UNMUTED
-//            }, JSONObject().apply {
-//                put("chatroom_name", getChatroom()?.header)
-//                put("community_id", getChatroom()?.id)
-//            })
+        LMAnalytics.track(
+            if (isChatroomMuted) {
+                LMAnalytics.Events.CHATROOM_MUTED
+            } else {
+                LMAnalytics.Events.CHATROOM_UNMUTED
+            },
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_NAME to getChatroom()?.header,
+                LMAnalytics.Keys.COMMUNITY_ID to getChatroom()?.communityId
+            )
+        )
     }
 
     /**
@@ -1743,11 +1867,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendVoiceNoteRecorded() {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_RECORDED, JSONObject().apply {
-//                put("chatroom_id", chatroom.id)
-//                put("community_id", chatroom.communityId)
-//                put("chatroom_type", chatroom.type)
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.VOICE_NOTE_RECORDED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom.type.toString()
+                )
+            )
         }
     }
 
@@ -1756,11 +1883,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendVoiceNotePreviewed() {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_PREVIEWED, JSONObject().apply {
-//                put("chatroom_id", chatroom.id)
-//                put("community_id", chatroom.communityId)
-//                put("chatroom_type", chatroom.type)
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.VOICE_NOTE_PREVIEWED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom.type.toString()
+                )
+            )
         }
     }
 
@@ -1769,11 +1899,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendVoiceNoteCanceled() {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_CANCELED, JSONObject().apply {
-//                put("chatroom_id", chatroom.id)
-//                put("community_id", chatroom.communityId)
-//                put("chatroom_type", chatroom.type)
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.VOICE_NOTE_CANCELED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom.type.toString()
+                )
+            )
         }
     }
 
@@ -1783,12 +1916,15 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun sendVoiceNoteSent(conversationId: String?) {
         if (conversationId.isNullOrEmpty()) return
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_SENT, JSONObject().apply {
-//                put("chatroom_id", chatroom.id)
-//                put("community_id", chatroom.communityId)
-//                put("chatroom_type", chatroom.type)
-//                put("message_id", conversationId)
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.VOICE_NOTE_SENT,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom.type.toString(),
+                    LMAnalytics.Keys.MESSAGE_ID to conversationId
+                )
+            )
         }
     }
 
@@ -1797,12 +1933,15 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendVoiceNotePlayed(conversationId: String) {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_VOICE_NOTE_PLAYED, JSONObject().apply {
-//                put("chatroom_id", chatroom.id)
-//                put("community_id", chatroom.communityId)
-//                put("chatroom_type", chatroom.type)
-//                put("message_id", conversationId)
-//            })
+            LMAnalytics.track(
+                LMAnalytics.Events.VOICE_NOTE_PLAYED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.CHATROOM_TYPE to chatroom.type.toString(),
+                    LMAnalytics.Keys.MESSAGE_ID to conversationId
+                )
+            )
         }
     }
 
@@ -1811,12 +1950,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendAudioPlayedEvent(messageId: String) {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_AUDIO_PLAYED,
-//                "chatroom_id" to chatroom.id,
-//                "community_id" to chatroom.communityId,
-//                "message_id" to messageId,
-//            )
+            LMAnalytics.track(
+                LMAnalytics.Events.AUDIO_PLAYED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.MESSAGE_ID to messageId
+                )
+            )
         }
     }
 
@@ -1825,15 +1966,17 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendChatLinkClickedEvent(messageId: String?, url: String) {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_CHAT_LINK_CLICKED,
-//                "chatroom_id" to chatroom.id,
-//                "community_id" to chatroom.communityId,
-//                "user_id" to sdkPreferences.getMemberId(),
-//                "message_id" to messageId,
-//                "url" to url,
-//                "type" to "link"
-//            )
+            LMAnalytics.track(
+                LMAnalytics.Events.CHAT_LINK_CLICKED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.USER_ID to sdkPreferences.getMemberId(),
+                    LMAnalytics.Keys.MESSAGE_ID to messageId,
+                    "url" to url,
+                    "type" to "link",
+                )
+            )
         }
     }
 
@@ -1842,13 +1985,15 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     private fun sendMessageDeletedEvent(conversations: List<ConversationViewData>) {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_MESSAGE_DELETED,
-//                "type" to ChatroomUtil.getConversationType(conversations.firstOrNull()),
-//                "chatroom_id" to chatroom.id,
-//                "community_id" to chatroom.communityId,
-//                "message_ids" to conversations.joinToString { it.id }
-//            )
+            LMAnalytics.track(
+                LMAnalytics.Events.MESSAGE_DELETED,
+                mapOf(
+                    "type" to ChatroomUtil.getConversationType(conversations.firstOrNull()),
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    "message_ids" to conversations.joinToString { it.id }
+                )
+            )
         }
     }
 
@@ -1857,12 +2002,14 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun sendMessageCopyEvent(message: String) {
         getChatroomViewData()?.let { chatroom ->
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_MESSAGE_COPIED,
-//                "chatroom_id" to chatroom.id,
-//                "community_id" to chatroom.communityId,
-//                "messages" to message
-//            )
+            LMAnalytics.track(
+                LMAnalytics.Events.MESSAGE_COPIED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    "messages" to message
+                )
+            )
         }
     }
 
@@ -1874,35 +2021,113 @@ class ChatroomDetailViewModel @Inject constructor(
         conversationId: String,
         topic: String,
     ) {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_SET_CHATROOM_TOPIC, JSONObject().apply {
-//            put("chatroom_id", chatroomId)
-//            put("conversationId", conversationId)
-//            put("topic", topic)
-//        })
+        LMAnalytics.track(
+            LMAnalytics.Events.SET_CHATROOM_TOPIC,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                "conversationId" to conversationId,
+                "topic" to topic
+            )
+        )
     }
 
     /**
      * Triggers when the current user leave the current chatroom
      */
     private fun sendChatRoomLeftEvent() {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_LEFT, JSONObject().apply {
-//            put("community_id", chatroomDetail.chatroom?.communityId)
-//            put("chatroom_id", chatroomDetail.chatroom?.id)
-//            put("chatroom_name", chatroomDetail.chatroom?.header)
-//            put("chatroom_type", chatroomDetail.chatroom?.getTypeName())
-//            put("chatroom_category", "secret")
-//        })
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_LEFT,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomDetail.chatroom?.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomDetail.chatroom?.communityId,
+                LMAnalytics.Keys.CHATROOM_NAME to chatroomDetail.chatroom?.header,
+                LMAnalytics.Keys.CHATROOM_TYPE to chatroomDetail.chatroom?.getTypeName(),
+                "chatroom_category" to "secret",
+            )
+        )
     }
 
     /**
      * Triggers when the current user starts sharing the chatroom
      */
     fun sendChatroomShared() {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHAT_ROOM_SHARED, JSONObject().apply {
-//            put("chatroom_id", getChatroom()?.id)
-//            put("chatroom_name", getChatroom()?.header)
-//            put("community_id", getChatroom()?.communityId)
-//            put("community_name", getChatroom()?.communityName)
-//        })
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_SHARED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to getChatroom()?.id,
+                LMAnalytics.Keys.COMMUNITY_ID to getChatroom()?.communityId,
+                LMAnalytics.Keys.CHATROOM_NAME to getChatroom()?.header,
+                LMAnalytics.Keys.COMMUNITY_NAME to getChatroom()?.communityName,
+            )
+        )
+    }
+
+    /**
+     * Triggers when the user edits a message
+     **/
+    private fun sendMessageEditedEvent(conversation: ConversationViewData?) {
+        getChatroomViewData()?.let { chatroom ->
+            LMAnalytics.track(
+                LMAnalytics.Events.MESSAGE_EDITED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.MESSAGE_ID to conversation?.id
+                )
+            )
+        }
+    }
+
+    /**
+     * Triggers when the user replies to message
+     **/
+    private fun sendMessageReplyEvent(
+        conversation: ConversationViewData?,
+        repliedMemberId: String?,
+        repliedMemberState: String?,
+        repliedMessageId: String?,
+        type: String?
+    ) {
+        getChatroomViewData()?.let { chatroom ->
+            LMAnalytics.track(
+                LMAnalytics.Events.MESSAGE_REPLY,
+                mapOf(
+                    "message_type" to ChatroomUtil.getConversationType(conversation),
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    "replied_to_member_id" to repliedMemberId,
+                    "replied_to_member_state" to repliedMemberState,
+                    "replied_to_message_id" to repliedMessageId,
+                    "type" to type
+                )
+            )
+        }
+    }
+
+    /**
+     * Triggers when the current user sends a conversation in the current chatroom
+     * @param taggedUsers List of all the tagged users present in the sent conversation
+     * @param conversation Conversation object
+     */
+    private fun sendChatroomResponded(
+        taggedUsers: List<TagViewData>,
+        conversation: ConversationViewData?,
+    ) {
+        if (conversation == null) {
+            return
+        }
+        LMAnalytics.track(
+            LMAnalytics.Events.CHATROOM_RESPONDED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_NAME to getChatroom()?.header,
+                LMAnalytics.Keys.CHATROOM_TYPE to getChatroom()?.getTypeName(),
+                LMAnalytics.Keys.COMMUNITY_ID to getChatroom()?.communityId,
+                LMAnalytics.Keys.SOURCE to "chatroom",
+                "message_type" to ChatroomUtil.getConversationType(conversation),
+                "count_tagged_user" to taggedUsers.size.toString(),
+                "name_tagged_user" to taggedUsers.joinToString { it.name },
+                "member_state" to MemberState.getMemberState(currentMemberDataFromMemberState?.state),
+            )
+        )
     }
 }

@@ -184,7 +184,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                     adapterListener.onLongPressConversation(
                         conversation,
                         itemPosition,
-                        LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                        LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                     )
                 } else {
                     val imageUri = conversation.attachments?.get(0)?.uri
@@ -218,7 +218,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     conversation,
                     itemPosition,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
         }

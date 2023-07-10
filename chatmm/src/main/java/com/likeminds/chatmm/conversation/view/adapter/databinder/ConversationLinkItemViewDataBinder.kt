@@ -106,7 +106,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
                     chatroomDetailAdapterListener.onLongPressConversation(
                         data,
                         position,
-                        LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                        LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                     )
                 } else {
                     val url = data.ogTags?.url ?: return@setOnClickListener
@@ -126,7 +126,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
                 chatroomDetailAdapterListener.onLongPressConversation(
                     data,
                     position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
 

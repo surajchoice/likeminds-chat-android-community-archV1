@@ -79,7 +79,7 @@ class AudioView(
         chatroomAdapterListener.onLongPressConversation(
             conversation,
             itemPosition,
-            LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+            LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
         )
     }
 

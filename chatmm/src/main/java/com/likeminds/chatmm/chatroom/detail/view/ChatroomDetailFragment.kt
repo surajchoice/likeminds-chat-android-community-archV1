@@ -1751,10 +1751,10 @@ class ChatroomDetailFragment :
     }
 
     private fun fadeInTopChatroomView() {
+        if (viewModel.isDmChatroom()) {
+            return
+        }
         binding.apply {
-            if (viewModel.isDmChatroom()) {
-                return
-            }
             fadeInTopChatroomEachView(viewTopBackground)
             fadeInTopChatroomEachView(memberImage)
             fadeInTopChatroomEachView(tvChatroomMemberName)
@@ -1764,19 +1764,23 @@ class ChatroomDetailFragment :
                 fadeInTopChatroomEachView(ivDateDot)
                 fadeInTopChatroomEachView(tvChatroomDate)
             } else {
+                Log.d(TAG, "fadeInTopChatroomView: $topic")
                 when {
                     topic.isDeleted() -> {
+                        Log.d(TAG, "1: $topic")
                         fadeInTopChatroomEachView(ivDateDot)
                         fadeInTopChatroomEachView(tvChatroomDate)
                     }
 
                     topic.ogTags != null -> {
+                        Log.d(TAG, "2: $topic")
                         if (topic.ogTags.image != null) {
                             fadeInTopChatroomEachView(topicImage)
                         }
                     }
 
-                    topic.attachmentCount!! > 0 -> {
+                    topic.attachmentCount > 0 -> {
+                        Log.d(TAG, "3: $topic")
                         when (topic.attachments?.firstOrNull()?.type) {
                             IMAGE -> {
                                 fadeInTopChatroomEachView(binding.topicImage)
@@ -1890,26 +1894,26 @@ class ChatroomDetailFragment :
      * @param chatroomViewData Chatroom object
      */
     private fun initTopChatroomView(chatroomViewData: ChatroomViewData) {
-        binding.apply {
-            if (viewModel.isDmChatroom()) {
-                showTopView(false)
-                return
-            }
+        if (viewModel.isDmChatroom()) {
+            showTopView(false)
+            return
+        }
 
+        binding.apply {
             val topic = chatroomViewData.topic
             if (topic == null) {
                 setTopViewToChatroom(chatroomViewData)
             } else {
-                tvChatroomMemberName.apply {
-                    text = getString(R.string.current_topic_text)
-                    setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
-                }
+                tvChatroomMemberName.text = getString(R.string.current_topic_text)
+                tvChatroomMemberName.setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
                 when {
                     topic.isDeleted() -> {
+                        Log.d("TAG", "1--------")
                         setTopViewToChatroom(chatroomViewData)
                     }
 
                     topic.ogTags != null -> {
+                        Log.d("TAG", "2--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         if (topic.ogTags.image != null) {
@@ -1924,6 +1928,7 @@ class ChatroomDetailFragment :
                     }
 
                     chatroomViewData.topic.attachmentCount > 0 -> {
+                        Log.d("TAG", "3--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         val answer =
@@ -1955,6 +1960,7 @@ class ChatroomDetailFragment :
                     }
 
                     topic.state == STATE_POLL -> {
+                        Log.d("TAG", "4--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         val answer = ChatroomUtil.getTopicMediaData(requireContext(), topic)
@@ -1962,6 +1968,7 @@ class ChatroomDetailFragment :
                     }
 
                     else -> {
+                        Log.d("TAG", "5--------")
                         setTopViewMemberImage(topic.memberViewData)
                         MemberTaggingDecoder.decode(
                             tvChatroom,
@@ -1984,10 +1991,15 @@ class ChatroomDetailFragment :
 
     private fun setTopViewMemberImage(member: MemberViewData?) {
         if (viewModel.isDmChatroom()) {
+            Log.d("TAG", "isDmChatroom ${viewModel.isDmChatroom()}")
             showTopView(false)
         } else {
             showTopView(true)
             if (chatroomScrollListener.shouldShowTopChatRoom()) {
+                Log.d(
+                    "TAG",
+                    "shouldShowTopChatRoom ${chatroomScrollListener.shouldShowTopChatRoom()}"
+                )
                 binding.memberImage.visibility = View.VISIBLE
                 MemberImageUtil.setImage(
                     member?.imageUrl,
@@ -2021,13 +2033,11 @@ class ChatroomDetailFragment :
                     memberImage
                 )
 
-                tvChatroomMemberName.apply {
-                    text = creator.name
-                    setTypeface(
-                        tvChatroomMemberName.typeface,
-                        Typeface.NORMAL
-                    )
-                }
+                tvChatroomMemberName.text = creator.name
+                tvChatroomMemberName.setTypeface(
+                    tvChatroomMemberName.typeface,
+                    Typeface.NORMAL
+                )
 
                 tvChatroomDate.text = chatroom.cardCreationTime
                 MemberTaggingDecoder.decode(
@@ -2069,7 +2079,7 @@ class ChatroomDetailFragment :
                         }
                     }
 
-                    chatroomViewData.topic.attachmentCount!! > 0 -> {
+                    chatroomViewData.topic.attachmentCount > 0 -> {
                         when (topic.attachments?.firstOrNull()?.type) {
                             PDF, AUDIO, VOICE_NOTE -> {
                                 topicImage.visibility = View.GONE
@@ -2262,6 +2272,8 @@ class ChatroomDetailFragment :
     override fun observeData() {
         super.observeData()
         observeInitialData()
+//        observePaginatedData()
+        observeScrolledData()
         observeConversations()
         observeChatroomActions()
         observeLinkOgTags()
@@ -2308,6 +2320,102 @@ class ChatroomDetailFragment :
             checkForExternalSharedContent()
             handleDmChatrooms()
         }
+    }
+
+    /**
+     * Observes for paginated data due to gesture scrolling by the user
+     */
+    private fun observePaginatedData() {
+        viewModel.paginatedData.observe(viewLifecycleOwner) { data ->
+            when (data.scrollState) {
+                SCROLL_UP -> {
+                    chatroomDetailAdapter.addAll(0, data.data)
+                    binding.rvChatroom.post {
+                        chatroomScrollListener.topLoadingDone()
+                        updateChatRoomPosition()
+                        if (data.extremeScrollTo == SCROLL_UP) {
+                            fadeOutTopChatroomView()
+                            scrollToPosition(SCROLL_UP)
+                        }
+                        highlightConversation(data.repliedConversationId)
+                        highlightChatRoom(data.repliedChatRoomId)
+                        removeChatroomItem()
+                    }
+                }
+
+                SCROLL_DOWN -> {
+                    val indexToAdd = getIndexOfAnyGraphicItem()
+                    if (indexToAdd.isValidIndex()) {
+                        chatroomDetailAdapter.addAll(indexToAdd, data.data)
+                    } else {
+                        chatroomDetailAdapter.addAll(data.data)
+                    }
+                    binding.rvChatroom.post {
+                        chatroomScrollListener.bottomLoadingDone()
+                        if (data.extremeScrollTo == SCROLL_DOWN) {
+                            scrollToPosition(SCROLL_DOWN)
+                        }
+                        removeChatroomItem()
+                    }
+                }
+            }
+            getUnseenConversationsAndShow(data.data, false)
+        }
+    }
+
+    /**
+     * Observes for scrolled data which triggers on manual click scroll, like header click, scroll button click, etc
+     */
+    private fun observeScrolledData() {
+        viewModel.scrolledData.observe(viewLifecycleOwner) { data ->
+            val conversations = maintainAudioState(data.data)
+            chatroomDetailAdapter.setItemsViaDiffUtilForChatroomDetail(conversations)
+            when (data.scrollState) {
+                SCROLL_UP -> {
+                    chatroomScrollListener.topLoadingDone()
+                    updateChatRoomPosition()
+                    if (!highlightConversation(data.repliedConversationId)) {
+                        scrollToPosition(SCROLL_UP)
+                        fadeOutTopChatroomView()
+                        showUnseenCount(true)
+                    }
+                    highlightChatRoom(data.repliedChatRoomId)
+                    removeChatroomItem()
+                }
+
+                SCROLL_DOWN -> {
+                    chatroomScrollListener.bottomLoadingDone()
+                    scrollToPosition(SCROLL_DOWN)
+                    updateChatRoomPosition(-1)
+                    fadeInTopChatroomView()
+                    removeChatroomItem()
+                }
+            }
+        }
+    }
+
+    private fun maintainAudioState(data: List<BaseViewType>): List<BaseViewType> {
+        val conversations = data.toMutableList()
+        val playedItemIndex = conversations.indexOfFirst {
+            it is ConversationViewData && it.id == localParentConversationId
+        }
+        if (playedItemIndex.isValidIndex()) {
+            val playedItem = conversations[playedItemIndex]
+            conversations[playedItemIndex] = (playedItem as ConversationViewData)
+                .toBuilder()
+                .attachments(
+                    playedItem.attachments?.mapIndexed { index, attachment ->
+                        if (index == localChildPosition) {
+                            attachment.toBuilder()
+                                .mediaState(if (mediaAudioService?.isPlaying() == true) MEDIA_ACTION_PLAY else MEDIA_ACTION_PAUSE)
+                                .build()
+                        } else {
+                            attachment
+                        }
+                    } as ArrayList<AttachmentViewData>?
+                ).build()
+        }
+        return conversations
     }
 
     /**
@@ -2522,7 +2630,6 @@ class ChatroomDetailFragment :
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
             if (viewModel.isDmChatroom()) {
-                Log.d(TAG, "updateHeader: ")
                 val member = viewModel.getOtherDmMember() ?: return
                 tvToolbarTitle.text = member.name
                 ivMemberImage.show()
@@ -2535,7 +2642,6 @@ class ChatroomDetailFragment :
                 )
                 tvToolbarSubTitle.hide()
             } else {
-                Log.d(TAG, "updateHeader: -1")
                 tvToolbarTitle.text = header
                 ivMemberImage.hide()
                 tvToolbarSubTitle.show()

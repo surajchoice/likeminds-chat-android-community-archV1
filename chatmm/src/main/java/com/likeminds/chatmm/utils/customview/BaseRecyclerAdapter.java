@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailDiffUtilCallback;
 import com.likeminds.chatmm.homefeed.util.HomeFeedDiffUtilCallback;
 import com.likeminds.chatmm.utils.model.BaseViewType;
 import com.likeminds.chatmm.utils.model.ViewType;
@@ -104,6 +105,14 @@ public abstract class BaseRecyclerAdapter<T extends BaseViewType> extends Recycl
     public void setItemsViaDiffUtilForHome(List<T> items) {
         HomeFeedDiffUtilCallback homeFeedDiffUtilCallback = new HomeFeedDiffUtilCallback(dataList, items);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(homeFeedDiffUtilCallback);
+        dataList.clear();
+        dataList.addAll(items);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+    public void setItemsViaDiffUtilForChatroomDetail(List<T> items) {
+        ChatroomDetailDiffUtilCallback diffUtilCallback = new ChatroomDetailDiffUtilCallback(dataList, items);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         dataList.clear();
         dataList.addAll(items);
         diffResult.dispatchUpdatesTo(this);

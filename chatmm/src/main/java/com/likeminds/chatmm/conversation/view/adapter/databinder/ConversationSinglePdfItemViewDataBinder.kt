@@ -231,7 +231,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     conversation,
                     itemPosition,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
         }
@@ -248,7 +248,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     conversation,
                     itemPosition,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                 )
             } else {
                 val uri = conversation.attachments?.get(0)?.uri ?: return

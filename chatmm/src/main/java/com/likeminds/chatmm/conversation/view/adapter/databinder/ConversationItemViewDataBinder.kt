@@ -173,7 +173,7 @@ internal class ConversationItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     data,
                     position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
         }

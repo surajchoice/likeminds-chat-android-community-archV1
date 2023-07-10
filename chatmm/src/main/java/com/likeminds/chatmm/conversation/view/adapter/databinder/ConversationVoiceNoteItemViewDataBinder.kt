@@ -285,7 +285,7 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     conversation,
                     position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
 
@@ -328,7 +328,7 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
                 adapterListener.onLongPressConversation(
                     conversation,
                     position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                 )
                 return true
             }
@@ -336,7 +336,7 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
             adapterListener.onLongPressConversation(
                 conversation,
                 position,
-                LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
             )
             return true
         }

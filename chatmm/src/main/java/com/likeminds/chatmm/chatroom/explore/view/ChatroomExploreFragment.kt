@@ -1,12 +1,19 @@
 package com.likeminds.chatmm.chatroom.explore.view
 
+import android.app.Activity
 import android.view.Gravity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.likeminds.chatmm.LMAnalytics.Source.COMMUNITY_FEED
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailResultExtras
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment.Companion.ARG_CHATROOM_DETAIL_RESULT_EXTRAS
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapter
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ExploreClickListener
@@ -43,29 +50,29 @@ class ChatroomExploreFragment :
     }
 
     //Launcher to start Activity for result
-//    private val chatroomUpdateLauncher =
-//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//            if (result.resultCode == Activity.RESULT_OK) {
-//                result.data?.extras?.let { bundle ->
-//                    val collabcardDetailResultExtras =
-//                        bundle.getParcelable<CollabcardDetailResultExtras>(
-//                            ARG_COLLABCARD_DETAIL_RESULT_EXTRAS
-//                        )
-//                    if (collabcardDetailResultExtras != null) {
-//                        if (collabcardDetailResultExtras.isCollabcardDeleted == true) {
-//                            deleteCollabcard(collabcardDetailResultExtras.collabcardId)
-//                        } else {
-//                            if (collabcardDetailResultExtras.isCollabcardMutedChanged == true
-//                                || collabcardDetailResultExtras.isCollabcardFollowChanged == true
-//                                || collabcardDetailResultExtras.isCollabcardNameChanged == true
-//                            ) {
-//                                updateCollabcardDetails(collabcardDetailResultExtras)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+    private val chatroomUpdateLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.extras?.let { bundle ->
+                    val chatroomDetailResultExtras =
+                        bundle.getParcelable<ChatroomDetailResultExtras>(
+                            ARG_CHATROOM_DETAIL_RESULT_EXTRAS
+                        )
+                    if (chatroomDetailResultExtras != null) {
+                        if (chatroomDetailResultExtras.isChatroomDeleted == true) {
+                            deleteChatroom(chatroomDetailResultExtras.chatroomId)
+                        } else {
+                            if (chatroomDetailResultExtras.isChatroomMutedChanged == true
+                                || chatroomDetailResultExtras.isChatroomFollowChanged == true
+                                || chatroomDetailResultExtras.isChatroomNameChanged == true
+                            ) {
+                                updateChatroomDetails(chatroomDetailResultExtras)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     override fun getViewModelClass(): Class<ExploreViewModel> {
         return ExploreViewModel::class.java
@@ -242,33 +249,92 @@ class ChatroomExploreFragment :
         }
     }
 
+    private fun deleteChatroom(chatroomId: String?) {
+        if (chatroomId.isNullOrEmpty()) return
+        var positionToDelete = -1
+        for ((position, baseViewType) in chatroomExploreAdapter.items().withIndex()) {
+            if (getChatroomExploreViewData(baseViewType) == null) {
+                continue
+            }
+            val exploreViewData = baseViewType as ExploreViewData
+            if (exploreViewData.id == chatroomId) {
+                positionToDelete = position
+                break
+            }
+        }
+        if (positionToDelete >= 0 && positionToDelete < chatroomExploreAdapter.itemCount) {
+            chatroomExploreAdapter.removeIndex(positionToDelete)
+        }
+    }
+
+    private fun updateChatroomDetails(chatroomDetailResultExtras: ChatroomDetailResultExtras) {
+        for ((position, baseViewType) in chatroomExploreAdapter.items().withIndex()) {
+            if (getChatroomExploreViewData(baseViewType) == null) {
+                continue
+            }
+            val exploreViewData = baseViewType as ExploreViewData
+            if (exploreViewData.id == chatroomDetailResultExtras.chatroomId) {
+                var chatroomViewDataBuilder = exploreViewData.chatroomViewData?.toBuilder()
+                if (chatroomDetailResultExtras.isChatroomMutedChanged == true) {
+                    chatroomViewDataBuilder =
+                        chatroomViewDataBuilder?.muteStatus(
+                            chatroomDetailResultExtras.updatedMuteStatus ?: false
+                        )
+                }
+                if (chatroomDetailResultExtras.isChatroomFollowChanged == true) {
+                    chatroomViewDataBuilder =
+                        chatroomViewDataBuilder?.followStatus(
+                            chatroomDetailResultExtras.updatedFollowStatus ?: false
+                        )
+                }
+                if (chatroomDetailResultExtras.isChatroomNameChanged == true) {
+                    chatroomViewDataBuilder =
+                        chatroomViewDataBuilder?.header(chatroomDetailResultExtras.updatedChatroomName)
+                }
+
+                chatroomExploreAdapter.update(
+                    position, exploreViewData.toBuilder().chatroomViewData(
+                        chatroomViewDataBuilder?.build()
+                    ).build()
+                )
+                break
+            }
+        }
+    }
+
+    private fun getChatroomExploreViewData(baseViewType: BaseViewType?): ExploreViewData? {
+        if (baseViewType !is ExploreViewData) {
+            return null
+        }
+        return baseViewType
+    }
+
     //Handles chatroom click and show chatroom detail screen
     override fun onChatroomClick(exploreViewData: ExploreViewData, position: Int) {
-        // todo: implement
-//        val collabcardViewData = exploreViewData.collabcardViewData ?: return
-//
-//        //Update External seen
-//        if (exploreViewData.externalSeen == false) {
-//            binding.rvExplore.post {
-//                if (position >= 0 && position < collabcardExploreAdapter.itemCount) {
-//                    collabcardExploreAdapter.update(
-//                        position,
-//                        exploreViewData.toBuilder().externalSeen(true).build()
-//                    )
-//                }
-//            }
-//        }
-//
-//        //Start activity
-//        val intent = CollabcardDetailActivity.getIntent(
-//            requireContext(), ChatroomDetailExtras.Builder()
-//                .chatroomId(collabcardViewData.id())
-//                .collabcardViewData(collabcardViewData)
-//                .communityId(sdkPreferences.getCommunityId())
-//                .source(SOURCE_COMMUNITY_FEED)
-//                .build()
-//        )
-//        chatroomUpdateLauncher.launch(intent)
+        val chatroomViewData = exploreViewData.chatroomViewData ?: return
+
+        //Update External seen
+        if (exploreViewData.externalSeen == false) {
+            binding.rvExplore.post {
+                if (position >= 0 && position < chatroomExploreAdapter.itemCount) {
+                    chatroomExploreAdapter.update(
+                        position,
+                        exploreViewData.toBuilder().externalSeen(true).build()
+                    )
+                }
+            }
+        }
+
+        //Start activity
+        val intent = ChatroomDetailActivity.getIntent(
+            requireContext(), ChatroomDetailExtras.Builder()
+                .chatroomId(chatroomViewData.id)
+                .chatroomViewData(chatroomViewData)
+                .communityId(chatroomViewData.communityId)
+                .source(COMMUNITY_FEED)
+                .build()
+        )
+        chatroomUpdateLauncher.launch(intent)
     }
 
     //Handles Join/Joined button clicks
@@ -276,7 +342,7 @@ class ChatroomExploreFragment :
         //Check for guest flow
         if (sdkPreferences.getIsGuestUser()) {
             //User is Guest
-            // todo: login callback
+            SDKApplication.getLikeMindsCallback()?.login()
             activity?.finish()
         } else {
             //User is logged in

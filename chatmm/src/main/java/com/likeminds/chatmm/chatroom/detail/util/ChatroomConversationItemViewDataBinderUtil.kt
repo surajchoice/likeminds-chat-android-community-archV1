@@ -241,7 +241,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                             conversationViewData != null ->
                                 chatroomAdapter.onLongPressConversation(
                                     conversationViewData, itemPosition,
-                                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                                 )
                             chatRoom != null -> {
                                 chatroomAdapter.onLongPressChatRoom(chatRoom, itemPosition)
@@ -456,7 +456,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     adapterListener.onLongPressConversation(
                         conversation,
                         itemPosition,
-                        LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                        LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                     )
                 } else if (chatRoom != null) {
                     adapterListener.onLongPressChatRoom(chatRoom, itemPosition)
@@ -693,7 +693,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     adapterListener.onLongPressConversation(
                         conversation,
                         itemPosition,
-                        LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                        LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                     )
                 }
                 return@setOnLongClickListener true
@@ -707,7 +707,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 adapterListener.onLongPressConversation(
                     conversation,
                     itemPosition,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                 )
             }
         }
@@ -878,7 +878,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                             listener.onLongPressConversation(
                                 conversation,
                                 itemPosition,
-                                LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+                                LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
                             )
                         } else {
                             if (replyConversation != null) {

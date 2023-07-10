@@ -3,10 +3,14 @@ package com.likeminds.chatmm.homefeed.viewmodel
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.utils.*
@@ -32,6 +36,9 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     private val lmChatClient = LMChatClient.getInstance()
+
+    private val _userData = MutableLiveData<MemberViewData?>()
+    val userData: LiveData<MemberViewData?> = _userData
 
     private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
@@ -99,6 +106,15 @@ class HomeFeedViewModel @Inject constructor(
 
     fun setWasChatroomFetched(value: Boolean) {
         homeFeedPreferences.setShowHomeFeedShimmer(value)
+    }
+
+    fun isDBEmpty(): Boolean {
+        return (lmChatClient.getIsDBEmpty().data?.isDBEmpty ?: true)
+    }
+
+    fun getUserFromLocalDb() {
+        val userResponse = lmChatClient.getUser()
+        _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 
     fun observeChatrooms(context: Context) {
@@ -302,25 +318,41 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
+    /**------------------------------------------------------------
+     * Analytics events
+    ---------------------------------------------------------------*/
+
     //When a user clicks on the community tab
-    // todo: all analytics
     fun sendCommunityTabClicked(communityId: String?, communityName: String?) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_COMMUNITY_TAB_CLICKED,
-//            "community_id" to communityId,
-//            "community_name" to communityName
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.COMMUNITY_TAB_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
     }
 
-    /**
-     *
-     * Mixpanel Events
-     **/
+    //When a user clicks on the community tab
+    fun sendCommunityFeedClickedEvent(communityId: String, communityName: String) {
+        LMAnalytics.track(
+            LMAnalytics.Events.COMMUNITY_FEED_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
+    }
+
+    // when home screen is opened
     fun sendHomeScreenOpenedEvent(source: String?) {
-//        if (!source.isNullOrEmpty()) {
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_HOME_FEED_PAGE_OPENED, JSONObject().apply {
-//                put("source", source)
-//            })
-//        }
+        if (!source.isNullOrEmpty()) {
+            LMAnalytics.track(
+                LMAnalytics.Events.HOME_FEED_PAGE_OPENED,
+                mapOf(
+                    LMAnalytics.Keys.SOURCE to source,
+                )
+            )
+        }
     }
 }

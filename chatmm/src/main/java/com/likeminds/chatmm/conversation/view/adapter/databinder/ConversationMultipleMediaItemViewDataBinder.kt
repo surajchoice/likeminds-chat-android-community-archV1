@@ -191,7 +191,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
                 adapterListener.onLongPressConversation(
                     conversationViewData,
                     position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
         }
@@ -204,7 +204,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
         adapterListener.onLongPressConversation(
             conversation,
             itemPosition,
-            LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+            LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
         )
     }
 

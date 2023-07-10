@@ -218,7 +218,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
             binding.ivAddReaction.setOnClickListener {
                 chatroomDetailAdapterListener.onLongPressConversation(
                     conversation, position,
-                    LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_REACTION_BUTTON
+                    LMAnalytics.Source.MESSAGE_REACTIONS_FROM_REACTION_BUTTON
                 )
             }
         }
@@ -231,7 +231,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
         chatroomDetailAdapterListener.onLongPressConversation(
             conversation,
             itemPosition,
-            LMAnalytics.Source.SOURCE_MESSAGE_REACTIONS_FROM_LONG_PRESS
+            LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS
         )
     }
 
