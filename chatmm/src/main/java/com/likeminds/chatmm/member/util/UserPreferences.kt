@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.utils
+package com.likeminds.chatmm.member.util
 
 import android.annotation.SuppressLint
 import android.app.Application

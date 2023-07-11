@@ -2,12 +2,12 @@ package com.likeminds.chatmm.utils
 
 import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.AttachmentMetaViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.community.model.Member
@@ -58,16 +58,16 @@ object ViewDataConverter {
     ): ExploreViewData? {
         if (chatroom == null) return null
         return ExploreViewData.Builder()
-            .isPinned(chatroom.isPinned)
+            .isPinned(chatroom.isPinned ?: false)
             .isCreator(chatroom.member?.id == memberId)
             .externalSeen(chatroom.externalSeen)
-            .isSecret(chatroom.isSecret)
-            .followStatus(chatroom.followStatus)
-            .participantsCount(chatroom.participantsCount?.toIntOrNull())
+            .isSecret(chatroom.isSecret ?: false)
+            .followStatus(chatroom.followStatus ?: false)
+            .participantsCount(chatroom.participantsCount?.toInt() ?: 0)
             .totalResponseCount(chatroom.totalResponseCount)
             .sortIndex(sortIndex)
             .id(chatroom.id)
-            .header(chatroom.header)
+            .header(chatroom.header ?: "")
             .title(chatroom.title)
             .imageUrl(chatroom.member?.imageUrl)
             .chatroomImageUrl(chatroom.chatroomImageUrl)
@@ -101,10 +101,10 @@ object ViewDataConverter {
             .build()
     }
 
-    private fun convertMember(member: Member?): MemberViewData? {
+    private fun convertMember(member: Member?): MemberViewData {
         // todo: uid
         if (member == null) {
-            return null
+            return MemberViewData.Builder().build()
         }
         return MemberViewData.Builder()
             .id(member.id)

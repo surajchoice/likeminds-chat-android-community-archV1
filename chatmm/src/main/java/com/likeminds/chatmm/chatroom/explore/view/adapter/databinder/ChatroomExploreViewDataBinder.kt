@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
-import com.likeminds.chatmm.chatroom.explore.view.adapter.ExploreClickListener
+import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapterListener
 import com.likeminds.chatmm.databinding.ItemChatroomExploreBinding
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_EXPLORE
 
 internal class ChatroomExploreViewDataBinder(
-    private val listener: ExploreClickListener,
+    private val listener: ChatroomExploreAdapterListener,
 ) : ViewDataBinder<ItemChatroomExploreBinding, ExploreViewData>() {
 
     override val viewType: Int
@@ -39,18 +39,6 @@ internal class ChatroomExploreViewDataBinder(
         return binding
     }
 
-    private fun onJoinClick(binding: ItemChatroomExploreBinding) {
-        binding.apply {
-            val data = this.data ?: return
-            val position: Int = this.position ?: return
-            if (data.followStatus == true) {
-                listener.onJoinClick(false, position, data)
-            } else {
-                listener.onJoinClick(true, position, data)
-            }
-        }
-    }
-
     override fun bindData(
         binding: ItemChatroomExploreBinding,
         data: ExploreViewData,
@@ -74,37 +62,50 @@ internal class ChatroomExploreViewDataBinder(
             tvNew.isVisible = data.externalSeen == false
 
             //for chatroom header
-            tvHeader.isVisible = !data.header.isNullOrEmpty()
+            tvHeader.isVisible = data.header.isNotEmpty()
             tvHeader.text = data.header
 
             //for participants count
             val participantsCount = data.participantsCount
-            tvParticipant.isVisible = participantsCount != null
-            tvParticipant.text = participantsCount?.toString()
+            tvParticipant.isVisible = participantsCount != 0
+            tvParticipant.text = participantsCount.toString()
 
             // for conversation count
             val totalResponseCount = data.totalResponseCount
-            tvResponses.isVisible = totalResponseCount != null
-            tvResponses.text = totalResponseCount?.toString()
+            tvResponses.isVisible = totalResponseCount != 0
+            tvResponses.text = totalResponseCount.toString()
 
             //for title
             tvTitle.isVisible = !data.title.isNullOrEmpty()
             tvTitle.text = data.title
 
             //for secret chatroom
-            if (data.isSecret == true) {
+            if (data.isSecret) {
                 btnJoin.isVisible = false
                 btnJoined.isVisible = false
                 ivSecret.isVisible = true
             } else {
                 ivSecret.isVisible = false
-                if (data.followStatus == true) {
+                if (data.followStatus) {
                     btnJoin.isVisible = false
                     btnJoined.isVisible = true
                 } else {
                     btnJoin.isVisible = true
                     btnJoined.isVisible = false
                 }
+            }
+        }
+    }
+
+    // processes user request on join button click
+    private fun onJoinClick(binding: ItemChatroomExploreBinding) {
+        binding.apply {
+            val data = this.data ?: return
+            val position: Int = this.position ?: return
+            if (data.followStatus) {
+                listener.onJoinClick(false, position, data)
+            } else {
+                listener.onJoinClick(true, position, data)
             }
         }
     }

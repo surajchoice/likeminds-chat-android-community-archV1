@@ -12,25 +12,31 @@ import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
-import com.likeminds.chatmm.homefeed.model.ChatViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
+import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
+import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
+import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
 import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.search.view.SearchActivity
-import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.observeInLifecycle
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
-    HomeFeedAdapter.HomeFeedAdapterListener {
+    HomeFeedAdapterListener {
 
     private lateinit var extras: HomeFeedExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
@@ -239,7 +245,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         viewModel.observeChatrooms(requireContext())
     }
 
-    override fun onChatRoomClicked(chatViewData: ChatViewData) {
+    override fun onChatRoomClicked(chatViewData: HomeFeedItemViewData) {
         val chatroom = chatViewData.chatroom
         openChatroom(chatroom)
     }

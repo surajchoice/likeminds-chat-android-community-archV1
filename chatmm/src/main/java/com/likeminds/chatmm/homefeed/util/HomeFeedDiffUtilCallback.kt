@@ -1,9 +1,9 @@
 package com.likeminds.chatmm.homefeed.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 internal class HomeFeedDiffUtilCallback(
@@ -19,7 +19,7 @@ internal class HomeFeedDiffUtilCallback(
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return when {
-            oldItem is ChatViewData && newItem is ChatViewData -> {
+            oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 oldItem.chatroom.id == newItem.chatroom.id
             }
             oldItem is HomeLineBreakViewData && newItem is HomeLineBreakViewData -> true
@@ -28,7 +28,7 @@ internal class HomeFeedDiffUtilCallback(
                 oldItem.title == newItem.title
             }
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
-            oldItem is ChatroomListShimmerViewData && newItem is ChatroomListShimmerViewData -> true
+            oldItem is HomeChatroomListShimmerViewData && newItem is HomeChatroomListShimmerViewData -> true
             oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> true
             else -> false
         }
@@ -38,7 +38,7 @@ internal class HomeFeedDiffUtilCallback(
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return when {
-            oldItem is ChatViewData && newItem is ChatViewData -> {
+            oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 chatViewData(oldItem, newItem)
             }
             oldItem is ContentHeaderViewData && newItem is ContentHeaderViewData -> {
@@ -58,10 +58,12 @@ internal class HomeFeedDiffUtilCallback(
     /**
      * Check the differences in only those data which are shown to the UI.
      */
-    private fun chatViewData(oldItem: ChatViewData, newItem: ChatViewData): Boolean {
+    private fun chatViewData(
+        oldItem: HomeFeedItemViewData,
+        newItem: HomeFeedItemViewData
+    ): Boolean {
         return oldItem.chatroom.header == newItem.chatroom.header
                 && oldItem.chatroom.title == newItem.chatroom.title
-                && oldItem.isDraft == newItem.isDraft
                 && oldItem.lastConversationTime == newItem.lastConversationTime
                 && oldItem.unseenConversationCount == newItem.unseenConversationCount
                 && oldItem.chatroom.isTagged == newItem.chatroom.isTagged
@@ -71,7 +73,6 @@ internal class HomeFeedDiffUtilCallback(
                 && oldItem.chatroomImageUrl == newItem.chatroomImageUrl
                 && oldItem.isLastItem == newItem.isLastItem
                 && memberViewData(oldItem.chatroom.memberViewData, newItem.chatroom.memberViewData)
-                && memberViewDataList(oldItem.members, newItem.members)
                 && conversationViewData(oldItem.lastConversation, newItem.lastConversation)
     }
 
@@ -110,48 +111,6 @@ internal class HomeFeedDiffUtilCallback(
         }
         return true
     }
-
-    // todo:
-//    private fun communityViewDataList(
-//        oldItem: List<BaseViewType>,
-//        newItem: List<BaseViewType>
-//    ): Boolean {
-//        for (i in oldItem.indices) {
-//            if (!communityViewData(oldItem[i], newItem[i])) {
-//                return false
-//            }
-//        }
-//        return true
-//    }
-
-    // todo:
-//    private fun communityViewData(
-//        oldItem: BaseViewType,
-//        newItem: BaseViewType
-//    ): Boolean {
-//        return if (oldItem is ProgressHorizontalViewData && newItem is ProgressHorizontalViewData) {
-//            true
-//        } else if (oldItem is ProgressHorizontalViewData && newItem is CommunityViewData) {
-//            false
-//        } else if (oldItem is CommunityViewData && newItem is ProgressHorizontalViewData) {
-//            false
-//        } else {
-//            return (oldItem as CommunityViewData).id() == (newItem as CommunityViewData).id()
-//                    && oldItem.name() == newItem.name()
-//                    && oldItem.imageURL() == newItem.imageURL()
-//                    && oldItem.collabcardsUnseen() == newItem.collabcardsUnseen()
-//                    && oldItem.chatRoomCount() == newItem.chatRoomCount()
-//                    && oldItem.pendingMembersCount() == newItem.pendingMembersCount()
-//                    && oldItem.pendingChatRoomCount() == newItem.pendingChatRoomCount()
-//                    && oldItem.openReportsCount() == newItem.openReportsCount()
-//                    && oldItem.clickState() == newItem.clickState()
-//                    && memberViewDataList(oldItem.newChatRoomUsers(), newItem.newChatRoomUsers())
-//                    && memberViewDataList(
-//                oldItem.chatRoomUsers(),
-//                newItem.chatRoomUsers()
-//            ) && oldItem.updatedAt() == newItem.updatedAt()
-//        }
-//    }
 
     private fun homeFeedViewData(
         oldItem: HomeFeedViewData?,

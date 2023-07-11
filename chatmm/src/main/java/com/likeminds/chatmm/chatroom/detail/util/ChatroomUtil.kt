@@ -132,14 +132,14 @@ object ChatroomUtil {
         conversation: ConversationViewData,
         currentMemberId: String,
     ): String {
-        return if (conversation.memberViewData?.userUniqueId == currentMemberId) {
+        return if (conversation.memberViewData.userUniqueId == currentMemberId) {
             if (conversation.deletedBy == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)
             }
         } else {
-            if (conversation.memberViewData?.id == conversation.deletedBy) {
+            if (conversation.memberViewData.id == conversation.deletedBy) {
                 context.getString(R.string.this_message_was_deleted)
             } else {
                 context.getString(R.string.this_message_was_deleted_by_cm)

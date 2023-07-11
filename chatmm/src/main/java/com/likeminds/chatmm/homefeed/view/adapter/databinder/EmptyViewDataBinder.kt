@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import com.likeminds.chatmm.databinding.LayoutEmptyDataBinding
 import com.likeminds.chatmm.homefeed.model.EmptyScreenViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_EMPTY_VIEW
 import javax.inject.Inject
 
 class EmptyViewDataBinder @Inject constructor() :
-    ViewDataBinder<LayoutEmptyDataBinding, BaseViewType>() {
+    ViewDataBinder<LayoutEmptyDataBinding, EmptyScreenViewData>() {
 
     override val viewType: Int
         get() = ITEM_EMPTY_VIEW
@@ -26,11 +25,11 @@ class EmptyViewDataBinder @Inject constructor() :
 
     override fun bindData(
         binding: LayoutEmptyDataBinding,
-        data: BaseViewType,
+        data: EmptyScreenViewData,
         position: Int
     ) {
         binding.apply {
-            viewData = data as EmptyScreenViewData
+            viewData = data
             root.visibility = View.VISIBLE
         }
     }

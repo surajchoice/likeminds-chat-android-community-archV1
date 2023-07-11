@@ -3,12 +3,12 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.databinding.ItemHomeBlankSpaceBinding
+import com.likeminds.chatmm.homefeed.model.HomeBlankSpaceViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_BLANK_SPACE_VIEW
 
 class HomeBlankSpaceItemViewDataBinder :
-    ViewDataBinder<ItemHomeBlankSpaceBinding, BaseViewType>() {
+    ViewDataBinder<ItemHomeBlankSpaceBinding, HomeBlankSpaceViewData>() {
 
     override val viewType: Int
         get() = ITEM_HOME_BLANK_SPACE_VIEW
@@ -24,7 +24,7 @@ class HomeBlankSpaceItemViewDataBinder :
     // todo: check if space width is required
     override fun bindData(
         binding: ItemHomeBlankSpaceBinding,
-        data: BaseViewType,
+        data: HomeBlankSpaceViewData,
         position: Int
     ) {
     }
