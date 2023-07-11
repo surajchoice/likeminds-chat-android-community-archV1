@@ -89,6 +89,8 @@ class ConversationGifSendFragment :
 
     override fun observeData() {
         super.observeData()
+
+        // observes tagging data
         helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }

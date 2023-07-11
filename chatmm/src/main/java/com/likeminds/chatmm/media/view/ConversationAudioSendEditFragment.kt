@@ -144,7 +144,7 @@ class ConversationAudioSendEditFragment :
 
     override fun observeData() {
         super.observeData()
-        addMembersAndParticipants()
+        observeTaggingList()
         viewModel.mediaListUri.observe(viewLifecycleOwner) { medias ->
             val updatedMedias = medias?.mapIndexed { index, singleMediaUri ->
                 val isSelected = index == selectedPosition
@@ -278,7 +278,12 @@ class ConversationAudioSendEditFragment :
             }
         }
 
-    private fun addMembersAndParticipants() {
+    /**
+     * Observes for member tagging list, This is a live observer which will update itself on addition of new members
+     * [taggingData] contains first -> page called in api
+     * second -> Community Members and Groups
+     */
+    private fun observeTaggingList() {
         helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
             MemberTaggingUtil.setMembersInView(memberTagging, result)
         }

@@ -6,12 +6,16 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkerParameters
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
-import com.likeminds.chatmm.utils.mediauploader.model.WORKER_FAILURE
-import com.likeminds.chatmm.utils.mediauploader.model.WORKER_RETRY
-import com.likeminds.chatmm.utils.mediauploader.model.WORKER_SUCCESS
+import com.likeminds.chatmm.conversation.model.AttachmentViewData
+import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
+import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.conversation.model.AttachmentMeta
+import com.likeminds.likemindschat.conversation.model.PutMultimediaRequest
+import com.likeminds.likemindschat.conversation.model.PutMultimediaResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -21,6 +25,8 @@ abstract class MediaUploadWorker(
     appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
+
+    val lmChatClient = LMChatClient.getInstance()
 
     protected val transferUtility by lazy { SDKApplication.getInstance().transferUtility }
 
@@ -118,95 +124,103 @@ abstract class MediaUploadWorker(
         return params.inputData.keyValueMap.containsKey(key)
     }
 
-//    protected fun createAWSRequestList(
-//        thumbnailsToUpload: List<Attachment>,
-//        attachmentsToUpload: List<Attachment>
-//    ): ArrayList<GenericFileRequest> {
-//        val awsFileRequestList = ArrayList<GenericFileRequest>()
-//        thumbnailsToUpload.forEach { attachment ->
-//            val request = GenericFileRequest.Builder()
-//                .fileType(attachment.type)
-//                .awsFolderPath(attachment.thumbnailAWSFolderPath)
-//                .localFilePath(attachment.thumbnailLocalFilePath)
-//                .index(attachment.index)
-//                .isThumbnail(true)
-//                .build()
-//            awsFileRequestList.add(request)
-//        }
-//        attachmentsToUpload.forEach { attachment ->
-//            val request = GenericFileRequest.Builder()
-//                .name(attachment.name)
-//                .fileType(attachment.type)
-//                .awsFolderPath(attachment.awsFolderPath)
-//                .localFilePath(attachment.localFilePath)
-//                .index(attachment.index)
-//                .width(attachment.width)
-//                .height(attachment.height)
-//                .hasThumbnail(attachment.thumbnailAWSFolderPath != null)
-//                .meta(attachment.meta)
-//                .build()
-//            awsFileRequestList.add(request)
-//        }
-//        return awsFileRequestList
-//    }
+    protected fun createAWSRequestList(
+        thumbnailsToUpload: List<AttachmentViewData>,
+        attachmentsToUpload: List<AttachmentViewData>
+    ): ArrayList<GenericFileRequest> {
+        val awsFileRequestList = ArrayList<GenericFileRequest>()
+        thumbnailsToUpload.forEach { attachment ->
+            val request = GenericFileRequest.Builder()
+                .fileType(attachment.type)
+                .awsFolderPath(attachment.thumbnailAWSFolderPath ?: "")
+                .localFilePath(attachment.thumbnailLocalFilePath)
+                .index(attachment.index ?: 0)
+                .isThumbnail(true)
+                .build()
+            awsFileRequestList.add(request)
+        }
+        attachmentsToUpload.forEach { attachment ->
+            val request = GenericFileRequest.Builder()
+                .name(attachment.name)
+                .fileType(attachment.type)
+                .awsFolderPath(attachment.awsFolderPath ?: "")
+                .localFilePath(attachment.localFilePath)
+                .index(attachment.index ?: 0)
+                .width(attachment.width)
+                .height(attachment.height)
+                .hasThumbnail(attachment.thumbnailAWSFolderPath != null)
+                .meta(attachment.meta)
+                .build()
+            awsFileRequestList.add(request)
+        }
+        return awsFileRequestList
+    }
 
-//    protected fun uploadUrl(
-//        downloadUri: Pair<String?, String?>?,
-//        totalMediaCount: Int,
-//        awsFileResponse: AWSFileResponse,
-//        totalFilesToUpload: Int,
-//        collabcardAnswerRO: CollabcardAnswerRO,
-//        continuation: Continuation<Int>
-//    ) {
-//        val fileRequest = UploadConversationFileRequest.Builder()
-//            .name(awsFileResponse.name)
-//            .conversationId(collabcardAnswerRO.id)
-//            .filesCount(totalMediaCount)
-//            .url(downloadUri?.first)
-//            .thumbnailUrl(downloadUri?.second)
-//            .type(awsFileResponse.fileType)
-//            .index(awsFileResponse.index)
-//            .width(awsFileResponse.width)
-//            .height(awsFileResponse.height)
-//            .meta(awsFileResponse.meta)
-//            .build()
-//        runBlocking {
-//            when (val uploadResponse = fileApi.uploadFileForConversation(fileRequest)) {
-//                is NetworkResponse.Success -> {
-//                    uploadUrlCompletes(
-//                        uploadResponse.body.data, totalFilesToUpload, collabcardAnswerRO,
-//                        awsFileResponse, continuation
-//                    )
-//                }
-//                is NetworkResponse.Error -> {
-//                    failedIndex.add(awsFileResponse.index)
-//                    checkWorkerComplete(totalFilesToUpload, continuation)
-//                }
-//            }
-//        }
-//    }
+    protected fun uploadUrl(
+        downloadUri: Pair<String?, String?>?,
+        totalMediaCount: Int,
+        awsFileResponse: AWSFileResponse,
+        totalFilesToUpload: Int,
+        conversation: ConversationViewData,
+        continuation: Continuation<Int>
+    ) {
+        val putMultimediaRequest = PutMultimediaRequest.Builder()
+            .name(awsFileResponse.name)
+            .conversationId(conversation.id)
+            .filesCount(totalMediaCount)
+            .url(downloadUri?.first ?: "")
+            .thumbnailUrl(downloadUri?.second)
+            .type(awsFileResponse.fileType.toString())
+            .index(awsFileResponse.index)
+            .width(awsFileResponse.width)
+            .height(awsFileResponse.height)
+            .meta(
+                AttachmentMeta.Builder()
+                    .duration(awsFileResponse.duration)
+                    .numberOfPage(awsFileResponse.pageCount)
+                    .size(awsFileResponse.size)
+                    .build()
+            )
+            .build()
+        runBlocking {
+            val response = lmChatClient.putMultimedia(putMultimediaRequest)
+            if (response.success) {
+                uploadUrlCompletes(
+                    response.data,
+                    totalFilesToUpload,
+                    conversation,
+                    awsFileResponse,
+                    continuation
+                )
+            } else {
+                failedIndex.add(awsFileResponse.index)
+                checkWorkerComplete(totalFilesToUpload, continuation)
+            }
+        }
+    }
 
-//    private fun uploadUrlCompletes(
-//        response: UploadResponse?,
-//        totalFilesToUpload: Int,
-//        collabcardAnswerRO: CollabcardAnswerRO,
-//        awsFileResponse: AWSFileResponse,
-//        continuation: Continuation<Int>
-//    ) {
-//        var conversation = response?.conversation
-//        if (conversation != null) {
-//            uploadedCount += 1
-//            if (totalFilesToUpload != uploadedCount) {
-//                conversation = conversation.toBuilder()
-//                    .uploadWorkerUUID(collabcardAnswerRO.uploadWorkerUUID)
-//                    .build()!!
-//            }
-//            chatRoomDb.updateConversation(conversation)
-//        } else {
-//            failedIndex.add(awsFileResponse.index)
-//        }
-//        checkWorkerComplete(totalFilesToUpload, continuation)
-//    }
+    private fun uploadUrlCompletes(
+        response: PutMultimediaResponse?,
+        totalFilesToUpload: Int,
+        conversationViewData: ConversationViewData,
+        awsFileResponse: AWSFileResponse,
+        continuation: Continuation<Int>
+    ) {
+        var conversation = response?.conversation
+        if (conversation != null) {
+            uploadedCount += 1
+            if (totalFilesToUpload != uploadedCount) {
+                conversation = conversation.toBuilder()
+                    .uploadWorkerUUID(conversationViewData.uploadWorkerUUID)
+                    .build()
+            }
+            // todo:
+//            lmChatClient.updateConversation(conversation)
+        } else {
+            failedIndex.add(awsFileResponse.index)
+        }
+        checkWorkerComplete(totalFilesToUpload, continuation)
+    }
 
     protected fun checkWorkerComplete(
         totalFilesToUpload: Int,

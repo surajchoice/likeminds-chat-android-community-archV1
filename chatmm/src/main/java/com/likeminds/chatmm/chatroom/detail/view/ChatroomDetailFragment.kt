@@ -97,6 +97,7 @@ import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
+import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -2255,6 +2256,7 @@ class ChatroomDetailFragment :
         observeInitialData()
         observePaginatedData()
         observeScrolledData()
+        observeTaggingList()
         observeConversations()
         observeChatroomActions()
         observeLinkOgTags()
@@ -2397,6 +2399,17 @@ class ChatroomDetailFragment :
                 ).build()
         }
         return conversations
+    }
+
+    /**
+     * Observes for member tagging list, This is a live observer which will update itself on addition of new members
+     * [taggingData] contains first -> page called in api
+     * second -> Community Members and Groups
+     */
+    private fun observeTaggingList() {
+        helperViewModel.taggingData.observe(viewLifecycleOwner) { result ->
+            MemberTaggingUtil.setMembersInView(memberTagging, result)
+        }
     }
 
     /**

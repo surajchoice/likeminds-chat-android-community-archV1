@@ -9,7 +9,7 @@ class AWSFileResponse private constructor(
     val awsFolderPath: String,
     val transferObserver: TransferObserver?,
     val index: Int,
-    val fileType: Int,
+    val fileType: String,
     val width: Int?,
     val height: Int?,
     val isThumbnail: Boolean?,
@@ -28,7 +28,7 @@ class AWSFileResponse private constructor(
         private var awsFolderPath: String = ""
         private var transferObserver: TransferObserver? = null
         private var index: Int = 0
-        private var fileType: Int = 0
+        private var fileType: String = ""
         private var width: Int? = null
         private var height: Int? = null
         private var isThumbnail: Boolean? = null
@@ -44,7 +44,7 @@ class AWSFileResponse private constructor(
             apply { this.transferObserver = transferObserver }
 
         fun index(index: Int) = apply { this.index = index }
-        fun fileType(fileType: Int) = apply { this.fileType = fileType }
+        fun fileType(fileType: String) = apply { this.fileType = fileType }
         fun width(width: Int?) = apply { this.width = width }
         fun height(height: Int?) = apply { this.height = height }
         fun isThumbnail(isThumbnail: Boolean?) = apply { this.isThumbnail = isThumbnail }
