@@ -176,11 +176,10 @@ class HomeFeedViewModel @Inject constructor(
             ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
-        Log.d(TAG, "getChatRoomViewData lastConversation: ${lastConversation.answer}")
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
             sdkPreferences,
-            lastConversation.memberViewData
+            lastConversation?.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
         val lastConversationTime = if (chatroom.isDraft == true) {
@@ -188,7 +187,6 @@ class HomeFeedViewModel @Inject constructor(
         } else {
             TimeUtil.getLastConversationTime(chatroomViewData.updatedAt)
         }
-        Log.d(TAG, "getChatRoomViewData lastConversationText: $lastConversationText")
         return ChatViewData.Builder()
             .chatroom(chatroomViewData)
             .lastConversation(lastConversation)

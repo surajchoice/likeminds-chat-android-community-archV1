@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
@@ -128,7 +129,10 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
 
     private fun redirectActivity(isError: Boolean) {
         if (isError) {
-            ViewUtils.showShortToast(this, "The chatroom link is either tampered or invalid")
+            ViewUtils.showShortToast(
+                this,
+                getString(R.string.the_chatroom_link_is_either_tampered_or_invalid)
+            )
         }
         supportFragmentManager.popBackStack()
         super.onBackPressed()
@@ -138,20 +142,25 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         )
     }
 
-    // todo: analytics
+    // triggers an event when chatroom search is closed
     private fun sendSearchChatroomClosedEvent() {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHATROOM_SEARCH_CLOSED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomDetailExtras?.chatroomId)
-//                put("community_id", chatroomDetailExtras?.communityId)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.CHATROOM_SEARCH_CLOSED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomDetailExtras?.chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomDetailExtras?.communityId
+            )
+        )
     }
 
+    // triggers an event when message search is closed
     private fun sendSearchMessageClosedEvent() {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_MESSAGE_SEARCH_CLOSED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomDetailExtras?.chatroomId)
-//                put("community_id", chatroomDetailExtras?.communityId)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.MESSAGE_SEARCH_CLOSED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomDetailExtras?.chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomDetailExtras?.communityId
+            )
+        )
     }
 }

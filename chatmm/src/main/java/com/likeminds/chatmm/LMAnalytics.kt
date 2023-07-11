@@ -73,6 +73,10 @@ object LMAnalytics {
 
         //Sync related
         const val SYNC_COMPLETE = "Sync Complete"
+
+        //Third Party Share
+        const val THIRD_PARTY_SHARING = "Third party sharing"
+        const val THIRD_PARTY_ABANDONED = "Third party abandoned"
     }
 
     object Keys {
@@ -91,6 +95,8 @@ object LMAnalytics {
         const val MESSAGE_REACTIONS_FROM_REACTION_BUTTON = "reaction button"
         const val COMMUNITY_TAB = "community_tab"
         const val COMMUNITY_FEED = "explore_feed"
+        const val NOTIFICATION = "notification"
+        const val DEEP_LINK = "deep_link"
     }
 
     /**

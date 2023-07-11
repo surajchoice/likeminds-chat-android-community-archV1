@@ -30,7 +30,6 @@
             android:contentInsetLeft="0dp"
             android:contentInsetEnd="0dp"
             android:contentInsetRight="0dp"
-            android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
@@ -183,7 +182,7 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:visibility="visible" />
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -217,7 +216,7 @@
             android:visibility="gone"
             app:fontType="regular"
             app:layout_constraintLeft_toRightOf="@+id/member_image"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/view_top_background"
             tools:text="Abhishek"
             tools:visibility="visible" />
 

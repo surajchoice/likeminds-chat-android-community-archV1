@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.giphy.sdk.core.models.Media
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
@@ -16,19 +17,11 @@ import com.likeminds.chatmm.utils.coroutine.launchDefault
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.likemindschat.LMChatClient
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 class MediaViewModel @Inject constructor(
     private val mediaRepository: MediaRepository,
 ) : ViewModel() {
-
-    private val lmChatClient = LMChatClient.getInstance()
-
-    private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
-    val errorEventFlow = errorEventChannel.receiveAsFlow()
 
     private val _mediaListUri by lazy { MutableLiveData<List<SingleUriData>>() }
     val mediaListUri: LiveData<List<SingleUriData>> = _mediaListUri
@@ -273,7 +266,6 @@ class MediaViewModel @Inject constructor(
             _updatedUriDataList.postValue(dataList)
         }
 
-    // todo:
     /**------------------------------------------------------------
      * Analytics events
     ---------------------------------------------------------------*/
@@ -290,16 +282,18 @@ class MediaViewModel @Inject constructor(
         chatroomId: String,
     ) {
         val search = searchKey ?: ""
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_THIRD_PARTY_SHARING,
-//            "sharing_type" to sharingType,
-//            "chatroom_type" to chatroomType,
-//            "community_id" to communityId,
-//            "community_name" to communityName,
-//            "chatroom_id" to chatroomId,
-//            "search_key" to search,
-//            "new_chatroom_created" to "false"
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.THIRD_PARTY_SHARING,
+            mapOf(
+                "sharing_type" to sharingType,
+                LMAnalytics.Keys.CHATROOM_TYPE to chatroomType,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                "search_key" to search,
+                "new_chatroom_created" to "false"
+            )
+        )
     }
 
     /***
@@ -311,25 +305,29 @@ class MediaViewModel @Inject constructor(
         communityName: String?,
         chatroomId: String,
     ) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_THIRD_PARTY_ABANDONED,
-//            "sharing_type" to sharingType,
-//            "community_id" to communityId,
-//            "community_name" to communityName,
-//            "chatroom_id" to chatroomId,
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.THIRD_PARTY_ABANDONED,
+            mapOf(
+                "sharing_type" to sharingType,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+            )
+        )
     }
 
     /**
      * Triggers when the user views a image message
      **/
     fun sendImageViewedEvent(chatroomId: String?, communityId: String?, messageId: String?) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_IMAGE_VIEWED,
-//            "chatroom_id" to chatroomId,
-//            "community_id" to communityId,
-//            "message_id" to messageId
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.IMAGE_VIEWED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+                LMAnalytics.Keys.MESSAGE_ID to messageId
+            )
+        )
     }
 
     /**
@@ -341,12 +339,14 @@ class MediaViewModel @Inject constructor(
         messageId: String?,
         type: String?
     ) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_VIDEO_PLAYED,
-//            "chatroom_id" to chatroomId,
-//            "community_id" to communityId,
-//            "message_id" to messageId,
-//            "type" to type
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.VIDEO_PLAYED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+                LMAnalytics.Keys.MESSAGE_ID to messageId,
+                "type" to type
+            )
+        )
     }
 }

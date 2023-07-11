@@ -3,6 +3,7 @@ package com.likeminds.chatmm.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
@@ -16,8 +17,8 @@ object Route {
     const val ROUTE_MEMBER = "member"
     const val ROUTE_MEMBER_PROFILE = "member_profile"
 
-    const val PARAM_SOURCE_CHATROOM_ID = "source_chatroom_id"
-    const val PARAM_SOURCE_COMMUNITY_ID = "source_community_id"
+    const val PARAM_CHATROOM_ID = "chatroom_id"
+    const val PARAM_COMMUNITY_ID = "community_id"
     private const val PARAM_COHORT_ID = "cohort_id"
 
     fun handleDeepLink(context: Context, url: String?): Intent? {
@@ -109,27 +110,26 @@ object Route {
         deepLinkUrl: String?
     ): Intent {
         val chatroomId = route.getQueryParameter("collabcard_id")
-        val sourceChatroomId = route.getQueryParameter(PARAM_SOURCE_CHATROOM_ID)
-        val sourceCommunityId = route.getQueryParameter(PARAM_SOURCE_COMMUNITY_ID)
+        val sourceChatroomId = route.getQueryParameter(PARAM_CHATROOM_ID)
+        val sourceCommunityId = route.getQueryParameter(PARAM_COMMUNITY_ID)
         val cohortId = route.getQueryParameter(PARAM_COHORT_ID)
 
-        // todo:
         val builder = ChatroomDetailExtras.Builder()
-//            .chatroomId(chatroomId.toString())
-//            .source(source)
-//            .sourceChatroomId(sourceChatroomId)
-//            .sourceCommunityId(sourceCommunityId)
-//            .cohortId(cohortId)
+            .chatroomId(chatroomId.toString())
+            .source(source)
+            .sourceChatroomId(sourceChatroomId)
+            .sourceCommunityId(sourceCommunityId)
+            .cohortId(cohortId)
 
-//        when (source) {
-//            LMAnalytics.Sources.SOURCE_NOTIFICATION -> {
-//                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
-//            }
-//
-//            LMAnalytics.Sources.SOURCE_DEEP_LINK -> {
-//                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
-//            }
-//        }
+        when (source) {
+            LMAnalytics.Source.NOTIFICATION -> {
+                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
+            }
+
+            LMAnalytics.Source.DEEP_LINK -> {
+                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
+            }
+        }
 
         return ChatroomDetailActivity.getIntent(
             context,
@@ -180,21 +180,20 @@ object Route {
         val chatroomId = route.getQueryParameter("chatroom_id")
         val conversationId = route.getQueryParameter("conversation_id")
 
-        // todo:
         val builder = ChatroomDetailExtras.Builder()
-//            .chatroomId(chatroomId.toString())
-//            .conversationId(conversationId)
-//            .source(source)
+            .chatroomId(chatroomId.toString())
+            .conversationId(conversationId)
+            .source(source)
 
-//        when (source) {
-//            LMAnalytics.Sources.SOURCE_NOTIFICATION -> {
-//                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
-//            }
-//
-//            LMAnalytics.Sources.SOURCE_DEEP_LINK -> {
-//                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
-//            }
-//        }
+        when (source) {
+            LMAnalytics.Source.NOTIFICATION -> {
+                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
+            }
+
+            LMAnalytics.Source.DEEP_LINK -> {
+                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
+            }
+        }
 
         return ChatroomDetailActivity.getIntent(
             context,

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
@@ -185,28 +186,27 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    // todo: analytics
-    private fun sendChatRoomUnFollowed(chatroomViewData: ChatroomViewData??) {
+    private fun sendChatRoomUnFollowed(chatroomViewData: ChatroomViewData?) {
         if (chatroomViewData == null) return
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHAT_ROOM_UN_FOLLOWED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityId)
-//                put("source", LMAnalytics.Sources.SOURCE_COMMUNITY_FEED)
-//            }
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_UN_FOLLOWED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.COMMUNITY_FEED
+            )
+        )
     }
 
     private fun sendChatRoomFollowed(chatroomViewData: ChatroomViewData?) {
         if (chatroomViewData == null) return
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHAT_ROOM_FOLLOWED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityId)
-//                put("source", LMAnalytics.Sources.SOURCE_COMMUNITY_FEED)
-//            }
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_FOLLOWED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.COMMUNITY_FEED
+            )
+        )
     }
 }

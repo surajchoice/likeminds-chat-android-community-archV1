@@ -523,7 +523,7 @@ class ChatroomDetailFragment :
             adapter = chatroomDetailAdapter
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
                 false
-            attachPagination(this, linearLayoutManager)
+            attachPagination(linearLayoutManager)
         }
     }
 
@@ -559,8 +559,7 @@ class ChatroomDetailFragment :
                     )
                 )
                 .setOnEmojiPopupShownListener {
-                    // todo: analytics
-//                viewModel.sendReactionsClickEvent()
+                    viewModel.sendReactionsClickEvent()
                 }
                 .setOnEmojiPopupDismissListener {
                     conversationIdForEmojiReaction = ""
@@ -1365,11 +1364,10 @@ class ChatroomDetailFragment :
             )
             memberTagging.addListener(object : MemberTaggingViewListener {
                 override fun onMemberTagged(user: TagViewData) {
-                    // todo: analytics
-//                viewModel.sendUserTagEvent(
-//                    user,
-//                    communityId
-//                )
+                    viewModel.sendUserTagEvent(
+                        user,
+                        communityId
+                    )
                 }
 
                 override fun onShow() {
@@ -1408,10 +1406,7 @@ class ChatroomDetailFragment :
     /**
      * Attach scroll listener to the recyclerview for events
      */
-    private fun attachPagination(
-        recyclerView: RecyclerView,
-        linearLayoutManager: LinearLayoutManager
-    ) {
+    private fun attachPagination(linearLayoutManager: LinearLayoutManager) {
         chatroomScrollListener = object : ChatroomScrollListener(linearLayoutManager) {
             override fun onScroll() {
                 // todo:
@@ -1444,7 +1439,7 @@ class ChatroomDetailFragment :
                 }
             }
         }
-        recyclerView.addOnScrollListener(chatroomScrollListener)
+        binding.rvChatroom.addOnScrollListener(chatroomScrollListener)
     }
 
     /**
@@ -1764,23 +1759,19 @@ class ChatroomDetailFragment :
                 fadeInTopChatroomEachView(ivDateDot)
                 fadeInTopChatroomEachView(tvChatroomDate)
             } else {
-                Log.d(TAG, "fadeInTopChatroomView: $topic")
                 when {
                     topic.isDeleted() -> {
-                        Log.d(TAG, "1: $topic")
                         fadeInTopChatroomEachView(ivDateDot)
                         fadeInTopChatroomEachView(tvChatroomDate)
                     }
 
                     topic.ogTags != null -> {
-                        Log.d(TAG, "2: $topic")
                         if (topic.ogTags.image != null) {
                             fadeInTopChatroomEachView(topicImage)
                         }
                     }
 
                     topic.attachmentCount > 0 -> {
-                        Log.d(TAG, "3: $topic")
                         when (topic.attachments?.firstOrNull()?.type) {
                             IMAGE -> {
                                 fadeInTopChatroomEachView(binding.topicImage)
@@ -1908,12 +1899,10 @@ class ChatroomDetailFragment :
                 tvChatroomMemberName.setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
                 when {
                     topic.isDeleted() -> {
-                        Log.d("TAG", "1--------")
                         setTopViewToChatroom(chatroomViewData)
                     }
 
                     topic.ogTags != null -> {
-                        Log.d("TAG", "2--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         if (topic.ogTags.image != null) {
@@ -1928,7 +1917,6 @@ class ChatroomDetailFragment :
                     }
 
                     chatroomViewData.topic.attachmentCount > 0 -> {
-                        Log.d("TAG", "3--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         val answer =
@@ -1960,7 +1948,6 @@ class ChatroomDetailFragment :
                     }
 
                     topic.state == STATE_POLL -> {
-                        Log.d("TAG", "4--------")
                         setTopViewMemberImage(topic.memberViewData)
 
                         val answer = ChatroomUtil.getTopicMediaData(requireContext(), topic)
@@ -1968,7 +1955,6 @@ class ChatroomDetailFragment :
                     }
 
                     else -> {
-                        Log.d("TAG", "5--------")
                         setTopViewMemberImage(topic.memberViewData)
                         MemberTaggingDecoder.decode(
                             tvChatroom,
@@ -1991,15 +1977,10 @@ class ChatroomDetailFragment :
 
     private fun setTopViewMemberImage(member: MemberViewData?) {
         if (viewModel.isDmChatroom()) {
-            Log.d("TAG", "isDmChatroom ${viewModel.isDmChatroom()}")
             showTopView(false)
         } else {
             showTopView(true)
             if (chatroomScrollListener.shouldShowTopChatRoom()) {
-                Log.d(
-                    "TAG",
-                    "shouldShowTopChatRoom ${chatroomScrollListener.shouldShowTopChatRoom()}"
-                )
                 binding.memberImage.visibility = View.VISIBLE
                 MemberImageUtil.setImage(
                     member?.imageUrl,
@@ -2272,7 +2253,7 @@ class ChatroomDetailFragment :
     override fun observeData() {
         super.observeData()
         observeInitialData()
-//        observePaginatedData()
+        observePaginatedData()
         observeScrolledData()
         observeConversations()
         observeChatroomActions()
@@ -2332,13 +2313,13 @@ class ChatroomDetailFragment :
                     chatroomDetailAdapter.addAll(0, data.data)
                     binding.rvChatroom.post {
                         chatroomScrollListener.topLoadingDone()
-                        updateChatRoomPosition()
+                        updateChatroomPosition()
                         if (data.extremeScrollTo == SCROLL_UP) {
                             fadeOutTopChatroomView()
                             scrollToPosition(SCROLL_UP)
                         }
                         highlightConversation(data.repliedConversationId)
-                        highlightChatRoom(data.repliedChatRoomId)
+                        highlightChatroom(data.repliedChatRoomId)
                         removeChatroomItem()
                     }
                 }
@@ -2373,20 +2354,20 @@ class ChatroomDetailFragment :
             when (data.scrollState) {
                 SCROLL_UP -> {
                     chatroomScrollListener.topLoadingDone()
-                    updateChatRoomPosition()
+                    updateChatroomPosition()
                     if (!highlightConversation(data.repliedConversationId)) {
                         scrollToPosition(SCROLL_UP)
                         fadeOutTopChatroomView()
                         showUnseenCount(true)
                     }
-                    highlightChatRoom(data.repliedChatRoomId)
+                    highlightChatroom(data.repliedChatRoomId)
                     removeChatroomItem()
                 }
 
                 SCROLL_DOWN -> {
                     chatroomScrollListener.bottomLoadingDone()
                     scrollToPosition(SCROLL_DOWN)
-                    updateChatRoomPosition(-1)
+                    updateChatroomPosition(-1)
                     fadeInTopChatroomView()
                     removeChatroomItem()
                 }
@@ -2427,14 +2408,12 @@ class ChatroomDetailFragment :
                 is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation -> {
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
                     //deleted, edited, updating temporary conversations
-                    Log.d(TAG, "observeConversations-1: ${response.conversations.size}")
                     getIndexedConversations(response.conversations).forEach { item ->
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
-                    Log.d(TAG, "observeConversations-2: ${response.conversations.size}")
                     //Observe for any new conversations triggered by the database callback
                     val isAddedBelow: Boolean
                     val conversations =
@@ -2451,7 +2430,7 @@ class ChatroomDetailFragment :
                             0,
                             conversations[indexOfHeaderConversation]
                         )
-                        updateChatRoomPosition()
+                        updateChatroomPosition()
                         if (conversations.size > 1) {
                             conversations.removeAt(indexOfHeaderConversation)
                         }
@@ -2524,7 +2503,6 @@ class ChatroomDetailFragment :
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.PostedConversation -> {
-                    Log.d(TAG, "observeConversations-3: ${response.conversation.id}")
                     //Observe for new posted conversation by the user. This is a temporary conversation
                     if (!isConversationAlreadyPresent(response.conversation.id)) {
                         val indexToAdd = getIndexOfAnyGraphicItem()
@@ -2568,7 +2546,7 @@ class ChatroomDetailFragment :
                     }
 
                     else -> {
-                        scrollToPosition(initialData.scrollPosition)
+                        this@ChatroomDetailFragment.scrollToPosition(initialData.scrollPosition)
                     }
                 }
                 visibility = View.VISIBLE
@@ -2576,7 +2554,7 @@ class ChatroomDetailFragment :
                     //Added for a crash fix due to fragment getting unattached
                     if (context != null) {
                         getChatroomViewData()?.let { chatroom ->
-                            updateChatRoomPosition()
+                            updateChatroomPosition()
                             initTopChatroomView(chatroom)
                             getUnseenConversationsAndShow(
                                 initialData.data,
@@ -2593,7 +2571,7 @@ class ChatroomDetailFragment :
      * Update the recyclerview position of chatroom in the scroll listener
      * @param index Pass the index if it is already knows. Pass -1 to reset the index in the scroll listener
      */
-    private fun updateChatRoomPosition(index: Int? = null) {
+    private fun updateChatroomPosition(index: Int? = null) {
         if (index != null) {
             chatroomScrollListener.setChatRoomPosition(index)
             return
@@ -2703,7 +2681,6 @@ class ChatroomDetailFragment :
         binding.apply {
             val chatroomViewData = getChatroomViewData() ?: return
             val communityName = chatroomViewData.communityName
-            Log.d(TAG, "updateUIForAnnouncementRoom: $communityName")
             // Updates community name in the header bar for Introduction room only
             if (communityName.isNotEmpty()) {
                 tvToolbarSubTitle.show()
@@ -3461,7 +3438,7 @@ class ChatroomDetailFragment :
      * @param repliedChatRoomId Id of the original chatRoom in which conversation was replied.
      */
     override fun scrollToRepliedChatRoom(repliedChatRoomId: String) {
-        if (!highlightChatRoom(repliedChatRoomId)) {
+        if (!highlightChatroom(repliedChatRoomId)) {
             scrollToExtremeTop(repliedChatRoomId)
         }
     }
@@ -3975,7 +3952,7 @@ class ChatroomDetailFragment :
      * Highlight the chatRoom view. This is usually used to highlight the replied conversation's parent
      * @param chatRoomId The chatRoom id to highlight
      */
-    private fun highlightChatRoom(chatRoomId: String?): Boolean {
+    private fun highlightChatroom(chatRoomId: String?): Boolean {
         if (!chatRoomId.isNullOrEmpty()) {
             val index = getIndexOfChatRoom(chatRoomId)
             if (index.isValidIndex()) {

@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
-import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
@@ -32,7 +31,6 @@ object ViewDataConverter {
             return null
         }
 
-        Log.d("ChatroomDetail", "totalAllResponseCount: ${chatroom.communityName}")
         var showFollowTelescope = false
         var showFollowAutoTag = false
         if (chatroom.followStatus == false) {
@@ -116,7 +114,6 @@ object ViewDataConverter {
         dynamicViewType: Int? = null
     ): ChatroomViewData {
         // todo: member state
-        Log.d("TAG", "convertChatroomForHome--: ${chatroom.lastConversation?.answer}")
         return ChatroomViewData.Builder()
             .id(chatroom.id)
             .communityId(chatroom.communityId ?: "")
@@ -172,7 +169,7 @@ object ViewDataConverter {
      * convert [Conversation] to [ConversationViewData]
      */
     fun convertConversations(conversations: List<Conversation>): List<ConversationViewData> {
-        return conversations.map {
+        return conversations.mapNotNull {
             convertConversation(it)
         }
     }
@@ -183,14 +180,15 @@ object ViewDataConverter {
     fun convertConversation(
         conversation: Conversation?,
         memberViewData: MemberViewData? = null
-    ): ConversationViewData {
+    ): ConversationViewData? {
         if (conversation == null) {
-            return ConversationViewData.Builder().build()
+            return null
         }
         return ConversationViewData.Builder()
             .id(conversation.id ?: "")
             .memberViewData(memberViewData ?: convertMember(conversation.member))
             .createdAt(conversation.createdAt.toString())
+            .createdEpoch(conversation.createdEpoch ?: 0L)
             .answer(conversation.answer)
             .state(conversation.state)
             .attachments(
@@ -206,12 +204,12 @@ object ViewDataConverter {
             .attachmentCount(conversation.attachmentCount ?: 0)
             .attachmentsUploaded(conversation.attachmentUploaded)
             .uploadWorkerUUID(conversation.uploadWorkerUUID)
+            .temporaryId(conversation.temporaryId)
             .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
             .build()
     }
 
     fun convertMember(member: Member?): MemberViewData {
-        // todo: uid
         if (member == null) {
             return MemberViewData.Builder().build()
         }

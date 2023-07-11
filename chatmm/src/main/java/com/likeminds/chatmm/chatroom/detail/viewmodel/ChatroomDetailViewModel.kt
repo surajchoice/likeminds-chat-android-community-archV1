@@ -511,7 +511,6 @@ class ChatroomDetailViewModel @Inject constructor(
             fetchMemberState()
             observeConversations(chatroomDetailExtras.chatroomId)
             // todo: write in db
-//            observeChatroom()
 //            observeCommunity(chatroomViewData.communityId)
         }
     }
@@ -576,7 +575,7 @@ class ChatroomDetailViewModel @Inject constructor(
         val median = medianConversation
             ?: getConversationResponse.data?.conversation
             ?: return emptyList()
-        val medianViewData = ViewDataConverter.convertConversation(median)
+        val medianViewData = ViewDataConverter.convertConversation(median) ?: return emptyList()
 
         val dataList = mutableListOf<BaseViewType>()
 
@@ -602,7 +601,8 @@ class ChatroomDetailViewModel @Inject constructor(
         val belowConversations = getBelowConversationsResponse.data?.conversations ?: emptyList()
         val belowConversationsViewData = ViewDataConverter.convertConversations(belowConversations)
 
-        var conversations = aboveConversationsViewData + medianViewData + belowConversationsViewData
+        var conversations =
+            (aboveConversationsViewData + medianViewData + belowConversationsViewData)
 
         if (aboveConversationsViewData.size < CONVERSATIONS_LIMIT
             || aboveConversationsViewData.firstOrNull()?.state == STATE_HEADER
@@ -685,7 +685,6 @@ class ChatroomDetailViewModel @Inject constructor(
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        Log.d(TAG, "getChangedConversations: ")
                         val conversationsViewData =
                             ViewDataConverter.convertConversations(conversations)
                         sendConversationUpdatesToUI(conversationsViewData)
@@ -694,7 +693,6 @@ class ChatroomDetailViewModel @Inject constructor(
 
                 override fun getNewConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        Log.d(TAG, "getNewConversations: ")
                         val conversationsViewData =
                             ViewDataConverter.convertConversations(conversations)
                         sendNewConversationsToUI(conversationsViewData)
@@ -703,7 +701,6 @@ class ChatroomDetailViewModel @Inject constructor(
 
                 override fun getPostedConversations(conversations: List<Conversation>?) {
                     if (!conversations.isNullOrEmpty()) {
-                        Log.d(TAG, "getPostedConversations: ")
                         val conversationsViewData =
                             ViewDataConverter.convertConversations(conversations)
                         sendConversationUpdatesToUI(conversationsViewData)
@@ -843,12 +840,12 @@ class ChatroomDetailViewModel @Inject constructor(
         repliedChatRoomId: String? = null,
     ): PaginatedViewData? {
         val chatroom = getChatroom() ?: return null
-        val chatroomId = chatroom.id.toInt()
+        val chatroomId = chatroom.id
         val conversationForRequest = ViewDataConverter.convertConversation(conversationKey)
         val getConversationsResponse = if (scrollState == SCROLL_UP) {
             lmChatClient.getConversations(
                 GetConversationsRequest.Builder()
-                    .chatroomId(chatroomId.toString())
+                    .chatroomId(chatroomId)
                     .conversation(conversationForRequest)
                     .type(GetConversationType.ABOVE)
                     .limit(CONVERSATIONS_LIMIT)
@@ -857,7 +854,7 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             lmChatClient.getConversations(
                 GetConversationsRequest.Builder()
-                    .chatroomId(chatroomId.toString())
+                    .chatroomId(chatroomId)
                     .conversation(conversationForRequest)
                     .type(GetConversationType.BELOW)
                     .limit(CONVERSATIONS_LIMIT)
@@ -1459,7 +1456,7 @@ class ChatroomDetailViewModel @Inject constructor(
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?
-    ): ConversationViewData {
+    ): ConversationViewData? {
         val conversation = ViewDataConverter.convertConversation(
             memberId,
             communityId,
@@ -1485,9 +1482,9 @@ class ChatroomDetailViewModel @Inject constructor(
         val member = lmChatClient.getMember(getMemberRequest).data?.member
         val memberViewData = ViewDataConverter.convertMember(member)
         return ViewDataConverter.convertConversation(conversation, memberViewData)
-            .toBuilder()
-            .replyConversation(ViewDataConverter.convertConversation(replyConversation))
-            .build()
+            ?.toBuilder()
+            ?.replyConversation(ViewDataConverter.convertConversation(replyConversation))
+            ?.build()
     }
 
     /**
@@ -1872,6 +1869,23 @@ class ChatroomDetailViewModel @Inject constructor(
     ---------------------------------------------------------------*/
 
     /**
+     * Triggers event when the current user tags someone
+     * @param user User object
+     * @param communityId Community id
+     */
+    fun sendUserTagEvent(user: TagViewData, communityId: String?) {
+        LMAnalytics.track(
+            LMAnalytics.Events.USER_TAGS_SOMEONE,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_NAME to getChatroom()?.header,
+                "tagged_user_id" to user.id.toString(),
+                "tagged_user_name" to user.name,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
+    }
+
+    /**
      * Triggers when the current user opens the chatroom
      * @param extras Chatroom detail fragment extra bundle
      */
@@ -2232,5 +2246,20 @@ class ChatroomDetailViewModel @Inject constructor(
                 "member_state" to MemberState.getMemberState(currentMemberDataFromMemberState?.state),
             )
         )
+    }
+
+    /**
+     * Triggers when the current user opens the emoji keyboard view
+     */
+    fun sendReactionsClickEvent() {
+        getChatroomViewData()?.id?.let { chatroomId ->
+            LMAnalytics.track(
+                LMAnalytics.Events.REACTIONS_CLICKED,
+                mapOf(
+                    LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                    LMAnalytics.Keys.SOURCE to "chatroom"
+                )
+            )
+        }
     }
 }

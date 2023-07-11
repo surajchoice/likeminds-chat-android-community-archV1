@@ -163,4 +163,5 @@
     <string name="notifications_muted_for_this_chatroom">"Notifications muted for this chatroom"</string>
     <string name="warning_multimedia_and_document_share_error">PDF, images, videos and gifs cannot be uploaded together. Please upload these one by one.</string>
     <string name="third_party_share">LikeMinds Share</string>
+    <string name="the_chatroom_link_is_either_tampered_or_invalid">The chatroom link is either tampered or invalid</string>
 </resources>

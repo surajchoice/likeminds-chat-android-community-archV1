@@ -5,11 +5,9 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MEMBER
 import kotlinx.parcelize.Parcelize
 
-// todo: removed question view data
 @Parcelize
 class MemberViewData private constructor(
     val id: String?,
-    val uid: String?,
     val name: String?,
     val email: String?,
     val headline: String?,
@@ -39,7 +37,6 @@ class MemberViewData private constructor(
 
     class Builder {
         private var id: String? = null
-        private var uid: String? = null
         private var name: String? = null
         private var email: String? = null
         private var headline: String? = null
@@ -65,7 +62,6 @@ class MemberViewData private constructor(
         private var userUniqueId: String? = null
 
         fun id(id: String?) = apply { this.id = id }
-        fun uid(uid: String?) = apply { this.uid = uid }
         fun name(name: String?) = apply { this.name = name }
         fun email(email: String?) = apply { this.email = email }
         fun headline(headline: String?) = apply { this.headline = headline }
@@ -106,7 +102,6 @@ class MemberViewData private constructor(
 
         fun build() = MemberViewData(
             id,
-            uid,
             name,
             email,
             headline,
@@ -135,7 +130,6 @@ class MemberViewData private constructor(
 
     fun toBuilder(): Builder {
         return Builder().id(id)
-            .uid(uid)
             .name(name)
             .email(email)
             .headline(headline)
