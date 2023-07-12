@@ -11,7 +11,7 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationAudioBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -22,7 +22,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUDIO
 import javax.inject.Inject
 
 class ConversationAudioItemViewBinder @Inject constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener
 ) : ViewDataBinder<ItemConversationAudioBinding, BaseViewType>(),
     ChatroomItemAdapterListener {
@@ -62,7 +62,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -76,7 +76,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -96,14 +96,14 @@ class ConversationAudioItemViewBinder @Inject constructor(
 //            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //                ivAddReaction,
 //                data,
-//                sdkPreferences.getMemberId()
+//                userPreferences.getMemberId()
 //            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -112,7 +112,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -126,7 +126,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -155,7 +155,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
 //                clConversationRoot,
 //                clConversationBubble,
 //                messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                chatroomDetailAdapterListener,
 //                data
 //            )
@@ -200,7 +200,6 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 attachments.take(2),
                 chatroomDetailAdapterListener,
                 mediaActionVisible,
-                sdkPreferences,
                 mediaUploadFailed
             )
 

@@ -29,10 +29,10 @@ import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
 import com.likeminds.chatmm.media.util.MediaPlayerListener
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.AndroidUtils
 import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
@@ -62,7 +62,7 @@ class ConversationAudioSendEditFragment :
     private lateinit var imageAdapter: ImageAdapter
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     private lateinit var memberTagging: MemberTaggingView
     private var mediaUriList: ArrayList<SingleUriData>? = null
@@ -221,7 +221,7 @@ class ConversationAudioSendEditFragment :
         }
 
         binding.btnSend.setOnClickListener {
-            if (sdkPreferences.getIsGuestUser()) {
+            if (userPreferences.getIsGuestUser()) {
                 SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {

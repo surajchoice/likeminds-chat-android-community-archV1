@@ -5,12 +5,12 @@ import androidx.annotation.DrawableRes
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.model.ChatReplyViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberState
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.utils.MemberUtil
+import com.likeminds.chatmm.member.model.MemberState
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberUtil
 
 object ChatReplyUtil {
 
@@ -85,7 +85,7 @@ object ChatReplyUtil {
         currentMemberId: String,
         attachments: MutableList<AttachmentViewData>? = null,
         linkOgTags: LinkOGTagsViewData? = null,
-        @ConversationsState conversationState: Int? = null,
+        @ConversationState conversationState: Int? = null,
         type: String?
     ): ChatReplyViewData {
         val memberName = MemberUtil.getMemberNameForDisplay(memberViewData, currentMemberId)
@@ -194,7 +194,7 @@ object ChatReplyUtil {
         gifsCount: Int,
         videosCount: Int,
         pdfsCount: Int,
-        @ConversationsState conversationState: Int?,
+        @ConversationState conversationState: Int?,
         audiosCount: Int,
         voiceNoteCount: Int,
     ): Int? {

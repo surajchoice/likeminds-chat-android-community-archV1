@@ -13,7 +13,7 @@
 
         <variable
             name="chatViewData"
-            type="com.likeminds.chatmm.homefeed.model.ChatViewData" />
+            type="com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData" />
 
         <variable
             name="isDraftOrCreating"

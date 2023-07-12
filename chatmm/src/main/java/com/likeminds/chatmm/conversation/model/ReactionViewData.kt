@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.model.MemberViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MESSAGE_REACTION
 import kotlinx.parcelize.Parcelize

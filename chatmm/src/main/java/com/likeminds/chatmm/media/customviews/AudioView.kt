@@ -13,7 +13,6 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.LayoutAudioBinding
-import com.likeminds.chatmm.utils.SDKPreferences
 
 class AudioView(
     context: Context,
@@ -32,7 +31,6 @@ class AudioView(
     private var adapter: ChatroomItemAdapter? = null
 
     private lateinit var chatroomAdapterListener: ChatroomDetailAdapterListener
-    private lateinit var sdkPreferences: SDKPreferences
     private var mediaActionVisible = false
     private var mediaUploadFailed = false
     private var isProgressFocussed = false
@@ -41,12 +39,10 @@ class AudioView(
         attachments: List<AttachmentViewData>,
         chatroomAdapterListener: ChatroomDetailAdapterListener,
         mediaActionVisible: Boolean,
-        sdkPreferences: SDKPreferences,
         mediaUploadFailed: Boolean = false,
     ) {
         this.attachments.clear()
         this.attachments.addAll(attachments)
-        this.sdkPreferences = sdkPreferences
         this.chatroomAdapterListener = chatroomAdapterListener
         this.mediaActionVisible = mediaActionVisible
         this.mediaUploadFailed = mediaUploadFailed
@@ -56,7 +52,6 @@ class AudioView(
     private fun initRecyclerView() {
         binding.rvAudio.apply {
             adapter = ChatroomItemAdapter(
-                sdkPreferences,
                 chatroomItemAdapterListener = this@AudioView
             )
             this@AudioView.adapter?.replace(attachments.toList())

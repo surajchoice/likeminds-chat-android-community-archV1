@@ -17,6 +17,9 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.member.model.MemberState
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
@@ -49,6 +52,7 @@ import javax.inject.Inject
 
 class ChatroomDetailViewModel @Inject constructor(
     private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
 
@@ -237,7 +241,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun isChatroomCreator(): Boolean {
-        return getChatroomViewData()?.memberViewData?.id == sdkPreferences.getMemberId()
+        return getChatroomViewData()?.memberViewData?.id == userPreferences.getMemberId()
     }
 
     /**
@@ -260,7 +264,7 @@ class ChatroomDetailViewModel @Inject constructor(
         return null
         // todo:
 //        return if (
-//            sdkPreferences.getMemberId() == getChatroom()?.chatroomWithUser?.id
+//            userPreferences.getMemberId() == getChatroom()?.chatroomWithUser?.id
 //        ) {
 //            getChatroom()?.memberViewData
 //        }
@@ -272,7 +276,7 @@ class ChatroomDetailViewModel @Inject constructor(
     //get first normal or poll conversation for list
     fun getFirstNormalOrPollConversation(items: List<BaseViewType>): ConversationViewData? {
         return items.firstOrNull {
-            it is ConversationViewData && ConversationsState.isPollOrNormal(it.state)
+            it is ConversationViewData && ConversationState.isPollOrNormal(it.state)
         } as? ConversationViewData
     }
 
@@ -388,14 +392,14 @@ class ChatroomDetailViewModel @Inject constructor(
             }
 
             val getMemberRequest = GetMemberRequest.Builder()
-                .memberId(sdkPreferences.getMemberId())
+                .memberId(userPreferences.getMemberId())
                 .build()
             currentMemberFromDb =
                 ViewDataConverter.convertMember(lmChatClient.getMember(getMemberRequest).data?.member)
 
             val chatroomViewData = ViewDataConverter.convertChatroom(
                 chatroom,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 ChatroomUtil.getChatroomViewType(chatroom)
             ) ?: return@launchIO
             chatroomDetail = ChatroomDetailViewData.Builder()
@@ -1123,7 +1127,7 @@ class ChatroomDetailViewModel @Inject constructor(
             // create request
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(chatroomId)
-                .memberId(sdkPreferences.getMemberId())
+                .memberId(userPreferences.getMemberId())
                 .value(value)
                 .build()
 
@@ -1307,7 +1311,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
         sendConversationUpdatesToUI(conversations.map {
-            it.toBuilder().deletedBy(sdkPreferences.getMemberId()).build()
+            it.toBuilder().deletedBy(userPreferences.getMemberId()).build()
         })
     }
 
@@ -1377,7 +1381,7 @@ class ChatroomDetailViewModel @Inject constructor(
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 communityId,
                 postConversationRequest,
                 updatedFileUris
@@ -2091,7 +2095,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 mapOf(
                     LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
                     LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
-                    LMAnalytics.Keys.USER_ID to sdkPreferences.getMemberId(),
+                    LMAnalytics.Keys.USER_ID to userPreferences.getMemberId(),
                     LMAnalytics.Keys.MESSAGE_ID to messageId,
                     "url" to url,
                     "type" to "link",

@@ -14,21 +14,26 @@ import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
+import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
 import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.search.view.SearchActivity
-import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
+import com.likeminds.chatmm.utils.HomeFeedPreferences
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.observeInLifecycle
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -41,7 +46,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var snackBar: CustomSnackBar
@@ -204,7 +209,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun onResume() {
         super.onResume()
-        if (!viewModel.isDBEmpty() && !sdkPreferences.getIsGuestUser()) {
+        if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
             fetchData()
         }
     }
@@ -226,7 +231,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(sdkPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(userPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -255,8 +260,8 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         viewModel.observeChatrooms(requireContext())
     }
 
-    override fun onChatRoomClicked(chatViewData: ChatViewData) {
-        val chatroom = chatViewData.chatroom
+    override fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData) {
+        val chatroom = homeFeedItemViewData.chatroom
         openChatroom(chatroom)
     }
 

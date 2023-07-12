@@ -68,7 +68,6 @@ dependencies {
 
     //relate to branch
     implementation deps.branch.main
-    implementation deps.firebase.appindexing
     implementation deps.googlePlayServicesAppIdentifier.main
 
     //shimmer

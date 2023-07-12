@@ -13,7 +13,7 @@ import com.likeminds.chatmm.chatroom.detail.model.TYPE_DIRECT_MESSAGE
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.databinding.ItemConversationActionBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingClickableSpan
@@ -21,7 +21,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_ACTION
 
 class ConversationActionItemViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener?,
 ) : ViewDataBinder<ItemConversationActionBinding, BaseViewType>() {
 
@@ -67,7 +67,7 @@ class ConversationActionItemViewDataBinder constructor(
                 tvAction.editableText.length,
                 MemberTaggingClickableSpan::class.java
             )
-            val loggedInMemberId = sdkPreferences.getMemberId()
+            val loggedInMemberId = userPreferences.getMemberId()
 
             spans.reversed().forEach { span ->
                 if (conversation.state != DM_MEMBER_REMOVED_OR_LEFT ||

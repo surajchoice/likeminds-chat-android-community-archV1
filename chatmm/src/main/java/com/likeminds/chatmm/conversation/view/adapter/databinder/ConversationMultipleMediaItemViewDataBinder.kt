@@ -12,14 +12,14 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationMultipleMediaBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_MEDIA
 import javax.inject.Inject
 
 internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationMultipleMediaBinding, BaseViewType>(),
     ChatroomItemAdapterListener {
@@ -52,7 +52,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 position,
                 conversationViewData = data,
@@ -65,7 +65,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -85,14 +85,14 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
 //            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //                ivAddReaction,
 //                data,
-//                sdkPreferences.getMemberId()
+//                userPreferences.getMemberId()
 //            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -101,7 +101,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 adapterListener,
@@ -117,7 +117,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 conversationViewData = data
             )
@@ -145,7 +145,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
 //                clConversationRoot,
 //                clConversationBubble,
 //                messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                adapterListener,
 //                data
 //            )
@@ -161,7 +161,6 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
             val gridLayoutManager = GridLayoutManager(root.context, 2)
             rvDocuments.layoutManager = gridLayoutManager
             val documentsItemAdapter = ChatroomItemAdapter(
-                sdkPreferences,
                 chatroomItemAdapterListener = this@ConversationMultipleMediaItemViewDataBinder
             )
             rvDocuments.adapter = documentsItemAdapter

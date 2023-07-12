@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.member.model.MemberViewData
 
 object Route {
     // todo:

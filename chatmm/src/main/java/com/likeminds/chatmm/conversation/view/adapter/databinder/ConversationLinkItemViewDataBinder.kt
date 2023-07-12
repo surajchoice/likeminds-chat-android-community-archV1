@@ -9,13 +9,13 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationLinkBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
 
 internal class ConversationLinkItemViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
 //    private val messageReactionsPreferences: MessageReactionsPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationLinkBinding, BaseViewType>() {
@@ -44,7 +44,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -57,7 +57,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -80,12 +80,12 @@ internal class ConversationLinkItemViewDataBinder constructor(
 //            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //                ivAddReaction,
 //                data,
-//                sdkPreferences.getMemberId()
+//                userPreferences.getMemberId()
 //            )
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 imageViewStatus = ivConversationStatus,
                 conversation = data
@@ -93,7 +93,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -138,7 +138,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -166,7 +166,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
 //                binding.clConversationRoot,
 //                binding.clConversationBubble,
 //                binding.messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                chatroomDetailAdapterListener,
 //                data
 //            )
@@ -178,7 +178,7 @@ internal class ConversationLinkItemViewDataBinder constructor(
 //                messageReactionsPreferences.getTotalNoOfHintsAllowed(),
 //                tvDoubleTap,
 //                data.memberViewData,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                clConversationRoot,
 //                clConversationBubble
 //            )

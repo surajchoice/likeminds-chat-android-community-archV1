@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
+import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 
 //view related utils class

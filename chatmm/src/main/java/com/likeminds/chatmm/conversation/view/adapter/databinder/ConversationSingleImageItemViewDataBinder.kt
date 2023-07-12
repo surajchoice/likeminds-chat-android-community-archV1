@@ -15,8 +15,8 @@ import com.likeminds.chatmm.media.model.MEDIA_HORIZONTAL_LIST_SCREEN
 import com.likeminds.chatmm.media.model.MediaExtras
 import com.likeminds.chatmm.media.model.MediaSwipeViewData
 import com.likeminds.chatmm.media.view.MediaActivity
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -24,7 +24,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_IMAGE
 import com.likeminds.chatmm.utils.model.ITEM_IMAGE_SWIPE
 
 internal class ConversationSingleImageItemViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
 //    private val messageReactionsPreferences: MessageReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationSingleImageBinding, BaseViewType>() {
@@ -57,7 +57,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 position,
                 conversationViewData = data,
@@ -70,7 +70,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -90,14 +90,14 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
 //        ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //            ivAddReaction,
 //            data,
-//            sdkPreferences.getMemberId()
+//            userPreferences.getMemberId()
 //        )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -106,7 +106,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 adapterListener,
@@ -122,7 +122,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 conversationViewData = data
             )
@@ -150,7 +150,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
 //                clConversationRoot,
 //                clConversationBubble,
 //                messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                adapterListener,
 //                data
 //            )
@@ -162,7 +162,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
 //                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
 //                    tvDoubleTap,
 //                    data.memberViewData(),
-//                    sdkPreferences.getMemberId(),
+//                    userPreferences.getMemberId(),
 //                    clConversationRoot,
 //                    clConversationBubble
 //                )

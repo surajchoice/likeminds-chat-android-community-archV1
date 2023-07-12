@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.likeminds.chatmm.chatroom.detail.model.AutoFollowedTaggedActionViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDateViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.*
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 internal class ChatroomDetailDiffUtilCallback(
@@ -162,7 +162,6 @@ internal class ChatroomDetailDiffUtilCallback(
                     && oldItem.title == newItem.title
                     && oldItem.createdAt == newItem.createdAt
                     && oldItem.answerText == newItem.answerText
-                    && oldItem.answerTextUpdated() == newItem.answerTextUpdated()
                     && oldItem.state == newItem.state
                     && oldItem.shareUrl == newItem.shareUrl
                     && oldItem.type == newItem.type

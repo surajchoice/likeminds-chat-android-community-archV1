@@ -34,9 +34,9 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.AndroidUtils
 import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -58,7 +58,7 @@ class ConversationMediaEditFragment :
     private lateinit var imageAdapter: ImageAdapter
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var helperViewModel: HelperViewModel
@@ -178,7 +178,7 @@ class ConversationMediaEditFragment :
         }
 
         binding.btnSend.setOnClickListener {
-            if (sdkPreferences.getIsGuestUser()) {
+            if (userPreferences.getIsGuestUser()) {
                 SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {

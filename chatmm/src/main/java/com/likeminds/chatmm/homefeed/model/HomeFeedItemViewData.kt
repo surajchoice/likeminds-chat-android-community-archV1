@@ -2,14 +2,14 @@ package com.likeminds.chatmm.homefeed.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ChatViewData private constructor(
+class HomeFeedItemViewData private constructor(
     val chatroom: ChatroomViewData,
     val lastConversation: ConversationViewData?,
     val unseenConversationCount: Int,
@@ -63,7 +63,7 @@ class ChatViewData private constructor(
         fun chatroomImageUrl(chatroomImageUrl: String?) =
             apply { this.chatroomImageUrl = chatroomImageUrl }
 
-        fun build() = ChatViewData(
+        fun build() = HomeFeedItemViewData(
             chatroom,
             lastConversation,
             unseenConversationCount,

@@ -23,7 +23,6 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_DIRECT_MESSAGE
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -34,9 +33,14 @@ import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
-import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.utils.AndroidUtils
+import com.likeminds.chatmm.utils.DateUtil
+import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ValueUtils.getValidTextForLinkify
 import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent

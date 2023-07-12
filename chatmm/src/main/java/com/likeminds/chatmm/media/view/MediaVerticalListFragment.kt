@@ -8,7 +8,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
 import com.likeminds.chatmm.databinding.FragmentMediaVerticalListBinding
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.model.ITEM_IMAGE_EXPANDED
 import com.likeminds.chatmm.utils.model.ITEM_PDF_EXPANDED
@@ -21,7 +21,7 @@ class MediaVerticalListFragment :
     private var mediaExtras: MediaExtras? = null
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     companion object {
         const val TAG = "MediaVerticalListFragment"
@@ -77,7 +77,7 @@ class MediaVerticalListFragment :
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         binding.rvImageList.layoutManager = linearLayoutManager
-        val chatroomDocumentsItemAdapter = ChatroomItemAdapter(sdkPreferences)
+        val chatroomDocumentsItemAdapter = ChatroomItemAdapter()
         binding.rvImageList.adapter = chatroomDocumentsItemAdapter
         val attachmentList = mediaExtras?.attachments?.map { attachment ->
             val viewType = when {

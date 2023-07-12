@@ -19,6 +19,7 @@ import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapter
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ExploreClickListener
 import com.likeminds.chatmm.chatroom.explore.viewmodel.ExploreViewModel
 import com.likeminds.chatmm.databinding.FragmentChatroomExploreBinding
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
 import com.likeminds.chatmm.overflowmenu.view.OverflowMenuPopup
 import com.likeminds.chatmm.overflowmenu.view.adapter.OverflowMenuAdapterListener
@@ -40,6 +41,9 @@ class ChatroomExploreFragment :
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    @Inject
+    lateinit var userPreferences: UserPreferences
 
     private val overflowMenu: OverflowMenuPopup by lazy {
         OverflowMenuPopup.create(requireContext(), this)
@@ -340,7 +344,7 @@ class ChatroomExploreFragment :
     //Handles Join/Joined button clicks
     override fun onJoinClick(follow: Boolean, position: Int, exploreViewData: ExploreViewData) {
         //Check for guest flow
-        if (sdkPreferences.getIsGuestUser()) {
+        if (userPreferences.getIsGuestUser()) {
             //User is Guest
             SDKApplication.getLikeMindsCallback()?.login()
             activity?.finish()

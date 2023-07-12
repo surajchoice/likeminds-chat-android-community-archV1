@@ -1,9 +1,9 @@
 package com.likeminds.chatmm.homefeed.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 internal class HomeFeedDiffUtilCallback(
@@ -19,7 +19,7 @@ internal class HomeFeedDiffUtilCallback(
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return when {
-            oldItem is ChatViewData && newItem is ChatViewData -> {
+            oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 oldItem.chatroom.id == newItem.chatroom.id
             }
             oldItem is HomeLineBreakViewData && newItem is HomeLineBreakViewData -> true
@@ -38,7 +38,7 @@ internal class HomeFeedDiffUtilCallback(
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return when {
-            oldItem is ChatViewData && newItem is ChatViewData -> {
+            oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 chatViewData(oldItem, newItem)
             }
             oldItem is ContentHeaderViewData && newItem is ContentHeaderViewData -> {
@@ -58,7 +58,10 @@ internal class HomeFeedDiffUtilCallback(
     /**
      * Check the differences in only those data which are shown to the UI.
      */
-    private fun chatViewData(oldItem: ChatViewData, newItem: ChatViewData): Boolean {
+    private fun chatViewData(
+        oldItem: HomeFeedItemViewData,
+        newItem: HomeFeedItemViewData
+    ): Boolean {
         return oldItem.chatroom.header == newItem.chatroom.header
                 && oldItem.chatroom.title == newItem.chatroom.title
                 && oldItem.isDraft == newItem.isDraft

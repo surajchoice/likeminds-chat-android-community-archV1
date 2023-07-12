@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -9,6 +8,8 @@ import com.likeminds.chatmm.conversation.model.ChatroomAnnouncementItemViewDataB
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.ReportLinkExtras
 import com.likeminds.chatmm.conversation.view.adapter.databinder.*
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
@@ -20,6 +21,7 @@ import java.util.*
 
 class ChatroomDetailAdapter constructor(
     val sdkPreferences: SDKPreferences,
+    val userPreferences: UserPreferences,
     val listener: ChatroomDetailAdapterListener,
 ) : BaseRecyclerAdapter<BaseViewType>() {
     init {
@@ -38,27 +40,27 @@ class ChatroomDetailAdapter constructor(
 
         val chatroomItemViewDataBinder =
             ChatroomItemViewDataBinder(
-                sdkPreferences,
+                userPreferences,
 //                messageReactionsPreferences,
                 listener
             )
         viewDataBinders.add(chatroomItemViewDataBinder)
 
         val chatroomAnnouncementItemViewDataBinder =
-            ChatroomAnnouncementItemViewDataBinder(sdkPreferences, listener)
+            ChatroomAnnouncementItemViewDataBinder(userPreferences, listener)
         viewDataBinders.add(chatroomAnnouncementItemViewDataBinder)
 
         val conversationMultipleDocumentViewDataBinder =
-            ConversationMultipleDocumentViewDataBinder(sdkPreferences, listener)
+            ConversationMultipleDocumentViewDataBinder(userPreferences, listener)
         viewDataBinders.add(conversationMultipleDocumentViewDataBinder)
 
         val conversationActionItemViewDataBinder =
-            ConversationActionItemViewDataBinder(sdkPreferences, listener)
+            ConversationActionItemViewDataBinder(userPreferences, listener)
         viewDataBinders.add(conversationActionItemViewDataBinder)
 
         val conversationItemViewDataBinder =
             ConversationItemViewDataBinder(
-                sdkPreferences,
+                userPreferences,
 //                messageReactionsPreferences,
                 listener
             )
@@ -72,50 +74,50 @@ class ChatroomDetailAdapter constructor(
         viewDataBinders.add(conversationAutoFollowedTaggedActionViewDataBinder)
 
         val conversationSingleImageItemViewDataBinder = ConversationSingleImageItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleImageItemViewDataBinder)
 
         val conversationSingleGifItemViewDataBinder = ConversationSingleGifItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleGifItemViewDataBinder)
 
         val conversationMultipleMediaItemViewDataBinder =
-            ConversationMultipleMediaItemViewDataBinder(sdkPreferences, listener)
+            ConversationMultipleMediaItemViewDataBinder(userPreferences, listener)
         viewDataBinders.add(conversationMultipleMediaItemViewDataBinder)
 
         val conversationSinglePdfItemViewDataBinder = ConversationSinglePdfItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSinglePdfItemViewDataBinder)
 
         val conversationLinkItemViewDataBinder = ConversationLinkItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationLinkItemViewDataBinder)
 
         val conversationSingleVideoItemViewDataBinder = ConversationSingleVideoItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleVideoItemViewDataBinder)
 
         val conversationAudioItemViewBinder =
-            ConversationAudioItemViewBinder(sdkPreferences, listener)
+            ConversationAudioItemViewBinder(userPreferences, listener)
         viewDataBinders.add(conversationAudioItemViewBinder)
 
         val conversationVoiceNoteItemViewDataBinder = ConversationVoiceNoteItemViewDataBinder(
-            sdkPreferences,
+            userPreferences,
 //            messageReactionsPreferences,
             listener
         )

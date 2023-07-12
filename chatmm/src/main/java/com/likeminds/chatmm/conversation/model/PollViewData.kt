@@ -2,7 +2,7 @@ package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM_POLL
 import kotlinx.parcelize.Parcelize

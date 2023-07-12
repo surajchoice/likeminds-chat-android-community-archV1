@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
-import com.likeminds.chatmm.chatroom.detail.model.TYPE_INTRO
 import com.likeminds.chatmm.chatroom.detail.view.YouTubeVideoPlayerPopup
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
@@ -44,7 +43,7 @@ object ChatroomUtil {
 
     fun isUnsupportedConversation(conversation: ConversationViewData): Boolean {
         // If conversation state is not defined on client side
-        if (!ConversationsState.contains(conversation.state)) {
+        if (!ConversationState.contains(conversation.state)) {
             return true
         }
         //If conversation state is normal and attachment type is not defined on client side
@@ -280,9 +279,6 @@ object ChatroomUtil {
 
     fun getTypeDrawableId(type: Int?): Int? {
         return when (type) {
-            TYPE_INTRO -> {
-                R.drawable.ic_intro_room
-            }
             TYPE_ANNOUNCEMENT -> {
                 R.drawable.ic_announcement_room
             }

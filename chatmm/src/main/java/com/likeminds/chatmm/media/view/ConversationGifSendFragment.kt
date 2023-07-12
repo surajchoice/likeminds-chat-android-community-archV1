@@ -20,8 +20,8 @@ import com.likeminds.chatmm.media.model.GIF
 import com.likeminds.chatmm.media.model.MediaExtras
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
@@ -39,7 +39,7 @@ class ConversationGifSendFragment :
     private lateinit var memberTagging: MemberTaggingView
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var helperViewModel: HelperViewModel
@@ -106,7 +106,7 @@ class ConversationGifSendFragment :
             cancelSend()
         }
         binding.btnSend.setOnClickListener {
-            if (sdkPreferences.getIsGuestUser()) {
+            if (userPreferences.getIsGuestUser()) {
                 SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {

@@ -2,16 +2,14 @@ package com.likeminds.chatmm.chatroom.create.view.adapter
 
 import com.likeminds.chatmm.chatroom.create.view.adapter.databinder.ItemAudioViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 class ChatroomItemAdapter constructor(
-    val sdkPreferences: SDKPreferences,
     val chatroomItemAdapterListener: ChatroomItemAdapterListener? = null,
 ) : BaseRecyclerAdapter<BaseViewType>() {
 

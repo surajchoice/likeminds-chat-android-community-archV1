@@ -12,7 +12,7 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationMultipleDocumentBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -22,7 +22,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
 import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT
 
 internal class ConversationMultipleDocumentViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationMultipleDocumentBinding, BaseViewType>(),
     ChatroomItemAdapterListener {
@@ -61,7 +61,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -75,7 +75,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -95,14 +95,14 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 //            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //                ivAddReaction,
 //                data,
-//                sdkPreferences.getMemberId()
+//                userPreferences.getMemberId()
 //            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -111,7 +111,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -127,7 +127,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -155,7 +155,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 //                clConversationRoot,
 //                clConversationBubble,
 //                messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                chatroomDetailAdapterListener,
 //                data
 //            )
@@ -170,7 +170,6 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
     ) {
         binding.apply {
             val documentsItemAdapter = ChatroomItemAdapter(
-                sdkPreferences,
                 chatroomItemAdapterListener = this@ConversationMultipleDocumentViewDataBinder
             )
             rvDocuments.adapter = documentsItemAdapter

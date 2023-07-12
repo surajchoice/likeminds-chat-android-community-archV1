@@ -10,7 +10,7 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationBinding
-import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -18,7 +18,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION
 
 internal class ConversationItemViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
 //    private val messageReactionsPreferences: MessageReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationBinding, BaseViewType>() {
@@ -57,7 +57,7 @@ internal class ConversationItemViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 position,
                 conversationViewData = data,
@@ -69,7 +69,7 @@ internal class ConversationItemViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
                 ivAddReaction.hide()
@@ -84,7 +84,7 @@ internal class ConversationItemViewDataBinder constructor(
                     tvDeleteMessage = tvDeleteMessage
                 )
 
-                if (data.memberViewData.id.equals(sdkPreferences.getMemberId())) {
+                if (data.memberViewData.id.equals(userPreferences.getMemberId())) {
                     ivAddReaction.hide()
                 } else {
                     if (data.answer.length > ADD_REACTION_CHARACTER_CHECK || !data.reactions
@@ -98,7 +98,7 @@ internal class ConversationItemViewDataBinder constructor(
             }
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 imageViewStatus = ivConversationStatus,
                 conversation = data
@@ -106,7 +106,7 @@ internal class ConversationItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 adapterListener,
@@ -120,7 +120,7 @@ internal class ConversationItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 conversationViewData = data
             )
@@ -148,7 +148,7 @@ internal class ConversationItemViewDataBinder constructor(
 //                clConversationRoot,
 //                binding.clConversationBubble,
 //                binding.messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                adapterListener,
 //                data
 //            )
@@ -161,7 +161,7 @@ internal class ConversationItemViewDataBinder constructor(
 //                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
 //                    binding.tvDoubleTap,
 //                    data.memberViewData,
-//                    sdkPreferences.getMemberId(),
+//                    userPreferences.getMemberId(),
 //                    clConversationRoot,
 //                    clConversationBubble
 //                )

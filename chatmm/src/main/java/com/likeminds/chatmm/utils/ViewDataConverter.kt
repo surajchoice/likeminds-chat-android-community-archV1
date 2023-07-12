@@ -3,10 +3,11 @@ package com.likeminds.chatmm.utils
 import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction

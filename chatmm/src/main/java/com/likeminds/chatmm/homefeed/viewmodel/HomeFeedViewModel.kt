@@ -10,11 +10,16 @@ import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
-import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberUtil
+import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.utils.HomeFeedPreferences
+import com.likeminds.chatmm.utils.SDKPreferences
+import com.likeminds.chatmm.utils.TimeUtil
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
+import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -29,6 +34,7 @@ import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
     private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
     companion object {
@@ -99,7 +105,7 @@ class HomeFeedViewModel @Inject constructor(
     private val homeEventChannel = Channel<HomeEvent>(Channel.BUFFERED)
     val homeEventsFlow = homeEventChannel.receiveAsFlow()
 
-    private val allChatRoomsData = mutableListOf<ChatViewData>()
+    private val allChatRoomsData = mutableListOf<HomeFeedItemViewData>()
 
     private var totalChatroomCount: Int = 0
     private var unseenChatroomCount: Int = 0
@@ -171,14 +177,14 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
-    private fun getChatRoomViewData(chatroom: Chatroom): ChatViewData {
+    private fun getChatRoomViewData(chatroom: Chatroom): HomeFeedItemViewData {
         val chatroomViewData =
             ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
-            sdkPreferences,
+            userPreferences,
             lastConversation?.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
@@ -187,7 +193,7 @@ class HomeFeedViewModel @Inject constructor(
         } else {
             TimeUtil.getLastConversationTime(chatroomViewData.updatedAt)
         }
-        return ChatViewData.Builder()
+        return HomeFeedItemViewData.Builder()
             .chatroom(chatroomViewData)
             .lastConversation(lastConversation)
             .lastConversationTime(lastConversationTime)

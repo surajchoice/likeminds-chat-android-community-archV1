@@ -1,6 +1,7 @@
-package com.likeminds.chatmm.utils
+package com.likeminds.chatmm.member.util
 
 import android.widget.ImageView
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.generator.ColorGenerator
 import com.likeminds.chatmm.utils.generator.TextDrawable

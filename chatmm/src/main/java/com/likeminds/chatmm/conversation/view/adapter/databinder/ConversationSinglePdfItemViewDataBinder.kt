@@ -9,8 +9,8 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationSinglePdfBinding
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -19,7 +19,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_PDF
 
 internal class ConversationSinglePdfItemViewDataBinder constructor(
-    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
 //    private val messageReactionsPreferences: MessageReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationSinglePdfBinding, BaseViewType>() {
@@ -52,7 +52,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 position,
                 conversationViewData = data,
@@ -65,7 +65,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    sdkPreferences.getMemberId(),
+                    userPreferences.getMemberId(),
                     conversationViewData = data
                 )
             } else {
@@ -85,7 +85,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 //            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
 //                ivAddReaction,
 //                data,
-//                sdkPreferences.getMemberId()
+//                userPreferences.getMemberId()
 //            )
 
             ChatroomConversationItemViewDataBinderUtil.initDocument(binding, data)
@@ -94,7 +94,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.createdAt,
                 data.answer.isEmpty() && (data.deletedBy == null),
                 imageViewStatus = ivConversationStatus,
@@ -104,7 +104,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 data.replyConversation,
                 data.replyChatroomId,
                 adapterListener,
@@ -120,7 +120,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 adapterListener,
                 conversationViewData = data
             )
@@ -149,7 +149,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 //                clConversationRoot,
 //                clConversationBubble,
 //                messageReactionsGridLayout,
-//                sdkPreferences.getMemberId(),
+//                userPreferences.getMemberId(),
 //                adapterListener,
 //                data
 //            )
@@ -161,7 +161,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
 //                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
 //                    tvDoubleTap,
 //                    data.memberViewData,
-//                    sdkPreferences.getMemberId(),
+//                    userPreferences.getMemberId(),
 //                    clConversationRoot,
 //                    clConversationBubble
 //                )

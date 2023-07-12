@@ -73,6 +73,9 @@ import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.view.MediaPickerActivity
 import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
@@ -155,6 +158,9 @@ class ChatroomDetailFragment :
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    @Inject
+    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var helperViewModel: HelperViewModel
@@ -389,7 +395,7 @@ class ChatroomDetailFragment :
             return
         }
         chatroomDetailExtras = requireArguments().getParcelable(CHATROOM_DETAIL_EXTRAS)!!
-        isGuestUser = sdkPreferences.getIsGuestUser()
+        isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
     }
@@ -521,7 +527,11 @@ class ChatroomDetailFragment :
             linearLayoutManager.orientation = RecyclerView.VERTICAL
             layoutManager = linearLayoutManager
             chatroomDetailAdapter =
-                ChatroomDetailAdapter(sdkPreferences, this@ChatroomDetailFragment)
+                ChatroomDetailAdapter(
+                    sdkPreferences,
+                    userPreferences,
+                    this@ChatroomDetailFragment
+                )
             adapter = chatroomDetailAdapter
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
                 false
@@ -2527,7 +2537,7 @@ class ChatroomDetailFragment :
                         //Check if the new conversation is created by the user itself
                         if (
                             (conversations.count { conversation ->
-                                conversation.memberViewData.id == sdkPreferences.getMemberId()
+                                conversation.memberViewData.id == userPreferences.getMemberId()
                             } == conversations.size) && isAddedBelow
                         ) {
                             scrollToPosition(SCROLL_DOWN)
@@ -4169,7 +4179,7 @@ class ChatroomDetailFragment :
                 showEditAction = if (viewModel.isAnnouncementChatroom()) {
                     !isNotAdminInAnnouncementRoom() && viewModel.hasEditCommunityDetailRight()
                 } else {
-                    selectedChatRoom?.memberViewData?.id == sdkPreferences.getMemberId()
+                    selectedChatRoom?.memberViewData?.id == userPreferences.getMemberId()
                             && selectedChatRoom?.hasTitle() == true
                 }
 
@@ -4185,7 +4195,7 @@ class ChatroomDetailFragment :
                 showCopyAction = conversation.hasAnswer() && conversation.isNotDeleted()
 
                 when {
-                    conversation.memberViewData.id == sdkPreferences.getMemberId() -> {
+                    conversation.memberViewData.id == userPreferences.getMemberId() -> {
                         showReportAction = false
                         showDeleteAction = conversation.isNotDeleted()
                         showEditAction = conversation.hasAnswer() && conversation.isNotDeleted()
@@ -4214,7 +4224,7 @@ class ChatroomDetailFragment :
                 }
 
                 if (selectedConversations.values.none {
-                        it.memberViewData.id != sdkPreferences.getMemberId()
+                        it.memberViewData.id != userPreferences.getMemberId()
                                 || it.deletedBy != null
                                 || !ChatroomUtil.hasOriginalConversationId(it)
                     }) {
@@ -4420,7 +4430,7 @@ class ChatroomDetailFragment :
             conversationViewData = conversation
             val replyData = ChatReplyUtil.getConversationReplyData(
                 conversation,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 requireContext(),
                 type = type
             )
@@ -4438,7 +4448,7 @@ class ChatroomDetailFragment :
             chatRoomViewData = chatRoom
             val replyData = ChatReplyUtil.getChatRoomReplyData(
                 chatRoom,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 requireContext(),
                 type = type
             )

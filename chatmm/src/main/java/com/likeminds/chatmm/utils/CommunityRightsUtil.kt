@@ -1,6 +1,13 @@
 package com.likeminds.chatmm.utils
 
-import com.likeminds.chatmm.chatroom.detail.model.*
+import com.likeminds.chatmm.chatroom.detail.model.MANAGER_RIGHT_APPROVE_REMOVE_MEMBERS
+import com.likeminds.chatmm.chatroom.detail.model.MANAGER_RIGHT_DELETE_ROOMS
+import com.likeminds.chatmm.chatroom.detail.model.MANAGER_RIGHT_EDIT_COMMUNITY
+import com.likeminds.chatmm.chatroom.detail.model.ManagementRightPermissionViewData
+import com.likeminds.chatmm.member.model.MEMBER_RIGHT_CREATE_EVENT
+import com.likeminds.chatmm.member.model.MEMBER_RIGHT_CREATE_POLL
+import com.likeminds.chatmm.member.model.MEMBER_RIGHT_CREATE_ROOMS
+import com.likeminds.chatmm.member.model.MEMBER_RIGHT_INVITE_PRIVATE_LINK
 
 internal object CommunityRightsUtil {
 

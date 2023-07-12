@@ -1,5 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.model
 
+import com.likeminds.chatmm.member.model.MemberViewData
+
 class ChatroomDetailViewData private constructor(
     var chatroom: ChatroomViewData?,
     var currentMember: MemberViewData?,
