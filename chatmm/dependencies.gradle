@@ -104,5 +104,5 @@ dependencies {
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    implementation "com.github.NateshR.LikeMinds-Android-Chat-SDK:likemindschat:cafa84b6e9"
+    implementation "com.github.NateshR.LikeMinds-Android-Chat-SDK:likemindschat:b7b22dc209"
 }

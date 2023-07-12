@@ -14,6 +14,7 @@ import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.conversation.model.AttachmentMeta
 import com.likeminds.likemindschat.conversation.model.PutMultimediaRequest
 import com.likeminds.likemindschat.conversation.model.PutMultimediaResponse
+import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -214,8 +215,10 @@ abstract class MediaUploadWorker(
                     .uploadWorkerUUID(conversationViewData.uploadWorkerUUID)
                     .build()
             }
-            // todo:
-//            lmChatClient.updateConversation(conversation)
+            val updateConversationRequest = UpdateConversationRequest.Builder()
+                .conversation(conversation)
+                .build()
+            lmChatClient.updateConversation(updateConversationRequest)
         } else {
             failedIndex.add(awsFileResponse.index)
         }

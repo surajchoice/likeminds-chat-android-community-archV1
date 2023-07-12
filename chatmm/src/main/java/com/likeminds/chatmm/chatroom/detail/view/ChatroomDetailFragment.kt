@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.GPHContentType
 import com.giphy.sdk.ui.GPHSettings
 import com.giphy.sdk.ui.Giphy
@@ -221,7 +222,7 @@ class ChatroomDetailFragment :
                                 ((it is ConversationViewData) && (it.id == localParentConversationId))
                             } as? ConversationViewData ?: return
 
-                        if ((item.attachmentCount ?: 0) >= 1) {
+                        if ((item.attachmentCount) >= 1) {
                             var attachment =
                                 item.attachments?.get(localChildPosition) ?: return
 
@@ -267,7 +268,7 @@ class ChatroomDetailFragment :
                                 ((it is ConversationViewData) && (it.id == localParentConversationId))
                             } as? ConversationViewData ?: return
 
-                        if ((item.attachmentCount ?: 0) >= 1) {
+                        if ((item.attachmentCount) >= 1) {
                             var attachment =
                                 item.attachments?.get(localChildPosition) ?: return
 
@@ -596,6 +597,30 @@ class ChatroomDetailFragment :
         }
     }
 
+    private fun giphySelected(media: Media?) {
+        if (viewModel.isGifSupportEnabled()) {
+            media?.let {
+                val text =
+                    memberTagging.replaceSelectedMembers(binding.inputBox.etAnswer.editableText)
+                val mediaExtras = MediaExtras.Builder()
+                    .giphyMedia(it)
+                    .mediaScreenType(MEDIA_GIF_SEND_SCREEN)
+                    .chatroomId(chatroomId)
+                    .communityId(communityId?.toIntOrNull())
+                    .isSecretChatroom(getChatroomViewData()?.isSecret)
+                    .text(text)
+                    .build()
+
+                val intent = MediaActivity.getIntent(
+                    requireContext(),
+                    mediaExtras,
+                    activity?.intent?.clipData
+                )
+                imageVideoSendLauncher.launch(intent)
+            }
+        }
+    }
+
     private fun initAttachmentClick() {
         binding.apply {
             inputBox.ivAttachment.setOnClickListener {
@@ -785,7 +810,7 @@ class ChatroomDetailFragment :
     /**
      * Convert [uri] to [SingleUriData]
      * @param uri File uri
-     * @param mediaType [MediaType]
+     * @param mediaType [InternalMediaType]
      */
     private fun uriToSingleUri(uri: Uri, @InternalMediaType mediaType: String): SingleUriData {
         return SingleUriData.Builder()
@@ -929,7 +954,7 @@ class ChatroomDetailFragment :
                             ((it is ConversationViewData) && (it.id == localParentConversationId))
                         } as? ConversationViewData ?: return@setOnClickListener
 
-                    if ((item.attachmentCount ?: 0) >= 1) {
+                    if ((item.attachmentCount) >= 1) {
                         var attachment =
                             item.attachments?.get(localChildPosition) ?: return@setOnClickListener
 
@@ -1866,12 +1891,14 @@ class ChatroomDetailFragment :
     }
 
     private fun openMedia(contentUri: Uri, mimeType: String) {
+        Log.d(TAG, "openMedia: ")
         val singleUri = SingleUriData.Builder()
             .uri(contentUri)
             .fileType(mimeType)
             .build()
         when {
             viewModel.isGifSupportEnabled() && singleUri.fileType == GIF -> {
+                Log.d(TAG, "openMedia: ")
                 showGifEditScreen(singleUri)
             }
 
@@ -3414,7 +3441,7 @@ class ChatroomDetailFragment :
     }
 
     override fun isSelectionEnabled(): Boolean {
-        return !selectedConversations.isEmpty() || selectedChatRoom != null
+        return selectedConversations.isNotEmpty() || selectedChatRoom != null
     }
 
     override fun isChatRoomSelected(chatRoomId: String): Boolean {
@@ -3514,7 +3541,7 @@ class ChatroomDetailFragment :
                     ((it is ConversationViewData) && (it.id == localParentConversationId))
                 } as? ConversationViewData
 
-            if (item != null && (item.attachmentCount ?: 0) >= 1) {
+            if (item != null && item.attachmentCount >= 1) {
                 val attachment = item.attachments?.get(localChildPosition)
 
                 if (attachment != null) {
@@ -4486,7 +4513,7 @@ class ChatroomDetailFragment :
                 message.append("[")
                     .append(chatRoom.date)
                     .append(", ")
-                    .append(DateUtil.createDateFormat("hh:mm", chatRoom.createdAt ?: 0))
+                    .append(DateUtil.createDateFormat("hh:mm", chatRoom.createdAt))
                     .append("] ")
                     .append(chatRoom.memberViewData.name).append(": ")
                     .append(MemberTaggingDecoder.decode(chatRoom.title))
@@ -4894,6 +4921,17 @@ class ChatroomDetailFragment :
     /**------------------------------------------------------------
      * Lifecycle functions
     ---------------------------------------------------------------*/
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        if (requestCode == REQUEST_GIFS) {
+            giphySelected(data?.getParcelableExtra(GiphyDialogFragment.MEDIA_DELIVERY_KEY))
+        }
+    }
 
     override fun onPause() {
         super.onPause()

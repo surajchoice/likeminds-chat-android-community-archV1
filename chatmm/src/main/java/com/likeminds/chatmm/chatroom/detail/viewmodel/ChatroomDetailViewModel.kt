@@ -1099,9 +1099,12 @@ class ChatroomDetailViewModel @Inject constructor(
         chatroomId: String,
         draftText: String?
     ) {
-        // todo:
-//        chatroomRepository.setLastSeenTrueAndSaveDraftResponse(chatroomId.toInt(), draftText)
-//        markChatroomAsRead(chatroomId)
+        val updateLastSeenAndDraftRequest = UpdateLastSeenAndDraftRequest.Builder()
+            .chatroomId(chatroomId)
+            .draft(draftText)
+            .build()
+        lmChatClient.updateLastSeenAndDraft(updateLastSeenAndDraftRequest)
+        markChatroomAsRead(chatroomId)
     }
 
     fun observeLiveConversations(context: Context, chatroomId: String) {
