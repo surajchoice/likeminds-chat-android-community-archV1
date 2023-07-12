@@ -8,7 +8,6 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
-import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction
@@ -103,7 +102,7 @@ object ViewDataConverter {
         if (reactionRO == null) {
             return null
         }
-        val memberViewData = convertMember(reactionRO.member) ?: return null
+        val memberViewData = convertMember(reactionRO.member)
         return ReactionViewData.Builder()
             .reaction(reactionRO.reaction)
             .memberViewData(memberViewData)

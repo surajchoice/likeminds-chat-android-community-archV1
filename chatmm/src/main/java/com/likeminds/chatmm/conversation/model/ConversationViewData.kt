@@ -61,9 +61,6 @@ class ConversationViewData private constructor(
                 ITEM_CONVERSATION_POLL
             }
             else -> {
-                if (ChatroomUtil.isUnsupportedConversation(this)) {
-                    ITEM_CONVERSATION_UPDATE_APP
-                }
                 val imageCount: Int = ChatroomUtil.getMediaCount(IMAGE, attachments)
                 val gifCount: Int = ChatroomUtil.getMediaCount(GIF, attachments)
                 val pdfCount: Int = ChatroomUtil.getMediaCount(PDF, attachments)

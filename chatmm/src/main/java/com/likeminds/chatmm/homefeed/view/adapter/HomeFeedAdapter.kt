@@ -3,7 +3,6 @@ package com.likeminds.chatmm.homefeed.view.adapter
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.view.adapter.databinder.*
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -45,8 +44,7 @@ class HomeFeedAdapter constructor(
     }
 }
 
-    interface HomeFeedAdapterListener {
-        fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData)
-        fun homeFeedClicked()
-    }
+interface HomeFeedAdapterListener {
+    fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData)
+    fun homeFeedClicked()
 }

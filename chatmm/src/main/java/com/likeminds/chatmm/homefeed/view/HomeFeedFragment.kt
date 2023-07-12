@@ -29,13 +29,13 @@ import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.observeInLifecycle
+import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -45,9 +45,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private lateinit var extras: HomeFeedExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
-
-    @Inject
-    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var snackBar: CustomSnackBar
@@ -235,7 +232,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(userPreferences, userPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(userPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)

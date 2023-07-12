@@ -10,12 +10,13 @@ import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberUtil
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.HomeFeedPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.TimeUtil
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
@@ -23,6 +24,7 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
@@ -199,7 +201,6 @@ class HomeFeedViewModel @Inject constructor(
             .lastConversation(lastConversation)
             .lastConversationTime(lastConversationTime)
             .unseenConversationCount(chatroomViewData.unseenCount ?: 0)
-            .isDraft(chatroom.isDraft ?: false)
             .chatTypeDrawableId(ChatroomUtil.getTypeDrawableId(chatroomViewData.type))
             .lastConversationText(lastConversationText)
             .lastConversationMemberName(lastConversationMemberName)
