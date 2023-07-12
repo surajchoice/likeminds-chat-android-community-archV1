@@ -5,9 +5,13 @@ import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 
 //view related utils class
 object ViewUtils {
@@ -38,6 +42,16 @@ object ViewUtils {
         showShortToast(context, errorMessage ?: context.getString(R.string.something_went_wrong))
     }
 
+    // shows short snack bar with message
+    fun showShortSnack(view: View, text: String?, anchorView: View? = null) {
+        if (text.isNullOrEmpty()) return
+        val snackBar = LikeMindsSnackbar.make(view, text)
+        anchorView?.let {
+            snackBar.setAnchorView(anchorView)
+        }
+        snackBar.show()
+    }
+
     //find parent for a particular view
     fun View?.findSuitableParent(): ViewGroup? {
         var view = this
@@ -66,5 +80,29 @@ object ViewUtils {
 
         // If we reach here then we didn't find a CoL or a suitable content view so we'll fallback
         return fallback
+    }
+
+    /**
+     * set chatroom image to the [ivChatroomImage]
+     **/
+    fun setChatroomImage(
+        chatroomId: String,
+        chatroomHeader: String?,
+        chatroomImageUrl: String?,
+        ivChatroomImage: ImageView,
+    ) {
+        val nameDrawable = MemberImageUtil.getNameDrawable(
+            MemberImageUtil.SIXTY_PX,
+            id = chatroomId,
+            name = chatroomHeader,
+            circle = true,
+            isChatroom = true
+        )
+        ImageBindingUtil.loadImage(
+            ivChatroomImage,
+            chatroomImageUrl,
+            nameDrawable.first,
+            isCircle = true,
+        )
     }
 }

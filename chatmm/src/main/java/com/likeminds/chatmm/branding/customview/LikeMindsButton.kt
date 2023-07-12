@@ -29,14 +29,17 @@ internal class LikeMindsButton : MaterialButton {
         // fonts
         val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsButton)
         val fontStyle = array.getString(R.styleable.LikeMindsButton_font_type)
+        val drawableType = array.getString(R.styleable.LikeMindsButton_drawable_type)
         val buttonType = array.getString(R.styleable.LikeMindsButton_button_type)
         val textType = array.getString(R.styleable.LikeMindsButton_text_type)
         typeface = BrandingUtil.getTypeFace(context, fontStyle)
         array.recycle()
 
         // applies button color to button drawables
-        compoundDrawables.forEach {
-            it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
+        if (!drawableType.equals("normal")) {
+            compoundDrawables.forEach {
+                it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
+            }
         }
 
         // bg color

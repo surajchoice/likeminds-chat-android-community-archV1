@@ -7,8 +7,10 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.likeminds.chatmm.homefeed.util.HomeFeedDiffUtilCallback;
 import com.likeminds.chatmm.utils.model.BaseViewType;
 import com.likeminds.chatmm.utils.model.ViewType;
 
@@ -97,6 +99,14 @@ public abstract class BaseRecyclerAdapter<T extends BaseViewType> extends Recycl
 
     public void setItems(List<T> items) {
         this.dataList = items;
+    }
+
+    public void setItemsViaDiffUtilForHome(List<T> items) {
+        HomeFeedDiffUtilCallback homeFeedDiffUtilCallback = new HomeFeedDiffUtilCallback(dataList, items);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(homeFeedDiffUtilCallback);
+        dataList.clear();
+        dataList.addAll(items);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public void notifyAllItems() {

@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.chatroom.model
+package com.likeminds.chatmm.chatroom.detail.model
 
 import androidx.annotation.IntDef
 

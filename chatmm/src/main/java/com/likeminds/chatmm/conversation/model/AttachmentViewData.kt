@@ -2,7 +2,7 @@ package com.likeminds.chatmm.conversation.model
 
 import android.net.Uri
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.media.model.AUDIO
 import com.likeminds.chatmm.media.model.PDF
 import com.likeminds.chatmm.media.model.VIDEO

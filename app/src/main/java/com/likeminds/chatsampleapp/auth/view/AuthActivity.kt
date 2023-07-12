@@ -66,6 +66,7 @@ class AuthActivity : AppCompatActivity() {
         )
         intent.putExtra(ChatMMApplication.EXTRA_LOGIN, extras)
         startActivity(intent)
+        finish()
     }
 
     // parses deep link to start corresponding activity

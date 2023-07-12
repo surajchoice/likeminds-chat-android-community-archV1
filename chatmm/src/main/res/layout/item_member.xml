@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="darkMode"
+            type="Boolean" />
+
+        <variable
+            name="hideBottomLine"
+            type="Boolean" />
+
+        <variable
+            name="member"
+            type="com.likeminds.chatmm.utils.membertagging.model.TagViewData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_member_image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginVertical="12dp"
+            android:layout_marginStart="16dp"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/black" />
+
+        <TextView
+            android:id="@+id/tv_member_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{member.name}"
+            android:textColor="@{darkMode? @color/white : @color/black}"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_member_image"
+            app:layout_constraintTop_toTopOf="@+id/iv_member_image"
+            tools:text="Member Name" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_member_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_member_image"
+            app:layout_constraintTop_toBottomOf="@id/tv_member_name"
+            tools:text="Notify all community members" />
+
+        <View
+            android:id="@+id/v_bottom_line"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@{darkMode? @color/cloudy_blue_30 : @color/grey_v2}"
+            android:visibility="@{hideBottomLine ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_member_name"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

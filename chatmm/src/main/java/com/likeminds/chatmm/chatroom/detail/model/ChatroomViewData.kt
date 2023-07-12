@@ -1,9 +1,10 @@
-package com.likeminds.chatmm.chatroom.model
+package com.likeminds.chatmm.chatroom.detail.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.PollInfoData
 import com.likeminds.chatmm.conversation.model.ReactionViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import kotlinx.parcelize.Parcelize
@@ -13,7 +14,7 @@ class ChatroomViewData private constructor(
     val id: String,
     val memberViewData: MemberViewData,
     val title: String,
-    val createdAt: String?,
+    val createdAt: Long?,
     val alreadySeenFullConversation: Boolean?,
     val answerText: String?,
     val shortAnswer: String?,
@@ -72,7 +73,7 @@ class ChatroomViewData private constructor(
         private var id: String = ""
         private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var title: String = ""
-        private var createdAt: String? = null
+        private var createdAt: Long? = null
         private var alreadySeenFullConversation: Boolean? = null
         private var answerText: String? = null
         private var shortAnswer: String? = null
@@ -121,7 +122,7 @@ class ChatroomViewData private constructor(
             apply { this.memberViewData = memberViewData }
 
         fun title(title: String) = apply { this.title = title }
-        fun createdAt(createdAt: String?) = apply { this.createdAt = createdAt }
+        fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun alreadySeenFullConversation(alreadySeenFullConversation: Boolean?) =
             apply { this.alreadySeenFullConversation = alreadySeenFullConversation }
 

@@ -13,4 +13,12 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <application>
+        <activity
+            android:name=".chatroom.explore.view.ChatroomExploreActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+    </application>
+
 </manifest>

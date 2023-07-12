@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_chatroom_explore.xml"
+    app:startDestination="@id/chatroomExploreFragment">
+
+    <fragment
+        android:id="@+id/chatroomExploreFragment"
+        android:name="com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreFragment"
+        android:label="ChatroomExploreFragment" />
+</navigation>

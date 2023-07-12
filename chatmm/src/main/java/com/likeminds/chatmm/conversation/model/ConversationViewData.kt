@@ -1,9 +1,9 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.model.MemberViewData
-import com.likeminds.chatmm.chatroom.util.ChatroomUtil
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.*
 import kotlinx.parcelize.Parcelize
 
@@ -36,7 +36,7 @@ class ConversationViewData private constructor(
     val replyChatroomId: String?,
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
-    val isExpanded: Boolean
+    val isExpanded: Boolean,
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -249,7 +249,7 @@ class ConversationViewData private constructor(
             replyChatroomId,
             isLastItem,
             pollInfoData,
-            isExpanded
+            isExpanded,
         )
     }
 
