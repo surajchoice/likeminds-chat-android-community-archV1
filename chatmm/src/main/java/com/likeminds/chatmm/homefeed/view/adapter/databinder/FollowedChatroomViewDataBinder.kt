@@ -11,20 +11,19 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemFollowedChatRoomBinding
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
-import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
+import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 
 class FollowedChatroomViewDataBinder(
-    val userPreferences: UserPreferences,
-    private val homeAdapterListener: HomeFeedAdapter.HomeFeedAdapterListener
-) : ViewDataBinder<ItemFollowedChatRoomBinding, BaseViewType>() {
+    private val userPreferences: UserPreferences,
+    private val homeAdapterListener: HomeFeedAdapterListener
+) : ViewDataBinder<ItemFollowedChatRoomBinding, HomeFeedItemViewData>() {
 
     companion object {
         private const val LAST_CONVERSATION_MAX_COUNT = 250
@@ -44,19 +43,19 @@ class FollowedChatroomViewDataBinder(
 
     private fun setRootClick(binding: ItemFollowedChatRoomBinding) {
         binding.root.setOnClickListener {
-            val chatViewData = binding.chatViewData ?: return@setOnClickListener
-            homeAdapterListener.onChatRoomClicked(chatViewData)
+            val homeFeedItemViewData = binding.homeFeedItemViewData ?: return@setOnClickListener
+            homeAdapterListener.onChatRoomClicked(homeFeedItemViewData)
         }
     }
 
     override fun bindData(
         binding: ItemFollowedChatRoomBinding,
-        data: BaseViewType,
+        data: HomeFeedItemViewData,
         position: Int
     ) {
         binding.apply {
             buttonColor = LMBranding.getButtonsColor()
-            chatViewData = data as HomeFeedItemViewData
+            homeFeedItemViewData = data
             hideBottomLine = data.isLastItem
             showUnseenCount = data.unseenConversationCount > 0
 
@@ -119,6 +118,7 @@ class FollowedChatroomViewDataBinder(
                     )
                     tvLastConversation.text =
                         root.context.getString(R.string.chatroom_was_deleted)
+
                     //If last conversation exists and it is not deleted
                     tvLastConversation.setTypeface(
                         tvLastConversation.typeface,
@@ -128,6 +128,7 @@ class FollowedChatroomViewDataBinder(
                     tvLastConversationMemberName.text =
                         data.lastConversationMemberName
 
+                    // processes and shows data of last conversation for the chatroom in home feed
                     val spannableStringBuilder =
                         ChatroomUtil.getHomeScreenAttachmentData(
                             root.context,
@@ -142,6 +143,8 @@ class FollowedChatroomViewDataBinder(
                     } else {
                         tvLastConversationAttachment.visibility = View.GONE
                     }
+
+                    // trims and sets the [lastConversationAnswer] as per the [LAST_CONVERSATION_MAX_COUNT]
                     val lastConversationAnswer = data.lastConversationText
                     if (lastConversationAnswer != null) {
                         tvLastConversation.text = if (

@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberUtil
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -23,7 +23,6 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
@@ -92,7 +91,9 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
-    private val chatRoomListShimmerView by lazy { ChatroomListShimmerViewData.Builder().build() }
+    private val chatRoomListShimmerView by lazy {
+        HomeChatroomListShimmerViewData.Builder().build()
+    }
 
     private val lineBreakViewData by lazy { HomeLineBreakViewData.Builder().build() }
 
@@ -133,7 +134,7 @@ class HomeFeedViewModel @Inject constructor(
         chatrooms: List<Chatroom>,
     ) = viewModelScope.launch {
         val chatViewDataList = chatrooms.map { chatroom ->
-            getChatRoomViewData(chatroom)
+            HomeFeedUtil.getChatRoomViewData(chatroom, userPreferences)
         }
         allChatRoomsData.clear()
         allChatRoomsData.addAll(chatViewDataList)
@@ -152,10 +153,10 @@ class HomeFeedViewModel @Inject constructor(
                 }
             }
             val insertedChatViewDataList = inserted.map { pair ->
-                Pair(pair.first, getChatRoomViewData(pair.second))
+                Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
             }
             val changedChatViewDataList = changed.map { pair ->
-                Pair(pair.first, getChatRoomViewData(pair.second))
+                Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
             }
 
             insertedChatViewDataList.forEach { pair ->
@@ -218,14 +219,9 @@ class HomeFeedViewModel @Inject constructor(
         )
 
         dataList.add(lineBreakViewData)
-//
-//        if (dmHomeFeed != null && dmHomeFeed?.clicked != null) {
-//            dataList.add(dmHomeFeed!!)
-//            dataList.add(lineBreakViewData)
-//        }
 
         //Chat rooms
-        dataList.add(getContentHeaderView(context.getString(R.string.joined_chatrooms)))
+        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
             !wasChatroomsFetched -> {
@@ -253,25 +249,12 @@ class HomeFeedViewModel @Inject constructor(
             }
 
             else -> {
-                dataList.add(getEmptyChatView(context))
+                dataList.add(HomeFeedUtil.getEmptyChatView(context))
             }
         }
         //To add padding at bottom to show FAB button clearly
         dataList.add(blankSpaceViewData)
         return dataList
-    }
-
-    private fun getEmptyChatView(context: Context): EmptyScreenViewData {
-        return EmptyScreenViewData.Builder()
-            .title(context.getString(R.string.empty_chat_room_title))
-            .subTitle("")
-            .build()
-    }
-
-    private fun getContentHeaderView(title: String): ContentHeaderViewData {
-        return ContentHeaderViewData.Builder()
-            .title(title)
-            .build()
     }
 
     fun getConfig() {

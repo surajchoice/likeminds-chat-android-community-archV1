@@ -51,5 +51,7 @@ class UserPreferences @Inject constructor(
 
     fun clearPrefs() {
         setUserUniqueId("")
+        setMemberId("")
+        setIsGuestUser(false)
     }
 }

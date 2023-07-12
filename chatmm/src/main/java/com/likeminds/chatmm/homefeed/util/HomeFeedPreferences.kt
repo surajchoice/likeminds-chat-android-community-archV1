@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.utils
+package com.likeminds.chatmm.homefeed.util
 
 import android.app.Application
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences

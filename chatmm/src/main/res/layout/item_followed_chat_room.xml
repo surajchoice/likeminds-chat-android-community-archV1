@@ -12,7 +12,7 @@
             type="int" />
 
         <variable
-            name="chatViewData"
+            name="homeFeedItemViewData"
             type="com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData" />
 
         <variable
@@ -74,7 +74,7 @@
             android:layout_marginEnd="12dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{chatViewData.lastConversationTime}"
+            android:text="@{homeFeedItemViewData.lastConversationTime}"
             android:textColor="@color/brown_grey"
             android:textSize="12sp"
             android:textStyle="normal"
@@ -96,7 +96,7 @@
             android:letterSpacing="0.01"
             android:lineSpacingExtra="6sp"
             android:maxLines="1"
-            android:text="@{chatViewData.chatroom.header.trim()}"
+            android:text="@{homeFeedItemViewData.chatroom.header.trim()}"
             android:textColor="@color/black_two"
             android:textSize="14sp"
             android:textStyle="normal"
@@ -182,7 +182,7 @@
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_tagged_room"
             android:tint="@{buttonColor}"
-            android:visibility="@{chatViewData.chatroom.isTagged == true ? View.VISIBLE : View.GONE}"
+            android:visibility="@{homeFeedItemViewData.chatroom.isTagged == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
             app:layout_constraintEnd_toStartOf="@+id/iv_mute"
             app:layout_constraintStart_toEndOf="@+id/tv_last_conversation"
@@ -199,7 +199,7 @@
             android:paddingTop="2dp"
             android:paddingEnd="3dp"
             android:paddingBottom="3dp"
-            android:visibility="@{chatViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
+            android:visibility="@{homeFeedItemViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
             app:layout_constraintEnd_toStartOf="@+id/tv_unseen_count"
             app:srcCompat="@drawable/ic_mute"

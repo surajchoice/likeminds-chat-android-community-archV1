@@ -16,7 +16,7 @@ import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment.Companion.ARG_CHATROOM_DETAIL_RESULT_EXTRAS
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapter
-import com.likeminds.chatmm.chatroom.explore.view.adapter.ExploreClickListener
+import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapterListener
 import com.likeminds.chatmm.chatroom.explore.viewmodel.ExploreViewModel
 import com.likeminds.chatmm.databinding.FragmentChatroomExploreBinding
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -35,7 +35,7 @@ import javax.inject.Inject
 class ChatroomExploreFragment :
     BaseFragment<FragmentChatroomExploreBinding, ExploreViewModel>(),
     OverflowMenuAdapterListener,
-    ExploreClickListener {
+    ChatroomExploreAdapterListener {
 
     private lateinit var endlessRecyclerScrollListenerCommunities: EndlessRecyclerScrollListener
 
@@ -96,15 +96,19 @@ class ChatroomExploreFragment :
         fetchExploreChatrooms()
         initToolbar()
         initExploreRecyclerView()
+    }
 
-        binding.tvMenu.setOnClickListener {
-            showOverflowMenu()
-        }
-        binding.ivPinned.setOnClickListener {
-            showPinnedChatrooms()
-        }
-        binding.tvPinned.setOnClickListener {
-            showUnpinnedChatrooms()
+    private fun initClickListeners() {
+        binding.apply {
+            tvMenu.setOnClickListener {
+                showOverflowMenu()
+            }
+            ivPinned.setOnClickListener {
+                showPinnedChatrooms()
+            }
+            tvPinned.setOnClickListener {
+                showUnpinnedChatrooms()
+            }
         }
     }
 

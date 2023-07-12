@@ -8,6 +8,7 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction
@@ -149,16 +150,16 @@ object ViewDataConverter {
     ): ExploreViewData? {
         if (chatroom == null) return null
         return ExploreViewData.Builder()
-            .isPinned(chatroom.isPinned)
+            .isPinned(chatroom.isPinned ?: false)
             .isCreator(chatroom.member?.id == memberId)
             .externalSeen(chatroom.externalSeen)
-            .isSecret(chatroom.isSecret)
-            .followStatus(chatroom.followStatus)
-            .participantsCount(chatroom.participantsCount?.toIntOrNull())
+            .isSecret(chatroom.isSecret ?: false)
+            .followStatus(chatroom.followStatus ?: false)
+            .participantsCount(chatroom.participantsCount?.toInt() ?: 0)
             .totalResponseCount(chatroom.totalResponseCount)
             .sortIndex(sortIndex)
             .id(chatroom.id)
-            .header(chatroom.header)
+            .header(chatroom.header ?: "")
             .title(chatroom.title)
             .imageUrl(chatroom.member?.imageUrl)
             .chatroomImageUrl(chatroom.chatroomImageUrl)

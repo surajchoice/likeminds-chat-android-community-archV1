@@ -2,6 +2,7 @@ package com.likeminds.chatmm.member.model
 
 import androidx.annotation.IntDef
 
+// todo: remove unused keys
 const val STATE_NOTHING = 0
 const val STATE_ADMIN = 1
 const val STATE_TEMP_ADMIN = 2

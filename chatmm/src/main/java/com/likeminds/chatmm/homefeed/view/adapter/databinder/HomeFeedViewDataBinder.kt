@@ -8,13 +8,13 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.databinding.ItemHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.HomeFeedViewData
-import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
+import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_HOME_FEED
 import javax.inject.Inject
 
 class HomeFeedViewDataBinder @Inject constructor(
-    private val homeAdapterListener: HomeFeedAdapter.HomeFeedAdapterListener?
+    private val homeAdapterListener: HomeFeedAdapterListener?
 ) : ViewDataBinder<ItemHomeFeedBinding, HomeFeedViewData>() {
 
     override val viewType: Int

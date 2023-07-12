@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.utils
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.provider.Settings
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,16 +9,15 @@ import javax.inject.Singleton
 class SDKPreferences @Inject constructor(
     private val application: Application
 ) : BasePreferences(SDK_PREFS, application) {
-
     companion object {
         const val SDK_PREFS = "sdk_prefs"
-        const val MICRO_POLLS_ENABLED = "MICRO_POLLS_ENABLED"
-        const val GIF_SUPPORT_ENABLED = "GIF_SUPPORT_ENABLED"
-        const val AUDIO_SUPPORT_ENABLED = "AUDIO_SUPPORT_ENABLED"
-        const val VOICE_NOTE_ENABLED = "VOICE_NOTE_SUPPORT_ENABLED"
-        const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
 
-        private const val API_KEY = "API_KEY"
+        private const val API_KEY = "api_key"
+        private const val GIF_SUPPORT_ENABLED = "gif_support_enabled"
+        private const val MICRO_POLLS_ENABLED = "micro_polls_enabled"
+        private const val AUDIO_SUPPORT_ENABLED = "audio_support_enabled"
+        private const val VOICE_NOTE_ENABLED = "voice_note_enabled"
+        private const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
     }
 
     fun setAPIKey(apiKey: String) {

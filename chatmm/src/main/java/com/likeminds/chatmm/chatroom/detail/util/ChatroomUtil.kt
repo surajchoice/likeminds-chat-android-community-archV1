@@ -41,23 +41,6 @@ object ChatroomUtil {
         return attachments?.count { it.type == mediaType } ?: 0
     }
 
-    fun isUnsupportedConversation(conversation: ConversationViewData): Boolean {
-        // If conversation state is not defined on client side
-        if (!ConversationState.contains(conversation.state)) {
-            return true
-        }
-        //If conversation state is normal and attachment type is not defined on client side
-        if (
-            conversation.state == STATE_NORMAL &&
-            conversation.attachments?.firstOrNull {
-                !InternalMediaType.contains(it.type)
-            } != null
-        ) {
-            return true
-        }
-        return false
-    }
-
     /**
      * Get conversation type based on the conversation data
      */

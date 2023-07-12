@@ -14,9 +14,7 @@ class HomeFeedItemViewData private constructor(
     val lastConversation: ConversationViewData?,
     val unseenConversationCount: Int,
     val lastConversationTime: String,
-    val isDraft: Boolean,
     val chatTypeDrawableId: Int?,
-    val members: List<MemberViewData>,
     val lastConversationText: String?,
     val lastConversationMemberName: String?,
     val isLastItem: Boolean,
@@ -30,9 +28,7 @@ class HomeFeedItemViewData private constructor(
         private var lastConversation: ConversationViewData? = null
         private var unseenConversationCount: Int = 0
         private var lastConversationTime: String = ""
-        private var isDraft: Boolean = false
         private var chatTypeDrawableId: Int? = null
-        private var members: List<MemberViewData> = listOf()
         private var lastConversationText: String? = null
         private var lastConversationMemberName: String? = null
         private var isLastItem: Boolean = false
@@ -48,11 +44,9 @@ class HomeFeedItemViewData private constructor(
         fun lastConversationTime(lastConversationTime: String) =
             apply { this.lastConversationTime = lastConversationTime }
 
-        fun isDraft(isDraft: Boolean) = apply { this.isDraft = isDraft }
         fun chatTypeDrawableId(chatTypeDrawableId: Int?) =
             apply { this.chatTypeDrawableId = chatTypeDrawableId }
 
-        fun members(members: List<MemberViewData>) = apply { this.members = members }
         fun lastConversationText(lastConversationText: String?) =
             apply { this.lastConversationText = lastConversationText }
 
@@ -68,9 +62,7 @@ class HomeFeedItemViewData private constructor(
             lastConversation,
             unseenConversationCount,
             lastConversationTime,
-            isDraft,
             chatTypeDrawableId,
-            members,
             lastConversationText,
             lastConversationMemberName,
             isLastItem,
@@ -83,9 +75,7 @@ class HomeFeedItemViewData private constructor(
             .lastConversation(lastConversation)
             .unseenConversationCount(unseenConversationCount)
             .lastConversationTime(lastConversationTime)
-            .isDraft(isDraft)
             .chatTypeDrawableId(chatTypeDrawableId)
-            .members(members)
             .lastConversationText(lastConversationText)
             .lastConversationMemberName(lastConversationMemberName)
             .isLastItem(isLastItem)
