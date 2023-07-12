@@ -18,7 +18,8 @@ import com.likeminds.likemindschat.initiateUser.model.RegisterDeviceRequest
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences
+    private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val lmChatClient = LMChatClient.getInstance()
@@ -48,14 +49,15 @@ class InitiateViewModel @Inject constructor(
             //If user is guest take user unique id from local prefs
             val userUniqueId = if (isGuest) {
                 val userResponse = lmChatClient.getUser()
-                userResponse.data?.user?.userUniqueId
+                val user = userResponse.data?.user
+                user?.userUniqueId
             } else {
                 userId
             }
 
             val request = InitiateUserRequest.Builder()
                 .apiKey(apiKey)
-                .deviceId(sdkPreferences.getDeviceId())
+                .deviceId(userPreferences.getDeviceId())
                 .userName(userName)
                 .userId(userUniqueId)
                 .isGuest(isGuest)
@@ -64,7 +66,6 @@ class InitiateViewModel @Inject constructor(
             val initiateUserResponse = lmChatClient.initiateUser(request)
             if (initiateUserResponse.success) {
                 val data = initiateUserResponse.data ?: return@launchIO
-
                 handleInitiateResponse(apiKey, data)
             } else {
                 _initiateErrorMessage.postValue(initiateUserResponse.errorMessage)
@@ -75,7 +76,7 @@ class InitiateViewModel @Inject constructor(
     private fun handleInitiateResponse(apiKey: String, data: InitiateUserResponse) {
         if (data.logoutResponse != null) {
             //user is invalid
-            sdkPreferences.clearAuthPrefs()
+            userPreferences.clearPrefs()
             _logoutResponse.postValue(true)
         } else {
             val user = data.user
@@ -103,7 +104,7 @@ class InitiateViewModel @Inject constructor(
         userUniqueId: String,
         memberId: String
     ) {
-        sdkPreferences.apply {
+        userPreferences.apply {
             setAPIKey(apiKey)
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
@@ -132,7 +133,7 @@ class InitiateViewModel @Inject constructor(
         viewModelScope.launchIO {
             //create request
             val request = RegisterDeviceRequest.Builder()
-                .deviceId(sdkPreferences.getDeviceId())
+                .deviceId(userPreferences.getDeviceId())
                 .token(token)
                 .build()
 

@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils.model
 
 import androidx.annotation.IntDef
 
+//todo to remove unnecessary ViewTypes
 const val ITEM_NONE = 0
 const val ITEM_ACCESS_CONTROL_SINGLE_COMMUNITY = 1
 const val ITEM_MEMBER = 2

@@ -14,8 +14,6 @@ class SDKPreferences @Inject constructor(
 
     companion object {
         const val SDK_PREFS = "sdk_prefs"
-        const val USER_UNIQUE_ID = "user_unique_id"
-        const val MEMBER_ID = "member_id"
         const val MICRO_POLLS_ENABLED = "MICRO_POLLS_ENABLED"
         const val GIF_SUPPORT_ENABLED = "GIF_SUPPORT_ENABLED"
         const val AUDIO_SUPPORT_ENABLED = "AUDIO_SUPPORT_ENABLED"
@@ -23,7 +21,6 @@ class SDKPreferences @Inject constructor(
         const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
 
         private const val API_KEY = "API_KEY"
-        private const val IS_GUEST = "IS_GUEST"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -32,30 +29,6 @@ class SDKPreferences @Inject constructor(
 
     fun getAPIKey(): String {
         return getPreference(API_KEY, "") ?: ""
-    }
-
-    fun getUserUniqueId(): String {
-        return getPreference(USER_UNIQUE_ID, "") ?: ""
-    }
-
-    fun setUserUniqueId(userUniqueId: String) {
-        putPreference(USER_UNIQUE_ID, userUniqueId)
-    }
-
-    fun getMemberId(): String {
-        return getPreference(MEMBER_ID, "") ?: ""
-    }
-
-    fun setMemberId(memberId: String) {
-        putPreference(MEMBER_ID, memberId)
-    }
-
-    fun setIsGuestUser(isGuest: Boolean?) {
-        putPreference(IS_GUEST, isGuest ?: false)
-    }
-
-    fun getIsGuestUser(): Boolean {
-        return getPreference(IS_GUEST, false)
     }
 
     fun setGifSupportEnabled(value: Boolean?) {
@@ -96,19 +69,6 @@ class SDKPreferences @Inject constructor(
 
     fun setSlideUpVoiceNoteToast(value: Boolean) {
         putPreference(SLIDE_UP_VOICE_NOTE_TOAST, value)
-    }
-
-    @SuppressLint("HardwareIds")
-    fun getDeviceId(): String {
-        return Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
-            ?: ""
-    }
-
-    fun clearAuthPrefs() {
-        setAPIKey("")
-        setUserUniqueId("")
-        setMemberId("")
-        setIsGuestUser(false)
     }
 
     fun setDefaultConfigPrefs() {
