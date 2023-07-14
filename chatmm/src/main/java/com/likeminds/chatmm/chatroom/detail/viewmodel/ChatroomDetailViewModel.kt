@@ -6,9 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.*
-import androidx.work.WorkContinuation
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.work.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.*
@@ -24,9 +22,7 @@ import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
-import com.likeminds.chatmm.utils.coroutine.launchDefault
-import com.likeminds.chatmm.utils.coroutine.launchIO
-import com.likeminds.chatmm.utils.coroutine.launchMain
+import com.likeminds.chatmm.utils.coroutine.*
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
 import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWorker
@@ -38,10 +34,7 @@ import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
-import com.likeminds.likemindschat.conversation.util.ConversationChangeListener
-import com.likeminds.likemindschat.conversation.util.GetConversationCountType
-import com.likeminds.likemindschat.conversation.util.GetConversationType
-import com.likeminds.likemindschat.conversation.util.LoadConversationType
+import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import com.likeminds.likemindschat.poll.model.SubmitPollRequest
@@ -370,7 +363,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * 8th case ->
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
-    fun getInitialData(chatroomDetailExtras: ChatroomDetailExtras) {
+    fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
                 GetChatroomRequest.Builder().chatroomId(chatroomDetailExtras.chatroomId).build()
@@ -519,7 +512,7 @@ class ChatroomDetailViewModel @Inject constructor(
             fetchChatroomFromNetwork()
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
-            observeConversations(chatroomDetailExtras.chatroomId)
+            observeConversations(context, chatroomDetailExtras.chatroomId)
             // todo: write in db
 //            observeCommunity(chatroomViewData.communityId)
         }
@@ -690,7 +683,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * Observe current chatroom conversations
      * @param chatroomId
      */
-    private fun observeConversations(chatroomId: String) {
+    private fun observeConversations(context: Context, chatroomId: String) {
         viewModelScope.launchMain {
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {
@@ -722,7 +715,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 .chatroomId(chatroomId)
                 .listener(conversationChangeListener)
                 .build()
-            lmChatClient.observeConversations(observeConversationsRequest)
+            lmChatClient.observeConversations(context, observeConversationsRequest)
         }
     }
 
@@ -1117,12 +1110,6 @@ class ChatroomDetailViewModel @Inject constructor(
         markChatroomAsRead(chatroomId)
     }
 
-    fun observeLiveConversations(context: Context, chatroomId: String) {
-        viewModelScope.launchIO {
-            lmChatClient.observeLiveConversations(context, chatroomId)
-        }
-    }
-
     // follow/unfollow a chatroom
     fun followChatroom(
         chatroomId: String,
@@ -1133,7 +1120,7 @@ class ChatroomDetailViewModel @Inject constructor(
             // create request
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(chatroomId)
-                .memberId(userPreferences.getMemberId())
+                .uuid(userPreferences.getMemberId())
                 .value(value)
                 .build()
 

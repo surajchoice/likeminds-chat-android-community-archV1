@@ -187,8 +187,24 @@
     <string name="member">Member</string>
     <string name="poll_results">Poll Results</string>
     <string name="no_response">No response</string>
+    <string name="new_poll">New Poll</string>
+    <string name="poll_question">Poll question</string>
+    <string name="ask_a_question">Ask a question</string>
+    <string name="answer_options">Answer options</string>
+    <string name="add_an_option">Add an option…</string>
+    <string name="poll_expires_on">Poll expires on</string>
+    <string name="dd_mm_yyyy_hh_mm">DD-MM-YYYY hh:mm</string>
     <plurals name="more_option">
         <item quantity="one">%d more option…</item>
         <item quantity="other">%d more options…</item>
     </plurals>
+    <string name="allow_voters_to_add_options">Allow voters to add options</string>
+    <string name="don_t_show_live_results">Don’t show live results</string>
+    <string name="user_can_vote_for">User can vote for</string>
+    <string name="equal_sign">=</string>
+    <string name="advanced">Advanced</string>
+    <string name="create_chat_post">Post</string>
+    <string name="discard_poll">Discard poll?</string>
+    <string name="discard_poll_message">Are you sure you want to discard this poll?</string>
+    <string name="discard">DISCARD</string>
 </resources>

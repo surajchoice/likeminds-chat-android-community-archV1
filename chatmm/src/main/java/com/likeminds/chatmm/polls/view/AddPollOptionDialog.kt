@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.databinding.DialogAddPollOptionBinding
 import com.likeminds.chatmm.polls.model.AddPollOptionExtras
@@ -44,8 +45,7 @@ class AddPollOptionDialog :
 
     override fun attachDagger() {
         super.attachDagger()
-        // todo:
-//        SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
+        SDKApplication.getInstance().pollsComponent()?.inject(this)
     }
 
     override fun onAttach(context: Context) {

@@ -12,9 +12,8 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
+import android.util.*
 import android.util.Base64
-import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -26,17 +25,12 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.core.models.Media
-import com.giphy.sdk.ui.GPHContentType
-import com.giphy.sdk.ui.GPHSettings
-import com.giphy.sdk.ui.Giphy
+import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
 import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
@@ -55,12 +49,9 @@ import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
-import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
-import com.likeminds.chatmm.databinding.ItemAudioBinding
-import com.likeminds.chatmm.databinding.ItemConversationAudioBinding
+import com.likeminds.chatmm.databinding.*
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.media.util.LMVoiceRecorder
-import com.likeminds.chatmm.media.util.MediaAudioForegroundService
+import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_URI_EXTRA
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_COMPLETE
@@ -68,7 +59,6 @@ import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BRO
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PROGRESS
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
-import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.view.MediaPickerActivity
@@ -76,9 +66,7 @@ import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_P
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.polls.model.AddPollOptionExtras
-import com.likeminds.chatmm.polls.model.PollResultExtras
-import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.polls.view.AddPollOptionDialog
 import com.likeminds.chatmm.polls.view.PollResultsActivity
 import com.likeminds.chatmm.pushnotification.NotificationUtils
@@ -98,9 +86,7 @@ import com.likeminds.chatmm.utils.ViewUtils.startRevealAnimation
 import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
 import com.likeminds.chatmm.utils.actionmode.ActionModeListener
 import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
-import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
-import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.customview.DataBoundViewHolder
+import com.likeminds.chatmm.utils.customview.*
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
@@ -110,9 +96,7 @@ import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.permissions.Permission
-import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
-import com.likeminds.chatmm.utils.permissions.PermissionManager
+import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
 import com.vanniktech.emoji.EmojiPopup
@@ -438,7 +422,7 @@ class ChatroomDetailFragment :
     }
 
     private fun fetchInitialData() {
-        viewModel.getInitialData(chatroomDetailExtras)
+        viewModel.getInitialData(requireContext(), chatroomDetailExtras)
     }
 
     private fun getChatroomViewData(): ChatroomViewData? {
@@ -706,7 +690,6 @@ class ChatroomDetailFragment :
             tvPollTitle.isVisible = viewModel.isMicroPollsEnabled()
             ivPoll.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
-                // todo: polls
 //                CreateConversationPollDialog.show(
 //                    childFragmentManager,
 //                    getChatroomViewData(),
@@ -874,9 +857,6 @@ class ChatroomDetailFragment :
                     if (isFirstTime) {
                         startBackgroundSync()
                     }
-
-                    //we should observe the live conversation once, sync is complete to avoid duplicate conversation
-                    viewModel.observeLiveConversations(requireContext(), chatroomId)
                 }
 
                 WorkInfo.State.CANCELLED -> {

@@ -3,7 +3,7 @@ package com.likeminds.chatmm.polls.view
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.FragmentPollResultTabBinding
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -33,13 +33,10 @@ class PollResultTabFragment :
     private lateinit var mAdapter: PollResultTabFragmentAdapter
 
     private lateinit var extra: PollResultTabExtra
-    private var memberDirectoryLockDialog: AlertDialog? = null
-    private var memberDirectoryLockEmailDialog: AlertDialog? = null
 
     override fun attachDagger() {
         super.attachDagger()
-        // todo:
-//        SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
+        SDKApplication.getInstance().pollsComponent()?.inject(this)
     }
 
     override fun receiveExtras() {

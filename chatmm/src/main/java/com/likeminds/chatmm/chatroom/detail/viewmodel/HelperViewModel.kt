@@ -1,9 +1,6 @@
 package com.likeminds.chatmm.chatroom.detail.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -11,10 +8,7 @@ import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMResponse
-import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
-import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.helper.model.GetTaggingListRequest
-import com.likeminds.likemindschat.helper.model.GetTaggingListResponse
+import com.likeminds.likemindschat.helper.model.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
@@ -107,8 +101,8 @@ class HelperViewModel @Inject constructor() : ViewModel() {
                         page,
                         MemberTaggingUtil.getTaggingData(
                             groupTags,
-                            chatroomParticipants,
-                            communityMembers
+//                            chatroomParticipants,
+//                            communityMembers
                         )
                     )
                 )

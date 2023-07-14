@@ -15,7 +15,6 @@ import com.likeminds.likemindschat.chatroom.model.ChatroomAction
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
-import com.likeminds.likemindschat.helper.model.UserTag
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.user.model.User
 
@@ -228,7 +227,6 @@ object ViewDataConverter {
             .name(member.name)
             .imageUrl(member.imageUrl)
             .state(member.state ?: 0)
-            .removeState(member.removeState)
             .customIntroText(member.customIntroText)
             .customClickText(member.customClickText)
             .customTitle(member.customTitle)
@@ -314,19 +312,20 @@ object ViewDataConverter {
             .build()
     }
 
-    fun convertUserTag(userTag: UserTag?): TagViewData? {
-        if (userTag == null) return null
+    fun convertUserTag(member: Member?): TagViewData? {
+        if (member == null) return null
         val nameDrawable = MemberImageUtil.getNameDrawable(
             MemberImageUtil.SIXTY_PX,
-            userTag.id.toString(),
-            userTag.name
+            member.id,
+            member.name
         )
         return TagViewData.Builder()
-            .name(userTag.name)
-            .id(userTag.id)
-            .imageUrl(userTag.imageUrl)
-            .isGuest(userTag.isGuest)
-            .userUniqueId(userTag.userUniqueId)
+            .name(member.name)
+            // todo:
+            .id(member.id.toInt())
+            .imageUrl(member.imageUrl)
+            .isGuest(member.isGuest)
+            .userUniqueId(member.userUniqueId)
             .placeHolder(nameDrawable.first)
             .build()
     }
@@ -506,6 +505,14 @@ object ViewDataConverter {
             .build()
     }
 
+    // converts PollViewData model list to network Poll model list
+    fun convertPolls(pollViewDataList: List<PollViewData>): List<Poll> {
+        return pollViewDataList.map {
+            convertPoll(it)
+        }
+    }
+
+    // converts PollViewData model to network Poll model
     fun convertPoll(pollViewData: PollViewData): Poll {
         return Poll.Builder()
             .id(pollViewData.id)

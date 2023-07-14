@@ -3,11 +3,12 @@ package com.likeminds.chatmm.polls.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.ActivityPollResultsBinding
 import com.likeminds.chatmm.polls.model.PollResultExtras
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
-internal class PollResultsActivity : BaseAppCompatActivity() {
+class PollResultsActivity : BaseAppCompatActivity() {
     private lateinit var binding: ActivityPollResultsBinding
 
     companion object {
@@ -32,8 +33,7 @@ internal class PollResultsActivity : BaseAppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // todo:
-//        SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
+        SDKApplication.getInstance().pollsComponent()?.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityPollResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
