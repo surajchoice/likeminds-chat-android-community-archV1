@@ -1,16 +1,25 @@
 package com.likeminds.chatmm.chatroom.create.view.adapter
 
+import android.content.Context
 import com.likeminds.chatmm.chatroom.create.view.adapter.databinder.ItemAudioViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.databinding.ItemCreatePollBinding
 import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.polls.adapter.databinders.ItemCreatePollViewDataBinder
+import com.likeminds.chatmm.polls.adapter.databinders.ItemPollMoreOptionsViewDataBinder
+import com.likeminds.chatmm.polls.model.CreatePollViewData
+import com.likeminds.chatmm.polls.model.PollInfoData
+import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 class ChatroomItemAdapter constructor(
     val chatroomItemAdapterListener: ChatroomItemAdapterListener? = null,
+    val createPollItemAdapterListener: CreatePollItemAdapterListener? = null,
+    val pollItemAdapterListener: PollItemAdapterListener? = null,
 ) : BaseRecyclerAdapter<BaseViewType>() {
 
     init {
@@ -20,11 +29,40 @@ class ChatroomItemAdapter constructor(
     override fun getSupportedViewDataBinder(): MutableList<ViewDataBinder<*, *>> {
         val viewDataBinders = ArrayList<ViewDataBinder<*, *>>(20)
 
+        val createPollViewDataBinder =
+            ItemCreatePollViewDataBinder(createPollItemAdapterListener)
+        viewDataBinders.add(createPollViewDataBinder)
+
+        val pollMoreOptionsViewDataBinder = ItemPollMoreOptionsViewDataBinder()
+        viewDataBinders.add(pollMoreOptionsViewDataBinder)
+
         val audioItemViewDataBinder = ItemAudioViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(audioItemViewDataBinder)
 
         return viewDataBinders
     }
+}
+
+interface CreatePollItemAdapterListener {
+    fun pollCrossed(createPollViewData: CreatePollViewData) {}
+    fun addPollItemBinding(
+        position: Int,
+        itemCreatePollBinding: ItemCreatePollBinding
+    ) {
+    }
+
+    fun pollSelected(context: Context, pollViewData: PollViewData) {}
+}
+
+interface PollItemAdapterListener {
+    fun isPollSubmitted(): Boolean
+    fun isPollSelected(): Boolean
+    fun showVotersList(
+        pollId: String?,
+        parentId: String?,
+        pollInfoData: PollInfoData?,
+        positionOfPoll: Int,
+    )
 }
 
 interface ChatroomItemAdapterListener {

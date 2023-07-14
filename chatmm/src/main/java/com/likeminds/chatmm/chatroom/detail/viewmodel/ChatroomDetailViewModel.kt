@@ -20,6 +20,7 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.MemberState
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
@@ -33,6 +34,7 @@ import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
@@ -42,12 +44,14 @@ import com.likeminds.likemindschat.conversation.util.GetConversationType
 import com.likeminds.likemindschat.conversation.util.LoadConversationType
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
+import com.likeminds.likemindschat.poll.model.SubmitPollRequest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 import javax.inject.Inject
 
 class ChatroomDetailViewModel @Inject constructor(
@@ -105,10 +109,6 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _scrolledData by lazy { MutableLiveData<PaginatedViewData>() }
     val scrolledData: LiveData<PaginatedViewData> = _scrolledData
 
-
-    //Data, Scroll state
-//    private val scrolledData by lazy { MutableLiveData<PaginatedData>() }
-
     //To set topic
     private val _setTopicResponse by lazy { MutableLiveData<ConversationViewData>() }
     val setTopicResponse: LiveData<ConversationViewData> = _setTopicResponse
@@ -139,6 +139,11 @@ class ChatroomDetailViewModel @Inject constructor(
     private val conversationEventChannel = Channel<ConversationEvent>(Channel.BUFFERED)
     val conversationEventFlow = conversationEventChannel.receiveAsFlow()
 
+    //Returns Triple (poll response, poll info data)
+    private val _pollAnswerUpdated: MutableLiveData<PollInfoData?> =
+        MutableLiveData()
+    val pollAnswerUpdated: LiveData<PollInfoData?> = _pollAnswerUpdated
+
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageFlow = errorEventChannel.receiveAsFlow()
 
@@ -156,6 +161,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class PostConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class EditConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class DeleteConversation(val errorMessage: String?) : ErrorMessageEvent()
+        data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -1821,11 +1827,88 @@ class ChatroomDetailViewModel @Inject constructor(
             .build()
     }
 
-    fun clearLinkPreview() {
-        previewLinkJob?.cancel()
-        previewLink = null
-        _linkOgTags.postValue(null)
+    /**------------------------------------------------------------
+     * Polls
+    ---------------------------------------------------------------*/
+
+    fun submitConversationPoll(
+        conversation: ConversationViewData,
+        pollViewDataList: List<PollViewData>,
+    ) {
+        viewModelScope.launchIO {
+            val conversationId = conversation.id
+            val oldPollListViewData = conversation.pollInfoData?.pollViewDataList
+            if (!isNewPollOptionsSelected(
+                    oldPollListViewData as MutableList<PollViewData>?,
+                    pollViewDataList
+                )
+            ) {
+                this._pollAnswerUpdated.value = conversation.pollInfoData
+                return@launchIO
+            }
+
+            val allPollItems = pollViewDataList.map {
+                ViewDataConverter.convertPoll(it)
+            }
+            val updatePollItems = allPollItems.filter { it.isSelected == true }
+
+            val request = SubmitPollRequest.Builder()
+                .conversationId(conversationId)
+                .polls(updatePollItems)
+                .build()
+
+            val response = lmChatClient.submitPoll(request)
+            pollUpdateResponse(
+                response,
+                conversation.pollInfoData,
+                conversation
+            )
+        }
     }
+
+    private fun isNewPollOptionsSelected(
+        oldPollListViewData: MutableList<PollViewData>?,
+        pollViewDataList: List<PollViewData>,
+    ): Boolean {
+        oldPollListViewData?.let {
+            val diff = pollViewDataList.zip(oldPollListViewData).filter {
+                it.first.isSelected != it.second.isSelected
+            }.size
+            //if diff is zero, no poll data has been updated & it makes no sense to make the call
+            if (diff == 0) return false
+        }
+        return true
+    }
+
+    private fun pollUpdateResponse(
+        baseResponse: LMResponse<Nothing>,
+        pollInfoData: PollInfoData?,
+        conversation: ConversationViewData? = null,
+    ) {
+        viewModelScope.launchIO {
+            val pollData = if (conversation != null && pollInfoData != null) {
+                pollInfoData.toBuilder()
+                    .pollViewDataList(pollInfoData.pollViewDataList?.take(1)?.map {
+                        it.toBuilder()
+                            .parentId(conversation.id)
+                            .build()
+                    })
+                    .build()
+            } else {
+                pollInfoData
+            }
+            if (baseResponse.success) {
+                _pollAnswerUpdated.postValue(pollData)
+                sendPollVotedEvent(conversation)
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.SubmitPoll(baseResponse.errorMessage))
+            }
+        }
+    }
+
+    /**------------------------------------------------------------
+     * Link Preview
+    ---------------------------------------------------------------*/
 
     fun linkPreview(text: String) {
         if (text.isEmpty()) {
@@ -1849,6 +1932,12 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             clearLinkPreview()
         }
+    }
+
+    fun clearLinkPreview() {
+        previewLinkJob?.cancel()
+        previewLink = null
+        _linkOgTags.postValue(null)
     }
 
     fun decodeUrl(url: String) {
@@ -2265,6 +2354,42 @@ class ChatroomDetailViewModel @Inject constructor(
                 mapOf(
                     LMAnalytics.Keys.CHATROOM_ID to chatroomId,
                     LMAnalytics.Keys.SOURCE to "chatroom"
+                )
+            )
+        }
+    }
+
+    /**
+     * Triggers when the current user votes on a chatroom poll or a conversation poll (micro polls)
+     */
+    private fun sendPollVotedEvent(conversation: ConversationViewData? = null) {
+        val chatroom = getChatroomViewData() ?: return
+        LMAnalytics.track(
+            LMAnalytics.Events.POLL_VOTED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                "member_state" to MemberState.getMemberState(currentMemberDataFromMemberState?.state),
+                "chatroom_title" to chatroom.header,
+                LMAnalytics.Keys.COMMUNITY_NAME to chatroom.communityName,
+                "conversation_id" to conversation?.id
+            )
+        )
+    }
+
+    /**
+     * Triggers when a user taps on “You and x others voted“ on a micro poll
+     **/
+    fun sendMicroPollResultsViewed(id: String?) {
+        getChatroomViewData()?.let { chatroom ->
+            LMAnalytics.track(
+                LMAnalytics.Events.POLL_RESULT_VIEWED,
+                mapOf(
+                    "conversation_id" to id,
+                    LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                    "chatroom_title" to chatroom.header,
+                    LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                    LMAnalytics.Keys.COMMUNITY_NAME to chatroom.communityName
                 )
             )
         }

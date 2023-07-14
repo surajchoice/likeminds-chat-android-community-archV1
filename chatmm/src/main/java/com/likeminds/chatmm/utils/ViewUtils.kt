@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.BlurMaskFilter
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
@@ -19,10 +20,8 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -56,6 +55,13 @@ object ViewUtils {
 
     fun View.show() {
         visibility = View.VISIBLE
+    }
+
+    fun TextView.blurText() {
+        val radius = textSize / 4
+        val filter = BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL)
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        paint.maskFilter = filter
     }
 
     fun showKeyboard(context: Context, editText: EditText) {
@@ -302,5 +308,13 @@ object ViewUtils {
     fun FragmentManager.currentFragment(navHostId: Int): Fragment? {
         val navHostFragment = this.findFragmentById(navHostId) as? NavHostFragment
         return navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
+    }
+
+    fun View.setVisible(show: Boolean) {
+        this.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    fun Context.fetchColor(@ColorRes resId: Int): Int {
+        return ContextCompat.getColor(this, resId)
     }
 }

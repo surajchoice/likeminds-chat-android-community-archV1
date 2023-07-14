@@ -165,4 +165,30 @@
     <string name="warning_multimedia_and_document_share_error">PDF, images, videos and gifs cannot be uploaded together. Please upload these one by one.</string>
     <string name="third_party_share">LikeMinds Share</string>
     <string name="the_chatroom_link_is_either_tampered_or_invalid">The chatroom link is either tampered or invalid</string>
+    <string name="plus_add_an_option">+ Add an option</string>
+    <string name="submit_vote">Submit Vote</string>
+    <string name="edit_vote">Edit Vote</string>
+    <string name="poll_ended">Poll ended</string>
+    <string name="event_ended_regular">Event Ended</string>
+    <string name="select_exact_options_text">*Select exactly %s options.</string>
+    <string name="select_at_most_text">*Select at most %s options.</string>
+    <string name="select_at_least_text">Select at least %s options.</string>
+    <string name="add_new_poll_option">Add new poll option</string>
+    <string name="enter_an_option_that_you_think_is_missing_in_this_poll_this_can_not_be_undone">Enter an option that you think is missing in this poll. This can not be undone.</string>
+    <string name="type_new_option">Type new option</string>
+    <string name="submit">SUBMIT</string>
+    <string name="anonymous_poll">Anonymous poll</string>
+    <string name="anonymous_poll_message">This being an anonymous poll, the names of the voters can not be disclosed.</string>
+    <string name="okay">OKAY</string>
+    <string name="option">Option</string>
+    <string name="poll_ended_result_message">The results will be visible after the poll has ended.</string>
+    <string name="verification_pending">Pending request</string>
+    <string name="members">Members</string>
+    <string name="member">Member</string>
+    <string name="poll_results">Poll Results</string>
+    <string name="no_response">No response</string>
+    <plurals name="more_option">
+        <item quantity="one">%d more option…</item>
+        <item quantity="other">%d more options…</item>
+    </plurals>
 </resources>

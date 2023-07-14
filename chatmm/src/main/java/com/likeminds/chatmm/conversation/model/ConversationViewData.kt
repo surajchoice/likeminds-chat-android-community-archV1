@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.utils.model.*
 import kotlinx.parcelize.Parcelize
 

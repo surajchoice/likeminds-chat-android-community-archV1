@@ -8,6 +8,7 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction
@@ -15,6 +16,7 @@ import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.helper.model.UserTag
+import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.user.model.User
 
 object ViewDataConverter {
@@ -501,6 +503,16 @@ object ViewDataConverter {
             .image(linkOGTagsViewData.image)
             .description(linkOGTagsViewData.description)
             .url(linkOGTagsViewData.url)
+            .build()
+    }
+
+    fun convertPoll(pollViewData: PollViewData): Poll {
+        return Poll.Builder()
+            .id(pollViewData.id)
+            .isSelected(pollViewData.isSelected)
+            .noVotes(pollViewData.noVotes)
+            .percentage(pollViewData.percentage)
+            .text(pollViewData.text)
             .build()
     }
 }

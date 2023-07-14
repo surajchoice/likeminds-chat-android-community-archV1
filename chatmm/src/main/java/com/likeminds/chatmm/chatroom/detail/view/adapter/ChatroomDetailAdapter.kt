@@ -10,9 +10,11 @@ import com.likeminds.chatmm.conversation.model.ReportLinkExtras
 import com.likeminds.chatmm.conversation.view.adapter.databinder.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
+import com.likeminds.chatmm.utils.customview.DataBoundViewHolder
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUTO_FOLLOWED_TAGGED_CHAT_ROOM
@@ -123,6 +125,14 @@ class ChatroomDetailAdapter constructor(
         )
         viewDataBinders.add(conversationVoiceNoteItemViewDataBinder)
 
+        val conversationPollItemViewDataBinder =
+            ConversationPollItemViewDataBinder(
+                userPreferences,
+//                messageReactionsPreferences,
+                listener
+            )
+        viewDataBinders.add(conversationPollItemViewDataBinder)
+
         val conversationListShimmerViewDataBinder = ConversationListShimmerViewDataBinder()
         viewDataBinders.add(conversationListShimmerViewDataBinder)
 
@@ -191,4 +201,29 @@ interface ChatroomDetailAdapterListener {
      * */
     fun onScreenChanged()
     fun onLinkClicked(conversationId: String?, url: String) {}
+    fun onConversationPollSubmitClicked(
+        conversation: ConversationViewData,
+        pollViewDataList: List<PollViewData>,
+    )
+
+    fun dismissToastMessage()
+    fun getBinding(conversationId: String?): DataBoundViewHolder<*>?
+    fun addConversationPollOptionClicked(conversationId: String)
+    fun onConversationMembersVotedCountClick(
+        conversation: ConversationViewData,
+        hasPollEnded: Boolean,
+        isAnonymous: Boolean?,
+        isCreator: Boolean,
+    ) {
+    }
+
+    fun getPollRemainingTime(expiryTime: Long?): String?
+    fun showToastMessage(message: String)
+    fun showConversationPollVotersList(
+        conversationId: String,
+        pollId: String?,
+        hasPollEnded: Boolean,
+        toShowResult: Boolean?,
+        positionOfPoll: Int,
+    )
 }

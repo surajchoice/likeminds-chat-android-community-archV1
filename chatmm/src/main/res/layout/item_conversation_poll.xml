@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="isSelected"
+            type="Boolean" />
+
+        <variable
+            name="conversation"
+            type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_conversation_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/member_image"
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="8dp"
+                android:elevation="4dp"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="1dp"
+                app:layout_constraintBottom_toBottomOf="@id/cl_conversation_bubble"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_conversation_bubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chat_bubble_other"
+                android:padding="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_constraintLeft_toRightOf="@+id/member_image">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_max="260dp">
+
+                    <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                        android:id="@+id/tv_conversation_member_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/blue"
+                        android:textSize="14sp"
+                        app:fontType="bold"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toStartOf="@id/tv_custom_title_dot"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Nipun" />
+
+                    <View
+                        android:id="@+id/tv_custom_title_dot"
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/background_circle_dot_custom_title"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_conversation_member_name"
+                        app:layout_constraintEnd_toStartOf="@id/tv_custom_title"
+                        app:layout_constraintStart_toEndOf="@+id/tv_conversation_member_name"
+                        app:layout_constraintTop_toTopOf="@+id/tv_conversation_member_name" />
+
+                    <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                        android:id="@+id/tv_custom_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="7dp"
+                        android:ellipsize="end"
+                        android:lineSpacingExtra="4sp"
+                        android:maxLines="1"
+                        android:textColor="@color/light_grey_blue"
+                        android:textSize="12sp"
+                        app:fontType="regular"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_conversation_member_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_custom_title_dot"
+                        app:layout_constraintTop_toTopOf="@+id/tv_conversation_member_name"
+                        tools:text="Ambassador of the …" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <include
+                    android:id="@+id/view_reply"
+                    layout="@layout/layout_reply"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="@{conversation.replyConversation != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_name" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_poll_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@{conversation.pollInfoData.pollTypeText}"
+                    android:textColor="@color/brown_grey"
+                    android:textSize="12sp"
+                    app:fontType="regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_reply"
+                    app:layout_goneMarginTop="4dp"
+                    tools:text="Instant poll" />
+
+                <View
+                    android:id="@+id/view_point_1"
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/shape_center_dot_cloudy_blue"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_poll_type"
+                    app:layout_constraintStart_toEndOf="@+id/tv_poll_type"
+                    app:layout_constraintTop_toTopOf="@+id/tv_poll_type" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_anonymous_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@{conversation.pollInfoData.submitTypeText}"
+                    android:textColor="@color/brown_grey"
+                    android:textSize="12sp"
+                    app:fontType="regular"
+                    app:layout_constraintStart_toEndOf="@+id/view_point_1"
+                    app:layout_constraintTop_toTopOf="@+id/tv_poll_type"
+                    tools:text="Open voting" />
+
+                <ImageView
+                    android:id="@+id/iv_chat_type"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_poll_room_icon"
+                    android:tint="@{buttonColor}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_date_time_left"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_date_time_left"
+                    tools:ignore="ContentDescription,UseAppTint" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_date_time_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/background_scarlet_12"
+                    android:paddingStart="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    app:fontType="regular"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_poll_type"
+                    tools:text="Ends In 15 days" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_conversation"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="4sp"
+                    android:textColor="@color/black_two"
+                    android:textSize="14sp"
+                    app:fontType="regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_date_time_left"
+                    tools:text="Which is the best design tool that you have used?" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_poll_select_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:lineSpacingExtra="5sp"
+                    android:textColor="@color/grey"
+                    android:textSize="13sp"
+                    app:fontType="regular"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_conversation"
+                    tools:text="*Select exactly 2 options."
+                    tools:visibility="visible" />
+
+                <com.likeminds.chatmm.polls.view.PollView
+                    android:id="@+id/poll_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_conversation"
+                    app:layout_constraintStart_toStartOf="@+id/tv_conversation"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_poll_select_text" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsButton
+                    android:id="@+id/btn_add_option"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="12dp"
+                    android:text="@string/plus_add_an_option"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:cornerRadius="8dp"
+                    app:font_type="regular"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_conversation"
+                    app:layout_constraintStart_toStartOf="@+id/tv_conversation"
+                    app:layout_constraintTop_toBottomOf="@+id/poll_view"
+                    app:strokeColor="@{buttonColor}" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_answer_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@{conversation.pollInfoData.pollAnswerTextUpdated()}"
+                    android:textSize="13sp"
+                    app:fontType="regular"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_conversation"
+                    app:layout_constraintRight_toRightOf="@+id/tv_conversation"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_add_option"
+                    app:textType="special"
+                    tools:text="13 members are attending this event." />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsButton
+                    android:id="@+id/btn_submit_vote"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="32dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="32dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/submit_vote"
+                    android:textSize="12sp"
+                    app:cornerRadius="48dp"
+                    app:font_type="medium"
+                    app:icon="@drawable/ic_vote"
+                    app:iconPadding="12dp"
+                    app:iconTint="@{buttonColor}"
+                    app:layout_constraintStart_toStartOf="@+id/tv_conversation"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_answer_text"
+                    app:strokeColor="@{buttonColor}"
+                    app:text_type="special" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_delete_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif"
+                    android:lineSpacingExtra="3sp"
+                    android:maxWidth="230dp"
+                    android:textColor="@color/brown_grey"
+                    android:textSize="13sp"
+                    android:visibility="gone"
+                    app:fontType="regular"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_reply"
+                    tools:text="This message was deleted by a community manager." />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier_poll_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="tv_answer_text, btn_submit_vote, view_reply" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/brown_grey"
+                    android:textSize="12sp"
+                    app:fontType="regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/conversation_status"
+                    app:layout_constraintTop_toBottomOf="@+id/barrier_poll_data"
+                    app:layout_constraintVertical_bias="1"
+                    tools:text="07:44" />
+
+                <ImageView
+                    android:id="@+id/conversation_status"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_time"
+                    tools:ignore="ContentDescription"
+                    tools:src="@drawable/ic_sending" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/iv_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_warning_yellow"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cl_conversation_bubble"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/conversation_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:paddingStart="8dp"
+                android:src="@drawable/ic_failed"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,RtlSymmetry" />
+
+            <include
+                android:id="@+id/message_reactions_grid_layout"
+                layout="@layout/grid_message_reactions"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginTop="2dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/cl_conversation_bubble"
+                tools:layout_constraintStart_toStartOf="@+id/cl_conversation_bubble" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_double_tap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/long_press_to_react"
+                android:textColor="@color/brown_grey"
+                android:textSize="12sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/cl_conversation_bubble"
+                app:layout_constraintTop_toBottomOf="@id/message_reactions_grid_layout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/view_selection"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.16"
+            android:background="@color/teal"
+            android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/view_selection_animation"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:background="@color/teal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

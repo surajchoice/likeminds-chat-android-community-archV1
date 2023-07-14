@@ -5,6 +5,8 @@ import java.util.*
 
 object DateUtil {
 
+    private const val POLL_ENDED = "Poll ended"
+
     /**
      * @param milliseconds - This should be the UNIX timestamp
      */
@@ -66,5 +68,59 @@ object DateUtil {
 
     private fun getMonthName(date: Long): String {
         return SimpleDateFormat("MMMM", Locale.getDefault()).format(date * 1000)
+    }
+
+    fun getPollRemainingTime(expiryTime: Long?): String? {
+        if (expiryTime != null) {
+            val currentDateCalendar = Calendar.getInstance()
+
+            val expireDateCalendar = Calendar.getInstance()
+            expireDateCalendar.timeInMillis = expiryTime
+
+            val millisecondsDifference =
+                expireDateCalendar.time.time - currentDateCalendar.time.time
+
+            val timeLeftString =
+                getTimeLeftString(millisecondsDifference, hasPollOrEventEnded(expiryTime))
+            return if (timeLeftString == null) {
+                POLL_ENDED
+            } else {
+                "Ends in $timeLeftString"
+            }
+        }
+        return null
+    }
+
+    private fun getTimeLeftString(millisecondsDifference: Long, hasCompleted: Boolean): String? {
+        val dayLeft = millisecondsDifference / (24 * 60 * 60 * 1000)
+        return if (dayLeft > 1) {
+            "$dayLeft days"
+        } else if (dayLeft == 1.toLong()) {
+            "$dayLeft day"
+        } else if (!hasCompleted) {
+            when (val hourLeft = millisecondsDifference / (60 * 60 * 1000)) {
+                in 2..23 -> "$hourLeft hours"
+                1.toLong() -> "$hourLeft hour"
+                else -> {
+                    when (val minuteLeft = millisecondsDifference / (60 * 1000)) {
+                        in 2..59 -> "$minuteLeft mins"
+                        1.toLong() -> "$minuteLeft min"
+                        else -> "few secs"
+                    }
+                }
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun hasPollOrEventEnded(dateTime: Long?): Boolean {
+        if (dateTime != null) {
+            val dateTimeLeft = dateTime - System.currentTimeMillis()
+            if (dateTimeLeft <= 0) {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -1,5 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.util
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.*
 import android.text.style.ClickableSpan
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
@@ -18,6 +21,7 @@ import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isVisible
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.google.android.material.button.MaterialButton
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
@@ -35,6 +39,8 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.polls.model.*
+import com.likeminds.chatmm.polls.view.PollViewListener
 import com.likeminds.chatmm.utils.AndroidUtils
 import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.Route
@@ -1208,5 +1214,398 @@ object ChatroomConversationItemViewDataBinderUtil {
             set.setDimensionRatio(image.id, "1:0.55")
         }
         set.applyTo(clImage)
+    }
+
+    /**
+     * Poll Binder Utility functions
+     * */
+
+    fun PollInfoData?.isMultipleItemPoll(): Boolean {
+        return this?.multipleSelectState != null
+    }
+
+    fun PollInfoData?.isAddNewOptionEnabled(): Boolean {
+        return this?.allowAddOption == true
+    }
+
+    fun PollInfoData?.hasPollEnded(): Boolean {
+        return hasPollOrEventEnded(this?.expiryTime)
+    }
+
+    fun PollInfoData?.isDeferredPoll(): Boolean {
+        return this?.pollType == POLL_TYPE_DEFERRED
+    }
+
+    fun PollInfoData?.isInstantPoll(): Boolean {
+        return this?.pollType == POLL_TYPE_INSTANT
+    }
+
+    private fun hasPollOrEventEnded(dateTime: Long?): Boolean {
+        if (dateTime != null) {
+            val dateTimeLeft = dateTime - System.currentTimeMillis()
+            if (dateTimeLeft <= 0) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun initPollSelectText(tvPollSelectText: TextView, pollInfoData: PollInfoData) {
+        tvPollSelectText.apply {
+            val multiSelect = pollInfoData.multipleSelectState != null
+            if (multiSelect) {
+                val multiSelectNum = pollInfoData.multipleSelectNum
+                text =
+                    when (pollInfoData.multipleSelectState) {
+                        POLL_MULTIPLE_STATE_EXACTLY -> {
+                            context.getString(
+                                R.string.select_exact_options_text,
+                                multiSelectNum.toString()
+                            )
+                        }
+                        POLL_MULTIPLE_STATE_MAX -> {
+                            context.getString(
+                                R.string.select_at_most_text,
+                                multiSelectNum.toString()
+                            )
+                        }
+                        POLL_MULTIPLE_STATE_LEAST -> {
+                            context.getString(
+                                R.string.select_at_least_text,
+                                multiSelectNum.toString()
+                            )
+                        }
+                        else -> ""
+                    }
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
+    }
+
+    fun initPollEndDateTimeView(
+        tvDateTimeLeft: TextView,
+        expiryTime: Long?,
+        listener: ChatroomDetailAdapterListener,
+    ) {
+        val dayTimeLeft = listener.getPollRemainingTime(expiryTime)
+        updateEndDateTimeView(tvDateTimeLeft, dayTimeLeft)
+    }
+
+    private fun updateEndDateTimeView(tvDateTimeLeft: TextView, dayTimeLeft: String?) {
+        tvDateTimeLeft.apply {
+            if (dayTimeLeft != null) {
+                visibility = View.VISIBLE
+                text = dayTimeLeft
+
+                if (dayTimeLeft == context.getString(R.string.poll_ended)
+                    || dayTimeLeft == context.getString(R.string.event_ended_regular)
+                ) {
+                    background = ContextCompat.getDrawable(
+                        context,
+                        R.drawable.background_scarlet_12
+                    )
+                } else {
+                    backgroundTintList =
+                        ColorStateList.valueOf(LMBranding.getButtonsColor())
+                }
+            }
+        }
+    }
+
+    fun updatePollButton(buttonSubmitVote: MaterialButton, pollInfoData: PollInfoData) {
+        val pollViewDataList = pollInfoData.pollViewDataList ?: emptyList()
+        if (pollViewDataList.isNotEmpty()) {
+            val count = pollViewDataList.filter { it.isSelected == true }.size
+            val enableButton = when (pollInfoData.multipleSelectState) {
+                POLL_MULTIPLE_STATE_EXACTLY -> {
+                    count == (pollInfoData.multipleSelectNum ?: 0)
+                }
+                POLL_MULTIPLE_STATE_MAX -> {
+                    count > 0
+                }
+                POLL_MULTIPLE_STATE_LEAST -> {
+                    count >= (pollInfoData.multipleSelectNum ?: 0)
+                }
+                else -> false
+            }
+            if (enableButton) {
+                enablePollButton(buttonSubmitVote)
+            } else {
+                disablePollButton(buttonSubmitVote)
+            }
+        }
+    }
+
+    fun enablePollButton(btnSubmitVote: MaterialButton?) {
+        if (btnSubmitVote == null) {
+            return
+        }
+        btnSubmitVote.apply {
+            iconTint = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            setTextColor(LMBranding.getButtonsColor())
+            strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            tag = "POLL_CLICK_ENABLED"
+            isEnabled = true
+        }
+    }
+
+    fun disablePollButton(btnSubmitVote: MaterialButton?) {
+        if (btnSubmitVote == null) {
+            return
+        }
+        btnSubmitVote.apply {
+            val context = context
+            setIconTintResource(R.color.grey)
+            setTextColor(ContextCompat.getColor(context, R.color.grey))
+            setStrokeColorResource(R.color.black_20)
+            tag = "POLL_CLICK_DISABLED"
+            isEnabled = false
+        }
+    }
+
+    fun showAnonymousPollDialog(context: Context) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.anonymous_poll))
+            .setMessage(context.getString(R.string.anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        builder.create().show()
+    }
+
+    fun multipleItemSelectPollExactly(
+        context: Context,
+        pollViewData: PollViewData,
+        optionCount: Int,
+        pollViewDataList: List<PollViewData>,
+        listener: ChatroomDetailAdapterListener,
+        buttonSubmitVote: MaterialButton?,
+        pollViewListener: PollViewListener?,
+        conversationId: String?,
+        onComplete: (list: List<PollViewData>) -> Unit,
+    ) {
+        var selectedItemsCount = pollViewDataList.filter { it.isSelected == true }.size
+
+        if (selectedItemsCount == optionCount) {
+            if (pollViewData.isSelected == false) {
+                listener.showToastMessage("You must select $optionCount options. Unselect an option or submit your vote now")
+                return
+            }
+        }
+
+        val data = updatePollItemsForInstantPollWithMultipleSelection(
+            pollViewDataList, pollViewData, selectedItemsCount
+        )
+        onComplete(data.first)
+        selectedItemsCount = data.second
+
+        if (selectedItemsCount == optionCount) {
+            listener.showToastMessage("$optionCount options selected. Submit your vote now")
+        } else if (selectedItemsCount < optionCount) {
+            val optionDifference = optionCount - selectedItemsCount
+            if (optionDifference > 1) {
+                listener.showToastMessage("Select $optionDifference more options to submit your vote")
+            } else {
+                listener.showToastMessage("Select $optionDifference more option to submit your vote")
+            }
+        }
+
+        if (selectedItemsCount == 0) {
+            listener.dismissToastMessage()
+        }
+
+        //enable poll button when option count items are selected, otherwise disable the poll button
+        if (selectedItemsCount == optionCount) {
+            enablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, true)
+        } else {
+            disablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, false)
+        }
+    }
+
+    fun multipleItemSelectPollAtMax(
+        context: Context,
+        pollViewData: PollViewData,
+        optionCount: Int,
+        pollViewDataList: List<PollViewData>,
+        listener: ChatroomDetailAdapterListener,
+        buttonSubmitVote: MaterialButton?,
+        pollViewListener: PollViewListener?,
+        conversationId: String?,
+        onComplete: (list: List<PollViewData>) -> Unit,
+    ) {
+        var selectedItemsCount = pollViewDataList.filter { it.isSelected == true }.size
+
+        //on selecting a new options when already option count items are selected, show a toast that he can't select more than option count
+        if (selectedItemsCount == optionCount) {
+            if (pollViewData.isSelected == false) {
+                listener.showToastMessage("You can select max. $optionCount options. Unselect an option or submit your vote now")
+                return
+            }
+        }
+
+        val data = updatePollItemsForInstantPollWithMultipleSelection(
+            pollViewDataList, pollViewData, selectedItemsCount
+        )
+        onComplete(data.first)
+        selectedItemsCount = data.second
+
+        if (selectedItemsCount == optionCount) {
+            listener.showToastMessage("$selectedItemsCount options selected. Submit your vote now")
+        } else if (selectedItemsCount < optionCount) {
+            listener.showToastMessage("Select more options or submit your vote now")
+        }
+
+        if (selectedItemsCount == 0) {
+            listener.dismissToastMessage()
+        }
+
+        //disable poll button when no options are selected
+        if (selectedItemsCount == 0) {
+            disablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, false)
+        } else {
+            enablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, true)
+        }
+    }
+
+    fun multipleItemSelectPollAtLeast(
+        context: Context,
+        pollViewData: PollViewData,
+        optionCount: Int,
+        pollViewDataList: List<PollViewData>,
+        listener: ChatroomDetailAdapterListener,
+        buttonSubmitVote: MaterialButton?,
+        pollViewListener: PollViewListener?,
+        conversationId: String?,
+        onComplete: (list: List<PollViewData>) -> Unit,
+    ) {
+        var selectedItemsCount = pollViewDataList.filter { it.isSelected == true }.size
+
+        val data = updatePollItemsForInstantPollWithMultipleSelection(
+            pollViewDataList, pollViewData, selectedItemsCount
+        )
+        onComplete(data.first)
+        selectedItemsCount = data.second
+
+        if (selectedItemsCount < optionCount) {
+            val optionDifference = optionCount - selectedItemsCount
+            if (optionDifference > 1) {
+                listener.showToastMessage("Select at least $optionDifference more options to submit your vote")
+            } else {
+                listener.showToastMessage("Select at least $optionDifference more option to submit your vote")
+            }
+        } else if (selectedItemsCount >= optionCount && selectedItemsCount < pollViewDataList.size) {
+            listener.showToastMessage("$selectedItemsCount options selected. Select more options or submit your vote now")
+        } else if (selectedItemsCount == pollViewDataList.size) {
+            listener.showToastMessage("$selectedItemsCount options selected. Submit your vote now")
+        }
+
+        if (selectedItemsCount == 0) {
+            listener.dismissToastMessage()
+        }
+
+        if (selectedItemsCount >= optionCount) {
+            enablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, true)
+        } else {
+            disablePollButton(buttonSubmitVote)
+            pollViewListener?.updatePollButton(conversationId, false)
+        }
+    }
+
+    fun singlePollItemSelected(
+        pollViewData: PollViewData,
+        pollViewDataList: List<PollViewData>,
+        onComplete: (list: List<PollViewData>) -> Unit,
+    ) {
+        var oldValueSelected = false
+        var totalVoteCount = 0.0
+        pollViewDataList.forEach {
+            totalVoteCount += it.noVotes ?: 0
+        }
+
+        var updatedPollViewList = pollViewDataList.map {
+            val isPreviouslySelected = it.isSelected ?: false
+            val previousNoOfVotes = it.noVotes ?: 0
+
+            val updatedNoOfVotes: Int
+            if (it.id == pollViewData.id) {
+                if (isPreviouslySelected) {
+                    oldValueSelected = true
+                    updatedNoOfVotes = previousNoOfVotes
+                } else {
+                    updatedNoOfVotes = previousNoOfVotes + 1
+                    totalVoteCount += 1
+                }
+                it.toBuilder().isSelected(true).noVotes(updatedNoOfVotes).build()
+            } else {
+                if (isPreviouslySelected) {
+                    updatedNoOfVotes = previousNoOfVotes - 1
+                    totalVoteCount -= 1
+                } else {
+                    updatedNoOfVotes = previousNoOfVotes
+                }
+                it.toBuilder().isSelected(false).noVotes(updatedNoOfVotes)
+                    .build()
+            }
+        }
+
+        updatedPollViewList = updatedPollViewList.map {
+            val updatedPercentage = (((it.noVotes ?: 0) / totalVoteCount) * 100).toInt()
+            it.toBuilder().percentage(updatedPercentage).build()
+        }
+
+        // Check if user selects old value
+        if (!oldValueSelected) {
+            onComplete(updatedPollViewList)
+        }
+    }
+
+    private fun updatePollItemsForInstantPollWithMultipleSelection(
+        pollViewDataList: List<PollViewData>,
+        pollViewData: PollViewData,
+        oldSelectedItemsCount: Int,
+    ): Pair<List<PollViewData>, Int> {
+        var selectedItemsCount = oldSelectedItemsCount
+        var totalVoteCount = 0.0
+        pollViewDataList.forEach {
+            totalVoteCount += it.noVotes ?: 0
+        }
+
+        var updatedPollViewList = pollViewDataList.map {
+            val isPreviouslySelected = it.isSelected ?: false
+            val previousNoOfVotes = it.noVotes ?: 0
+
+            val updatedNoOfVotes: Int
+            val updatedIsSelected: Boolean
+            if (it.id == pollViewData.id) {
+                if (isPreviouslySelected) {
+                    updatedNoOfVotes = previousNoOfVotes - 1
+                    totalVoteCount -= 1
+                    updatedIsSelected = false
+                    selectedItemsCount--
+                } else {
+                    updatedNoOfVotes = previousNoOfVotes + 1
+                    totalVoteCount += 1
+                    updatedIsSelected = true
+                    selectedItemsCount++
+                }
+                it.toBuilder().isSelected(updatedIsSelected)
+                    .noVotes(updatedNoOfVotes).build()
+            } else {
+                it
+            }
+        }
+        updatedPollViewList = updatedPollViewList.map {
+            val updatedPercentage = (((it.noVotes ?: 0) / totalVoteCount) * 100).toInt()
+            it.toBuilder().percentage(updatedPercentage).build()
+        }
+
+        return Pair(updatedPollViewList, selectedItemsCount)
     }
 }
