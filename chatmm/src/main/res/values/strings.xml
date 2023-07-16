@@ -207,4 +207,17 @@
     <string name="discard_poll">Discard poll?</string>
     <string name="discard_poll_message">Are you sure you want to discard this poll?</string>
     <string name="discard">DISCARD</string>
+    <string name="poll_ended_message_for_option_selection">Poll ended. Vote can not be submitted now.</string>
+    <string name="sorry_unfortunately_we_could_not_submit_your_choices_please_try_again">Sorry Unfortunately we couldn\'t submit your choices, Please try again.</string>
+    <string name="zero_vote">0 vote</string>
+    <plurals name="votes">
+        <item quantity="one">%d vote</item>
+        <item quantity="other">%d votes</item>
+    </plurals>
+    <string name="join_continue">Continue</string>
+    <string name="results_will_be_announced_when_voting_ends_on_s">Results will be announced when voting ends on %s.</string>
+    <string name="your_vote_has_been_submitted_successfully_you_can_change_and_resubmit_your_vote_anytime_till_the_voting_ends">Your vote has been submitted successfully. You can change and resubmit your vote anytime till the voting ends.</string>
+    <string name="vote_submission_successful">Vote submission successful</string>
+    <string name="your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms">Your vote submitted successfully. Poll room has been added to your followed chat rooms</string>
+    <string name="your_vote_submitted_successfully">Your vote submitted successfully</string>
 </resources>

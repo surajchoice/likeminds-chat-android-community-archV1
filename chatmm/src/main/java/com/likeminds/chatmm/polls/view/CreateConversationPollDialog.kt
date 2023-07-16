@@ -40,7 +40,6 @@ class CreateConversationPollDialog :
     BaseBottomSheetFragment<DialogCreateConversationPollBinding, CreatePollViewModel>(),
     CreatePollItemAdapterListener {
     companion object {
-
         private const val TAG = "CreateConversationPollDialog"
         private const val ARG_CHATROOM = "ARG_CHATROOM"
         private const val ARG_CHATROOM_EXTRAS = "ARG_CHATROOM_EXTRAS"
@@ -65,7 +64,7 @@ class CreateConversationPollDialog :
     }
 
     @Inject
-    lateinit var userPrefereces: UserPreferences
+    lateinit var userPreferences: UserPreferences
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
@@ -196,7 +195,7 @@ class CreateConversationPollDialog :
         }
 
         binding.btnPost.setOnClickListener {
-            if (userPrefereces.getIsGuestUser()) {
+            if (userPreferences.getIsGuestUser()) {
                 SDKApplication.getLikeMindsCallback()?.login()
                 activity?.finish()
             } else {
@@ -221,7 +220,8 @@ class CreateConversationPollDialog :
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         binding.rvPollOptions.layoutManager = linearLayoutManager
-        chatroomItemAdapter = ChatroomItemAdapter(createPollItemAdapterListener = this)
+        chatroomItemAdapter =
+            ChatroomItemAdapter(userPreferences, createPollItemAdapterListener = this)
         binding.rvPollOptions.adapter = chatroomItemAdapter
         chatroomItemAdapter.replace(viewModel.getInitialPollViewDataList())
         binding.tvAddOptions.setOnClickListener {

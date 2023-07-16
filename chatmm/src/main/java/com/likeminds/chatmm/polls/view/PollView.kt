@@ -6,10 +6,7 @@ import android.util.*
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
-import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapterListener
-import com.likeminds.chatmm.chatroom.create.view.adapter.CreatePollItemAdapterListener
-import com.likeminds.chatmm.chatroom.create.view.adapter.PollItemAdapterListener
+import com.likeminds.chatmm.chatroom.create.view.adapter.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil.hasPollEnded
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil.isDeferredPoll
@@ -51,6 +48,14 @@ class PollView(
         pollViewListener: PollViewListener,
         userPreferences: UserPreferences,
     ) {
+        Log.d(
+            "TAG",
+            "init: called ${conversation.pollInfoData?.pollViewDataList?.size}}"
+        )
+        Log.d(
+            "TAG",
+            "init: called-2 ${conversation.id}}"
+        )
         this.pollData = conversation.pollInfoData ?: return
         this.listener = listener
         this.pollViewListener = pollViewListener
@@ -67,6 +72,7 @@ class PollView(
                 .build()
         }
         adapter = ChatroomItemAdapter(
+            userPreferences,
             chatroomItemAdapterListener = this,
             createPollItemAdapterListener = this,
             pollItemAdapterListener = this,

@@ -16,4 +16,5 @@ interface PollsComponent {
     fun inject(pollResultFragment: PollResultFragment)
     fun inject(pollResultsActivity: PollResultsActivity)
     fun inject(pollResultTabFragment: PollResultTabFragment)
+    fun inject(pollVoteSubmitSuccessDialog: PollVoteSubmitSuccessDialog)
 }

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="pollViewData"
+            type="com.likeminds.chatmm.polls.model.PollViewData" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
+            name="position"
+            type="int" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_poll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_poll_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_poll_item_selected"
+            android:minHeight="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/backgroundProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="2dp"
+                android:progress="50"
+                android:progressDrawable="@drawable/poll_result_background_selected"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_poll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{pollViewData.text}"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toTopOf="@+id/tv_added_by"
+                app:layout_constraintEnd_toStartOf="@+id/iv_checked"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_goneMarginBottom="5dp"
+                tools:text="Finiss nocere, tanquam placidus amor. Grow and you will be grasped daily." />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_added_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="5dp"
+                android:ellipsize="end"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                android:visibility="gone"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_poll"
+                app:layout_constraintTop_toBottomOf="@+id/tv_poll"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Added by You"
+                tools:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:tint="@{buttonColor}"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_check_circle_turquoise_28dp"
+                tools:ignore="ContentDescription,UseAppTint"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_no_votes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/turquoise"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_poll_1"
+            tools:text="5 votes"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

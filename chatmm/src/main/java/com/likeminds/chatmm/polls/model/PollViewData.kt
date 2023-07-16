@@ -5,7 +5,7 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM_POLL
+import com.likeminds.chatmm.utils.model.ITEM_POLL
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -24,7 +24,7 @@ class PollViewData private constructor(
     var parentId: String?// Can be either ChatroomId or ConversationId based on pollSourceType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
-        get() = ITEM_CHAT_ROOM_POLL
+        get() = ITEM_POLL
 
     class Builder {
         private var id: String? = null

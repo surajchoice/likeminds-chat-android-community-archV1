@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.R
@@ -185,6 +186,10 @@ internal class ConversationPollItemViewDataBinder constructor(
         data: ConversationViewData,
     ) {
         binding.apply {
+            Log.d(
+                "TAG",
+                "initializePollViews: called ${data.pollInfoData?.pollViewDataList?.size} ---- ${System.currentTimeMillis()}"
+            )
             pollView.init(
                 position,
                 data,
@@ -270,6 +275,7 @@ internal class ConversationPollItemViewDataBinder constructor(
         binding: ItemConversationPollBinding, memberViewData: MemberViewData,
     ) {
         binding.apply {
+            Log.d("TAG", "initPollAddButtonView: ${pollView.isPollSubmitted()}")
             val isAddOptionAllowedForInstantPoll =
                 pollView.isInstantPoll() && !pollView.isPollSubmitted()
             val isAddOptionAllowedForDeferredPoll = !pollView.isInstantPoll()

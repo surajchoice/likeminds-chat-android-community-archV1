@@ -8,6 +8,7 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
@@ -215,9 +216,11 @@ object ViewDataConverter {
             .uploadWorkerUUID(conversation.uploadWorkerUUID)
             .temporaryId(conversation.temporaryId)
             .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
+            .pollInfoData(convertPollInfoData(conversation))
             .build()
     }
 
+    // converts network [Member] to [MemberViewData]
     fun convertMember(member: Member?): MemberViewData {
         if (member == null) {
             return MemberViewData.Builder().build()
@@ -233,6 +236,54 @@ object ViewDataConverter {
             .communityId(member.communityId.toString())
             .isOwner(member.isOwner)
             .isGuest(member.isGuest)
+            .build()
+    }
+
+    // converts poll data from network conversation to [PollInfoData]
+    private fun convertPollInfoData(conversation: Conversation): PollInfoData {
+        return PollInfoData.Builder()
+            .allowAddOption(conversation.allowAddOption)
+            .pollType(conversation.pollType)
+            .pollViewDataList(convertPolls(conversation.polls))
+            .expiryTime(conversation.expiryTime)
+            .isAnonymous(conversation.isAnonymous)
+            .multipleSelectNum(conversation.multipleSelectNum)
+            .pollTypeText(conversation.pollTypeText)
+            .submitTypeText(conversation.submitTypeText)
+            .multipleSelectState(conversation.multipleSelectState)
+            .pollAnswerText(conversation.pollAnswerText)
+            .toShowResult(conversation.toShowResults)
+            .isPollSubmitted(checkIsPollSubmitted(conversation.polls?.toMutableList()))
+            .build()
+    }
+
+    private fun checkIsPollSubmitted(polls: MutableList<Poll>?): Boolean {
+        var isPollSubmitted = false
+        polls?.forEach {
+            if (it.isSelected == true) {
+                isPollSubmitted = true
+            }
+        }
+        return isPollSubmitted
+    }
+
+    // converts network list of [Poll] to list of [PollViewData]
+    private fun convertPolls(polls: List<Poll>?): List<PollViewData>? {
+        return polls?.map {
+            convertPoll(it)
+        }
+    }
+
+    // converts network [Poll] to [PollViewData]
+    fun convertPoll(poll: Poll): PollViewData {
+        return PollViewData.Builder()
+            .id(poll.id)
+            .member(convertMember(poll.member))
+            .isSelected(poll.isSelected)
+            .text(poll.text)
+            .percentage(poll.percentage)
+            .noVotes(poll.noVotes)
+            .isSelected(poll.isSelected)
             .build()
     }
 
@@ -506,7 +557,7 @@ object ViewDataConverter {
     }
 
     // converts PollViewData model list to network Poll model list
-    fun convertPolls(pollViewDataList: List<PollViewData>): List<Poll> {
+    fun createPolls(pollViewDataList: List<PollViewData>): List<Poll> {
         return pollViewDataList.map {
             convertPoll(it)
         }

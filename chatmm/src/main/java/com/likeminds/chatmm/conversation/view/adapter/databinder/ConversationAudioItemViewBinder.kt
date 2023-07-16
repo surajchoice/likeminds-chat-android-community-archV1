@@ -1,9 +1,7 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapterListener
@@ -16,9 +14,7 @@ import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_AUDIO
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUDIO
+import com.likeminds.chatmm.utils.model.*
 import javax.inject.Inject
 
 class ConversationAudioItemViewBinder @Inject constructor(
@@ -197,6 +193,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
             }.sortedBy { it.index }
 
             audioView.initialize(
+                userPreferences,
                 attachments.take(2),
                 chatroomDetailAdapterListener,
                 mediaActionVisible,

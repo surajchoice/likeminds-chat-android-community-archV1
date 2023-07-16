@@ -13,6 +13,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.LayoutAudioBinding
+import com.likeminds.chatmm.member.util.UserPreferences
 
 class AudioView(
     context: Context,
@@ -35,12 +36,16 @@ class AudioView(
     private var mediaUploadFailed = false
     private var isProgressFocussed = false
 
+    private lateinit var userPreferences: UserPreferences
+
     fun initialize(
+        userPreferences: UserPreferences,
         attachments: List<AttachmentViewData>,
         chatroomAdapterListener: ChatroomDetailAdapterListener,
         mediaActionVisible: Boolean,
         mediaUploadFailed: Boolean = false,
     ) {
+        this.userPreferences = userPreferences
         this.attachments.clear()
         this.attachments.addAll(attachments)
         this.chatroomAdapterListener = chatroomAdapterListener
@@ -52,6 +57,7 @@ class AudioView(
     private fun initRecyclerView() {
         binding.rvAudio.apply {
             adapter = ChatroomItemAdapter(
+                userPreferences,
                 chatroomItemAdapterListener = this@AudioView
             )
             this@AudioView.adapter?.replace(attachments.toList())

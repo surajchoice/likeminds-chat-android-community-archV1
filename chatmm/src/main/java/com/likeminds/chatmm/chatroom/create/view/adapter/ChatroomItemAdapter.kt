@@ -7,16 +7,17 @@ import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemCreatePollBinding
 import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.adapter.databinders.ItemCreatePollViewDataBinder
 import com.likeminds.chatmm.polls.adapter.databinders.ItemPollMoreOptionsViewDataBinder
-import com.likeminds.chatmm.polls.model.CreatePollViewData
-import com.likeminds.chatmm.polls.model.PollInfoData
-import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.polls.model.*
+import com.likeminds.chatmm.polls.view.ItemPollViewDataBinder
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 class ChatroomItemAdapter constructor(
+    val userPreferences: UserPreferences,
     val chatroomItemAdapterListener: ChatroomItemAdapterListener? = null,
     val createPollItemAdapterListener: CreatePollItemAdapterListener? = null,
     val pollItemAdapterListener: PollItemAdapterListener? = null,
@@ -35,6 +36,14 @@ class ChatroomItemAdapter constructor(
 
         val pollMoreOptionsViewDataBinder = ItemPollMoreOptionsViewDataBinder()
         viewDataBinders.add(pollMoreOptionsViewDataBinder)
+
+        val pollViewDataBinder = ItemPollViewDataBinder(
+            userPreferences,
+            createPollItemAdapterListener,
+            pollItemAdapterListener,
+            chatroomItemAdapterListener,
+        )
+        viewDataBinders.add(pollViewDataBinder)
 
         val audioItemViewDataBinder = ItemAudioViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(audioItemViewDataBinder)

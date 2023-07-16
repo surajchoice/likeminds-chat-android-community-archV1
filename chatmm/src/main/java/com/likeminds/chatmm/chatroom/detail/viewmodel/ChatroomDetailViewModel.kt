@@ -37,7 +37,7 @@ import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.poll.model.SubmitPollRequest
+import com.likeminds.likemindschat.poll.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -102,6 +102,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _scrolledData by lazy { MutableLiveData<PaginatedViewData>() }
     val scrolledData: LiveData<PaginatedViewData> = _scrolledData
 
+    private val _addOptionResponse by lazy { MutableLiveData<PollViewData?>() }
+    val addOptionResponse: LiveData<PollViewData?> = _addOptionResponse
+
     //To set topic
     private val _setTopicResponse by lazy { MutableLiveData<ConversationViewData>() }
     val setTopicResponse: LiveData<ConversationViewData> = _setTopicResponse
@@ -133,8 +136,7 @@ class ChatroomDetailViewModel @Inject constructor(
     val conversationEventFlow = conversationEventChannel.receiveAsFlow()
 
     //Returns Triple (poll response, poll info data)
-    private val _pollAnswerUpdated: MutableLiveData<PollInfoData?> =
-        MutableLiveData()
+    private val _pollAnswerUpdated: MutableLiveData<PollInfoData?> by lazy { MutableLiveData() }
     val pollAnswerUpdated: LiveData<PollInfoData?> = _pollAnswerUpdated
 
     private val errorEventChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
@@ -155,6 +157,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class EditConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class DeleteConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
+        data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -1818,6 +1821,31 @@ class ChatroomDetailViewModel @Inject constructor(
      * Polls
     ---------------------------------------------------------------*/
 
+    fun addNewConversationPollOption(conversationId: String, newPollOption: String) {
+        viewModelScope.launchIO {
+            val request = AddPollOptionRequest.Builder()
+                .conversationId(conversationId)
+                .poll(
+                    Poll.Builder().text(newPollOption).build()
+                )
+                .build()
+
+            val response = lmChatClient.addPollOption(request)
+            if (response.success) {
+                val createdPoll = response.data?.poll
+                if (createdPoll != null) {
+                    val pollViewData = ViewDataConverter.convertPoll(createdPoll)
+                    _addOptionResponse.postValue(pollViewData)
+                    sendPollOptionAddedEvent(conversationId)
+                }
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(SDKApplication.LOG_TAG, "add poll option failed: $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.AddPollOption(errorMessage))
+            }
+        }
+    }
+
     fun submitConversationPoll(
         conversation: ConversationViewData,
         pollViewDataList: List<PollViewData>,
@@ -1830,7 +1858,7 @@ class ChatroomDetailViewModel @Inject constructor(
                     pollViewDataList
                 )
             ) {
-                this._pollAnswerUpdated.value = conversation.pollInfoData
+                this._pollAnswerUpdated.postValue(conversation.pollInfoData)
                 return@launchIO
             }
 
@@ -2360,6 +2388,40 @@ class ChatroomDetailViewModel @Inject constructor(
                 "chatroom_title" to chatroom.header,
                 LMAnalytics.Keys.COMMUNITY_NAME to chatroom.communityName,
                 "conversation_id" to conversation?.id
+            )
+        )
+    }
+
+    /**
+     * Triggers when the current user creates a chatroom poll option or a conversation poll (micro polls) option
+     */
+    private fun sendPollOptionAddedEvent(conversationId: String? = null) {
+        val chatroom = getChatroomViewData() ?: return
+        LMAnalytics.track(
+            LMAnalytics.Events.POLL_OPTION_CREATED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                "chatroom_title" to chatroom.header,
+                LMAnalytics.Keys.COMMUNITY_NAME to chatroom.communityName,
+                "conversation_id" to conversationId
+            )
+        )
+    }
+
+    /**
+     * Triggers when the current user edits a chatroom poll or a conversation poll (micro polls)
+     */
+    fun sendPollVotingEditedEvent(conversationId: String? = null) {
+        val chatroom = getChatroomViewData() ?: return
+        LMAnalytics.track(
+            LMAnalytics.Events.POLL_VOTING_EDITED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
+                "chatroom_title" to chatroom.header,
+                LMAnalytics.Keys.COMMUNITY_NAME to chatroom.communityName,
+                "conversation_id" to conversationId
             )
         )
     }

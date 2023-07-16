@@ -17,13 +17,6 @@ import com.likeminds.likemindschat.poll.model.PostPollConversationResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
-import kotlin.collections.arrayListOf
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.mapOf
 import kotlin.collections.set
 
 class CreatePollViewModel @Inject constructor() : ViewModel() {
@@ -80,7 +73,7 @@ class CreatePollViewModel @Inject constructor() : ViewModel() {
                 POLL_TYPE_DEFERRED
             }
 
-            val polls = ViewDataConverter.convertPolls(pollsViewData)
+            val polls = ViewDataConverter.createPolls(pollsViewData)
 
             val postPollConversationRequest = PostPollConversationRequest.Builder()
                 .chatroomId(chatroom.id)

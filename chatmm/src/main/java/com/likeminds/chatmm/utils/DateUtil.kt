@@ -123,4 +123,33 @@ object DateUtil {
         }
         return false
     }
+
+    fun getPollExpireTimeString(expiryTime: Long?): String {
+        if (expiryTime != null) {
+            val calendarDateTime = Calendar.getInstance()
+            calendarDateTime.timeInMillis = expiryTime
+            val fullDate = SimpleDateFormat(
+                "MMM yyyy, HH:mm",
+                Locale.getDefault()
+            ).format(calendarDateTime.time)
+            val date = SimpleDateFormat("dd", Locale.getDefault()).format(calendarDateTime.time)
+            return "$date${DateUtil.getDayOfMonthSuffix(date.toInt())} $fullDate"
+        }
+        return ""
+    }
+
+    private fun getDayOfMonthSuffix(day: Int): String {
+        if (day in 1..31) {
+            return if (day in 11..13) {
+                "th"
+            } else when (day % 10) {
+                1 -> "st"
+                2 -> "nd"
+                3 -> "rd"
+                else -> "th"
+            }
+        } else {
+            throw IllegalArgumentException("illegal day of month: $day")
+        }
+    }
 }

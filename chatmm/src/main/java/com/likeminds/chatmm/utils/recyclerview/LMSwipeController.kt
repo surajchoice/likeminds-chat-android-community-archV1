@@ -2,14 +2,9 @@ package com.likeminds.chatmm.utils.recyclerview
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.view.HapticFeedbackConstants
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +37,7 @@ class LMSwipeController(
         ITEM_CONVERSATION_AUDIO,
         ITEM_CONVERSATION_VOICE_NOTE,
         ITEM_CHAT_ROOM,
-        ITEM_CHAT_ROOM_POLL,
+        ITEM_POLL,
         ITEM_CHAT_ROOM_ANNOUNCEMENT
     )
 
