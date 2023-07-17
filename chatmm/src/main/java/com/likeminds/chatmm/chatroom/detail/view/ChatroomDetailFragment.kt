@@ -3762,13 +3762,24 @@ class ChatroomDetailFragment :
         selectedChatRoom = if (selectedChatRoom?.id == chatRoom.id) null else chatRoom
 
         if (selectedChatRoom != null && selectedConversations.isEmpty()) {
-            // todo: reaction
-//            showChatroomReactionPopup(itemPosition)
+            showChatroomReactionPopup(itemPosition)
         }
 
         chatroomDetailAdapter.notifyItemChanged(itemPosition)
 
         invalidateActionMenu()
+    }
+
+    private fun showChatroomReactionPopup(itemPosition: Int) {
+        hideVideoPlayerAndDismissReactionTray()
+        messageReactionsTray?.showChatroomReactionPopup(chatroomId, itemPosition)
+
+        reactionsViewModel.sendEmoticonTrayOpenedEvent(
+            LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS,
+            "",
+            chatroomId,
+            communityId
+        )
     }
 
     override fun externalLinkClicked(

@@ -218,6 +218,8 @@ object ViewDataConverter {
             .temporaryId(conversation.temporaryId)
             .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
             .pollInfoData(convertPollInfoData(conversation))
+            .lastSeen(conversation.lastSeen)
+            .reactions(convertConversationReactions(conversation.reactions, conversation.id))
             .build()
     }
 
@@ -240,6 +242,28 @@ object ViewDataConverter {
             .build()
     }
 
+    // converts list of conversation reactions to list of [ReactionViewData]
+    private fun convertConversationReactions(
+        reactions: List<Reaction>?,
+        conversationId: String?
+    ): List<ReactionViewData>? {
+        return reactions?.map {
+            convertConversationReaction(it, conversationId)
+        }
+    }
+
+    // converts a [Reaction] to [ReactionViewData]
+    private fun convertConversationReaction(
+        reactionData: Reaction,
+        conversationId: String?
+    ): ReactionViewData {
+        return ReactionViewData.Builder()
+            .reaction(reactionData.reaction)
+            .conversationId(conversationId)
+            .build()
+    }
+
+    // converts network model [MemberStateResponse] to [MemberStateViewData]
     fun convertMemberState(memberStateResponse: MemberStateResponse?): MemberStateViewData? {
         if (memberStateResponse == null) {
             return null
@@ -256,6 +280,7 @@ object ViewDataConverter {
             .build()
     }
 
+    // todo: remove
     private fun convertMemberFromMemberState(
         memberStateResponse: MemberStateResponse?
     ): MemberViewData? {
@@ -276,6 +301,7 @@ object ViewDataConverter {
             .build()
     }
 
+    // converts network model [ManagementRightPermissionData] to [ManagementRightPermissionViewData]
     fun convertManagementRights(
         managementRightPermissionData: ManagementRightPermissionData?
     ): ManagementRightPermissionViewData? {
@@ -310,6 +336,7 @@ object ViewDataConverter {
             .build()
     }
 
+    // checks if poll is submitted or not and sets poll isSelected key
     private fun checkIsPollSubmitted(polls: MutableList<Poll>?): Boolean {
         var isPollSubmitted = false
         polls?.forEach {
