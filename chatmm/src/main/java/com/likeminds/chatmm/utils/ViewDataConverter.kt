@@ -1,11 +1,11 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
+import com.likeminds.chatmm.member.model.MemberStateViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.PollInfoData
@@ -18,7 +18,7 @@ import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.poll.model.Poll
-import com.likeminds.likemindschat.user.model.User
+import com.likeminds.likemindschat.user.model.*
 
 object ViewDataConverter {
 
@@ -237,6 +237,58 @@ object ViewDataConverter {
             .communityId(member.communityId.toString())
             .isOwner(member.isOwner)
             .isGuest(member.isGuest)
+            .build()
+    }
+
+    fun convertMemberState(memberStateResponse: MemberStateResponse?): MemberStateViewData? {
+        if (memberStateResponse == null) {
+            return null
+        }
+        return MemberStateViewData.Builder()
+            .state(memberStateResponse.state)
+            .memberViewData(convertMemberFromMemberState(memberStateResponse))
+            .managerRights(memberStateResponse.managerRights?.mapNotNull {
+                convertManagementRights(it)
+            })
+            .memberRights(memberStateResponse.memberRights.mapNotNull {
+                convertManagementRights(it)
+            })
+            .build()
+    }
+
+    private fun convertMemberFromMemberState(
+        memberStateResponse: MemberStateResponse?
+    ): MemberViewData? {
+        if (memberStateResponse == null) {
+            return null
+        }
+
+        return MemberViewData.Builder()
+            .id(memberStateResponse.id)
+            .state(memberStateResponse.state)
+            .userUniqueId(memberStateResponse.userUniqueId)
+            .customTitle(memberStateResponse.customTitle)
+            .imageUrl(memberStateResponse.imageUrl)
+            .isGuest(memberStateResponse.isGuest)
+            .isOwner(memberStateResponse.isOwner)
+            .name(memberStateResponse.name)
+            .updatedAt(memberStateResponse.updatedAt)
+            .build()
+    }
+
+    fun convertManagementRights(
+        managementRightPermissionData: ManagementRightPermissionData?
+    ): ManagementRightPermissionViewData? {
+        if (managementRightPermissionData == null) {
+            return null
+        }
+        return ManagementRightPermissionViewData.Builder()
+            .id(managementRightPermissionData.id)
+            .state(managementRightPermissionData.state)
+            .title(managementRightPermissionData.title)
+            .subtitle(managementRightPermissionData.subtitle)
+            .isSelected(managementRightPermissionData.isSelected)
+            .isLocked(managementRightPermissionData.isLocked)
             .build()
     }
 
