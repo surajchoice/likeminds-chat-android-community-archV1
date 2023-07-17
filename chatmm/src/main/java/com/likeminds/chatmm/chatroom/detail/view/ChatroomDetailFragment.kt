@@ -35,8 +35,8 @@ import com.giphy.sdk.ui.themes.GPHTheme
 import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -70,6 +70,11 @@ import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.polls.util.AddPollOptionListener
 import com.likeminds.chatmm.polls.view.*
 import com.likeminds.chatmm.pushnotification.NotificationUtils
+import com.likeminds.chatmm.reactions.model.ReactionViewData
+import com.likeminds.chatmm.reactions.model.ReactionsListExtras
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
+import com.likeminds.chatmm.reactions.view.*
+import com.likeminds.chatmm.reactions.viewmodel.ReactionsViewModel
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
@@ -79,6 +84,7 @@ import com.likeminds.chatmm.utils.ValueUtils.getValidYoutubeVideoId
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ValueUtils.isValidSize
 import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
+import com.likeminds.chatmm.utils.ValueUtils.orEmptyMutable
 import com.likeminds.chatmm.utils.ViewUtils.endRevealAnimation
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -107,6 +113,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.Pair
 import kotlin.math.abs
 
 class ChatroomDetailFragment :
@@ -114,6 +121,8 @@ class ChatroomDetailFragment :
     ChatroomDetailAdapterListener,
     AddPollOptionListener,
     ActionModeListener<ChatroomDetailActionModeData>,
+    ReactionsClickListener,
+    ReactionRemovedDialogListener,
     YouTubeVideoPlayerPopup.VideoPlayerListener,
     VoiceNoteInterface,
     LeaveSecretChatroomDialogListener,
@@ -146,6 +155,8 @@ class ChatroomDetailFragment :
     private var searchedConversationId: String = ""
     private var scrollToHighlightTitle: Boolean = false
 
+    private var isChatroomReaction = false
+
     @Inject
     lateinit var sdkPreferences: SDKPreferences
 
@@ -153,9 +164,16 @@ class ChatroomDetailFragment :
     lateinit var userPreferences: UserPreferences
 
     @Inject
+    lateinit var reactionsPreferences: ReactionsPreferences
+
+    @Inject
     lateinit var helperViewModel: HelperViewModel
 
+    @Inject
+    lateinit var reactionsViewModel: ReactionsViewModel
+
     lateinit var chatroomDetailAdapter: ChatroomDetailAdapter
+    private var messageReactionsTray: ReactionPopup? = null
     private lateinit var chatroomScrollListener: ChatroomScrollListener
     private var updatedMuteActionTitle: String? = null
     private var updatedFollowActionTitle: String? = null
@@ -523,6 +541,7 @@ class ChatroomDetailFragment :
                 ChatroomDetailAdapter(
                     sdkPreferences,
                     userPreferences,
+                    reactionsPreferences,
                     this@ChatroomDetailFragment
                 )
             adapter = chatroomDetailAdapter
@@ -3696,12 +3715,11 @@ class ChatroomDetailFragment :
                 emojiPopup.dismiss()
             }
             if (conversation.deletedBy == null && selectedChatRoom == null) {
-                // todo: reactions
-//                showReactionsPopup(
-//                    itemPosition,
-//                    conversation.id,
-//                    from
-//                )
+                showReactionsPopup(
+                    itemPosition,
+                    conversation.id,
+                    from
+                )
             }
         }
 
@@ -3714,6 +3732,19 @@ class ChatroomDetailFragment :
         chatroomDetailAdapter.notifyItemChanged(itemPosition)
 
         invalidateActionMenu()
+    }
+
+    // opens reaction popup and triggers reaction tray opened event
+    private fun showReactionsPopup(itemPosition: Int, conversationId: String, from: String) {
+        hideVideoPlayerAndDismissReactionTray()
+        messageReactionsTray?.showPopup(conversationId, itemPosition)
+
+        reactionsViewModel.sendEmoticonTrayOpenedEvent(
+            from,
+            conversationId,
+            chatroomId,
+            communityId
+        )
     }
 
     override fun onConversationSeekbarChanged(
@@ -4283,6 +4314,39 @@ class ChatroomDetailFragment :
         activity?.invalidateOptionsMenu()
     }
 
+    /**
+     * @return Pair containing the current index and the conversation object matched with the recyclerview
+     * @param id Conversation id
+     */
+    private fun getIndexedConversation(id: String): Pair<Int, ConversationViewData>? {
+        val index = chatroomDetailAdapter.items().indexOfFirst {
+            it is ConversationViewData && it.id == id
+        }
+        if (index.isValidIndex()) {
+            val conversation = chatroomDetailAdapter[index] as? ConversationViewData
+            if (conversation != null) {
+                return Pair(index, conversation)
+            }
+        }
+        return null
+    }
+
+    private fun hideVideoPlayerAndDismissReactionTray() {
+        if (inAppVideoPlayerPopup?.isShowing == true) {
+            inAppVideoPlayerPopup?.playOrPauseVideo(play = false)
+        }
+        if (messageReactionsTray?.isShowing == true) {
+            messageReactionsTray?.dismiss()
+        }
+
+        if (messageReactionsTray == null) {
+            messageReactionsTray =
+                ReactionPopup(binding, requireActivity())
+            messageReactionsTray?.attachListener(this)
+        }
+        messageReactionsTray?.contentView = null
+    }
+
     private fun takeActionOnReportedMessage() {
         chatroomResultExtras = chatroomResultExtras?.also {
             chatroomResultExtras?.toBuilder()
@@ -4847,6 +4911,223 @@ class ChatroomDetailFragment :
     /**------------------------------------------------------------
      * Other listeners
     ---------------------------------------------------------------*/
+
+    override fun reactionClicked(
+        unicode: String,
+        conversationId: String,
+        isConversation: Boolean,
+    ) {
+        reactedToMessage(unicode, conversationId, isConversation)
+    }
+
+    private fun reactedToMessage(
+        reaction: String,
+        conversationId: String,
+        isConversation: Boolean,
+    ) {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            ViewUtils.hideKeyboard(requireContext())
+            //dismiss the message action mode
+            actionModeCallback?.finishActionMode()
+            messageReactionsTray?.dismiss()
+
+            val member =
+                viewModel.currentMemberDataFromMemberState ?: return
+            val reactionViewData = ReactionViewData.Builder()
+                .memberViewData(member)
+                .reaction(reaction)
+                .conversationId(if (isConversation) conversationId else null)
+                .chatroomId(if (isConversation) null else chatroomId)
+                .build()
+
+            if (isConversation) {
+                reactionsViewModel.putConversationReaction(conversationId, reactionViewData)
+                updateReactionsGridUI(reactionViewData, conversationId)
+            } else {
+                reactionsViewModel.putChatroomReaction(chatroomId, reactionViewData)
+                updateChatroomReactionGridUI(reactionViewData)
+            }
+
+            if (getChatroomViewData()?.followStatus == false) {
+                removeFollowView()
+                viewModel.followChatroom(
+                    chatroomDetailExtras.chatroomId,
+                    true,
+                    LMAnalytics.Source.MESSAGE_REACTIONS
+                )
+            }
+            val finalConversationId = if (isConversation) {
+                conversationId
+            } else {
+                ""
+            }
+            reactionsViewModel.sendReactionAddedEvent(
+                reaction,
+                LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS,
+                finalConversationId,
+                chatroomId,
+                communityId
+            )
+        }
+    }
+
+    /**
+     * Add or remove the reaction of the conversation in recyclerview
+     * @param messageReactionViewData The message reaction object. Pass null to remove the reaction
+     * @param conversationId The id of the conversation
+     */
+    private fun updateReactionsGridUI(
+        messageReactionViewData: ReactionViewData?,
+        conversationId: String,
+    ) {
+        val conversationIndexed = getIndexedConversation(conversationId) ?: return
+        val conversation = conversationIndexed.second
+        val index = conversationIndexed.first
+        var shouldScrollToBottom = false
+
+        val messageReactions = conversation.reactions.orEmptyMutable()
+        val indexToBeRemoved = messageReactions.indexOfFirst { reaction ->
+            reaction.memberViewData.id == userPreferences.getMemberId()
+        }
+        if (indexToBeRemoved.isValidIndex()) {
+            messageReactions.removeAt(indexToBeRemoved)
+        }
+        if (messageReactionViewData != null) {
+            messageReactions.add(messageReactionViewData)
+            if (messageReactions.size == 1 && getBottomConversation()?.id == conversationId) {
+                shouldScrollToBottom = true
+            }
+        }
+        chatroomDetailAdapter.update(
+            index,
+            conversation.toBuilder()
+                .reactions(messageReactions)
+                .build()
+        )
+        if (shouldScrollToBottom) {
+            binding.rvChatroom.post {
+                scrollToPosition(SCROLL_DOWN)
+            }
+        }
+        if (inAppVideoPlayerPopup?.isShowing == true) {
+            inAppVideoPlayerPopup?.playOrPauseVideo(play = true)
+        }
+    }
+
+    private fun updateChatroomReactionGridUI(reactionViewData: ReactionViewData?) {
+        val chatroomIndex = getIndexOfChatroom() ?: return
+        val chatroom = getChatroomViewData()
+
+        val reactions = chatroom?.reactions.orEmptyMutable()
+        val indexToBeRemoved = reactions.indexOfFirst { reaction ->
+            reaction.memberViewData.id == userPreferences.getMemberId()
+        }
+        if (indexToBeRemoved.isValidIndex()) {
+            reactions.removeAt(indexToBeRemoved)
+        }
+        if (reactionViewData != null) {
+            reactions.add(reactionViewData)
+        }
+        if (chatroom != null) {
+            val newViewData = chatroom.toBuilder()
+                .reactions(reactions)
+                .build()
+            chatroomDetailAdapter.update(chatroomIndex, newViewData)
+        }
+        if (inAppVideoPlayerPopup?.isShowing == true) {
+            inAppVideoPlayerPopup?.playOrPauseVideo(play = true)
+        }
+    }
+
+    override fun moreReactionsClicked(conversationId: String?, isConversation: Boolean) {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            if (conversationId != null && isConversation) {
+                conversationIdForEmojiReaction = conversationId
+            }
+            if (!isConversation) {
+                isChatroomReaction = true
+            }
+            messageReactionsTray?.dismiss()
+            if (!KeyboardVisibilityEvent.isKeyboardVisible(requireActivity())) {
+                binding.inputBox.etAnswer.focusAndShowKeyboard()
+            }
+            emojiPopup.show()
+        }
+    }
+
+    override fun removedReaction(conversationId: String) {
+        childFragmentManager.popBackStack()
+        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        reactionsViewModel.deleteConversationReaction(conversationId)
+        updateReactionsGridUI(null, conversationId)
+        reactionsViewModel.sendReactionRemovedEvent(
+            conversationId,
+            chatroomId,
+            communityId
+        )
+    }
+
+    override fun removedChatroomReaction() {
+        childFragmentManager.popBackStack()
+        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        reactionsViewModel.deleteChatroomReaction(chatroomId)
+        updateChatroomReactionGridUI(null)
+        reactionsViewModel.sendReactionRemovedEvent(
+            "",
+            chatroomId,
+            communityId
+        )
+    }
+
+    override fun reactionHintShown() {
+        reactionsViewModel.reactionHintShown()
+    }
+
+    override fun emoticonGridClicked(
+        conversationViewData: ConversationViewData,
+        reaction: String?,
+        position: Int,
+    ) {
+        ReactionsListDialog.newInstance(
+            ReactionsListExtras.Builder()
+                .conversation(conversationViewData)
+                .isConversation(true)
+                .gridPositionClicked(position)
+                .build()
+        ).show(childFragmentManager, ReactionsListDialog.TAG)
+        if (!conversationViewData.chatroomId
+                .isNullOrEmpty() && !conversationViewData.communityId.isNullOrEmpty()
+        )
+            reactionsViewModel.sendReactionListOpenedEvent(
+                conversationViewData.id,
+                conversationViewData.chatroomId,
+                conversationViewData.communityId
+            )
+    }
+
+    override fun chatroomEmoticonGridClicked(
+        chatroomViewData: ChatroomViewData,
+        reaction: String?,
+        position: Int,
+    ) {
+        ReactionsListDialog.newInstance(
+            ReactionsListExtras.Builder()
+                .chatroom(chatroomViewData)
+                .gridPositionClicked(position)
+                .isConversation(false)
+                .build()
+        ).show(childFragmentManager, ReactionsListDialog.TAG)
+        if (!chatroomViewData.communityId.isNullOrEmpty())
+            reactionsViewModel.sendReactionListOpenedEvent(
+                "",
+                chatroomId,
+                chatroomViewData.communityId
+            )
+    }
 
     override fun deleteMessages(
         conversations: List<ConversationViewData>,

@@ -3,27 +3,22 @@ package com.likeminds.chatmm.chatroom.detail.view.adapter
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
-import com.likeminds.chatmm.conversation.model.AttachmentViewData
-import com.likeminds.chatmm.conversation.model.ChatroomAnnouncementItemViewDataBinder
-import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.model.ReportLinkExtras
+import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.view.adapter.databinder.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
-import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
-import com.likeminds.chatmm.utils.customview.DataBoundViewHolder
-import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUTO_FOLLOWED_TAGGED_CHAT_ROOM
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_FOLLOW
+import com.likeminds.chatmm.utils.customview.*
+import com.likeminds.chatmm.utils.model.*
 import java.util.*
 
 class ChatroomDetailAdapter constructor(
     val sdkPreferences: SDKPreferences,
     val userPreferences: UserPreferences,
+    val reactionsPreferences: ReactionsPreferences,
     val listener: ChatroomDetailAdapterListener,
 ) : BaseRecyclerAdapter<BaseViewType>() {
     init {
@@ -43,7 +38,7 @@ class ChatroomDetailAdapter constructor(
         val chatroomItemViewDataBinder =
             ChatroomItemViewDataBinder(
                 userPreferences,
-//                messageReactionsPreferences,
+                reactionsPreferences,
                 listener
             )
         viewDataBinders.add(chatroomItemViewDataBinder)
@@ -63,7 +58,7 @@ class ChatroomDetailAdapter constructor(
         val conversationItemViewDataBinder =
             ConversationItemViewDataBinder(
                 userPreferences,
-//                messageReactionsPreferences,
+                reactionsPreferences,
                 listener
             )
         viewDataBinders.add(conversationItemViewDataBinder)
@@ -77,14 +72,14 @@ class ChatroomDetailAdapter constructor(
 
         val conversationSingleImageItemViewDataBinder = ConversationSingleImageItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleImageItemViewDataBinder)
 
         val conversationSingleGifItemViewDataBinder = ConversationSingleGifItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleGifItemViewDataBinder)
@@ -95,21 +90,21 @@ class ChatroomDetailAdapter constructor(
 
         val conversationSinglePdfItemViewDataBinder = ConversationSinglePdfItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSinglePdfItemViewDataBinder)
 
         val conversationLinkItemViewDataBinder = ConversationLinkItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationLinkItemViewDataBinder)
 
         val conversationSingleVideoItemViewDataBinder = ConversationSingleVideoItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationSingleVideoItemViewDataBinder)
@@ -120,7 +115,7 @@ class ChatroomDetailAdapter constructor(
 
         val conversationVoiceNoteItemViewDataBinder = ConversationVoiceNoteItemViewDataBinder(
             userPreferences,
-//            messageReactionsPreferences,
+            reactionsPreferences,
             listener
         )
         viewDataBinders.add(conversationVoiceNoteItemViewDataBinder)
@@ -128,7 +123,7 @@ class ChatroomDetailAdapter constructor(
         val conversationPollItemViewDataBinder =
             ConversationPollItemViewDataBinder(
                 userPreferences,
-//                messageReactionsPreferences,
+                reactionsPreferences,
                 listener
             )
         viewDataBinders.add(conversationPollItemViewDataBinder)
@@ -225,5 +220,18 @@ interface ChatroomDetailAdapterListener {
         hasPollEnded: Boolean,
         toShowResult: Boolean?,
         positionOfPoll: Int,
+    )
+
+    fun reactionHintShown()
+    fun emoticonGridClicked(
+        conversationViewData: ConversationViewData,
+        reaction: String?,
+        position: Int,
+    )
+
+    fun chatroomEmoticonGridClicked(
+        chatroomViewData: ChatroomViewData,
+        reaction: String?,
+        position: Int,
     )
 }

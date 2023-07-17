@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.conversation.model
+package com.likeminds.chatmm.reactions.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.member.model.MemberViewData

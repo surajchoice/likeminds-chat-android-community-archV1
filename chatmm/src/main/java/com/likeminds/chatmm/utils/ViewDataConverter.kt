@@ -10,6 +10,7 @@ import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction

@@ -11,6 +11,9 @@ import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.media.MediaComponentModule
 import com.likeminds.chatmm.di.polls.PollsComponent
+import com.likeminds.chatmm.di.polls.PollsComponentModule
+import com.likeminds.chatmm.di.reactions.ReactionsComponent
+import com.likeminds.chatmm.di.reactions.ReactionsComponentModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -22,7 +25,9 @@ import javax.inject.Singleton
         HomeFeedComponentModule::class,
         ExploreComponentModule::class,
         ChatroomDetailComponentModule::class,
-        MediaComponentModule::class
+        MediaComponentModule::class,
+        PollsComponentModule::class,
+        ReactionsComponentModule::class
     ]
 )
 interface LikeMindsChatComponent {
@@ -32,6 +37,7 @@ interface LikeMindsChatComponent {
     fun chatroomDetailComponent(): ChatroomDetailComponent.Factory
     fun mediaComponent(): MediaComponent.Factory
     fun pollsComponent(): PollsComponent.Factory
+    fun reactionsComponent(): ReactionsComponent.Factory
 
     @Component.Builder
     interface Builder {

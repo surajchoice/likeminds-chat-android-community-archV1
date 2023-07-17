@@ -98,6 +98,7 @@ object LMAnalytics {
         const val NOTIFICATION = "notification"
         const val DEEP_LINK = "deep_link"
         const val POLL_RESULT = "poll_result"
+        const val MESSAGE_REACTIONS = "message_reactions"
     }
 
     /**

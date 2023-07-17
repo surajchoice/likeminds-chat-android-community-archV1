@@ -1229,7 +1229,15 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun fetchMemberState() {
         viewModelScope.launch {
-            // todo:
+            val response = lmChatClient.getMemberState()
+            if (response.success) {
+                // todo:
+            } else {
+                //set default value as true
+                _canMemberRespond.postValue(true)
+                _canMemberCreatePoll.postValue(true)
+                Log.e(TAG, "${response.errorMessage}")
+            }
         }
     }
 
@@ -1630,6 +1638,7 @@ class ChatroomDetailViewModel @Inject constructor(
         uploadData.first.enqueue()
     }
 
+
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
     private fun uploadFilesViaWorker(
         context: Context,
@@ -1684,6 +1693,7 @@ class ChatroomDetailViewModel @Inject constructor(
             .build()
         sendConversationUpdatesToUI(listOf(updatedConversation))
     }
+
 
     fun resendFailedConversation(context: Context, conversation: ConversationViewData) {
         postFailedConversation(context, conversation)

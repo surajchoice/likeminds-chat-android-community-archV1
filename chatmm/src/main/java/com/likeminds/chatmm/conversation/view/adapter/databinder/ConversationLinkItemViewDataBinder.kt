@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
@@ -10,13 +8,15 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationLinkBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
 
 internal class ConversationLinkItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationLinkBinding, BaseViewType>() {
 
@@ -77,11 +77,11 @@ internal class ConversationLinkItemViewDataBinder constructor(
                 )
             }
 
-//            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
-//                ivAddReaction,
-//                data,
-//                userPreferences.getMemberId()
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
+                ivAddReaction,
+                data,
+                userPreferences.getMemberId()
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
@@ -159,29 +159,29 @@ internal class ConversationLinkItemViewDataBinder constructor(
                 chatroomDetailAdapterListener
             )
 
-//            val messageReactionsGridViewData = CollabcardUtil.getMessageReactionsGrid(data)
+            val reactionsGridViewData = ReactionUtil.getReactionsGrid(data)
 
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionsGridViewData,
-//                binding.clConversationRoot,
-//                binding.clConversationBubble,
-//                binding.messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                chatroomDetailAdapterListener,
-//                data
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionsGridViewData,
+                binding.clConversationRoot,
+                binding.clConversationBubble,
+                binding.messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                chatroomDetailAdapterListener,
+                data
+            )
 
-//            ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                data.isLastItem,
-//                messageReactionsPreferences.getHasUserReactedOnce(),
-//                messageReactionsPreferences.getNoOfTimesHintShown(),
-//                messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                tvDoubleTap,
-//                data.memberViewData,
-//                userPreferences.getMemberId(),
-//                clConversationRoot,
-//                clConversationBubble
-//            )
+            ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                data.isLastItem,
+                reactionsPreferences.getHasUserReactedOnce(),
+                reactionsPreferences.getNoOfTimesHintShown(),
+                reactionsPreferences.getTotalNoOfHintsAllowed(),
+                tvDoubleTap,
+                data.memberViewData,
+                userPreferences.getMemberId(),
+                clConversationRoot,
+                clConversationBubble
+            )
         }
     }
 }
