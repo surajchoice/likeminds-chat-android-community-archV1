@@ -590,15 +590,15 @@ class ChatroomDetailFragment :
                 }
                 .setOnEmojiClickListener { _, emojiString ->
                     if (conversationIdForEmojiReaction.isNotEmpty()) {
-//                    reactedToMessage(emojiString.unicode, conversationIdForEmojiReaction, true)
+                        reactedToMessage(emojiString.unicode, conversationIdForEmojiReaction, true)
                         inputBox.etAnswer.setText("")
                         emojiPopup.dismiss()
                     }
-//                if (isChatroomReaction) {
-//                    reactedToMessage(emojiString.unicode, chatroomId, false)
-//                    binding.inputBox.etAnswer.setText("")
-//                    emojiPopup.dismiss()
-//                }
+                    if (isChatroomReaction) {
+                        reactedToMessage(emojiString.unicode, chatroomId, false)
+                        binding.inputBox.etAnswer.setText("")
+                        emojiPopup.dismiss()
+                    }
                 }
                 .build(editText)
         }
@@ -1453,10 +1453,9 @@ class ChatroomDetailFragment :
     private fun attachPagination(linearLayoutManager: LinearLayoutManager) {
         chatroomScrollListener = object : ChatroomScrollListener(linearLayoutManager) {
             override fun onScroll() {
-                // todo:
-//                if (messageReactionsTray?.isShowing == true) {
-//                    messageReactionsTray?.dismiss()
-//                }
+                if (messageReactionsTray?.isShowing == true) {
+                    messageReactionsTray?.dismiss()
+                }
             }
 
             override fun onLoadMore(scrollState: Int) {
