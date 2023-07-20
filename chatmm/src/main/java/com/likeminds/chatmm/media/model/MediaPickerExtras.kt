@@ -1,8 +1,10 @@
 package com.likeminds.chatmm.media.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 class MediaPickerExtras private constructor(
     val senderName: String?,
