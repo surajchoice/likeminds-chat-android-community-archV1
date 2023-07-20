@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MediaPickerItemExtras private constructor(
-    var bucketId: String,
-    var folderTitle: String,
-    var mediaTypes: List<String>,
-    var allowMultipleSelect: Boolean,
+    val bucketId: String,
+    val folderTitle: String,
+    val mediaTypes: List<String>,
+    val allowMultipleSelect: Boolean
 ) : Parcelable {
     class Builder {
         private var bucketId: String = ""

@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ReactionsListExtras private constructor(
-    var conversation: ConversationViewData?,
-    var chatroom: ChatroomViewData?,
-    var gridPositionClicked: Int?,
-    var isConversation: Boolean
+    val conversation: ConversationViewData?,
+    val chatroom: ChatroomViewData?,
+    val gridPositionClicked: Int?,
+    val isConversation: Boolean
 ) : Parcelable {
     class Builder {
         private var conversation: ConversationViewData? = null

@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.polls.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -10,18 +9,17 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class PollViewData private constructor(
-    var id: String?,
-    var text: String,
-    var isSelected: Boolean?,
-    var percentage: Int?,
-    var noVotes: Int?,
-    var member: MemberViewData?,
-    var toShowResults: Boolean?,
-    var parentChatroom: ChatroomViewData?,
-    var parentConversation: ConversationViewData?,
-    var parentViewItemPosition: Int?,
-    var pollInfoData: PollInfoData?,
-    var parentId: String?// Can be either ChatroomId or ConversationId based on pollSourceType
+    val id: String?,
+    val text: String,
+    val isSelected: Boolean?,
+    val percentage: Int?,
+    val noVotes: Int?,
+    val member: MemberViewData?,
+    val toShowResults: Boolean?,
+    val parentConversation: ConversationViewData?,
+    val parentViewItemPosition: Int?,
+    val pollInfoData: PollInfoData?,
+    val parentId: String?// Can be either ChatroomId or ConversationId based on pollSourceType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = ITEM_POLL
@@ -34,7 +32,6 @@ class PollViewData private constructor(
         private var noVotes: Int? = null
         private var member: MemberViewData? = null
         private var toShowResults: Boolean? = null
-        private var parentChatroom: ChatroomViewData? = null
         private var parentConversation: ConversationViewData? = null
         private var parentViewItemPosition: Int? = null
         private var pollInfoData: PollInfoData? = null
@@ -48,8 +45,6 @@ class PollViewData private constructor(
         fun noVotes(noVotes: Int?) = apply { this.noVotes = noVotes }
         fun member(member: MemberViewData?) = apply { this.member = member }
         fun toShowResults(toShowResults: Boolean?) = apply { this.toShowResults = toShowResults }
-        fun parentChatroom(parentChatroom: ChatroomViewData?) =
-            apply { this.parentChatroom = parentChatroom }
 
         fun parentConversation(parentConversation: ConversationViewData?) =
             apply { this.parentConversation = parentConversation }
@@ -68,7 +63,6 @@ class PollViewData private constructor(
             noVotes,
             member,
             toShowResults,
-            parentChatroom,
             parentConversation,
             parentViewItemPosition,
             pollInfoData,
@@ -84,7 +78,6 @@ class PollViewData private constructor(
             .noVotes(noVotes)
             .member(member)
             .toShowResults(toShowResults)
-            .parentChatroom(parentChatroom)
             .parentConversation(parentConversation)
             .parentViewItemPosition(parentViewItemPosition)
             .pollInfoData(pollInfoData)

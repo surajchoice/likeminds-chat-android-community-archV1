@@ -16,7 +16,6 @@ class SingleUriData private constructor(
     val pdfPageCount: Int?,
     val duration: Int?,
     val awsFolderPath: String?,
-    val localFilePath: String?,
     val format: String?
 ) : Parcelable {
     class Builder {
@@ -30,7 +29,6 @@ class SingleUriData private constructor(
         private var pdfPageCount: Int? = null
         private var duration: Int? = null
         private var awsFolderPath: String? = null
-        private var localFilePath: String? = null
         private var format: String? = null
 
         fun uri(uri: Uri) = apply { this.uri = uri }
@@ -43,7 +41,6 @@ class SingleUriData private constructor(
         fun pdfPageCount(pdfPageCount: Int?) = apply { this.pdfPageCount = pdfPageCount }
         fun duration(duration: Int?) = apply { this.duration = duration }
         fun awsFolderPath(awsFolderPath: String?) = apply { this.awsFolderPath = awsFolderPath }
-        fun localFilePath(localFilePath: String?) = apply { this.localFilePath = localFilePath }
         fun format(format: String?) = apply { this.format = format }
 
 
@@ -58,7 +55,6 @@ class SingleUriData private constructor(
             pdfPageCount,
             duration,
             awsFolderPath,
-            localFilePath,
             format
         )
     }
@@ -74,7 +70,6 @@ class SingleUriData private constructor(
             .pdfPageCount(pdfPageCount)
             .duration(duration)
             .awsFolderPath(awsFolderPath)
-            .localFilePath(localFilePath)
             .format(format)
     }
 }

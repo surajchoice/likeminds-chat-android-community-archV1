@@ -21,7 +21,7 @@ class MediaViewData private constructor(
     val filteredKeywords: List<String>?,
     val pdfPageCount: Int?,
     val playOrPause: String?,
-    val audioProgress: Int?,
+    val audioProgress: Int?
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_MEDIA_PICKER_SINGLE

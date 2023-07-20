@@ -629,7 +629,6 @@ class ChatroomDetailFragment :
                     .mediaScreenType(MEDIA_GIF_SEND_SCREEN)
                     .chatroomId(chatroomId)
                     .communityId(communityId?.toIntOrNull())
-                    .isSecretChatroom(getChatroomViewData()?.isSecret)
                     .text(text)
                     .build()
 
@@ -3194,7 +3193,6 @@ class ChatroomDetailFragment :
             .communityId(communityId?.toIntOrNull())
             .text(text)
             .isExternallyShared(isExternallyShared)
-            .isSecretChatroom(getChatroomViewData()?.isSecret)
             .build()
         if (attachments.isNotEmpty()) {
             val intent =
@@ -3246,7 +3244,6 @@ class ChatroomDetailFragment :
                 .chatroomType(getChatroomViewData()?.getTypeName())
                 .searchKey(chatroomDetailExtras.searchKey)
                 .text(text)
-                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .isExternallyShared(isExternallyShared)
                 .build()
             if (attachments.isNotEmpty()) {
@@ -3323,7 +3320,6 @@ class ChatroomDetailFragment :
                 .communityId(communityId?.toIntOrNull())
                 .text(text)
                 .isExternallyShared(isExternallyShared)
-                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .build()
 
             val intent =
@@ -4361,14 +4357,10 @@ class ChatroomDetailFragment :
         chatroomResultExtras = chatroomResultExtras?.also {
             chatroomResultExtras?.toBuilder()
                 ?.chatroomId(chatroomId)
-                ?.takeActionOnReportedMessage(true)
-                ?.reportedConversationId(reportedConversationId)
                 ?.build()
         } ?: run {
             ChatroomDetailResultExtras.Builder()
                 .chatroomId(chatroomId)
-                .takeActionOnReportedMessage(true)
-                .reportedConversationId(reportedConversationId)
                 .build()
         }
         setChatroomDetailActivityResult()

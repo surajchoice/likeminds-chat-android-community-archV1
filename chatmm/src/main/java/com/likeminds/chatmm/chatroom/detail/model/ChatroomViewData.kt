@@ -28,17 +28,13 @@ class ChatroomViewData private constructor(
     val showFollowTelescope: Boolean?,
     val showFollowAutoTag: Boolean?,
     val cardCreationTime: String?,
-    val participantsCount: Int,
     val totalResponseCount: Int,
     val totalAllResponseCount: Int,
     val muteStatus: Boolean,
     val followStatus: Boolean,
-    val hasBeenNamed: Boolean?,
     val date: String?,
     val hideBottomLine: Boolean?,
     val isTagged: Boolean?,
-    val isPending: Boolean?,
-    val isPinned: Boolean?,
     val deletedBy: String?,
     val updatedAt: Long?,
     val draftConversation: String?,
@@ -49,11 +45,8 @@ class ChatroomViewData private constructor(
     val isEdited: Boolean?,
     val topic: ConversationViewData?,
     val reactions: List<ReactionViewData>?,
-    val access: Int?,
     val memberCanMessage: Boolean?,
     val chatroomImageUrl: String?,
-    val unreadConversationCount: Int?,
-    val autoFollowDone: Boolean?,
     val dynamicViewType: Int?,
 ) : BaseViewType, Parcelable {
     override val viewType: Int
@@ -86,17 +79,13 @@ class ChatroomViewData private constructor(
         private var showFollowTelescope: Boolean? = null
         private var showFollowAutoTag: Boolean? = null
         private var cardCreationTime: String? = null
-        private var participantsCount: Int = 0
         private var totalResponseCount: Int = 0
         private var totalAllResponseCount: Int = 0
         private var muteStatus: Boolean = false
         private var followStatus: Boolean = false
-        private var hasBeenNamed: Boolean? = null
         private var date: String? = null
         private var hideBottomLine: Boolean? = null
         private var isTagged: Boolean? = null
-        private var isPending: Boolean? = null
-        private var isPinned: Boolean? = null
         private var deletedBy: String? = null
         private var updatedAt: Long? = null
         private var draftConversation: String? = null
@@ -107,11 +96,8 @@ class ChatroomViewData private constructor(
         private var isEdited: Boolean? = null
         private var topic: ConversationViewData? = null
         private var reactions: List<ReactionViewData>? = null
-        private var access: Int? = null
         private var memberCanMessage: Boolean? = null
         private var chatroomImageUrl: String? = null
-        private var unreadConversationCount: Int? = null
-        private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
 
         fun id(id: String) = apply { this.id = id }
@@ -142,9 +128,6 @@ class ChatroomViewData private constructor(
         fun cardCreationTime(cardCreationTime: String?) =
             apply { this.cardCreationTime = cardCreationTime }
 
-        fun participantsCount(participantsCount: Int) =
-            apply { this.participantsCount = participantsCount }
-
         fun totalResponseCount(totalResponseCount: Int) =
             apply { this.totalResponseCount = totalResponseCount }
 
@@ -153,14 +136,11 @@ class ChatroomViewData private constructor(
 
         fun muteStatus(muteStatus: Boolean) = apply { this.muteStatus = muteStatus }
         fun followStatus(followStatus: Boolean) = apply { this.followStatus = followStatus }
-        fun hasBeenNamed(hasBeenNamed: Boolean?) = apply { this.hasBeenNamed = hasBeenNamed }
         fun date(date: String?) = apply { this.date = date }
         fun hideBottomLine(hideBottomLine: Boolean?) =
             apply { this.hideBottomLine = hideBottomLine }
 
         fun isTagged(isTagged: Boolean?) = apply { this.isTagged = isTagged }
-        fun isPending(isPending: Boolean?) = apply { this.isPending = isPending }
-        fun isPinned(isPinned: Boolean?) = apply { this.isPinned = isPinned }
         fun deletedBy(deletedBy: String?) = apply { this.deletedBy = deletedBy }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
         fun draftConversation(draftConversation: String?) =
@@ -177,18 +157,11 @@ class ChatroomViewData private constructor(
         fun isEdited(isEdited: Boolean?) = apply { this.isEdited = isEdited }
         fun topic(topic: ConversationViewData?) = apply { this.topic = topic }
         fun reactions(reactions: List<ReactionViewData>?) = apply { this.reactions = reactions }
-        fun access(access: Int?) = apply { this.access = access }
         fun memberCanMessage(memberCanMessage: Boolean?) =
             apply { this.memberCanMessage = memberCanMessage }
 
         fun chatroomImageUrl(chatroomImageUrl: String?) =
             apply { this.chatroomImageUrl = chatroomImageUrl }
-
-        fun unreadConversationCount(unreadConversationCount: Int?) =
-            apply { this.unreadConversationCount = unreadConversationCount }
-
-        fun autoFollowDone(autoFollowDone: Boolean?) =
-            apply { this.autoFollowDone = autoFollowDone }
 
         fun dynamicViewType(dynamicViewType: Int?) =
             apply { this.dynamicViewType = dynamicViewType }
@@ -212,17 +185,13 @@ class ChatroomViewData private constructor(
             showFollowTelescope,
             showFollowAutoTag,
             cardCreationTime,
-            participantsCount,
             totalResponseCount,
             totalAllResponseCount,
             muteStatus,
             followStatus,
-            hasBeenNamed,
             date,
             hideBottomLine,
             isTagged,
-            isPending,
-            isPinned,
             deletedBy,
             updatedAt,
             draftConversation,
@@ -233,11 +202,8 @@ class ChatroomViewData private constructor(
             isEdited,
             topic,
             reactions,
-            access,
             memberCanMessage,
             chatroomImageUrl,
-            unreadConversationCount,
-            autoFollowDone,
             dynamicViewType
         )
     }
@@ -261,17 +227,13 @@ class ChatroomViewData private constructor(
             .showFollowTelescope(showFollowTelescope)
             .showFollowAutoTag(showFollowAutoTag)
             .cardCreationTime(cardCreationTime)
-            .participantsCount(participantsCount)
             .totalResponseCount(totalResponseCount)
             .totalAllResponseCount(totalAllResponseCount)
             .muteStatus(muteStatus)
             .followStatus(followStatus)
-            .hasBeenNamed(hasBeenNamed)
             .date(date)
             .hideBottomLine(hideBottomLine)
             .isTagged(isTagged)
-            .isPending(isPending)
-            .isPinned(isPinned)
             .deletedBy(deletedBy)
             .updatedAt(updatedAt)
             .draftConversation(draftConversation)
@@ -282,11 +244,8 @@ class ChatroomViewData private constructor(
             .isEdited(isEdited)
             .topic(topic)
             .reactions(reactions)
-            .access(access)
             .memberCanMessage(memberCanMessage)
             .chatroomImageUrl(chatroomImageUrl)
-            .unreadConversationCount(unreadConversationCount)
-            .autoFollowDone(autoFollowDone)
             .dynamicViewType(dynamicViewType)
     }
 }

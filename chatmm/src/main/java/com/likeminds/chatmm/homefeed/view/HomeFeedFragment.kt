@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.likeminds.chatmm.InitiateViewModel
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
@@ -268,7 +265,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private fun openChatroom(chatroom: ChatroomViewData) {
         val extra = ChatroomDetailExtras.Builder()
-            .chatroomViewData(chatroom)
             .chatroomId(chatroom.id)
             .communityId(chatroom.communityId)
             .source(ChatroomDetailFragment.SOURCE_HOME_FEED)

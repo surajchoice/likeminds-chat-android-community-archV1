@@ -187,7 +187,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_mute"
             app:layout_constraintStart_toEndOf="@+id/tv_last_conversation"
             app:layout_constraintTop_toTopOf="@+id/tv_last_conversation"
-            tools:ignore="ContentDescription"
+            tools:ignore="ContentDescription,UseAppTint"
             tools:visibility="visible" />
 
         <ImageView

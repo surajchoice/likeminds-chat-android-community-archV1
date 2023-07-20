@@ -12,9 +12,7 @@ class ChatroomDetailResultExtras private constructor(
     val updatedFollowStatus: Boolean?,
     val isChatroomNameChanged: Boolean?,
     val updatedChatroomName: String?,
-    val chatroomId: String?,
-    val reportedConversationId: String?,
-    val takeActionOnReportedMessage: Boolean?,
+    val chatroomId: String?
 ) : Parcelable {
     class Builder {
         private var isChatroomDeleted: Boolean? = null
@@ -25,8 +23,6 @@ class ChatroomDetailResultExtras private constructor(
         private var isChatroomNameChanged: Boolean? = null
         private var updatedChatroomName: String? = null
         private var chatroomId: String? = null
-        private var reportedConversationId: String? = null
-        private var takeActionOnReportedMessage: Boolean? = null
 
         fun isChatroomDeleted(isChatroomDeleted: Boolean?) =
             apply { this.isChatroomDeleted = isChatroomDeleted }
@@ -50,11 +46,6 @@ class ChatroomDetailResultExtras private constructor(
             apply { this.updatedChatroomName = updatedChatroomName }
 
         fun chatroomId(chatroomId: String?) = apply { this.chatroomId = chatroomId }
-        fun reportedConversationId(reportedConversationId: String?) =
-            apply { this.reportedConversationId = reportedConversationId }
-
-        fun takeActionOnReportedMessage(takeActionOnReportedMessage: Boolean?) =
-            apply { this.takeActionOnReportedMessage = takeActionOnReportedMessage }
 
 
         fun build() = ChatroomDetailResultExtras(
@@ -66,8 +57,6 @@ class ChatroomDetailResultExtras private constructor(
             isChatroomNameChanged,
             updatedChatroomName,
             chatroomId,
-            reportedConversationId,
-            takeActionOnReportedMessage
         )
     }
 
@@ -80,7 +69,5 @@ class ChatroomDetailResultExtras private constructor(
             .isChatroomNameChanged(isChatroomNameChanged)
             .updatedChatroomName(updatedChatroomName)
             .chatroomId(chatroomId)
-            .reportedConversationId(reportedConversationId)
-            .takeActionOnReportedMessage(takeActionOnReportedMessage)
     }
 }

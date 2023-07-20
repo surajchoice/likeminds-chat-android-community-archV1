@@ -5,11 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class PollResultExtras private constructor(
-    var communityId: String?,
-    var communityName: String?,
-    var conversationId: String?,
-    var chatroomId: String?,
-    var selectedPoll: Int,
+    val communityId: String?,
+    val communityName: String?,
+    val conversationId: String?,
+    val chatroomId: String?,
+    val selectedPoll: Int
 ) : Parcelable {
 
     class Builder {

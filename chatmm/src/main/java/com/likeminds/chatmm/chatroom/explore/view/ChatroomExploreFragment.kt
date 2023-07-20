@@ -337,7 +337,6 @@ class ChatroomExploreFragment :
         val intent = ChatroomDetailActivity.getIntent(
             requireContext(), ChatroomDetailExtras.Builder()
                 .chatroomId(chatroomViewData.id)
-                .chatroomViewData(chatroomViewData)
                 .communityId(chatroomViewData.communityId)
                 .source(COMMUNITY_FEED)
                 .build()

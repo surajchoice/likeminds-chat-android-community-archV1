@@ -64,7 +64,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/member_image"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,UseAppTint" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/member_image"

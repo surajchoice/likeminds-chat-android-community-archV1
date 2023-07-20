@@ -5,21 +5,16 @@ import com.likeminds.chatmm.chatroom.detail.model.ManagementRightPermissionViewD
 class MemberStateViewData private constructor(
     val state: Int,
     val memberViewData: MemberViewData?,
-    val managerRights: List<ManagementRightPermissionViewData>?,
     val memberRights: List<ManagementRightPermissionViewData>?
 ) {
     class Builder {
         private var state: Int = 0
         private var memberViewData: MemberViewData? = null
-        private var managerRights: List<ManagementRightPermissionViewData>? = null
         private var memberRights: List<ManagementRightPermissionViewData>? = null
 
         fun state(state: Int) = apply { this.state = state }
         fun memberViewData(memberViewData: MemberViewData?) =
             apply { this.memberViewData = memberViewData }
-
-        fun managerRights(managerRights: List<ManagementRightPermissionViewData>?) =
-            apply { this.managerRights = managerRights }
 
         fun memberRights(memberRights: List<ManagementRightPermissionViewData>?) =
             apply { this.memberRights = memberRights }
@@ -27,7 +22,6 @@ class MemberStateViewData private constructor(
         fun build() = MemberStateViewData(
             state,
             memberViewData,
-            managerRights,
             memberRights
         )
     }
@@ -35,7 +29,6 @@ class MemberStateViewData private constructor(
     fun toBuilder(): Builder {
         return Builder().state(state)
             .memberViewData(memberViewData)
-            .managerRights(managerRights)
             .memberRights(memberRights)
     }
 }

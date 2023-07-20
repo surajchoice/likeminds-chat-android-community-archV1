@@ -3,9 +3,7 @@ package com.likeminds.chatmm.media.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,10 +11,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
 import com.likeminds.chatmm.databinding.FragmentMediaPickerItemBinding
-import com.likeminds.chatmm.media.model.MEDIA_RESULT_PICKED
-import com.likeminds.chatmm.media.model.MediaPickerItemExtras
-import com.likeminds.chatmm.media.model.MediaPickerResult
-import com.likeminds.chatmm.media.model.MediaViewData
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
@@ -25,9 +20,7 @@ import com.likeminds.chatmm.utils.actionmode.ActionModeListener
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.model.ITEM_MEDIA_PICKER_HEADER
-import com.likeminds.chatmm.utils.permissions.Permission
-import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
-import com.likeminds.chatmm.utils.permissions.PermissionManager
+import com.likeminds.chatmm.utils.permissions.*
 
 
 class MediaPickerItemFragment :
@@ -230,7 +223,6 @@ class MediaPickerItemFragment :
 
     private fun sendSelectedMedia(medias: List<MediaViewData>) {
         val extra = MediaPickerResult.Builder()
-            .isResultOk(true)
             .mediaPickerResultType(MEDIA_RESULT_PICKED)
             .mediaTypes(mediaPickerItemExtras.mediaTypes)
             .allowMultipleSelect(mediaPickerItemExtras.allowMultipleSelect)

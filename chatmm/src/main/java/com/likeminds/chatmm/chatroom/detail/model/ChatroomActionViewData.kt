@@ -7,9 +7,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ChatroomActionViewData private constructor(
-    var id: String,
-    var title: String,
-    var route: String?,
+    val id: String,
+    val title: String,
+    val route: String?,
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = ITEM_NONE

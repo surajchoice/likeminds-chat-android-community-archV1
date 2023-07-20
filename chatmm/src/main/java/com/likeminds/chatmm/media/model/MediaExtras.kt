@@ -14,7 +14,6 @@ class MediaExtras private constructor(
     val attachments: List<AttachmentViewData>?,
     val singleUriData: SingleUriData?,
     val mediaUris: ArrayList<SingleUriData>?,
-    val selectedMediaPosition: Int?,
     val conversation: String?,
     val text: String?,
     val position: Int?,
@@ -23,13 +22,11 @@ class MediaExtras private constructor(
     val chatroomName: String?,
     val communityId: Int?,
     val cropSquare: Boolean?,
-    val downloadableContentTypes: List<String>?,
     val chatroomType: String?,
     val communityName: String?,
     val searchKey: String?,
     val giphyMedia: Media?,
-    val conversationId: String?,
-    val isSecretChatroom: Boolean?
+    val conversationId: String?
 ) : Parcelable {
 
     class Builder {
@@ -40,7 +37,6 @@ class MediaExtras private constructor(
         private var attachments: List<AttachmentViewData>? = null
         private var singleUriData: SingleUriData? = null
         private var mediaUris: ArrayList<SingleUriData>? = null
-        private var selectedMediaPosition: Int? = null
         private var conversation: String? = null
         private var text: String? = null
         private var position: Int? = null
@@ -49,13 +45,11 @@ class MediaExtras private constructor(
         private var chatroomName: String? = null
         private var communityId: Int? = null
         private var cropSquare: Boolean? = null
-        private var downloadableContentTypes: List<String>? = null
         private var chatroomType: String? = null
         private var communityName: String? = null
         private var searchKey: String? = null
         private var giphyMedia: Media? = null
         private var conversationId: String? = null
-        private var isSecretChatroom: Boolean? = null
 
         fun isExternallyShared(isExternallyShared: Boolean) =
             apply { this.isExternallyShared = isExternallyShared }
@@ -70,8 +64,6 @@ class MediaExtras private constructor(
             apply { this.singleUriData = singleUriData }
 
         fun mediaUris(mediaUris: ArrayList<SingleUriData>?) = apply { this.mediaUris = mediaUris }
-        fun selectedMediaPosition(selectedMediaPosition: Int?) =
-            apply { this.selectedMediaPosition = selectedMediaPosition }
 
         fun conversation(conversation: String?) = apply { this.conversation = conversation }
         fun text(text: String?) = apply { this.text = text }
@@ -81,16 +73,12 @@ class MediaExtras private constructor(
         fun chatroomName(chatroomName: String?) = apply { this.chatroomName = chatroomName }
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun cropSquare(cropSquare: Boolean?) = apply { this.cropSquare = cropSquare }
-        fun downloadableContentTypes(downloadableContentTypes: List<String>?) =
-            apply { this.downloadableContentTypes = downloadableContentTypes }
 
         fun chatroomType(chatroomType: String?) = apply { this.chatroomType = chatroomType }
         fun communityName(communityName: String?) = apply { this.communityName = communityName }
         fun searchKey(searchKey: String?) = apply { this.searchKey = searchKey }
         fun giphyMedia(giphyMedia: Media?) = apply { this.giphyMedia = giphyMedia }
         fun conversationId(conversationId: String?) = apply { this.conversationId = conversationId }
-        fun isSecretChatroom(isSecretChatroom: Boolean?) =
-            apply { this.isSecretChatroom = isSecretChatroom }
 
         fun build() = MediaExtras(
             isExternallyShared,
@@ -100,7 +88,6 @@ class MediaExtras private constructor(
             attachments,
             singleUriData,
             mediaUris,
-            selectedMediaPosition,
             conversation,
             text,
             position,
@@ -109,13 +96,11 @@ class MediaExtras private constructor(
             chatroomName,
             communityId,
             cropSquare,
-            downloadableContentTypes,
             chatroomType,
             communityName,
             searchKey,
             giphyMedia,
-            conversationId,
-            isSecretChatroom
+            conversationId
         )
     }
 
@@ -127,7 +112,6 @@ class MediaExtras private constructor(
             .attachments(attachments)
             .singleUriData(singleUriData)
             .mediaUris(mediaUris)
-            .selectedMediaPosition(selectedMediaPosition)
             .conversation(conversation)
             .text(text)
             .position(position)
@@ -136,12 +120,10 @@ class MediaExtras private constructor(
             .chatroomName(chatroomName)
             .communityId(communityId)
             .cropSquare(cropSquare)
-            .downloadableContentTypes(downloadableContentTypes)
             .chatroomType(chatroomType)
             .communityName(communityName)
             .searchKey(searchKey)
             .giphyMedia(giphyMedia)
             .conversationId(conversationId)
-            .isSecretChatroom(isSecretChatroom)
     }
 }
