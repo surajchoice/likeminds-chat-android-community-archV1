@@ -2,21 +2,15 @@ package com.likeminds.chatmm
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.google.firebase.messaging.FirebaseMessaging
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserRequest
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserResponse
-import com.likeminds.likemindschat.initiateUser.model.RegisterDeviceRequest
+import com.likeminds.likemindschat.initiateUser.model.*
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
