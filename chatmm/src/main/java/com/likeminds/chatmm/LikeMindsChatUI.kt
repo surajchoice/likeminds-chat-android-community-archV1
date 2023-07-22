@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
-import com.likeminds.chatmm.homefeed.model.GroupChatResponse
 import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
 import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 
@@ -40,7 +39,6 @@ object LikeMindsChatUI {
         userName: String,
         userId: String? = null,
         isGuest: Boolean? = false,
-        cb: (response: GroupChatResponse?) -> Unit
     ) {
         Log.d(SDKApplication.LOG_TAG, "initiate group chat called")
         Log.d(
@@ -59,9 +57,7 @@ object LikeMindsChatUI {
             .apiKey(apiKey)
             .build()
 
-        val fragment = HomeFeedFragment.getInstance(extra) { response ->
-            cb(response)
-        }
+        val fragment = HomeFeedFragment.getInstance(extra)
 
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(containerViewId, fragment, containerViewId.toString())

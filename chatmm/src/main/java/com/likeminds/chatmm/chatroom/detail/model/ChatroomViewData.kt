@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.PollInfoData
 import com.likeminds.chatmm.conversation.model.ReactionViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import kotlinx.parcelize.Parcelize
@@ -11,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class ChatroomViewData private constructor(
     val id: String,
-    val memberViewData: MemberViewData?,
+    val memberViewData: MemberViewData,
     val title: String,
     val createdAt: Long?,
     val alreadySeenFullConversation: Boolean?,
@@ -61,16 +62,6 @@ class ChatroomViewData private constructor(
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_HOME_CHAT_ROOM
 
-    fun answerTextUpdated(): String {
-        return if (type != null && type == TYPE_UN_VERIFY) {
-            "This user is not verified yet"
-        } else if (answerText == null || answerText.isEmpty()) {
-            "Be the first to respond"
-        } else {
-            answerText
-        }
-    }
-
     fun isDeleted(): Boolean {
         return deletedBy != null
     }
@@ -81,7 +72,7 @@ class ChatroomViewData private constructor(
 
     class Builder {
         private var id: String = ""
-        private var memberViewData: MemberViewData? = null
+        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var title: String = ""
         private var createdAt: Long? = null
         private var alreadySeenFullConversation: Boolean? = null
@@ -129,7 +120,7 @@ class ChatroomViewData private constructor(
         private var dynamicViewType: Int? = null
 
         fun id(id: String) = apply { this.id = id }
-        fun memberViewData(memberViewData: MemberViewData?) =
+        fun memberViewData(memberViewData: MemberViewData) =
             apply { this.memberViewData = memberViewData }
 
         fun title(title: String) = apply { this.title = title }

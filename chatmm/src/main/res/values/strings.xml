@@ -34,6 +34,7 @@
     <string name="creator_cant_leave_message">The creator of a chatroom cannot leave the chatroom</string>
     <string name="pinned">Pinned</string>
     <string name="explore_chatroom">Explore Chatrooms</string>
+    <string name="invalid_app_access">Invalid app access</string>
     <string name="community_manager">Community Manager</string>
     <string name="edited">Edited</string>
     <plurals name="community_manager">

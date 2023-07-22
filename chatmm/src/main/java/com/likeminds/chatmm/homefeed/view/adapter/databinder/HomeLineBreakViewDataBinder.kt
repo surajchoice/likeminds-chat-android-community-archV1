@@ -3,13 +3,13 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.databinding.ItemHomeLineBreakBinding
+import com.likeminds.chatmm.homefeed.model.HomeLineBreakViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_LINE_BREAK_VIEW
 import javax.inject.Inject
 
 class HomeLineBreakViewDataBinder @Inject constructor() :
-    ViewDataBinder<ItemHomeLineBreakBinding, BaseViewType>() {
+    ViewDataBinder<ItemHomeLineBreakBinding, HomeLineBreakViewData>() {
 
     override val viewType: Int
         get() = ITEM_HOME_LINE_BREAK_VIEW
@@ -24,7 +24,7 @@ class HomeLineBreakViewDataBinder @Inject constructor() :
 
     override fun bindData(
         binding: ItemHomeLineBreakBinding,
-        data: BaseViewType,
+        data: HomeLineBreakViewData,
         position: Int
     ) {
     }

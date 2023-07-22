@@ -72,6 +72,7 @@ versions.youtube_player = '11.0.1'
 versions.stream = '1.2.1'
 versions.giphy = '2.1.18'
 versions.balloons = '1.4.5'
+versions.color_picker = '2.3'
 ext.versions = versions
 
 ext.deps = [:]
@@ -335,5 +336,9 @@ deps.drawableToolbox = drawableToolbox
 def dotsindicator = [:]
 dotsindicator.main = "com.tbuonomo:dotsindicator:$versions.dotsindicator"
 deps.dotsindicator = dotsindicator
+
+def colorPicker = [:]
+colorPicker.main = "com.github.Dhaval2404:ColorPicker:$versions.color_picker"
+deps.colorPicker = colorPicker
 
 ext.deps = deps

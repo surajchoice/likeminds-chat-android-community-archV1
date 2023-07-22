@@ -3,13 +3,13 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.databinding.ItemHomeChatroomListShimmerBinding
+import com.likeminds.chatmm.homefeed.model.HomeChatroomListShimmerViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CHATROOM_LIST_SHIMMER_VIEW
 import javax.inject.Inject
 
 class HomeChatroomListShimmerViewDataBinder @Inject constructor() :
-    ViewDataBinder<ItemHomeChatroomListShimmerBinding, BaseViewType>() {
+    ViewDataBinder<ItemHomeChatroomListShimmerBinding, HomeChatroomListShimmerViewData>() {
 
     override val viewType: Int
         get() = ITEM_CHATROOM_LIST_SHIMMER_VIEW
@@ -24,7 +24,7 @@ class HomeChatroomListShimmerViewDataBinder @Inject constructor() :
 
     override fun bindData(
         binding: ItemHomeChatroomListShimmerBinding,
-        data: BaseViewType,
+        data: HomeChatroomListShimmerViewData,
         position: Int
     ) {
     }
