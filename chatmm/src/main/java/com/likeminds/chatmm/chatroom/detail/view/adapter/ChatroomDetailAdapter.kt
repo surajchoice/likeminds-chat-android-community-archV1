@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDateItemViewDataBinder
+import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.view.adapter.databinder.*

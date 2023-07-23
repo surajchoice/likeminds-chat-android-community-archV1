@@ -11,6 +11,7 @@ import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.media.MediaComponentModule
 import com.likeminds.chatmm.di.polls.PollsComponent
+import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.chatmm.di.polls.PollsComponentModule
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponentModule
@@ -37,6 +38,7 @@ interface LikeMindsChatComponent {
     fun chatroomDetailComponent(): ChatroomDetailComponent.Factory
     fun mediaComponent(): MediaComponent.Factory
     fun pollsComponent(): PollsComponent.Factory
+    fun searchComponent(): SearchComponent.Factory
     fun reactionsComponent(): ReactionsComponent.Factory
 
     @Component.Builder

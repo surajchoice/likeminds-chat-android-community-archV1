@@ -37,6 +37,8 @@ import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
 import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import com.likeminds.likemindschat.poll.model.*
+import com.likeminds.likemindschat.conversation.util.*
+import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -340,6 +342,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
     /**
      * Fetches the initial data for the current chatroom and pass it to fragment using live data
+     * @param context context from where funciton is called
      * @param chatroomDetailExtras Chatroom Intent Extras
      *
      * 1st case ->
@@ -1123,7 +1126,7 @@ class ChatroomDetailViewModel @Inject constructor(
             // create request
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(chatroomId)
-                .uuid(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(value)
                 .build()
 
