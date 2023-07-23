@@ -13,7 +13,6 @@ import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
-import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
@@ -754,7 +753,8 @@ object ViewDataConverter {
             .build()
     }
 
-    fun convertParticipants(participant: ParticipantData): MemberViewData {
+    // todo: uuid
+    fun convertParticipants(participant: Member): MemberViewData {
         return MemberViewData.Builder()
             .dynamicViewType(ITEM_VIEW_PARTICIPANTS)
             .id(participant.id)

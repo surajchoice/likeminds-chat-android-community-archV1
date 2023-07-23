@@ -7,17 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.model.ViewParticipantsExtras
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ViewParticipantsAdapter
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ViewParticipantsAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ViewParticipantsViewModel
 import com.likeminds.chatmm.databinding.FragmentViewParticipantsBinding
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.search.util.CustomSearchBar
-import com.likeminds.chatmm.utils.EndlessRecyclerScrollListener
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import kotlinx.coroutines.flow.onEach
@@ -220,7 +218,6 @@ class ViewParticipantsFragment :
 
     override fun onMemberClick(memberViewData: MemberViewData) {
         super.onMemberClick(memberViewData)
-
         // todo: member clicked.
     }
 }

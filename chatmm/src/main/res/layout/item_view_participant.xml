@@ -11,7 +11,7 @@
 
         <variable
             name="memberViewData"
-            type="com.likeminds.chatmm.chatroom.detail.model.MemberViewData" />
+            type="com.likeminds.chatmm.member.model.MemberViewData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

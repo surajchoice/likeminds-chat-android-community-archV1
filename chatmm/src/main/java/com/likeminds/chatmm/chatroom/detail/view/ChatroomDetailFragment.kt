@@ -5038,14 +5038,13 @@ class ChatroomDetailFragment :
         } else {
             val chatroomViewData = getChatroomViewData() ?: return
             onScreenChanged()
-            // todo: in participants
-//            val extras = ViewParticipantsExtra.Builder()
-//                .chatroomId(chatroomViewData.id)
-//                .communityId(chatroomViewData.communityId ?: "")
-//                .isSecretChatroom(chatroomViewData.isSecret ?: false)
-//                .chatroomName(chatroomViewData.header ?: "")
-//                .build()
-//            ViewParticipantsActivity.start(requireContext(), extras)
+            val extras = ViewParticipantsExtras.Builder()
+                .chatroomId(chatroomViewData.id)
+                .communityId(chatroomViewData.communityId ?: "")
+                .isSecretChatroom(chatroomViewData.isSecret ?: false)
+                .chatroomName(chatroomViewData.header ?: "")
+                .build()
+            ViewParticipantsActivity.start(requireContext(), extras)
         }
     }
 

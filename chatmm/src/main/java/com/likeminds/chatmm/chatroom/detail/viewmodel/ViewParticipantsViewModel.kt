@@ -1,10 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
+import androidx.lifecycle.*
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
@@ -13,6 +10,7 @@ import com.likeminds.likemindschat.chatroom.model.GetParticipantsResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
+import kotlin.collections.set
 
 class ViewParticipantsViewModel @Inject constructor() : ViewModel() {
 

@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ViewParticipantItemViewDataBinder
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType

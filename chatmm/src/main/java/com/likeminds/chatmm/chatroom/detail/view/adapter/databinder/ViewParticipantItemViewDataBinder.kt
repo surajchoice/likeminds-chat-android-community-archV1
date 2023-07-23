@@ -2,10 +2,10 @@ package com.likeminds.chatmm.chatroom.detail.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ViewParticipantsAdapterListener
 import com.likeminds.chatmm.databinding.ItemViewParticipantBinding
-import com.likeminds.chatmm.utils.MemberImageUtil
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
 

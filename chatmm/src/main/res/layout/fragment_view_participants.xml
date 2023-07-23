@@ -67,6 +67,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     app:fontType="medium"
+                    app:textType="title"
                     app:layout_constraintBottom_toTopOf="@+id/tv_toolbar_sub_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_back"
