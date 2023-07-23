@@ -1,19 +1,16 @@
 package com.likeminds.chatmm
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
+import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserRequest
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserResponse
-import com.likeminds.likemindschat.initiateUser.model.RegisterDeviceRequest
+import com.likeminds.likemindschat.initiateUser.model.*
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
@@ -65,6 +62,7 @@ class InitiateViewModel @Inject constructor(
             val initiateUserResponse = lmChatClient.initiateUser(request)
             if (initiateUserResponse.success) {
                 val data = initiateUserResponse.data ?: return@launchIO
+
                 handleInitiateResponse(apiKey, data)
             } else {
                 _initiateErrorMessage.postValue(initiateUserResponse.errorMessage)
@@ -113,19 +111,19 @@ class InitiateViewModel @Inject constructor(
 
     //call register device
     private fun registerDevice() {
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-//            if (!task.isSuccessful) {
-//                Log.w(
-//                    SDKApplication.LOG_TAG,
-//                    "Fetching FCM registration token failed",
-//                    task.exception
-//                )
-//                return@addOnCompleteListener
-//            }
-//
-//            val token = task.result.toString()
-//            pushToken(token)
-//        }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(
+                    SDKApplication.LOG_TAG,
+                    "Fetching FCM registration token failed",
+                    task.exception
+                )
+                return@addOnCompleteListener
+            }
+
+            val token = task.result.toString()
+            pushToken(token)
+        }
     }
 
     private fun pushToken(token: String) {

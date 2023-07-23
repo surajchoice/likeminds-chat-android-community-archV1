@@ -32,6 +32,7 @@ class LMChatNotificationHandler {
         const val NOTIFICATION_ROUTE = "route"
         const val NOTIFICATION_CATEGORY = "category"
         const val NOTIFICATION_SUBCATEGORY = "subcategory"
+        const val NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID = 101
 
         private const val NOTIFICATION_DATA = "notification_data"
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_voice_note_toast"
+        android:translationZ="3dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:text="@string/tap_and_hold_to_record"
+            android:textColor="@color/white"
+            app:fontType="regular" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

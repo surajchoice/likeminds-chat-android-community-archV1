@@ -1,13 +1,20 @@
 package com.likeminds.chatmm.utils
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
 import com.likeminds.chatmm.member.util.MemberImageUtil
@@ -25,6 +32,24 @@ object ViewUtils {
 
     fun View.show() {
         visibility = View.VISIBLE
+    }
+
+    fun showKeyboard(context: Context, editText: EditText) {
+        editText.requestFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun showKeyboard(context: Context) {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    fun hideKeyboard(view: View) {
+        val imm =
+            view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     fun showShortToast(context: Context?, text: String?) {
@@ -104,5 +129,48 @@ object ViewUtils {
             nameDrawable.first,
             isCircle = true,
         )
+    }
+
+    fun getFragmentVisible(fragment: Fragment?): Boolean {
+        return fragment?.isVisible == true
+    }
+
+    fun View.startRevealAnimation(originView: View) {
+        val originalPos = IntArray(2)
+        originView.getLocationInWindow(originalPos)
+        val radius = resources.displayMetrics.widthPixels
+
+        val anim = ViewAnimationUtils.createCircularReveal(
+            this,
+            (originalPos[0] + (originView.width / 2)), (originalPos[1] + (originView.height / 2)),
+            0F, radius.toFloat()
+        )
+        this.visibility = View.VISIBLE
+        anim.interpolator = AccelerateDecelerateInterpolator()
+        anim.duration = 300L
+        anim.start()
+    }
+
+    fun View.endRevealAnimation(originView: View, cb: () -> Unit) {
+        val targetView = this
+        val originalPos = IntArray(2)
+        originView.getLocationInWindow(originalPos)
+        val radius = resources.displayMetrics.widthPixels
+
+        val anim = ViewAnimationUtils.createCircularReveal(
+            targetView,
+            (originalPos[0] + (originView.width / 2)), (originalPos[1] + (originView.height / 2)),
+            radius.toFloat(), 0F
+        )
+        anim.interpolator = AccelerateDecelerateInterpolator()
+        anim.duration = 300L
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                cb()
+                targetView.visibility = View.GONE
+            }
+        })
+        anim.start()
     }
 }

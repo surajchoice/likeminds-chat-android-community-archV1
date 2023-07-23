@@ -226,18 +226,20 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initToolbar() {
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        binding.apply {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
-        //if user is guest user hide, profile icon from toolbar
-        binding.memberImage.isVisible = !isGuestUser
+            //if user is guest user hide, profile icon from toolbar
+            memberImage.isVisible = !isGuestUser
 
-        // todo:
-        //get user from local db
+            // todo:
+            //get user from local db
 //        viewModel.getUserFromLocalDb()
 
-        binding.ivSearch.setOnClickListener {
-            SearchActivity.start(requireContext())
-            Log.d(LOG_TAG, "search started")
+            ivSearch.setOnClickListener {
+                SearchActivity.start(requireContext())
+                Log.d(LOG_TAG, "search started")
+            }
         }
     }
 

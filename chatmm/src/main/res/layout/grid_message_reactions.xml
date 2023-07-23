@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_root"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:background="@color/transparent"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp">
+
+        <LinearLayout
+            android:id="@+id/layout_reaction_1"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_reaction_grid"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/first_reaction"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="@string/reaction_crying_laugh"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:fontType="regular" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/first_reaction_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                app:fontType="regular"
+                tools:text="23" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_reaction_2"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/background_reaction_grid"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/layout_reaction_1"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/second_reaction"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="@string/reaction_red_heart"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:fontType="regular"
+                app:layout_constraintStart_toStartOf="@id/layout_reaction_2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/second_reaction_count"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:textSize="11sp"
+                android:textStyle="normal"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/second_reaction"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="4" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_dots"
+            android:layout_width="33dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/background_reaction_grid"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/layout_reaction_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_dot_separator"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

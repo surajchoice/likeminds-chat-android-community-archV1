@@ -10,9 +10,13 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
+import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
+import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.likemindschat.LMChatClient
+import com.vanniktech.emoji.EmojiManager
+import com.vanniktech.emoji.google.GoogleEmojiProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,6 +30,8 @@ class SDKApplication {
 
     private var homeFeedComponent: HomeFeedComponent? = null
     private var exploreComponent: ExploreComponent? = null
+    private var chatroomDetailComponent: ChatroomDetailComponent? = null
+    private var searchComponent: SearchComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -54,6 +60,7 @@ class SDKApplication {
         SDKApplication.lmUICallback = lmUICallback
         setupBranding(brandingRequest)
         initAppComponent(application)
+        EmojiManager.install(GoogleEmojiProvider())
         initAWSMobileClient(application)
     }
 
@@ -105,5 +112,27 @@ class SDKApplication {
             exploreComponent = likeMindsChatComponent?.exploreComponent()?.create()
         }
         return exploreComponent
+    }
+
+    /**
+     * initiate and return ChatroomDetailComponent: All dependencies required for chatroom screen package
+     * */
+    fun chatroomDetailComponent(): ChatroomDetailComponent? {
+        if (chatroomDetailComponent == null) {
+            chatroomDetailComponent = likeMindsChatComponent?.chatroomDetailComponent()?.create()
+        }
+
+        return chatroomDetailComponent
+    }
+
+    /**
+     * initiate and return [SearchComponent]: All dependencies required for search screens
+     */
+    fun searchComponent(): SearchComponent? {
+        if (searchComponent == null) {
+            searchComponent = likeMindsChatComponent?.searchComponent()?.create()
+        }
+
+        return searchComponent
     }
 }
