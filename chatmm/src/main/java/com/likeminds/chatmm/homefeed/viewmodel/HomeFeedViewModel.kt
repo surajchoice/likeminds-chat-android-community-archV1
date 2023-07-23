@@ -3,13 +3,8 @@ package com.likeminds.chatmm.homefeed.viewmodel
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
+import androidx.lifecycle.*
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
@@ -17,10 +12,8 @@ import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberUtil
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.TimeUtil
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
-import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -118,7 +111,7 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     fun isDBEmpty(): Boolean {
-        return (lmChatClient.getIsDBEmpty().data?.isDBEmpty ?: true)
+        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: true)
     }
 
     fun getUserFromLocalDb() {

@@ -6,21 +6,16 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
-import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
-import com.likeminds.chatmm.member.util.MemberImageUtil
-import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
-import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
-import com.likeminds.likemindschat.helper.model.UserTag
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.User
@@ -234,7 +229,6 @@ object ViewDataConverter {
             .name(member.name)
             .imageUrl(member.imageUrl)
             .state(member.state ?: 0)
-            .removeState(member.removeState)
             .customIntroText(member.customIntroText)
             .customClickText(member.customClickText)
             .customTitle(member.customTitle)
@@ -581,22 +575,21 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: createdAt
     private fun convertChatroomForSearch(
         searchChatroom: SearchChatroom
     ): ChatroomViewData {
         val member = MemberViewData.Builder()
-            .id(searchChatroom.member.id.toString())
-            .name(searchChatroom.member.profile.name)
+            .id(searchChatroom.member.id)
+            .name(searchChatroom.member.name)
             .build()
 
         return ChatroomViewData.Builder()
             .id(searchChatroom.chatroom.id)
-            .communityId(searchChatroom.chatroom.communityId)
-            .communityName(searchChatroom.chatroom.communityName)
+            .communityId(searchChatroom.chatroom.communityId ?: "")
+            .communityName(searchChatroom.chatroom.communityName ?: "")
             .memberViewData(member)
             .dynamicViewType(0)
-//            .createdAt(searchChatroom.chatroom.createdAt)
+            .createdAt(searchChatroom.chatroom.createdAt ?: 0L)
             .title(searchChatroom.chatroom.title)
             .answerText(searchChatroom.chatroom.answerText)
             .state(searchChatroom.state)
@@ -636,7 +629,7 @@ object ViewDataConverter {
 //            .community(convertCommunityForSearch(searchConversation.community))
             .chatroomAnswer(convertConversationForSearch(searchConversation))
             .chatroomName(searchConversation.chatroom.header)
-            .senderName(searchConversation.member.profile.name)
+            .senderName(searchConversation.member.name)
             .chatroomAnswerId(searchConversation.id.toString())
             .answer(searchConversation.answer)
             .time(TimeUtil.getLastConversationTime(searchConversation.lastUpdated))
@@ -668,8 +661,8 @@ object ViewDataConverter {
         searchConversation: SearchConversation
     ): ConversationViewData {
         val member = MemberViewData.Builder()
-            .id(searchConversation.member.id.toString())
-            .name(searchConversation.member.profile.name)
+            .id(searchConversation.member.id)
+            .name(searchConversation.member.name)
             .build()
 
         return ConversationViewData.Builder()

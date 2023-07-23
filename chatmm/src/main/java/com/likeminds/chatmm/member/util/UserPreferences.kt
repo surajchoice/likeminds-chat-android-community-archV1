@@ -16,7 +16,17 @@ class UserPreferences @Inject constructor(
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
         const val MEMBER_ID = "member_id"
+        const val UUID = "uuid"
         private const val IS_GUEST = "is_guest"
+    }
+
+    // todo:
+    fun getUUID(): String {
+        return getPreference(UUID, "") ?: ""
+    }
+
+    fun setUUID(uuid: String) {
+        putPreference(UUID, uuid)
     }
 
     fun getMemberId(): String {

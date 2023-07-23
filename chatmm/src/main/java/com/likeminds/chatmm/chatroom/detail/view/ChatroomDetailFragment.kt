@@ -24,7 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.work.WorkInfo
@@ -42,17 +41,11 @@ import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListen
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.*
-import com.likeminds.chatmm.chatroom.detail.util.ChatroomScrollListener
-import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapter
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
-import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
-import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
@@ -430,7 +423,7 @@ class ChatroomDetailFragment :
 
     // fetches initial data for chatroom
     private fun fetchInitialData() {
-        viewModel.getInitialData(chatroomDetailExtras)
+        viewModel.getInitialData(requireContext(), chatroomDetailExtras)
     }
 
     private fun getChatroomViewData(): ChatroomViewData? {
@@ -867,9 +860,6 @@ class ChatroomDetailFragment :
                     if (isFirstTime) {
                         startBackgroundSync()
                     }
-
-                    //we should observe the live conversation once, sync is complete to avoid duplicate conversation
-                    viewModel.observeLiveConversations(requireContext(), chatroomId)
                 }
 
                 WorkInfo.State.CANCELLED -> {

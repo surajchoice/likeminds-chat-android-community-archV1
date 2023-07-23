@@ -1,10 +1,7 @@
 package com.likeminds.chatmm.chatroom.explore.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
@@ -156,7 +153,7 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launchIO {
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(exploreViewData.id)
-                .memberId(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(follow)
                 .build()
 
