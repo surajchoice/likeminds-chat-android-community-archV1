@@ -2,10 +2,7 @@ package com.likeminds.chatmm
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -13,9 +10,7 @@ import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserRequest
-import com.likeminds.likemindschat.initiateUser.model.InitiateUserResponse
-import com.likeminds.likemindschat.initiateUser.model.RegisterDeviceRequest
+import com.likeminds.likemindschat.initiateUser.model.*
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
@@ -48,10 +43,9 @@ class InitiateViewModel @Inject constructor(
             }
 
             //If user is guest take user unique id from local prefs
-            val userUniqueId = if (isGuest) {
-                val userResponse = lmChatClient.getUser()
-                val user = userResponse.data?.user
-                user?.userUniqueId
+            val uuid = if (isGuest) {
+                val user = lmChatClient.getUser().data?.user
+                user?.sdkClientInfo?.uuid
             } else {
                 userId
             }
@@ -60,7 +54,7 @@ class InitiateViewModel @Inject constructor(
                 .apiKey(apiKey)
                 .deviceId(userPreferences.getDeviceId())
                 .userName(userName)
-                .userId(userUniqueId)
+                .userId(uuid)
                 .isGuest(isGuest)
                 .build()
 
@@ -82,13 +76,13 @@ class InitiateViewModel @Inject constructor(
         } else {
             val user = data.user
             val userUniqueId = user?.userUniqueId ?: ""
-            val memberId = user?.id.toString()
+            val uuid = user?.sdkClientInfo?.uuid ?: ""
 
             // save details to prefs
             saveDetailsToPrefs(
                 apiKey,
                 userUniqueId,
-                memberId
+                uuid
             )
 
             // todo: member state
@@ -103,13 +97,13 @@ class InitiateViewModel @Inject constructor(
     private fun saveDetailsToPrefs(
         apiKey: String,
         userUniqueId: String,
-        memberId: String
+        uuid: String
     ) {
         sdkPreferences.setAPIKey(apiKey)
         userPreferences.apply {
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
-            setMemberId(memberId)
+            setUUID(uuid)
         }
     }
 

@@ -54,7 +54,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -67,7 +67,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     conversationViewData = data
                 )
             } else {
@@ -88,13 +88,13 @@ internal class ConversationPollItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.createdAt ?: ""
             )
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -108,7 +108,7 @@ internal class ConversationPollItemViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -136,7 +136,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 clConversationRoot,
                 clConversationBubble,
                 messageReactionsGridLayout,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 data
             )
@@ -149,7 +149,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                     reactionsPreferences.getTotalNoOfHintsAllowed(),
                     tvDoubleTap,
                     data.memberViewData,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     clConversationRoot,
                     clConversationBubble
                 )
@@ -232,7 +232,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 conversation,
                 binding.pollView.hasPollEnded(),
                 conversation.pollInfoData?.isAnonymous,
-                conversation.memberViewData.id.equals(userPreferences.getMemberId())
+                conversation.memberViewData.id.equals(userPreferences.getUUID())
             )
         }
     }
@@ -283,7 +283,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 btnAddOption.hide()
             }
 
-            if (memberViewData.id == userPreferences.getMemberId()) {
+            if (memberViewData.id == userPreferences.getUUID()) {
                 btnAddOption.strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
             } else {
                 btnAddOption.setStrokeColorResource(R.color.cloudy_blue)

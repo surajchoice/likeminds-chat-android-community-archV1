@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.polls.adapter.databinders
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import com.likeminds.chatmm.LMAnalytics
@@ -10,9 +8,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.databinding.ItemMemberDirectoryListBinding
 import com.likeminds.chatmm.member.model.MemberState
 import com.likeminds.chatmm.member.model.MemberViewData
-import com.likeminds.chatmm.member.util.MemberImageUtil
-import com.likeminds.chatmm.member.util.MemberUtil
-import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.member.util.*
 import com.likeminds.chatmm.polls.adapter.PollResultTabFragmentInterface
 import com.likeminds.chatmm.polls.util.DialogUtil
 import com.likeminds.chatmm.utils.ViewUtils.blurText
@@ -47,10 +43,15 @@ internal class PollResultUserItemViewDataBinder constructor(
             showCustomTitle =
                 !data.customTitle.isNullOrEmpty() && data.customTitle != root.context.getString(R.string.member)
 
-            MemberImageUtil.setImage(data.imageUrl, data.name, data.id, memberImage)
+            MemberImageUtil.setImage(
+                data.imageUrl,
+                data.name,
+                data.sdkClientInfo.uuid,
+                memberImage
+            )
 
             tvMemberName.text =
-                MemberUtil.getMemberNameForDisplay(data, userPreferences.getMemberId())
+                MemberUtil.getMemberNameForDisplay(data, userPreferences.getUUID())
 
             tvSubtitle.text = data.customIntroText ?: data.memberSince
 

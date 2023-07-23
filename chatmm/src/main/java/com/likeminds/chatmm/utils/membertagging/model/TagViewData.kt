@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.utils.membertagging.model
 
 import android.graphics.drawable.Drawable
+import com.likeminds.chatmm.member.model.SDKClientInfoViewData
 
 class TagViewData private constructor(
     val name: String,
@@ -12,7 +13,8 @@ class TagViewData private constructor(
     val route: String,
     val tag: String,
     val description: String,
-    val isLastItem: Boolean
+    val isLastItem: Boolean,
+    val sdkClientInfo: SDKClientInfoViewData
 ) {
     class Builder {
         private var name: String = ""
@@ -25,6 +27,7 @@ class TagViewData private constructor(
         private var tag: String = ""
         private var description: String = ""
         private var isLastItem: Boolean = false
+        private var sdkClientInfo: SDKClientInfoViewData = SDKClientInfoViewData.Builder().build()
 
         fun name(name: String) = apply { this.name = name }
         fun imageUrl(imageUrl: String) = apply { this.imageUrl = imageUrl }
@@ -36,6 +39,8 @@ class TagViewData private constructor(
         fun tag(tag: String) = apply { this.tag = tag }
         fun description(description: String) = apply { this.description = description }
         fun isLastItem(isLastItem: Boolean) = apply { this.isLastItem = isLastItem }
+        fun sdkClientInfo(sdkClientInfo: SDKClientInfoViewData) =
+            apply { this.sdkClientInfo = sdkClientInfo }
 
         fun build() = TagViewData(
             name,
@@ -47,7 +52,8 @@ class TagViewData private constructor(
             route,
             tag,
             description,
-            isLastItem
+            isLastItem,
+            sdkClientInfo
         )
     }
 
@@ -62,5 +68,6 @@ class TagViewData private constructor(
             .tag(tag)
             .description(description)
             .isLastItem(isLastItem)
+            .sdkClientInfo(sdkClientInfo)
     }
 }

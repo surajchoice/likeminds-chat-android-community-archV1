@@ -58,7 +58,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -72,7 +72,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     conversationViewData = data
                 )
             } else {
@@ -92,14 +92,14 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
             ChatroomConversationItemViewDataBinderUtil.initReactionButton(
                 ivAddReaction,
                 data,
-                userPreferences.getMemberId()
+                userPreferences.getUUID()
             )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -108,7 +108,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -124,7 +124,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -152,7 +152,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 clConversationRoot,
                 clConversationBubble,
                 messageReactionsGridLayout,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 data
             )

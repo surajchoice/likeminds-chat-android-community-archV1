@@ -111,7 +111,7 @@ class ItemPollViewDataBinder constructor(
     private fun initAddedByText(binding: ItemPollBinding, data: PollViewData) {
         if (data.pollInfoData.isAddNewOptionEnabled()) {
             binding.tvAddedBy.text =
-                if (userPreferences.getMemberId() == data.member?.id) {
+                if (userPreferences.getUUID() == data.member?.id) {
                     "Added by You"
                 } else {
                     String.format("Added by %s", data.member?.name)

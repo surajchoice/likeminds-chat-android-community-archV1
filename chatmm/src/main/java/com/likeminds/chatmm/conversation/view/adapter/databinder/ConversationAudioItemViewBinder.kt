@@ -59,7 +59,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 position,
                 conversationViewData = data,
@@ -73,7 +73,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     conversationViewData = data
                 )
             } else {
@@ -93,14 +93,14 @@ class ConversationAudioItemViewBinder @Inject constructor(
             ChatroomConversationItemViewDataBinderUtil.initReactionButton(
                 ivAddReaction,
                 data,
-                userPreferences.getMemberId()
+                userPreferences.getUUID()
             )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -109,7 +109,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.replyConversation,
                 data.replyChatroomId,
                 chatroomDetailAdapterListener,
@@ -123,7 +123,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 conversationViewData = data
             )
@@ -152,7 +152,7 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 clConversationRoot,
                 clConversationBubble,
                 messageReactionsGridLayout,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 data
             )

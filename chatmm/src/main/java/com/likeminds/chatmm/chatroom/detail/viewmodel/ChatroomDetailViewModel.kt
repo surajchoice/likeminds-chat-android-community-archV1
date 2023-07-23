@@ -243,7 +243,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun isChatroomCreator(): Boolean {
-        return getChatroomViewData()?.memberViewData?.id == userPreferences.getMemberId()
+        return getChatroomViewData()?.memberViewData?.sdkClientInfo?.uuid == userPreferences.getUUID()
     }
 
     /**
@@ -394,14 +394,14 @@ class ChatroomDetailViewModel @Inject constructor(
             }
 
             val getMemberRequest = GetMemberRequest.Builder()
-                .memberId(userPreferences.getMemberId())
+                .memberId(userPreferences.getUUID())
                 .build()
             currentMemberFromDb =
                 ViewDataConverter.convertMember(lmChatClient.getMember(getMemberRequest).data?.member)
 
             val chatroomViewData = ViewDataConverter.convertChatroom(
                 chatroom,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 ChatroomUtil.getChatroomViewType(chatroom)
             ) ?: return@launchIO
             chatroomDetail = ChatroomDetailViewData.Builder()
@@ -1121,7 +1121,7 @@ class ChatroomDetailViewModel @Inject constructor(
             // create request
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(chatroomId)
-                .uuid(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(value)
                 .build()
 
@@ -1353,7 +1353,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
         sendConversationUpdatesToUI(conversations.map {
-            it.toBuilder().deletedBy(userPreferences.getMemberId()).build()
+            it.toBuilder().deletedBy(userPreferences.getUUID()).build()
         })
     }
 
@@ -1423,7 +1423,7 @@ class ChatroomDetailViewModel @Inject constructor(
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 communityId,
                 postConversationRequest,
                 updatedFileUris
@@ -1501,13 +1501,13 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun saveTemporaryConversation(
-        memberId: String,
+        uuid: String,
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?
     ): ConversationViewData? {
         val conversation = ViewDataConverter.convertConversation(
-            memberId,
+            uuid,
             communityId,
             request,
             fileUris
@@ -1525,6 +1525,13 @@ class ChatroomDetailViewModel @Inject constructor(
             null
         }
 
+        Log.d(
+            "TAG", """
+            getMemberRequest
+            memberId: ${conversation.memberId}
+            uuid: ${conversation.member?.uuid}
+        """.trimIndent()
+        )
         val getMemberRequest = GetMemberRequest.Builder()
             .memberId(conversation.memberId ?: "")
             .build()
@@ -2247,7 +2254,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 mapOf(
                     LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
                     LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
-                    LMAnalytics.Keys.USER_ID to userPreferences.getMemberId(),
+                    LMAnalytics.Keys.USER_ID to userPreferences.getUUID(),
                     LMAnalytics.Keys.MESSAGE_ID to messageId,
                     "url" to url,
                     "type" to "link",

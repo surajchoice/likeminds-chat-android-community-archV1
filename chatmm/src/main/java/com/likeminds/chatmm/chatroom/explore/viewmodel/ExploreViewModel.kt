@@ -135,7 +135,7 @@ class ExploreViewModel @Inject constructor(
             val sortIndex = ((page * 10) + index)
             ViewDataConverter.convertChatroomForExplore(
                 chatroom,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 sortIndex
             )?.apply {
                 baseViewTypeList.add(this)
@@ -153,7 +153,7 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launchIO {
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(exploreViewData.id)
-                .uuid(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(follow)
                 .build()
 

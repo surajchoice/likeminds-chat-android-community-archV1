@@ -55,7 +55,7 @@ class ChatroomAnnouncementItemViewDataBinder constructor(
             val time = DateUtil.createDateFormat("hh:mm", data.createdAt ?: 0)
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 time
             )
 

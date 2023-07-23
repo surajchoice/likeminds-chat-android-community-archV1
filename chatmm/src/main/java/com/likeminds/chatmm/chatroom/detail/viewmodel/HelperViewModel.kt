@@ -101,8 +101,8 @@ class HelperViewModel @Inject constructor() : ViewModel() {
                         page,
                         MemberTaggingUtil.getTaggingData(
                             groupTags,
-//                            chatroomParticipants,
-//                            communityMembers
+                            chatroomParticipants,
+                            communityMembers
                         )
                     )
                 )

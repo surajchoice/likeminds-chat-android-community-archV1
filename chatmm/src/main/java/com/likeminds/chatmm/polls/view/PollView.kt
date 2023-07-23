@@ -48,14 +48,6 @@ class PollView(
         pollViewListener: PollViewListener,
         userPreferences: UserPreferences,
     ) {
-        Log.d(
-            "TAG",
-            "init: called ${conversation.pollInfoData?.pollViewDataList?.size}}"
-        )
-        Log.d(
-            "TAG",
-            "init: called-2 ${conversation.id}}"
-        )
         this.pollData = conversation.pollInfoData ?: return
         this.listener = listener
         this.pollViewListener = pollViewListener

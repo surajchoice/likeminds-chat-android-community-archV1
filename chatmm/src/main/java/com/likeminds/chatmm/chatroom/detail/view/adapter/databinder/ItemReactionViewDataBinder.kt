@@ -34,8 +34,8 @@ class ItemReactionViewDataBinder constructor(
             reactionViewData = data
             tvMemberName.text = data.memberViewData.name
             tvReactionRedHeart.text = data.reaction
-            val memberId = userPreferences.getMemberId()
-            if (memberId == data.memberViewData.id) {
+            val uuid = userPreferences.getUUID()
+            if (uuid == data.memberViewData.sdkClientInfo.uuid) {
                 tvRemoveReaction.visibility = View.VISIBLE
             } else {
                 tvRemoveReaction.visibility = View.GONE
@@ -43,7 +43,7 @@ class ItemReactionViewDataBinder constructor(
             MemberImageUtil.setImage(
                 data.memberViewData.imageUrl,
                 data.memberViewData.name,
-                data.memberViewData.id,
+                data.memberViewData.sdkClientInfo.uuid,
                 memberImage
             )
             tvRemoveReaction.setOnClickListener {

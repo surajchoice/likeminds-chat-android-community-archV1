@@ -3,11 +3,10 @@ package com.likeminds.chatmm.chatroom.detail.util
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
+import android.text.*
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
@@ -225,7 +224,15 @@ object ChatroomUtil {
         conversation: ConversationViewData,
         currentMemberId: String,
     ): String {
-        return if (conversation.memberViewData.userUniqueId == currentMemberId) {
+        val uuid = conversation.memberViewData.sdkClientInfo.uuid
+        return if (uuid == currentMemberId) {
+            // todo: check
+            Log.d(
+                "TAG", """
+                deletedby: ${conversation.deletedBy}
+                currentMemberId: $currentMemberId
+            """.trimIndent()
+            )
             if (conversation.deletedBy == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
@@ -245,14 +252,22 @@ object ChatroomUtil {
         chatRoom: ChatroomViewData,
         currentMemberId: String
     ): String {
-        return if (chatRoom.memberViewData?.id == currentMemberId) {
+        val uuid = chatRoom.memberViewData.sdkClientInfo.uuid
+        return if (uuid == currentMemberId) {
+            // todo: check
+            Log.d(
+                "TAG", """
+                deletedby: ${chatRoom.deletedBy}
+                currentMemberId: $currentMemberId
+            """.trimIndent()
+            )
             if (chatRoom.deletedBy == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)
             }
         } else {
-            if (chatRoom.memberViewData?.id == chatRoom.deletedBy) {
+            if (chatRoom.memberViewData.id == chatRoom.deletedBy) {
                 context.getString(R.string.this_message_was_deleted)
             } else {
                 context.getString(R.string.this_message_was_deleted_by_cm)

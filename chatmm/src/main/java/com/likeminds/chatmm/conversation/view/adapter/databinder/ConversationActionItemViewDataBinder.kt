@@ -67,7 +67,7 @@ class ConversationActionItemViewDataBinder constructor(
                 tvAction.editableText.length,
                 MemberTaggingClickableSpan::class.java
             )
-            val loggedInMemberId = userPreferences.getMemberId()
+            val loggedInMemberId = userPreferences.getUUID()
 
             spans.reversed().forEach { span ->
                 if (conversation.state != DM_MEMBER_REMOVED_OR_LEFT ||
@@ -76,7 +76,7 @@ class ConversationActionItemViewDataBinder constructor(
                     conversation.state != DM_CM_BECOMES_MEMBER_ENABLE ||
                     conversation.state != DM_MEMBER_BECOMES_CM_ENABLE
                 ) {
-                    if (span.getMemberId() == loggedInMemberId) {
+                    if (span.getMemberUUID() == loggedInMemberId) {
                         val startIndex = editable.getSpanStart(span)
                         val endIndex = editable.getSpanEnd(span)
                         if (chatroomDetailAdapterListener?.getChatRoomType() == TYPE_DIRECT_MESSAGE && conversation.state == STATE_HEADER) {

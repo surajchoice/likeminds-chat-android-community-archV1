@@ -169,7 +169,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             MemberImageUtil.setImage(
                 user.imageUrl,
                 user.name,
-                user.id,
+                user.sdkClientInfo.uuid,
                 binding.memberImage,
                 showRoundImage = true,
                 objectKey = user.updatedAt

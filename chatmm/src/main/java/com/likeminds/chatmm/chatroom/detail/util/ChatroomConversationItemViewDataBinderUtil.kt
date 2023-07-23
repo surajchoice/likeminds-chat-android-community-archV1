@@ -132,7 +132,8 @@ object ChatroomConversationItemViewDataBinderUtil {
         set.clone(clRoot)
         set.clear(clConversationBubble.id, ConstraintSet.RIGHT)
         set.clear(clConversationBubble.id, ConstraintSet.LEFT)
-        if (memberViewData.id.equals(currentMemberId)) {
+        val uuid = memberViewData.sdkClientInfo.uuid
+        if (uuid == currentMemberId) {
             if (conversationViewData != null && conversationViewData.isFailed() && imageViewFailed != null) {
                 set.connect(
                     clConversationBubble.id,
@@ -227,7 +228,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             val colorCode = MemberImageUtil.setImage(
                 memberViewData.imageUrl,
                 memberViewData.name,
-                memberViewData.id,
+                memberViewData.sdkClientInfo.uuid,
                 memberImage
             )
             tvConversationMemberName.setTextColor(colorCode)
@@ -427,14 +428,14 @@ object ChatroomConversationItemViewDataBinderUtil {
                 val intent = Route.handleDeepLink(tvConversation.context, url)
                 if (intent == null) {
                     val chatRoomId = chatRoom?.id ?: conversation?.chatroomId
-                    val memberId =
-                        chatRoom?.memberViewData?.id ?: conversation?.memberViewData?.id
+                    val uuid =
+                        chatRoom?.memberViewData?.sdkClientInfo?.uuid ?: ""
                     CustomTabIntent.open(
                         tvConversation.context, url,
                         ReportLinkExtras.Builder()
                             .chatroomId(chatRoomId!!)
                             .conversationId(conversation?.id)
-                            .reportedMemberId(memberId)
+                            .reportedMemberId(uuid)
                             .build()
                     )
                 } else {
@@ -753,7 +754,7 @@ object ChatroomConversationItemViewDataBinderUtil {
 
         if (
             conversation == null ||
-            conversation.memberViewData.id != currentMemberId ||
+            conversation.memberViewData.sdkClientInfo.uuid != currentMemberId ||
             conversation.isFailed()
         ) {
             tvTime.setCompoundDrawables(null, null, null, null)
@@ -908,7 +909,7 @@ object ChatroomConversationItemViewDataBinderUtil {
         conversationViewData: ConversationViewData,
     ) {
         if (chatroomDetailAdapterListener.isReportedConversation(conversationViewData.id)
-            && conversationViewData.memberViewData.id != currentMemberId
+            && conversationViewData.memberViewData.sdkClientInfo.uuid != currentMemberId
         ) {
             imageViewReport.visibility = View.VISIBLE
             imageViewReport.setOnClickListener {
@@ -1057,14 +1058,14 @@ object ChatroomConversationItemViewDataBinderUtil {
                 reportLinkExtras = ReportLinkExtras.Builder()
                     .chatroomId(data.chatroomId!!)
                     .conversationId(data.id)
-                    .reportedMemberId(data.memberViewData.id)
+                    .reportedMemberId(data.memberViewData.sdkClientInfo.uuid)
                     .build()
             }
             is ChatroomViewData -> {
                 reportLinkExtras = ReportLinkExtras.Builder()
                     .chatroomId(data.id)
                     .conversationId(null)
-                    .reportedMemberId(data.memberViewData?.id)
+                    .reportedMemberId(data.memberViewData.sdkClientInfo.uuid)
                     .build()
             }
         }
@@ -1646,7 +1647,8 @@ object ChatroomConversationItemViewDataBinderUtil {
                 set.clear(gridRoot.id, ConstraintSet.END)
                 set.clear(gridRoot.id, ConstraintSet.START)
 
-                if (chatroomViewData.memberViewData.id.equals(currentMemberId)) {
+                val uuid = chatroomViewData.memberViewData.sdkClientInfo.uuid
+                if (uuid == currentMemberId) {
                     set.connect(
                         gridRoot.id,
                         ConstraintSet.END,
@@ -1735,7 +1737,8 @@ object ChatroomConversationItemViewDataBinderUtil {
         set.clear(tvDoubleTap.id, ConstraintSet.END)
         set.clear(tvDoubleTap.id, ConstraintSet.START)
 
-        if (memberViewData.id.equals(currentMemberId)) {
+        val uuid = memberViewData.sdkClientInfo.uuid
+        if (uuid == currentMemberId) {
             set.connect(
                 tvDoubleTap.id,
                 ConstraintSet.END,
@@ -1826,7 +1829,8 @@ object ChatroomConversationItemViewDataBinderUtil {
                 set.clear(gridRoot.id, ConstraintSet.END)
                 set.clear(gridRoot.id, ConstraintSet.START)
 
-                if (conversation.memberViewData.id.equals(currentMemberId)) {
+                val uuid = conversation.memberViewData.sdkClientInfo.uuid
+                if (uuid == currentMemberId) {
                     set.connect(
                         gridRoot.id,
                         ConstraintSet.END,
@@ -1888,7 +1892,8 @@ object ChatroomConversationItemViewDataBinderUtil {
         if (conversation.isDeleted()) {
             ivReaction.hide()
         } else {
-            if (conversation.memberViewData.id.equals(currentMemberId)) {
+            val uuid = conversation.memberViewData.sdkClientInfo.uuid
+            if (uuid == currentMemberId) {
                 ivReaction.hide()
             } else {
                 ivReaction.show()

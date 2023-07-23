@@ -11,6 +11,7 @@ import androidx.annotation.FloatRange
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
+import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.helper.model.GroupTag
 
 object MemberTaggingUtil {
@@ -18,7 +19,6 @@ object MemberTaggingUtil {
     private const val DEFAULT_MAX_HEIGHT = 200
     const val PAGE_SIZE = 20
 
-    // todo:
     /**
      * return tagging list to the view
      * @param groupTags: list og groups like: @everyone
@@ -29,8 +29,8 @@ object MemberTaggingUtil {
      * */
     fun getTaggingData(
         groupTags: List<GroupTag>,
-//        chatroomParticipants: List<UserTag>,
-//        communityMembers: List<UserTag>
+        chatroomParticipants: List<Member>,
+        communityMembers: List<Member>
     ): ArrayList<TagViewData> {
         //list send to view
         val listOfGroupAndMember = ArrayList<TagViewData>()
@@ -44,13 +44,13 @@ object MemberTaggingUtil {
         listOfGroupAndMember.addAll(groupViewData)
 
         //convert members
-//        val chatroomParticipantsViewData =
-//            ArrayList(chatroomParticipants + communityMembers).mapNotNull { userTag ->
-//                ViewDataConverter.convertUserTag(userTag)
-//            }
+        val chatroomParticipantsViewData =
+            ArrayList(chatroomParticipants + communityMembers).mapNotNull { memberTag ->
+                ViewDataConverter.convertMemberTag(memberTag)
+            }
 
         //add to result list
-//        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
+        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
 
         return listOfGroupAndMember
     }

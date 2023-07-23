@@ -2,9 +2,7 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -189,7 +187,7 @@ class FollowedChatroomViewDataBinder(
                 tvLastConversation.text = ChatroomUtil.getDeletedMessage(
                     root.context,
                     lastConversation,
-                    userPreferences.getMemberId()
+                    userPreferences.getUUID()
                 )
             }
         }

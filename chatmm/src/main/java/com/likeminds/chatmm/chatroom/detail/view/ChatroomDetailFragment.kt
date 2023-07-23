@@ -2029,7 +2029,7 @@ class ChatroomDetailFragment :
                 MemberImageUtil.setImage(
                     member?.imageUrl,
                     member?.name,
-                    member?.id,
+                    member?.sdkClientInfo?.uuid,
                     binding.memberImage
                 )
             }
@@ -2054,7 +2054,7 @@ class ChatroomDetailFragment :
                 MemberImageUtil.setImage(
                     creator.imageUrl,
                     creator.name,
-                    creator.id,
+                    creator.sdkClientInfo.uuid,
                     memberImage
                 )
 
@@ -2545,7 +2545,7 @@ class ChatroomDetailFragment :
                         //Check if the new conversation is created by the user itself
                         if (
                             (conversations.count { conversation ->
-                                conversation.memberViewData.id == userPreferences.getMemberId()
+                                conversation.memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()
                             } == conversations.size) && isAddedBelow
                         ) {
                             scrollToPosition(SCROLL_DOWN)
@@ -2672,7 +2672,7 @@ class ChatroomDetailFragment :
                 MemberImageUtil.setImage(
                     member.imageUrl,
                     member.name,
-                    member.id,
+                    member.sdkClientInfo.uuid,
                     imageView = ivMemberImage,
                     showRoundImage = true
                 )
@@ -4441,7 +4441,7 @@ class ChatroomDetailFragment :
                 showEditAction = if (viewModel.isAnnouncementChatroom()) {
                     !isNotAdminInAnnouncementRoom() && viewModel.hasEditCommunityDetailRight()
                 } else {
-                    selectedChatRoom?.memberViewData?.id == userPreferences.getMemberId()
+                    selectedChatRoom?.memberViewData?.sdkClientInfo?.uuid == userPreferences.getUUID()
                             && selectedChatRoom?.hasTitle() == true
                 }
 
@@ -4457,7 +4457,7 @@ class ChatroomDetailFragment :
                 showCopyAction = conversation.hasAnswer() && conversation.isNotDeleted()
 
                 when {
-                    conversation.memberViewData.id == userPreferences.getMemberId() -> {
+                    conversation.memberViewData.sdkClientInfo.uuid == userPreferences.getUUID() -> {
                         showReportAction = false
                         showDeleteAction = conversation.isNotDeleted()
                         showEditAction = conversation.hasAnswer() && conversation.isNotDeleted()
@@ -4486,7 +4486,7 @@ class ChatroomDetailFragment :
                 }
 
                 if (selectedConversations.values.none {
-                        it.memberViewData.id != userPreferences.getMemberId()
+                        it.memberViewData.sdkClientInfo.uuid != userPreferences.getUUID()
                                 || it.deletedBy != null
                                 || !ChatroomUtil.hasOriginalConversationId(it)
                     }) {
@@ -4692,7 +4692,7 @@ class ChatroomDetailFragment :
             conversationViewData = conversation
             val replyData = ChatReplyUtil.getConversationReplyData(
                 conversation,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 requireContext(),
                 type = type
             )
@@ -4710,7 +4710,7 @@ class ChatroomDetailFragment :
             chatRoomViewData = chatRoom
             val replyData = ChatReplyUtil.getChatRoomReplyData(
                 chatRoom,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 requireContext(),
                 type = type
             )
@@ -4991,7 +4991,7 @@ class ChatroomDetailFragment :
 
         val messageReactions = conversation.reactions.orEmptyMutable()
         val indexToBeRemoved = messageReactions.indexOfFirst { reaction ->
-            reaction.memberViewData.id == userPreferences.getMemberId()
+            reaction.memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()
         }
         if (indexToBeRemoved.isValidIndex()) {
             messageReactions.removeAt(indexToBeRemoved)
@@ -5024,7 +5024,7 @@ class ChatroomDetailFragment :
 
         val reactions = chatroom?.reactions.orEmptyMutable()
         val indexToBeRemoved = reactions.indexOfFirst { reaction ->
-            reaction.memberViewData.id == userPreferences.getMemberId()
+            reaction.memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()
         }
         if (indexToBeRemoved.isValidIndex()) {
             reactions.removeAt(indexToBeRemoved)

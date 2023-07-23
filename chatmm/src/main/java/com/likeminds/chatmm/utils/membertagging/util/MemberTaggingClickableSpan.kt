@@ -26,8 +26,8 @@ class MemberTaggingClickableSpan(
         memberTaggingClickableSpanListener?.onClick(regex)
     }
 
-    fun getMemberId(): String? {
-        return MemberTaggingDecoder.getMemberIdFromRegex(regex)
+    fun getMemberUUID(): String? {
+        return MemberTaggingDecoder.getMemberUUIDFromRegex(regex)
     }
 }
 

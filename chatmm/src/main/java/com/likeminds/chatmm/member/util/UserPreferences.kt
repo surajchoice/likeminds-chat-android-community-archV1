@@ -16,15 +16,16 @@ class UserPreferences @Inject constructor(
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
         const val MEMBER_ID = "member_id"
+        const val UUID = "uuid"
         private const val IS_GUEST = "is_guest"
     }
 
-    fun getMemberId(): String {
-        return getPreference(MEMBER_ID, "") ?: ""
+    fun getUUID(): String {
+        return getPreference(UUID, "") ?: ""
     }
 
-    fun setMemberId(memberId: String) {
-        putPreference(MEMBER_ID, memberId)
+    fun setUUID(uuid: String) {
+        putPreference(UUID, uuid)
     }
 
     fun getUserUniqueId(): String {
@@ -51,7 +52,7 @@ class UserPreferences @Inject constructor(
 
     fun clearPrefs() {
         setUserUniqueId("")
-        setMemberId("")
+        setUUID("")
         setIsGuestUser(false)
     }
 }
