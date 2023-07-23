@@ -291,8 +291,10 @@ class ChatroomDetailFragment :
 
     private val workersMap by lazy { ArrayList<UUID>() }
 
+    // variable to hold the youtube popup player
     private var inAppVideoPlayerPopup: YouTubeVideoPlayerPopup? = null
 
+    // launcher for gallery picker
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -302,6 +304,7 @@ class ChatroomDetailFragment :
             }
         }
 
+    // launcher for document picker
     private val documentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -311,6 +314,7 @@ class ChatroomDetailFragment :
             }
         }
 
+    // launcher for audio picker
     private val audioLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -330,12 +334,14 @@ class ChatroomDetailFragment :
         return viewModel.isNotAdminInAnnouncementRoom()
     }
 
+    // fetches the first conversation from the adapter
     private fun getTopConversation(): ConversationViewData? {
         return viewModel.getFirstConversationFromAdapter(
             chatroomDetailAdapter.items()
         )
     }
 
+    // fetches the last conversation from the adapter
     private fun getBottomConversation(): ConversationViewData? {
         return viewModel.getLastConversationFromAdapter(
             chatroomDetailAdapter.items()
@@ -422,6 +428,7 @@ class ChatroomDetailFragment :
         )
     }
 
+    // fetches initial data for chatroom
     private fun fetchInitialData() {
         viewModel.getInitialData(requireContext(), chatroomDetailExtras)
     }
@@ -440,7 +447,7 @@ class ChatroomDetailFragment :
         initEnterClick()
         initAttachmentClick()
         initAttachmentsView()
-//        disableAnswerPosting()
+        disableAnswerPosting()
         initReplyView()
         syncChatroom()
         getContentDownloadSettings()
@@ -465,6 +472,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    // initialized the fragment view
     private fun initView() {
         binding.apply {
             initRecyclerView()

@@ -13,6 +13,7 @@ import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.polls.PollsComponent
+import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.likemindschat.LMChatClient
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
@@ -31,6 +32,7 @@ class SDKApplication {
     private var exploreComponent: ExploreComponent? = null
     private var chatroomDetailComponent: ChatroomDetailComponent? = null
     private var mediaComponent: MediaComponent? = null
+    private var searchComponent: SearchComponent? = null
     private var pollsComponent: PollsComponent? = null
 
     companion object {
@@ -148,5 +150,16 @@ class SDKApplication {
             pollsComponent = likeMindsChatComponent?.pollsComponent()?.create()
         }
         return pollsComponent
+    }
+
+    /**
+     * initiate and return [SearchComponent]: All dependencies required for search screens
+     */
+    fun searchComponent(): SearchComponent? {
+        if (searchComponent == null) {
+            searchComponent = likeMindsChatComponent?.searchComponent()?.create()
+        }
+
+        return searchComponent
     }
 }

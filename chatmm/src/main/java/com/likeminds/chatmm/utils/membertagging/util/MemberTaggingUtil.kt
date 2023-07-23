@@ -48,8 +48,8 @@ object MemberTaggingUtil {
 //            ArrayList(chatroomParticipants + communityMembers).mapNotNull { userTag ->
 //                ViewDataConverter.convertUserTag(userTag)
 //            }
-
-        //add to result list
+//
+//        //add to result list
 //        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
 
         return listOfGroupAndMember

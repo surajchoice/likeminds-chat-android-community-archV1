@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.chatroom.detail.view
+package com.likeminds.chatmm.chatroom.detail.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
