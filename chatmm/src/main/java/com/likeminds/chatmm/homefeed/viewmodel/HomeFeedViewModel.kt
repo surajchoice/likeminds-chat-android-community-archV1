@@ -3,17 +3,21 @@ package com.likeminds.chatmm.homefeed.viewmodel
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
+import androidx.lifecycle.*
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
+import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
+import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberUtil
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
@@ -24,6 +28,7 @@ import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
     private val sdkPreferences: SDKPreferences,
+    private val userPreferences: UserPreferences,
     private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
     companion object {
@@ -31,6 +36,9 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     private val lmChatClient = LMChatClient.getInstance()
+
+    private val _userData = MutableLiveData<MemberViewData?>()
+    val userData: LiveData<MemberViewData?> = _userData
 
     private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
@@ -78,7 +86,9 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
-    private val chatRoomListShimmerView by lazy { ChatroomListShimmerViewData.Builder().build() }
+    private val chatRoomListShimmerView by lazy {
+        HomeChatroomListShimmerViewData.Builder().build()
+    }
 
     private val lineBreakViewData by lazy { HomeLineBreakViewData.Builder().build() }
 
@@ -91,13 +101,22 @@ class HomeFeedViewModel @Inject constructor(
     private val homeEventChannel = Channel<HomeEvent>(Channel.BUFFERED)
     val homeEventsFlow = homeEventChannel.receiveAsFlow()
 
-    private val allChatRoomsData = mutableListOf<ChatViewData>()
+    private val allChatRoomsData = mutableListOf<HomeFeedItemViewData>()
 
     private var totalChatroomCount: Int = 0
     private var unseenChatroomCount: Int = 0
 
     fun setWasChatroomFetched(value: Boolean) {
         homeFeedPreferences.setShowHomeFeedShimmer(value)
+    }
+
+    fun isDBEmpty(): Boolean {
+        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: false)
+    }
+
+    fun getUserFromLocalDb() {
+        val userResponse = lmChatClient.getUser()
+        _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 
     fun observeChatrooms(context: Context) {
@@ -110,7 +129,7 @@ class HomeFeedViewModel @Inject constructor(
         chatrooms: List<Chatroom>,
     ) = viewModelScope.launch {
         val chatViewDataList = chatrooms.map { chatroom ->
-            getChatRoomViewData(chatroom)
+            HomeFeedUtil.getChatRoomViewData(chatroom, userPreferences)
         }
         allChatRoomsData.clear()
         allChatRoomsData.addAll(chatViewDataList)
@@ -129,10 +148,10 @@ class HomeFeedViewModel @Inject constructor(
                 }
             }
             val insertedChatViewDataList = inserted.map { pair ->
-                Pair(pair.first, getChatRoomViewData(pair.second))
+                Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
             }
             val changedChatViewDataList = changed.map { pair ->
-                Pair(pair.first, getChatRoomViewData(pair.second))
+                Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
             }
 
             insertedChatViewDataList.forEach { pair ->
@@ -154,13 +173,14 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
-    private fun getChatRoomViewData(chatroom: Chatroom): ChatViewData {
-        val chatroomViewData = ViewDataConverter.convertChatroom(chatroom)
+    private fun getChatRoomViewData(chatroom: Chatroom): HomeFeedItemViewData {
+        val chatroomViewData =
+            ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
         val lastConversationMemberName = MemberUtil.getFirstNameToShow(
-            sdkPreferences,
+            userPreferences,
             lastConversation?.memberViewData
         )
         val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
@@ -169,12 +189,11 @@ class HomeFeedViewModel @Inject constructor(
         } else {
             TimeUtil.getLastConversationTime(chatroomViewData.updatedAt)
         }
-        return ChatViewData.Builder()
+        return HomeFeedItemViewData.Builder()
             .chatroom(chatroomViewData)
             .lastConversation(lastConversation)
             .lastConversationTime(lastConversationTime)
             .unseenConversationCount(chatroomViewData.unseenCount ?: 0)
-            .isDraft(chatroom.isDraft ?: false)
             .chatTypeDrawableId(ChatroomUtil.getTypeDrawableId(chatroomViewData.type))
             .lastConversationText(lastConversationText)
             .lastConversationMemberName(lastConversationMemberName)
@@ -194,14 +213,9 @@ class HomeFeedViewModel @Inject constructor(
         )
 
         dataList.add(lineBreakViewData)
-//
-//        if (dmHomeFeed != null && dmHomeFeed?.clicked != null) {
-//            dataList.add(dmHomeFeed!!)
-//            dataList.add(lineBreakViewData)
-//        }
 
         //Chat rooms
-        dataList.add(getContentHeaderView(context.getString(R.string.joined_chatrooms)))
+        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
             !wasChatroomsFetched -> {
@@ -229,25 +243,12 @@ class HomeFeedViewModel @Inject constructor(
             }
 
             else -> {
-                dataList.add(getEmptyChatView(context))
+                dataList.add(HomeFeedUtil.getEmptyChatView(context))
             }
         }
         //To add padding at bottom to show FAB button clearly
         dataList.add(blankSpaceViewData)
         return dataList
-    }
-
-    private fun getEmptyChatView(context: Context): EmptyScreenViewData {
-        return EmptyScreenViewData.Builder()
-            .title(context.getString(R.string.empty_chat_room_title))
-            .subTitle("")
-            .build()
-    }
-
-    private fun getContentHeaderView(title: String): ContentHeaderViewData {
-        return ContentHeaderViewData.Builder()
-            .title(title)
-            .build()
     }
 
     fun getConfig() {
@@ -298,25 +299,41 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
+    /**------------------------------------------------------------
+     * Analytics events
+    ---------------------------------------------------------------*/
+
     //When a user clicks on the community tab
-    // todo: all analytics
     fun sendCommunityTabClicked(communityId: String?, communityName: String?) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_COMMUNITY_TAB_CLICKED,
-//            "community_id" to communityId,
-//            "community_name" to communityName
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.COMMUNITY_TAB_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
     }
 
-    /**
-     *
-     * Mixpanel Events
-     **/
+    //When a user clicks on the community tab
+    fun sendCommunityFeedClickedEvent(communityId: String, communityName: String) {
+        LMAnalytics.track(
+            LMAnalytics.Events.COMMUNITY_FEED_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.COMMUNITY_NAME to communityName,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
+    }
+
+    // when home screen is opened
     fun sendHomeScreenOpenedEvent(source: String?) {
-//        if (!source.isNullOrEmpty()) {
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_HOME_FEED_PAGE_OPENED, JSONObject().apply {
-//                put("source", source)
-//            })
-//        }
+        if (!source.isNullOrEmpty()) {
+            LMAnalytics.track(
+                LMAnalytics.Events.HOME_FEED_PAGE_OPENED,
+                mapOf(
+                    LMAnalytics.Keys.SOURCE to source,
+                )
+            )
+        }
     }
 }

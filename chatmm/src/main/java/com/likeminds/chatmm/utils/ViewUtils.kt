@@ -2,27 +2,94 @@ package com.likeminds.chatmm.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Context
+import android.app.Activity
+import android.content.*
+import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.graphics.BlurMaskFilter
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.os.*
+import android.util.DisplayMetrics
+import android.util.TypedValue
+import android.view.*
+import android.view.animation.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.SwitchCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.button.MaterialButton
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
+import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 
 //view related utils class
 object ViewUtils {
+
+    fun setBrandingTint(
+        checkBox: CheckBox? = null,
+        switch: SwitchCompat? = null,
+        radioButton: RadioButton? = null,
+        materialButton: MaterialButton? = null,
+    ) {
+        val buttonsColor = LMBranding.getButtonsColor()
+
+        val disableColor = Color.LTGRAY
+        val percentage = 70f / 100
+        val grayTransparent = ColorUtils.setAlphaComponent(disableColor, (percentage * 255).toInt())
+        val colorTransparent =
+            ColorUtils.setAlphaComponent(buttonsColor, (percentage * 255).toInt())
+        val states = arrayOf(
+            intArrayOf(-android.R.attr.state_checked),
+            intArrayOf(android.R.attr.state_checked)
+        )
+        val thumbColors = intArrayOf(
+            disableColor,
+            buttonsColor
+        )
+        val trackColors = intArrayOf(
+            grayTransparent,
+            colorTransparent
+        )
+
+        checkBox?.buttonTintList = ColorStateList(states, thumbColors)
+        radioButton?.buttonTintList = ColorStateList(states, thumbColors)
+        materialButton?.backgroundTintList = ColorStateList(states, thumbColors)
+
+        if (switch != null) {
+            DrawableCompat.setTintList(
+                DrawableCompat.wrap(switch.thumbDrawable),
+                ColorStateList(states, thumbColors)
+            )
+            DrawableCompat.setTintList(
+                DrawableCompat.wrap(switch.trackDrawable),
+                ColorStateList(states, trackColors)
+            )
+        }
+    }
+
     fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
+
+    fun spToPx(sp: Int): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp.toFloat(),
+            Resources.getSystem().displayMetrics
+        )
     }
 
     fun View.hide() {
@@ -31,6 +98,13 @@ object ViewUtils {
 
     fun View.show() {
         visibility = View.VISIBLE
+    }
+
+    fun TextView.blurText() {
+        val radius = textSize / 4
+        val filter = BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL)
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        paint.maskFilter = filter
     }
 
     fun showKeyboard(context: Context, editText: EditText) {
@@ -43,6 +117,20 @@ object ViewUtils {
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    fun hideKeyboard(context: Context) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        if (context is Activity) {
+            var view = context.currentFocus
+            if (view == null) {
+                view = View(context)
+            }
+            imm!!.hideSoftInputFromWindow(
+                view.windowToken,
+                0
+            )
+        }
     }
 
     fun hideKeyboard(view: View) {
@@ -74,6 +162,69 @@ object ViewUtils {
             snackBar.setAnchorView(anchorView)
         }
         snackBar.show()
+    }
+
+    fun showAnchoredToast(layoutToast: ConstraintLayout) {
+        layoutToast.apply {
+            if (visibility == View.GONE) {
+                this.show()
+                alpha = 0.0f
+                this.animate()
+                    .setDuration(400)
+                    .alpha(1.0f)
+                    .setListener(null)
+            }
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (visibility == View.VISIBLE) {
+                    this.animate()
+                        .setDuration(400)
+                        .alpha(0.0f)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                super.onAnimationEnd(animation)
+                                hide()
+                            }
+                        })
+                }
+            }, 1500)
+        }
+    }
+
+    fun copyToClipboard(
+        context: Context,
+        text: String?,
+        successMessage: String,
+        labelText: String
+    ) {
+        val clipboard: ClipboardManager? =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val clip = ClipData.newPlainText(labelText, text)
+        clipboard?.setPrimaryClip(clip)
+        showLongToast(context, successMessage)
+    }
+
+    fun showLongToast(context: Context, text: String?) {
+        if (text.isNullOrEmpty()) return
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+    }
+
+    fun getDeviceDimension(context: Context): Pair<Int, Int> {
+        val activity = (context as Activity)
+        val width: Int
+        val height: Int
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets =
+                windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            width = windowMetrics.bounds.width()
+            height = windowMetrics.bounds.height() - insets.top - insets.bottom
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            width = displayMetrics.widthPixels
+            height = displayMetrics.heightPixels
+        }
+        return Pair(width, height)
     }
 
     //find parent for a particular view
@@ -171,5 +322,92 @@ object ViewUtils {
             }
         })
         anim.start()
+    }
+
+    fun getDrawable(
+        context: Context,
+        resource: Int,
+        sizeInDp: Int,
+        colorResource: Int? = null,
+    ): Drawable? {
+        val drawable = ResourcesCompat.getDrawable(
+            context.resources,
+            resource,
+            null
+        ) ?: return null
+        val size = dpToPx(sizeInDp)
+        if (colorResource != null) {
+            val color = ResourcesCompat.getColor(context.resources, colorResource, null)
+            drawable.setTint(color)
+        }
+        drawable.setBounds(0, 0, size, size)
+        return drawable
+    }
+
+    fun View.expand() {
+        val view = this
+        val matchParentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec((view.parent as View).width, View.MeasureSpec.EXACTLY)
+        val wrapContentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        view.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = view.measuredHeight
+
+        view.layoutParams.height = 1
+        view.visibility = View.VISIBLE
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                view.layoutParams.height =
+                    if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+                view.requestLayout()
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+        a.duration = ((targetHeight / view.context.resources.displayMetrics.density).toLong())
+        view.startAnimation(a)
+    }
+
+    fun View.collapse() {
+        val view = this
+        val initialHeight = view.measuredHeight
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                if (interpolatedTime == 1f) {
+                    view.visibility = View.GONE
+                } else {
+                    view.layoutParams.height =
+                        initialHeight - (initialHeight * interpolatedTime).toInt()
+                    view.requestLayout()
+                }
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+
+        // Collapse speed of 1dp/ms
+        a.duration = ((initialHeight / view.context.resources.displayMetrics.density).toLong())
+        view.startAnimation(a)
+    }
+
+    fun Context.fetchDrawable(@DrawableRes resId: Int): Drawable {
+        return ContextCompat.getDrawable(this, resId)!!
+    }
+
+    fun FragmentManager.currentFragment(navHostId: Int): Fragment? {
+        val navHostFragment = this.findFragmentById(navHostId) as? NavHostFragment
+        return navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
+    }
+
+    fun View.setVisible(show: Boolean) {
+        this.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    fun Context.fetchColor(@ColorRes resId: Int): Int {
+        return ContextCompat.getColor(this, resId)
     }
 }

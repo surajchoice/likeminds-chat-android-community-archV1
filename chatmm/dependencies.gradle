@@ -63,6 +63,9 @@ dependencies {
     implementation deps.aws.s3
     implementation(deps.aws.mobile_client) { transitive = true }
 
+    //workmanager
+    implementation deps.workmanager.main
+
     //relate to branch
     implementation deps.branch.main
     implementation deps.googlePlayServicesAppIdentifier.main
@@ -79,11 +82,21 @@ dependencies {
     //Giphy
     implementation deps.giphy.main
 
+    //Youtube Player
+    implementation deps.youtube_player.main
+
     //Balloons: Tooltips
     implementation deps.balloons.main
 
     //photoview
     implementation deps.photoview.main
+
+    //3rd Party Libraries included as jar or module
+    implementation deps.cropper.main
+    implementation deps.dotsindicator.main
+    implementation deps.imageCompressor.main
+    implementation deps.audioWave.main
+    implementation deps.drawableToolbox.main
 
     //testing
     testImplementation deps.junit.main
@@ -91,5 +104,5 @@ dependencies {
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    api "com.github.NateshR.LikeMinds-Android-Chat-SDK:likemindschat:d8378df10f"
+    implementation 'io.github.NateshR:likemindschat:2.0.0'
 }

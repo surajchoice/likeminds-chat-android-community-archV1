@@ -5,17 +5,14 @@ import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentSearchBinding
-import com.likeminds.chatmm.homefeed.model.ChatroomListShimmerViewData
-import com.likeminds.chatmm.search.model.SearchChatroomHeaderViewData
-import com.likeminds.chatmm.search.model.SearchChatroomTitleViewData
-import com.likeminds.chatmm.search.model.SearchConversationViewData
-import com.likeminds.chatmm.search.model.SingleShimmerViewData
+import com.likeminds.chatmm.homefeed.model.HomeChatroomListShimmerViewData
+import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.CustomSearchBar
 import com.likeminds.chatmm.search.util.SearchScrollListener
 import com.likeminds.chatmm.search.view.adapter.SearchAdapter
 import com.likeminds.chatmm.search.view.adapter.SearchAdapterListener
 import com.likeminds.chatmm.search.viewmodel.SearchViewModel
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -37,7 +34,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
     }
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var userPreferences: UserPreferences
 
     private lateinit var mAdapter: SearchAdapter
 
@@ -221,7 +218,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
     }
 
     private fun initRecyclerView() {
-        mAdapter = SearchAdapter(this, sdkPreferences)
+        mAdapter = SearchAdapter(this, userPreferences)
         binding.rvSearch.apply {
             adapter = mAdapter
             setHasFixedSize(true)
@@ -231,7 +228,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
 
     private fun showSingleShimmer() {
         val shimmer = mAdapter.items().firstOrNull {
-            it is ChatroomListShimmerViewData || it is SingleShimmerViewData
+            it is HomeChatroomListShimmerViewData || it is SingleShimmerViewData
         }
         if (shimmer == null) {
             mAdapter.add(viewModel.getSingleShimmerView())
@@ -261,7 +258,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
 
     private fun removeShimmer() {
         val index = mAdapter.items().indexOfFirst {
-            it is ChatroomListShimmerViewData || it is SingleShimmerViewData
+            it is HomeChatroomListShimmerViewData || it is SingleShimmerViewData
         }
         if (index.isValidIndex()) {
             mAdapter.removeIndex(index)

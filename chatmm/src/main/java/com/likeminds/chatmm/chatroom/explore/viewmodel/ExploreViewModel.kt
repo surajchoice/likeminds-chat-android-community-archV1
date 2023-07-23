@@ -1,14 +1,12 @@
 package com.likeminds.chatmm.chatroom.explore.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.overflowmenu.model.OverflowMenuItemViewData
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
@@ -20,7 +18,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 class ExploreViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     companion object {
@@ -135,9 +133,9 @@ class ExploreViewModel @Inject constructor(
 
         exploreFeedData.chatrooms.forEachIndexed { index, chatroom ->
             val sortIndex = ((page * 10) + index)
-            ViewDataConverter.convertChatroom(
+            ViewDataConverter.convertChatroomForExplore(
                 chatroom,
-                sdkPreferences.getMemberId(),
+                userPreferences.getMemberId(),
                 sortIndex
             )?.apply {
                 baseViewTypeList.add(this)
@@ -155,7 +153,7 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launchIO {
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(exploreViewData.id)
-                .memberId(sdkPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(follow)
                 .build()
 
@@ -185,28 +183,27 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    // todo: analytics
-    private fun sendChatRoomUnFollowed(chatroomViewData: ChatroomViewData??) {
+    private fun sendChatRoomUnFollowed(chatroomViewData: ChatroomViewData?) {
         if (chatroomViewData == null) return
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHAT_ROOM_UN_FOLLOWED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityId)
-//                put("source", LMAnalytics.Sources.SOURCE_COMMUNITY_FEED)
-//            }
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_UN_FOLLOWED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.COMMUNITY_FEED
+            )
+        )
     }
 
     private fun sendChatRoomFollowed(chatroomViewData: ChatroomViewData?) {
         if (chatroomViewData == null) return
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHAT_ROOM_FOLLOWED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomViewData.id)
-//                put("community_id", chatroomViewData.communityId)
-//                put("source", LMAnalytics.Sources.SOURCE_COMMUNITY_FEED)
-//            }
-//        )
+        LMAnalytics.track(
+            LMAnalytics.Events.CHAT_ROOM_FOLLOWED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomViewData.id,
+                LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.COMMUNITY_FEED
+            )
+        )
     }
 }

@@ -14,7 +14,6 @@ class Permission private constructor(
 ) {
     companion object {
 
-        private const val LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         private const val WRITE_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         private const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
         private const val CAMERA = Manifest.permission.CAMERA
@@ -40,6 +39,16 @@ class Permission private constructor(
                 "To easily receive and send photos, videos and other files, allow LikeMinds access to your device’s photos, media and files.",
                 "To send media, allow LikeMinds access to your device’s photos, media and files. Tap on Settings > Permission, and turn Storage on.",
                 R.drawable.ic_folder
+            )
+        }
+
+        fun getRecordAudioPermissionData(): Permission {
+            return Permission(
+                RECORD_AUDIO,
+                REQUEST_RECORD_AUDIO,
+                "To record a Voice Message, allow LikeMinds access to your microphone.",
+                "To record a Voice Message, allow LikeMinds access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
+                R.drawable.ic_mic
             )
         }
     }

@@ -1,16 +1,17 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.detail.model.MemberViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.utils.model.*
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ConversationViewData private constructor(
     val id: String,
-    val memberViewData: MemberViewData?,
+    val memberViewData: MemberViewData,
     val answer: String,
     val shortAnswer: String?,
     val alreadySeenFullConversation: Boolean?,
@@ -18,7 +19,7 @@ class ConversationViewData private constructor(
     val chatroomId: String?,
     val communityId: String?,
     val state: Int,
-    val attachments: List<AttachmentViewData>?,
+    val attachments: ArrayList<AttachmentViewData>?,
     val attachmentUploadProgress: Pair<Long, Long>?,
     val lastSeen: Boolean?,
     val ogTags: LinkOGTagsViewData?,
@@ -26,11 +27,11 @@ class ConversationViewData private constructor(
     val replyConversation: ConversationViewData?,
     val isEdited: Boolean?,
     val deletedBy: String?,
-    val attachmentCount: Int?,
+    val attachmentCount: Int,
     val attachmentsUploaded: Boolean?,
     val uploadWorkerUUID: String?,
     val temporaryId: String?,
-    val createdEpoch: Long?,
+    val createdEpoch: Long,
     val localCreatedEpoch: Long?,
     val reactions: List<ReactionViewData>?,
     val replyChatroomId: String?,
@@ -61,9 +62,6 @@ class ConversationViewData private constructor(
                 ITEM_CONVERSATION_POLL
             }
             else -> {
-                if (ChatroomUtil.isUnsupportedConversation(this)) {
-                    ITEM_CONVERSATION_UPDATE_APP
-                }
                 val imageCount: Int = ChatroomUtil.getMediaCount(IMAGE, attachments)
                 val gifCount: Int = ChatroomUtil.getMediaCount(GIF, attachments)
                 val pdfCount: Int = ChatroomUtil.getMediaCount(PDF, attachments)
@@ -120,7 +118,7 @@ class ConversationViewData private constructor(
         if (isTemporaryConversation()) {
             return true
         }
-        return if (attachmentCount != null && attachmentCount > 0) {
+        return if (attachmentCount > 0) {
             attachmentsUploaded == null || !attachmentsUploaded
         } else {
             false
@@ -131,7 +129,7 @@ class ConversationViewData private constructor(
         if (isTemporaryConversation()) {
             return false
         }
-        return if (attachmentCount != null && attachmentCount > 0) {
+        return if (attachmentCount > 0) {
             attachmentsUploaded != null && attachmentsUploaded
         } else {
             true
@@ -142,9 +140,17 @@ class ConversationViewData private constructor(
         return answer.isNotEmpty()
     }
 
+    fun attachmentsToUpload() = attachments?.filter {
+        !it.awsFolderPath.isNullOrEmpty()
+    }
+
+    fun thumbnailsToUpload() = attachments?.filter {
+        !it.thumbnailAWSFolderPath.isNullOrEmpty()
+    }
+
     class Builder {
         private var id: String = ""
-        private var memberViewData: MemberViewData? = null
+        private var memberViewData: MemberViewData = MemberViewData.Builder().build()
         private var answer: String = ""
         private var shortAnswer: String? = null
         private var alreadySeenFullConversation: Boolean? = null
@@ -152,7 +158,7 @@ class ConversationViewData private constructor(
         private var chatroomId: String? = null
         private var communityId: String? = null
         private var state: Int = 0
-        private var attachments: List<AttachmentViewData>? = null
+        private var attachments: ArrayList<AttachmentViewData>? = null
         private var attachmentUploadProgress: Pair<Long, Long>? = null
         private var lastSeen: Boolean? = null
         private var ogTags: LinkOGTagsViewData? = null
@@ -160,11 +166,11 @@ class ConversationViewData private constructor(
         private var replyConversation: ConversationViewData? = null
         private var isEdited: Boolean? = null
         private var deletedBy: String? = null
-        private var attachmentCount: Int? = null
+        private var attachmentCount: Int = 0
         private var attachmentsUploaded: Boolean? = null
         private var uploadWorkerUUID: String? = null
         private var temporaryId: String? = null
-        private var createdEpoch: Long? = null
+        private var createdEpoch: Long = 0
         private var localCreatedEpoch: Long? = null
         private var reactions: List<ReactionViewData>? = null
         private var replyChatroomId: String? = null
@@ -173,7 +179,7 @@ class ConversationViewData private constructor(
         private var isExpanded: Boolean = false
 
         fun id(id: String) = apply { this.id = id }
-        fun memberViewData(memberViewData: MemberViewData?) =
+        fun memberViewData(memberViewData: MemberViewData) =
             apply { this.memberViewData = memberViewData }
 
         fun answer(answer: String) = apply { this.answer = answer }
@@ -185,7 +191,7 @@ class ConversationViewData private constructor(
         fun chatroomId(chatroomId: String?) = apply { this.chatroomId = chatroomId }
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
         fun state(state: Int) = apply { this.state = state }
-        fun attachments(attachments: List<AttachmentViewData>?) =
+        fun attachments(attachments: ArrayList<AttachmentViewData>?) =
             apply { this.attachments = attachments }
 
         fun attachmentUploadProgress(attachmentUploadProgress: Pair<Long, Long>?) =
@@ -199,7 +205,7 @@ class ConversationViewData private constructor(
 
         fun isEdited(isEdited: Boolean?) = apply { this.isEdited = isEdited }
         fun deletedBy(deletedBy: String?) = apply { this.deletedBy = deletedBy }
-        fun attachmentCount(attachmentCount: Int?) =
+        fun attachmentCount(attachmentCount: Int) =
             apply { this.attachmentCount = attachmentCount }
 
         fun attachmentsUploaded(attachmentsUploaded: Boolean?) =
@@ -209,7 +215,7 @@ class ConversationViewData private constructor(
             apply { this.uploadWorkerUUID = uploadWorkerUUID }
 
         fun temporaryId(temporaryId: String?) = apply { this.temporaryId = temporaryId }
-        fun createdEpoch(createdEpoch: Long?) = apply { this.createdEpoch = createdEpoch }
+        fun createdEpoch(createdEpoch: Long) = apply { this.createdEpoch = createdEpoch }
         fun localCreatedEpoch(localCreatedEpoch: Long?) =
             apply { this.localCreatedEpoch = localCreatedEpoch }
 

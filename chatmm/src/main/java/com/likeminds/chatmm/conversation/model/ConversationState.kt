@@ -40,7 +40,7 @@ const val DM_MEMBER_BECOMES_CM_ENABLE = 17
     DM_MEMBER_BECOMES_CM_ENABLE
 )
 @Retention(AnnotationRetention.SOURCE)
-annotation class ConversationsState {
+annotation class ConversationState {
 
     companion object {
         fun contains(state: Int): Boolean {

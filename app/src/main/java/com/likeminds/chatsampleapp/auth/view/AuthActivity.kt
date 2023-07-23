@@ -13,7 +13,7 @@ import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatsampleapp.ChatMMApplication
 import com.likeminds.chatsampleapp.R
-import com.likeminds.chatsampleapp.auth.model.LoginExtra
+import com.likeminds.chatsampleapp.auth.model.LoginExtras
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
 import com.likeminds.chatsampleapp.databinding.ActivityAuthBinding
 
@@ -59,7 +59,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun navigateToAfterLoginActivity() {
         val intent = Intent(this, AfterLoginActivity::class.java)
-        val extras = LoginExtra(
+        val extras = LoginExtras(
             false,
             authPreferences.getUserName(),
             authPreferences.getUserId(),

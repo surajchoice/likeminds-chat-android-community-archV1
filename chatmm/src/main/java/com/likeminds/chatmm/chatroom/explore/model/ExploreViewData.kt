@@ -8,16 +8,16 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ExploreViewData private constructor(
-    val isPinned: Boolean?,
+    val isPinned: Boolean,
     val isCreator: Boolean,
     val externalSeen: Boolean?,
-    val isSecret: Boolean?,
-    var followStatus: Boolean?,
-    val participantsCount: Int?,
-    val totalResponseCount: Int?,
+    val isSecret: Boolean,
+    var followStatus: Boolean,
+    val participantsCount: Int,
+    val totalResponseCount: Int,
     val sortIndex: Int,
     val id: String,
-    val header: String?,
+    val header: String,
     val title: String?,
     val imageUrl: String?,
     val chatroomViewData: ChatroomViewData?,
@@ -28,36 +28,36 @@ class ExploreViewData private constructor(
         get() = ITEM_EXPLORE
 
     class Builder {
-        private var isPinned: Boolean? = false
+        private var isPinned: Boolean = false
         private var isCreator: Boolean = false
         private var externalSeen: Boolean? = null
-        private var isSecret: Boolean? = null
-        private var followStatus: Boolean? = null
-        private var participantsCount: Int? = null
-        private var totalResponseCount: Int? = null
+        private var isSecret: Boolean = false
+        private var followStatus: Boolean = false
+        private var participantsCount: Int = 0
+        private var totalResponseCount: Int = 0
         private var sortIndex: Int = 0
         private var id: String = ""
-        private var header: String? = null
+        private var header: String = ""
         private var title: String? = null
         private var imageUrl: String? = null
         private var chatroomViewData: ChatroomViewData? = null
         private var chatroomImageUrl: String? = null
 
-        fun isPinned(isPinned: Boolean?) = apply { this.isPinned = isPinned }
+        fun isPinned(isPinned: Boolean) = apply { this.isPinned = isPinned }
 
         fun isCreator(isCreator: Boolean) = apply { this.isCreator = isCreator }
 
         fun externalSeen(externalSeen: Boolean?) = apply { this.externalSeen = externalSeen }
 
-        fun isSecret(isSecret: Boolean?) = apply { this.isSecret = isSecret }
+        fun isSecret(isSecret: Boolean) = apply { this.isSecret = isSecret }
 
-        fun followStatus(followStatus: Boolean?) = apply { this.followStatus = followStatus }
+        fun followStatus(followStatus: Boolean) = apply { this.followStatus = followStatus }
 
-        fun participantsCount(participantsCount: Int?) = apply {
+        fun participantsCount(participantsCount: Int) = apply {
             this.participantsCount = participantsCount
         }
 
-        fun totalResponseCount(totalResponseCount: Int?) = apply {
+        fun totalResponseCount(totalResponseCount: Int) = apply {
             this.totalResponseCount = totalResponseCount
         }
 
@@ -67,7 +67,7 @@ class ExploreViewData private constructor(
 
         fun id(id: String) = apply { this.id = id }
 
-        fun header(header: String?) = apply { this.header = header }
+        fun header(header: String) = apply { this.header = header }
 
         fun title(title: String?) = apply { this.title = title }
 

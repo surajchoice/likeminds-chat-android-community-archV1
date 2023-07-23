@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.likeminds.chatmm">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -23,7 +21,25 @@
             android:theme="@style/LMAppTheme.NoActionBar" />
 
         <activity
+            android:name=".media.view.MediaPickerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".media.view.MediaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".chatroom.detail.view.ChatroomDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".polls.view.PollResultsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LMAppTheme.NoActionBar" />

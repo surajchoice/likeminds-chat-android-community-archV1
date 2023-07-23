@@ -27,6 +27,7 @@
     <color name="black_30">#4D000000</color>
     <color name="black_10">#19000000</color>
     <color name="black_4">#0a000000</color>
+    <color name="black_14">#14000000</color>
     <color name="black_24">#3d000000</color>
     <color name="black_20">#33000000</color>
     <color name="black_two">#020202</color>
@@ -34,7 +35,6 @@
     <color name="black_34">#28000000</color>
     <color name="black_80">#cc000000</color>
     <color name="black_87">#de000000</color>
-    <color name="black_14">#14000000</color>
     <color name="black_79">#79000000</color>
     <color name="white">#FFFFFF</color>
     <color name="light_grey">#eeeeee</color>

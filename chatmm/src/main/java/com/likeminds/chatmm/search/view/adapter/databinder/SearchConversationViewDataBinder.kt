@@ -8,11 +8,11 @@ import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.databinding.ItemSearchConversationBinding
+import com.likeminds.chatmm.member.util.MemberUtil
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.search.model.SearchConversationViewData
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.search.view.adapter.SearchAdapterListener
-import com.likeminds.chatmm.utils.MemberUtil
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -21,7 +21,7 @@ import com.likeminds.chatmm.utils.model.ITEM_SEARCH_MESSAGE
 
 class SearchConversationViewDataBinder(
     private val listener: SearchAdapterListener,
-    private var sdkPreferences: SDKPreferences
+    private var userPreferences: UserPreferences
 ) : ViewDataBinder<ItemSearchConversationBinding, SearchConversationViewData>() {
 
     override val viewType: Int
@@ -74,7 +74,7 @@ class SearchConversationViewDataBinder(
             val updatedAnswer = data.answer.replace("\n", " ")
 
             val senderName = MemberUtil.getFirstNameToShow(
-                sdkPreferences,
+                userPreferences,
                 data.chatroomAnswer.memberViewData
             )
 

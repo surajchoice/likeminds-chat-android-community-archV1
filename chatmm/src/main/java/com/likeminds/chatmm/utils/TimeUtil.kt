@@ -16,6 +16,12 @@ object TimeUtil {
         }
     }
 
+    private val DATE_SDF_1 = object : ThreadLocal<SimpleDateFormat>() {
+        override fun initialValue(): SimpleDateFormat {
+            return SimpleDateFormat("dd MMM yyyy")
+        }
+    }
+
     private val TIME_SDF = object : ThreadLocal<SimpleDateFormat>() {
         override fun initialValue(): SimpleDateFormat {
             return SimpleDateFormat("HH:mm")
@@ -47,6 +53,20 @@ object TimeUtil {
                 DATE_SDF.get()?.format(Date(newTime)) ?: ""
             }
         }
+    }
+
+    /**
+     * Returns current time in HH:mm format
+     */
+    fun generateCreatedAt(): String {
+        return TIME_SDF.get()?.format(Date()) ?: ""
+    }
+
+    /**
+     * Returns current date in dd MMM yyyy format
+     */
+    fun generateDate(): String {
+        return DATE_SDF_1.get()?.format(Date()) ?: ""
     }
 
     fun isInMillis(time: Long): Boolean {
