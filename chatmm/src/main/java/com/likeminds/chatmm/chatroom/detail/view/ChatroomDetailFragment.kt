@@ -4938,6 +4938,7 @@ class ChatroomDetailFragment :
         reactedToMessage(unicode, conversationId, isConversation)
     }
 
+    // processes the reaction on message request
     private fun reactedToMessage(
         reaction: String,
         conversationId: String,
@@ -4960,6 +4961,7 @@ class ChatroomDetailFragment :
                 .chatroomId(if (isConversation) null else chatroomId)
                 .build()
 
+            // updates the grid
             if (isConversation) {
                 reactionsViewModel.putConversationReaction(conversationId, reactionViewData)
                 updateReactionsGridUI(reactionViewData, conversationId)
@@ -4968,6 +4970,7 @@ class ChatroomDetailFragment :
                 updateChatroomReactionGridUI(reactionViewData)
             }
 
+            // follows the chatroom in case it is not followed already
             if (getChatroomViewData()?.followStatus == false) {
                 removeFollowView()
                 viewModel.followChatroom(
@@ -4981,6 +4984,8 @@ class ChatroomDetailFragment :
             } else {
                 ""
             }
+
+            // sends reaction added analytics event
             reactionsViewModel.sendReactionAddedEvent(
                 reaction,
                 LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS,
@@ -5034,6 +5039,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    // updates the chatroom reaction grid based on addition/removal of reaction
     private fun updateChatroomReactionGridUI(reactionViewData: ReactionViewData?) {
         val chatroomIndex = getIndexOfChatroom() ?: return
         val chatroom = getChatroomViewData()
