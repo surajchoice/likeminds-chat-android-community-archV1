@@ -1,7 +1,5 @@
 package com.likeminds.chatmm.reactions.view
 
-import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ReactionAdapter
@@ -54,9 +52,6 @@ class ReactionListFragment : BaseFragment<FragmentReactionListBinding, Nothing>(
     override fun setUpViews() {
         super.setUpViews()
         initRecyclerView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ReactionsTabAdapter.ARG_COUNT) }
         adapter.setItems(getReactionsList())
     }
@@ -67,7 +62,7 @@ class ReactionListFragment : BaseFragment<FragmentReactionListBinding, Nothing>(
         binding.rvReactions.apply {
             this.layoutManager = layoutManager
             setHasFixedSize(true)
-            adapter = adapter
+            adapter = this@ReactionListFragment.adapter
         }
     }
 
