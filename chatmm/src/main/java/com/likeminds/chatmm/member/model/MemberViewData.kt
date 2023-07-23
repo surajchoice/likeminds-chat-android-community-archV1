@@ -6,7 +6,7 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MEMBER
 import kotlinx.parcelize.Parcelize
 
-// todo: removed question view data
+// todo: removed a few keys
 @Parcelize
 class MemberViewData private constructor(
     val id: String?,
@@ -46,6 +46,7 @@ class MemberViewData private constructor(
         private var headline: String? = null
         private var imageUrl: String? = null
         private var dynamicViewType: Int = ITEM_MEMBER
+
         private var state: Int = STATE_NOTHING
         private var communityId: String? = null
         private var removeState: Int? = null
@@ -57,6 +58,7 @@ class MemberViewData private constructor(
         private var communityName: String? = null
         private var isOwner: Boolean? = null
         private var customTitle: String? = null
+
         private var listOfMenu: List<MemberActionViewData>? = null
         private var parentChatroom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
@@ -72,6 +74,7 @@ class MemberViewData private constructor(
         fun headline(headline: String?) = apply { this.headline = headline }
         fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
         fun dynamicViewType(dynamicViewType: Int) = apply { this.dynamicViewType = dynamicViewType }
+
         fun state(state: Int) = apply { this.state = state }
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
         fun communityName(communityName: String?) = apply { this.communityName = communityName }

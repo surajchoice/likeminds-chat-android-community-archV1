@@ -35,10 +35,12 @@ class AttachmentViewData private constructor(
     val mediaState: String?,
     val communityId: Int?,
     val createdAt: Long?,
-    val updatedAt: Long?
+    val updatedAt: Long?,
+    val mediaLeft: Int?,
+    val dynamicType: Int?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
-        get() = when (type) {
+        get() = dynamicType ?: when (type) {
             VIDEO -> {
                 ITEM_CHATROOM_VIDEO
             }
@@ -79,6 +81,8 @@ class AttachmentViewData private constructor(
         private var communityId: Int? = null
         private var createdAt: Long? = null
         private var updatedAt: Long? = null
+        private var mediaLeft: Int? = null
+        private var dynamicType: Int? = null
 
         fun id(id: String?) = apply { this.id = id }
         fun name(name: String?) = apply { this.name = name }
@@ -119,6 +123,8 @@ class AttachmentViewData private constructor(
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
+        fun mediaLeft(mediaLeft: Int?) = apply { this.mediaLeft = mediaLeft }
+        fun dynamicType(dynamicType: Int?) = apply { this.dynamicType = dynamicType }
 
         fun build() = AttachmentViewData(
             id,
@@ -145,7 +151,9 @@ class AttachmentViewData private constructor(
             mediaState,
             communityId,
             createdAt,
-            updatedAt
+            updatedAt,
+            mediaLeft,
+            dynamicType
         )
     }
 
@@ -175,5 +183,7 @@ class AttachmentViewData private constructor(
             .communityId(communityId)
             .createdAt(createdAt)
             .updatedAt(updatedAt)
+            .mediaLeft(mediaLeft)
+            .dynamicType(dynamicType)
     }
 }

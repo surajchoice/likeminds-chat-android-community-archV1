@@ -2,6 +2,7 @@ package com.likeminds.chatmm.homefeed.util
 
 import android.content.Context
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.ContentHeaderViewData
 import com.likeminds.chatmm.homefeed.model.EmptyScreenViewData
@@ -30,7 +31,8 @@ object HomeFeedUtil {
         chatroom: Chatroom,
         userPreferences: UserPreferences
     ): HomeFeedItemViewData {
-        val chatroomViewData = ViewDataConverter.convertChatroom(chatroom)
+        val chatroomViewData =
+            ViewDataConverter.convertChatroom(chatroom) ?: ChatroomViewData.Builder().build()
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 

@@ -13,6 +13,7 @@ import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
+import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.likemindschat.LMChatClient
 import com.vanniktech.emoji.EmojiManager
@@ -31,6 +32,7 @@ class SDKApplication {
     private var homeFeedComponent: HomeFeedComponent? = null
     private var exploreComponent: ExploreComponent? = null
     private var chatroomDetailComponent: ChatroomDetailComponent? = null
+    private var mediaComponent: MediaComponent? = null
     private var searchComponent: SearchComponent? = null
 
     companion object {
@@ -47,6 +49,14 @@ class SDKApplication {
                 sdkApplicationInstance = SDKApplication()
             }
             return sdkApplicationInstance!!
+        }
+
+        /**
+         * @return Singleton Instance of Call backs required
+         * */
+        @JvmStatic
+        fun getLikeMindsCallback(): LMUICallback? {
+            return lmUICallback
         }
     }
 
@@ -123,6 +133,16 @@ class SDKApplication {
         }
 
         return chatroomDetailComponent
+    }
+
+    /**
+     * initiate and return MediaComponent: All dependencies required for media package
+     * */
+    fun mediaComponent(): MediaComponent? {
+        if (mediaComponent == null) {
+            mediaComponent = likeMindsChatComponent?.mediaComponent()?.create()
+        }
+        return mediaComponent
     }
 
     /**

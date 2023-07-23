@@ -41,5 +41,15 @@ class Permission private constructor(
                 R.drawable.ic_folder
             )
         }
+
+        fun getRecordAudioPermissionData(): Permission {
+            return Permission(
+                RECORD_AUDIO,
+                REQUEST_RECORD_AUDIO,
+                "To record a Voice Message, allow LikeMinds access to your microphone.",
+                "To record a Voice Message, allow LikeMinds access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
+                R.drawable.ic_mic
+            )
+        }
     }
 }

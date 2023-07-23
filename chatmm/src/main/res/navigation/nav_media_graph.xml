@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_media_graph"
+    app:startDestination="@id/mediaHorizontalListFragment">
+
+    <fragment
+        android:id="@+id/conversationMediaEditFragment"
+        android:name="com.likeminds.chatmm.media.view.ConversationMediaEditFragment"
+        android:label="ConversationMediaEditFragment"
+        tools:layout="@layout/fragment_conversation_media_edit">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+        <action
+            android:id="@+id/action_conversationMediaEditFragment_to_imageCropFragment"
+            app:destination="@id/imageCropFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaHorizontalListFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaHorizontalListFragment"
+        android:label="MediaHorizontalListFragment"
+        tools:layout="@layout/fragment_media_horizontal_list">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaVerticalListFragment"
+        android:name="com.likeminds.chatmm.media.view.MediaVerticalListFragment"
+        android:label="MediaVerticalListFragment"
+        tools:layout="@layout/fragment_media_vertical_list">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageCropFragment"
+        android:name="com.likeminds.chatmm.media.view.ImageCropFragment"
+        android:label="fragment_image_crop"
+        tools:layout="@layout/fragment_image_crop">
+        <argument
+            android:name="singleUriData"
+            app:argType="com.likeminds.chatmm.media.model.SingleUriData" />
+        <argument
+            android:name="is_from_activity"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="crop_square"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/playVideoFragment"
+        android:name="com.likeminds.chatmm.media.view.PlayVideoFragment"
+        android:label="PlayVideoFragment"
+        tools:layout="@layout/fragment_play_video">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationGifSendFragment"
+        android:name="com.likeminds.chatmm.media.view.ConversationGifSendFragment"
+        android:label="ConversationGifSendFragment"
+        tools:layout="@layout/fragment_conversation_gif_send">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationDocumentSendFragment"
+        android:name="com.likeminds.chatmm.media.view.ConversationDocumentSendFragment"
+        android:label="ConversationDocumentSendFragment"
+        tools:layout="@layout/fragment_conversation_document_send">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationAudioEditSendFragment"
+        android:name="com.likeminds.chatmm.media.view.ConversationAudioSendEditFragment"
+        android:label="ConversationAudioSendEditFragment"
+        tools:layout="@layout/fragment_conversation_audio_edit_send">
+        <argument
+            android:name="media_extras"
+            app:argType="com.likeminds.chatmm.media.model.MediaExtras" />
+    </fragment>
+</navigation>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_80"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="19dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back_white_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/text_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toTopOf="@+id/text_sub_title"
+                app:layout_constraintEnd_toStartOf="@id/overflow_menu"
+                app:layout_constraintStart_toEndOf="@+id/btn_back"
+                app:layout_constraintTop_toTopOf="@+id/btn_back"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Abhishek" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/text_sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:alpha="0.8"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+                app:layout_constraintStart_toEndOf="@+id/btn_back"
+                app:layout_constraintTop_toBottomOf="@+id/text_title"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="3 of 3 photos" />
+
+            <View
+                android:id="@+id/dot"
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_circle_dot_custom_title"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/text_sub_title"
+                app:layout_constraintStart_toEndOf="@+id/text_sub_title"
+                app:layout_constraintTop_toTopOf="@+id/text_sub_title" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/text_view_sub_title_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="#b8d5d3"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="@+id/text_sub_title"
+                app:layout_constraintEnd_toStartOf="@+id/overflow_menu"
+                app:layout_constraintStart_toEndOf="@+id/dot"
+                app:layout_constraintTop_toTopOf="@+id/text_sub_title"
+                tools:text="April 20, 2020" />
+
+            <ImageView
+                android:id="@+id/overflow_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_overflow_menu"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="12dp"
+            app:controller_layout_id="@layout/exo_playback_control_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header_view"
+            app:use_controller="true" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

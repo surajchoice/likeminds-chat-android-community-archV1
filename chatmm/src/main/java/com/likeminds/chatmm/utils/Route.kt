@@ -3,8 +3,10 @@ package com.likeminds.chatmm.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.member.model.MemberViewData
 
 object Route {
     // todo:
@@ -12,10 +14,57 @@ object Route {
     const val ROUTE_CHATROOM_DETAIL = "chatroom_detail"
     const val ROUTE_BROWSER = "browser"
     const val ROUTE_MAIL = "mail"
+    const val ROUTE_MEMBER = "member"
+    const val ROUTE_MEMBER_PROFILE = "member_profile"
 
-    const val PARAM_SOURCE_CHATROOM_ID = "source_chatroom_id"
-    const val PARAM_SOURCE_COMMUNITY_ID = "source_community_id"
+    const val PARAM_CHATROOM_ID = "chatroom_id"
+    const val PARAM_COMMUNITY_ID = "community_id"
     private const val PARAM_COHORT_ID = "cohort_id"
+
+    fun handleDeepLink(context: Context, url: String?): Intent? {
+        val data = Uri.parse(url) ?: return null
+        if (data.pathSegments.isNullOrEmpty()) {
+            return null
+        }
+        val firstPath = getRouteFromDeepLink(data) ?: return null
+        return getRouteIntent(
+            context,
+            firstPath,
+            0
+        )
+    }
+
+    //create route string as per uri with check for the host (likeminds)
+    private fun getRouteFromDeepLink(data: Uri?): String? {
+        val host = data?.host ?: return null
+        val firstPathSegment = data.pathSegments.firstOrNull()
+//        if (host == getLmWebHost() && firstPathSegment == DEEP_LINK_CHATROOM) {
+//            return createCollabcardRoute(data)
+//        }
+//        if (!isLMHost(host)) {
+//            return createWebsiteRoute(data)
+//        }
+        return null
+//        return when {
+//            data.scheme == DEEP_LINK_SCHEME -> {
+//                when (firstPathSegment) {
+//                    DEEP_LINK_COMMUNITY_FEED -> {
+//                        createCommunityFeedRoute(data)
+//                    }
+//                    DEEP_LINK_CREATE_COMMUNITY -> {
+//                        createCommunityCreateRoute()
+//                    }
+//                    else -> null
+//                }
+//            }
+//            firstPathSegment == DEEP_LINK_CHATROOM -> {
+//                createCollabcardRoute(data)
+//            }
+//            else -> {
+//                createWebsiteRoute(data)
+//            }
+//        }
+    }
 
     // todo: removed profle routes
     fun getRouteIntent(
@@ -61,27 +110,26 @@ object Route {
         deepLinkUrl: String?
     ): Intent {
         val chatroomId = route.getQueryParameter("collabcard_id")
-        val sourceChatroomId = route.getQueryParameter(PARAM_SOURCE_CHATROOM_ID)
-        val sourceCommunityId = route.getQueryParameter(PARAM_SOURCE_COMMUNITY_ID)
+        val sourceChatroomId = route.getQueryParameter(PARAM_CHATROOM_ID)
+        val sourceCommunityId = route.getQueryParameter(PARAM_COMMUNITY_ID)
         val cohortId = route.getQueryParameter(PARAM_COHORT_ID)
 
-        // todo:
         val builder = ChatroomDetailExtras.Builder()
-//            .chatroomId(chatroomId.toString())
-//            .source(source)
-//            .sourceChatroomId(sourceChatroomId)
-//            .sourceCommunityId(sourceCommunityId)
-//            .cohortId(cohortId)
+            .chatroomId(chatroomId.toString())
+            .source(source)
+            .sourceChatroomId(sourceChatroomId)
+            .sourceCommunityId(sourceCommunityId)
+            .cohortId(cohortId)
 
-//        when (source) {
-//            LMAnalytics.Sources.SOURCE_NOTIFICATION -> {
-//                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
-//            }
-//
-//            LMAnalytics.Sources.SOURCE_DEEP_LINK -> {
-//                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
-//            }
-//        }
+        when (source) {
+            LMAnalytics.Source.NOTIFICATION -> {
+                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
+            }
+
+            LMAnalytics.Source.DEEP_LINK -> {
+                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
+            }
+        }
 
         return ChatroomDetailActivity.getIntent(
             context,
@@ -132,21 +180,20 @@ object Route {
         val chatroomId = route.getQueryParameter("chatroom_id")
         val conversationId = route.getQueryParameter("conversation_id")
 
-        // todo:
         val builder = ChatroomDetailExtras.Builder()
-//            .chatroomId(chatroomId.toString())
-//            .conversationId(conversationId)
-//            .source(source)
+            .chatroomId(chatroomId.toString())
+            .conversationId(conversationId)
+            .source(source)
 
-//        when (source) {
-//            LMAnalytics.Sources.SOURCE_NOTIFICATION -> {
-//                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
-//            }
-//
-//            LMAnalytics.Sources.SOURCE_DEEP_LINK -> {
-//                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
-//            }
-//        }
+        when (source) {
+            LMAnalytics.Source.NOTIFICATION -> {
+                builder.fromNotification(true).sourceLinkOrRoute(route.toString())
+            }
+
+            LMAnalytics.Source.DEEP_LINK -> {
+                builder.openedFromLink(true).sourceLinkOrRoute(deepLinkUrl)
+            }
+        }
 
         return ChatroomDetailActivity.getIntent(
             context,
@@ -163,5 +210,18 @@ object Route {
             return Intent.createChooser(intent, "Select an email client")
         }
         return null
+    }
+
+    fun createRouteForMemberProfile(member: MemberViewData?, communityId: String?): String {
+        return "<<${member?.name}|route://member/${member?.id}?community_id=${communityId}>>"
+    }
+
+    fun Uri.getNullableQueryParameter(key: String): String? {
+        val value = this.getQueryParameter(key)
+        return if (value == "null") {
+            null
+        } else {
+            value
+        }
     }
 }

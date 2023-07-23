@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back_white_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_back"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <rm.com.audiowave.AudioWaveView
+            android:id="@+id/wave"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            app:animateExpansion="true"
+            app:chunkHeight="32dp"
+            app:chunkRadius="1dp"
+            app:chunkSpacing="1dp"
+            app:chunkWidth="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_back"
+            app:minChunkHeight="2dp"
+            app:touchable="false"
+            app:waveColor="@android:color/white" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_current_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/border_audio_text"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="@string/start_duration"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wave" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/border_audio_text"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wave"
+            tools:text="2.7 MB" />
+
+        <ImageView
+            android:id="@+id/iv_album_cover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@color/orange_yellow"
+            app:layout_constraintBottom_toTopOf="@id/bottom_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wave"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/gradient_view"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/gradient_album_cover"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/iv_album_cover"
+            app:layout_constraintEnd_toEndOf="@id/iv_album_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_album_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_album_cover"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/iv_audio_logo"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_audio_header"
+            app:layout_constraintStart_toStartOf="@id/iv_album_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_album_cover"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:fontType="medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/iv_audio_logo"
+            app:layout_constraintTop_toTopOf="@id/iv_audio_logo"
+            tools:text="Aud-20201120-WA000.mp3" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_total_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintStart_toEndOf="@id/iv_audio_logo"
+            app:layout_constraintTop_toBottomOf="@+id/tv_audio_name"
+            tools:text="1:30:34" />
+
+        <ImageView
+            android:id="@+id/icon_audio_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="@id/iv_album_cover"
+            app:layout_constraintEnd_toEndOf="@id/iv_album_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_album_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_album_cover"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@{buttonColor}"
+            android:src="@drawable/ic_send"
+            android:translationZ="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_view"
+            app:layout_constraintEnd_toEndOf="@+id/bottom_view"
+            app:layout_constraintTop_toTopOf="@+id/bottom_view"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+                android:id="@+id/et_conversation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="@null"
+                android:hint="@string/add_message"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lineSpacingExtra="4sp"
+                android:maxHeight="135dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white_50"
+                android:textSize="16sp"
+                app:font_style="regular"
+                app:layout_constraintBottom_toTopOf="@+id/rv_medias"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/line"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_add_audio"
+                app:layout_constraintBottom_toBottomOf="@+id/et_conversation"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/et_conversation"
+                tools:ignore="ContentDescription" />
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="#4cffffff"
+                app:layout_constraintBottom_toBottomOf="@+id/et_conversation"
+                app:layout_constraintStart_toEndOf="@+id/btn_add"
+                app:layout_constraintTop_toTopOf="@+id/et_conversation" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_medias"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_audio_small"
+                tools:orientation="horizontal" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
+            android:id="@+id/member_tagging_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:translationZ="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone" />
+
+        <include
+            android:id="@+id/progress_bar"
+            layout="@layout/progress_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

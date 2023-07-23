@@ -16,4 +16,15 @@ object MemberUtil {
             if (name != null) "$name:" else ""
         }
     }
+
+    fun getMemberNameForDisplay(
+        member: MemberViewData,
+        currentMemberId: String
+    ): String {
+        return if (currentMemberId == member.id) {
+            "You"
+        } else {
+            member.name ?: ""
+        }
+    }
 }

@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SDKPreferences @Inject constructor(
-    application: Application,
+    private val application: Application
 ) : BasePreferences(SDK_PREFS, application) {
     companion object {
         const val SDK_PREFS = "sdk_prefs"
@@ -17,6 +17,7 @@ class SDKPreferences @Inject constructor(
         private const val MICRO_POLLS_ENABLED = "micro_polls_enabled"
         private const val AUDIO_SUPPORT_ENABLED = "audio_support_enabled"
         private const val VOICE_NOTE_ENABLED = "voice_note_enabled"
+        private const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -57,6 +58,14 @@ class SDKPreferences @Inject constructor(
 
     fun isVoiceNoteSupportEnabled(): Boolean {
         return getPreference(VOICE_NOTE_ENABLED, false)
+    }
+
+    fun getSlideUpVoiceNoteToast(): Boolean {
+        return getPreference(SLIDE_UP_VOICE_NOTE_TOAST, true)
+    }
+
+    fun setSlideUpVoiceNoteToast(value: Boolean) {
+        putPreference(SLIDE_UP_VOICE_NOTE_TOAST, value)
     }
 
     fun setDefaultConfigPrefs() {

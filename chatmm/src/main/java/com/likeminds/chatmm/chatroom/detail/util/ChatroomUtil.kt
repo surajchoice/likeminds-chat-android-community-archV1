@@ -1,38 +1,69 @@
 package com.likeminds.chatmm.chatroom.detail.util
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
+import android.util.DisplayMetrics
+import android.view.WindowInsets
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_ANNOUNCEMENT
+import com.likeminds.chatmm.chatroom.detail.view.YouTubeVideoPlayerPopup
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ValueUtils.containsUrl
+import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM
+import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM_ANNOUNCEMENT
+import com.likeminds.likemindschat.chatroom.model.Chatroom
 
 object ChatroomUtil {
+
+    /**
+     * Get chatroom view type based on the chatroom data
+     */
+    fun getChatroomViewType(chatroom: Chatroom?): Int {
+        return if (chatroom?.type == TYPE_ANNOUNCEMENT) {
+            ITEM_CHAT_ROOM_ANNOUNCEMENT
+        } else {
+            ITEM_CHAT_ROOM
+        }
+    }
+
     fun getMediaCount(mediaType: String, attachments: List<AttachmentViewData>?): Int {
         return attachments?.count { it.type == mediaType } ?: 0
     }
 
-    fun isUnsupportedConversation(conversation: ConversationViewData): Boolean {
-        // If conversation state is not defined on client side
-        if (!ConversationState.contains(conversation.state)) {
-            return true
+    /**
+     * Get conversation type based on the conversation data
+     */
+    fun getConversationType(conversation: ConversationViewData?): String {
+        if (conversation == null) return ""
+        val imageCount = getMediaCount(IMAGE, conversation.attachments)
+        val gifCount = getMediaCount(GIF, conversation.attachments)
+        val videoCount = getMediaCount(VIDEO, conversation.attachments)
+        val pdfCount = getMediaCount(PDF, conversation.attachments)
+        val audioCount = getMediaCount(AUDIO, conversation.attachments)
+        val voiceNoteCount = getMediaCount(VOICE_NOTE, conversation.attachments)
+        return when {
+            imageCount > 0 && videoCount > 0 -> "image, video"
+            imageCount > 0 -> "image"
+            gifCount > 0 -> "gif"
+            videoCount > 0 -> "video"
+            pdfCount > 0 -> "doc"
+            audioCount > 0 -> "audio"
+            voiceNoteCount > 0 -> "voice note"
+            conversation.ogTags?.url != null -> "link"
+            else -> "text"
         }
-        //If conversation state is normal and attachment type is not defined on client side
-        if (
-            conversation.state == STATE_NORMAL &&
-            conversation.attachments?.firstOrNull {
-                !InternalMediaType.contains(it.type)
-            } != null
-        ) {
-            return true
-        }
-        return false
     }
 
     /**
@@ -80,6 +111,11 @@ object ChatroomUtil {
         return Triple(spannableStringBuilder, firstMediaType, drawableList)
     }
 
+    fun hasOriginalConversationId(conversation: ConversationViewData?): Boolean {
+        return !conversation?.id.isNullOrEmpty()
+                && conversation?.id?.startsWith("-") == false
+    }
+
     fun getFirstMediaType(attachmentList: List<AttachmentViewData>?): String {
         return when (val viewData = attachmentList?.minByOrNull { it.index ?: 0 }) {
             is AttachmentViewData -> viewData.type
@@ -93,6 +129,62 @@ object ChatroomUtil {
             (videosCount > 0) -> Pair(R.drawable.ic_video_header, videosCount)
             else -> null
         }
+    }
+
+    fun getTopicMediaData(
+        context: Context,
+        conversation: ConversationViewData?
+    ): SpannableStringBuilder {
+        val tripleOfSpannableAndMedia = getHomeScreenAttachmentData(context, conversation)
+        val firstMediaType = tripleOfSpannableAndMedia.second
+        val hasAnswer = !conversation?.answer.isNullOrEmpty()
+        val hasLink = conversation?.ogTags != null
+        val hasPDFs = conversation?.attachments?.any { it.type == PDF }
+
+        val spannableStringBuilder = tripleOfSpannableAndMedia.first
+        val drawableList = tripleOfSpannableAndMedia.third
+        if (drawableList.size > 0) {
+            drawableList.forEach { pair ->
+                if (pair.second > 1 || drawableList.size > 1) {
+                    when {
+                        hasAnswer -> {
+                            val decodeString = MemberTaggingDecoder.decode(conversation?.answer)
+                            spannableStringBuilder.append(decodeString)
+                        }
+                        firstMediaType == IMAGE -> spannableStringBuilder.append("Photos")
+                        firstMediaType == VIDEO -> spannableStringBuilder.append("Videos")
+                        firstMediaType == GIF -> spannableStringBuilder.append("GIFs")
+                        firstMediaType == AUDIO -> spannableStringBuilder.append("Audios")
+                        firstMediaType == VOICE_NOTE -> spannableStringBuilder.append("Voice Notes")
+                        hasLink -> {
+                            spannableStringBuilder.append(conversation?.answer)
+                        }
+                        hasPDFs == true -> {
+                            spannableStringBuilder.append("Documents")
+                        }
+                    }
+                } else {
+                    when {
+                        hasAnswer -> {
+                            val decodeString = MemberTaggingDecoder.decode(conversation?.answer)
+                            spannableStringBuilder.append(decodeString)
+                        }
+                        firstMediaType == IMAGE -> spannableStringBuilder.append("Photo")
+                        firstMediaType == VIDEO -> spannableStringBuilder.append("Video")
+                        firstMediaType == GIF -> spannableStringBuilder.append("GIF")
+                        firstMediaType == AUDIO -> spannableStringBuilder.append("Audio")
+                        firstMediaType == VOICE_NOTE -> spannableStringBuilder.append("Voice Note")
+                        hasLink -> {
+                            spannableStringBuilder.append(conversation?.answer)
+                        }
+                        hasPDFs == true -> {
+                            spannableStringBuilder.append("Document")
+                        }
+                    }
+                }
+            }
+        }
+        return spannableStringBuilder
     }
 
     private fun getAttachmentTypeDrawable(conversation: ConversationViewData?): Pair<Int, Int>? {
@@ -142,6 +234,26 @@ object ChatroomUtil {
             }
         } else {
             if (conversation.memberViewData.id == conversation.deletedBy) {
+                context.getString(R.string.this_message_was_deleted)
+            } else {
+                context.getString(R.string.this_message_was_deleted_by_cm)
+            }
+        }
+    }
+
+    fun getDeletedMessage(
+        context: Context,
+        chatRoom: ChatroomViewData,
+        currentMemberId: String
+    ): String {
+        return if (chatRoom.memberViewData?.id == currentMemberId) {
+            if (chatRoom.deletedBy == currentMemberId) {
+                context.getString(R.string.you_deleted_this_message)
+            } else {
+                context.getString(R.string.your_message_was_deleted_by_cm)
+            }
+        } else {
+            if (chatRoom.memberViewData?.id == chatRoom.deletedBy) {
                 context.getString(R.string.this_message_was_deleted)
             } else {
                 context.getString(R.string.this_message_was_deleted_by_cm)
@@ -219,5 +331,63 @@ object ChatroomUtil {
             }
         }
         return lastConversationAnswer ?: ""
+    }
+
+    fun ChatroomViewData.getTypeName(): String {
+        return when (type) {
+            0 -> "normal"
+            1 -> "intro"
+            2 -> "event"
+            3 -> "poll"
+            6 -> "public_event"
+            7 -> "announcement"
+            9 -> "introduction_rooms"
+            10 -> "direct messages"
+            else -> "normal"
+        }
+    }
+
+    fun setVidePlayerDimensions(
+        activity: Activity,
+        inAppYouTubePlayer: YouTubeVideoPlayerPopup?,
+        isFullScreen: Boolean,
+    ) {
+        val fullWidth: Int
+        val fullHeight: Int
+        fullWidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets =
+                windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            fullHeight = windowMetrics.bounds.height() - insets.top - insets.bottom
+            windowMetrics.bounds.width()
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            fullHeight = displayMetrics.heightPixels
+            displayMetrics.widthPixels
+        }
+        if (isFullScreen) {
+            inAppYouTubePlayer?.update(
+                fullWidth, fullHeight
+            )
+        } else {
+            val height = ViewUtils.dpToPx(208)
+            val margin = ViewUtils.dpToPx(16)
+            inAppYouTubePlayer?.update(
+                fullWidth - margin, height
+            )
+        }
+    }
+
+    fun setStatusBarColor(activity: Activity, context: Context, isFullScreen: Boolean) {
+        val window = activity.window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        if (isFullScreen) {
+            window.statusBarColor = ContextCompat.getColor(context, R.color.black)
+        } else {
+            window.statusBarColor =
+                ContextCompat.getColor(context, R.color.colorPrimaryDark)
+        }
     }
 }

@@ -62,7 +62,6 @@ class InitiateViewModel @Inject constructor(
             val initiateUserResponse = lmChatClient.initiateUser(request)
             if (initiateUserResponse.success) {
                 val data = initiateUserResponse.data ?: return@launchIO
-
                 handleInitiateResponse(apiKey, data)
             } else {
                 _initiateErrorMessage.postValue(initiateUserResponse.errorMessage)
@@ -79,12 +78,14 @@ class InitiateViewModel @Inject constructor(
             val user = data.user
             val userUniqueId = user?.userUniqueId ?: ""
             val memberId = user?.id.toString()
+            val uuid = user?.sdkClientInfo?.uuid ?: ""
 
             // save details to prefs
             saveDetailsToPrefs(
                 apiKey,
                 userUniqueId,
                 memberId,
+                uuid
             )
 
             // todo: member state
@@ -99,13 +100,15 @@ class InitiateViewModel @Inject constructor(
     private fun saveDetailsToPrefs(
         apiKey: String,
         userUniqueId: String,
-        memberId: String
+        memberId: String,
+        uuid: String
     ) {
         sdkPreferences.setAPIKey(apiKey)
         userPreferences.apply {
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
             setMemberId(memberId)
+            setUUID(memberId)
         }
     }
 

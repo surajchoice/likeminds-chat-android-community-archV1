@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/buffer_progress_bar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
+            app:layout_constraintEnd_toEndOf="@id/iv_play_pause"
+            app:layout_constraintStart_toStartOf="@id/iv_play_pause"
+            app:layout_constraintTop_toTopOf="@id/iv_play_pause"
+            app:trackColor="@color/cloudy_blue"
+            app:trackThickness="4dp" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginVertical="18dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_conversation_play_voice_note"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@null"
+            android:indeterminate="false"
+            android:paddingVertical="5dp"
+            android:progressBackgroundTint="@color/grey"
+            android:progressTint="@color/orange_yellow"
+            android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_play_pause"
+            app:layout_constraintTop_toTopOf="@id/iv_play_pause"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <ImageView
+            android:id="@+id/iv_mic"
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/ic_mic"
+            app:layout_constraintStart_toStartOf="@id/seek_bar"
+            app:layout_constraintTop_toBottomOf="@id/seek_bar"
+            app:tint="@color/brown_grey"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@id/iv_mic"
+            app:layout_constraintStart_toEndOf="@id/iv_mic"
+            app:layout_constraintTop_toTopOf="@id/iv_mic"
+            tools:text="00:17" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

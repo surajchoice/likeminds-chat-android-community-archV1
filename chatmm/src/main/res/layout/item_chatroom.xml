@@ -14,6 +14,10 @@
         <variable
             name="isSelected"
             type="Boolean" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -162,7 +166,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
-            android:id="@+id/messageReactionsGridLayout"
+            android:id="@+id/message_reactions_grid_layout"
             layout="@layout/grid_message_reactions"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
@@ -183,14 +187,15 @@
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/cl_bubble"
-            app:layout_constraintTop_toBottomOf="@id/messageReactionsGridLayout" />
+            app:layout_constraintTop_toBottomOf="@id/message_reactions_grid_layout" />
 
         <View
-            android:id="@+id/viewSelection"
+            android:id="@+id/view_selection"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0.16"
             android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -199,11 +204,12 @@
             tools:visibility="visible" />
 
         <View
-            android:id="@+id/viewSelectionAnimation"
+            android:id="@+id/view_selection_animation"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0"
             android:background="@color/teal"
+            android:backgroundTint="@{buttonColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

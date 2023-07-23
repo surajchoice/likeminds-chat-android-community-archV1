@@ -22,6 +22,13 @@
         <attr name="et_type" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="ColorSeekBar">
+        <attr name="colorSeeds" format="reference" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="barHeight" format="dimension" />
+        <attr name="thumbBorderColor" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="AnimatedRecyclerView">
         <attr name="layoutAnimation" format="reference" />
         <attr name="animationDuration" format="integer" />

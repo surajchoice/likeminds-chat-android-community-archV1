@@ -2,10 +2,12 @@ package com.likeminds.chatmm.homefeed.view
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.InitiateViewModel
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
@@ -13,6 +15,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
+import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
 import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
@@ -26,23 +29,25 @@ import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
+import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.observeInLifecycle
+import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
-    HomeFeedAdapterListener {
+    HomeFeedAdapterListener,
+    ConnectivityReceiverListener {
 
     private lateinit var extras: HomeFeedExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
-    lateinit var sdkPreferences: SDKPreferences
+    lateinit var snackBar: CustomSnackBar
 
     @Inject
     lateinit var userPreferences: UserPreferences
@@ -52,6 +57,11 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     @Inject
     lateinit var initiateViewModel: InitiateViewModel
+
+    private var wasNetworkGone = false
+
+    private var communityId: String = ""
+    private var communityName: String = ""
 
     companion object {
         const val TAG = "HomeFeedFragment"
@@ -98,7 +108,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         initiateUser()
         initRecyclerView()
         initToolbar()
-        fetchData()
+        // todo: removed fetch data from here
     }
 
     override fun observeData() {
@@ -109,6 +119,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
         initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) { user ->
             observeInitiateUserResponse(user)
+        }
+
+        viewModel.userData.observe(viewLifecycleOwner) { user ->
+            observeUserData(user)
         }
 
         initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
@@ -153,15 +167,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     //observe user data
-    private fun observeInitiateUserResponse(user: MemberViewData?) {
-        initToolbar()
-        viewModel.observeChatrooms(requireContext())
-        viewModel.getConfig()
-        viewModel.getExploreTabCount()
-        viewModel.sendCommunityTabClicked(user?.communityId, user?.communityName)
-        // todo: analytics
-//        viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Sources.SOURCE_COMMUNITY_TAB)
-
+    private fun observeUserData(user: MemberViewData?) {
         if (user != null) {
             MemberImageUtil.setImage(
                 user.imageUrl,
@@ -172,6 +178,18 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 objectKey = user.updatedAt
             )
         }
+    }
+
+    //observe user data
+    private fun observeInitiateUserResponse(user: MemberViewData?) {
+        communityId = user?.communityId ?: ""
+        communityName = user?.communityName ?: ""
+        initToolbar()
+        fetchData()
+        viewModel.getConfig()
+        viewModel.getExploreTabCount()
+        viewModel.sendCommunityTabClicked(communityId, communityName)
+        viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
     }
 
     // shows invalid access error and logs out invalid user
@@ -192,10 +210,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun onResume() {
         super.onResume()
-        // todo: check ad make exposed function in data
-//        if (!LikeMindsDB.isEmpty() && !sdkPreferences.getIsGuestUser()) {
-        viewModel.observeChatrooms(requireContext())
-//        }
+        if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
+            fetchData()
+        }
     }
 
     private fun setBranding() {
@@ -215,7 +232,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun initRecyclerView() {
-        homeFeedAdapter = HomeFeedAdapter(sdkPreferences, userPreferences, this)
+        homeFeedAdapter = HomeFeedAdapter(userPreferences, this)
         binding.rvHomeFeed.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -232,9 +249,8 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             //if user is guest user hide, profile icon from toolbar
             memberImage.isVisible = !isGuestUser
 
-            // todo:
-            //get user from local db
-//        viewModel.getUserFromLocalDb()
+        //get user from local db
+        viewModel.getUserFromLocalDb()
 
             ivSearch.setOnClickListener {
                 SearchActivity.start(requireContext())
@@ -247,25 +263,39 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         viewModel.observeChatrooms(requireContext())
     }
 
-    override fun onChatRoomClicked(chatViewData: HomeFeedItemViewData) {
-        val chatroom = chatViewData.chatroom
+    override fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData) {
+        val chatroom = homeFeedItemViewData.chatroom
         openChatroom(chatroom)
     }
 
     private fun openChatroom(chatroom: ChatroomViewData) {
-        // todo:
         val extra = ChatroomDetailExtras.Builder()
-//            .collabcardViewData(chatroom)
-//            .chatroomId(chatroom.id)
-//            .communityId(chatroom.communityId)
-//            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
+            .chatroomViewData(chatroom)
+            .chatroomId(chatroom.id)
+            .communityId(chatroom.communityId)
+            .source(ChatroomDetailFragment.SOURCE_HOME_FEED)
             .build()
         ChatroomDetailActivity.start(requireContext(), extra)
     }
 
     override fun homeFeedClicked() {
-        // todo: Analytics
         ChatroomExploreActivity.start(requireContext())
-//        viewModel.sendCommunityFeedClickedEvent(communityId, communityName)
+        viewModel.sendCommunityFeedClickedEvent(communityId, communityName)
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        val parentView = activity?.findViewById<ViewGroup>(android.R.id.content) ?: return
+        if (parentView.childCount > 0) {
+            parentView.getChildAt(0)?.let { view ->
+                if (isConnected && wasNetworkGone) {
+                    wasNetworkGone = false
+                    snackBar.showMessage(view, "Internet connection restored", true)
+                }
+                if (!isConnected) {
+                    wasNetworkGone = true
+                    snackBar.showNoInternet(view)
+                }
+            }
+        }
     }
 }

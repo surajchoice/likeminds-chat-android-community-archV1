@@ -7,12 +7,13 @@ class ChatReplyViewData private constructor(
     val conversationText: String?,
     @DrawableRes
     val drawable: Int?,
-    val imageUrl: String,
+    val imageUrl: String?,
     val attachmentType: String,
     val isEditMessage: Boolean,
     val isMessageDeleted: Boolean,
     val type: String?,
     val repliedMemberState: String?,
+    val repliedMemberId: String?,
     val deleteMessage: String?
 ) {
     class Builder {
@@ -21,12 +22,13 @@ class ChatReplyViewData private constructor(
 
         @DrawableRes
         private var drawable: Int? = null
-        private var imageUrl: String = ""
+        private var imageUrl: String? = null
         private var attachmentType: String = ""
         private var isEditMessage: Boolean = false
         private var isMessageDeleted: Boolean = false
         private var type: String? = null
         private var repliedMemberState: String? = null
+        private var repliedMemberId: String? = null
         private var deleteMessage: String? = null
 
         fun memberName(memberName: String) = apply { this.memberName = memberName }
@@ -34,7 +36,7 @@ class ChatReplyViewData private constructor(
             apply { this.conversationText = conversationText }
 
         fun drawable(@DrawableRes drawable: Int?) = apply { this.drawable = drawable }
-        fun imageUrl(imageUrl: String) = apply { this.imageUrl = imageUrl }
+        fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
         fun attachmentType(attachmentType: String) = apply { this.attachmentType = attachmentType }
         fun isEditMessage(isEditMessage: Boolean) = apply { this.isEditMessage = isEditMessage }
         fun isMessageDeleted(isMessageDeleted: Boolean) =
@@ -44,7 +46,24 @@ class ChatReplyViewData private constructor(
         fun repliedMemberState(repliedMemberState: String?) =
             apply { this.repliedMemberState = repliedMemberState }
 
+        fun repliedMemberId(repliedMemberId: String?) =
+            apply { this.repliedMemberId = repliedMemberId }
+
         fun deleteMessage(deleteMessage: String?) = apply { this.deleteMessage = deleteMessage }
+
+        fun build() = ChatReplyViewData(
+            memberName,
+            conversationText,
+            drawable,
+            imageUrl,
+            attachmentType,
+            isEditMessage,
+            isMessageDeleted,
+            type,
+            repliedMemberState,
+            repliedMemberId,
+            deleteMessage
+        )
     }
 
     fun toBuilder(): Builder {
@@ -57,6 +76,7 @@ class ChatReplyViewData private constructor(
             .isMessageDeleted(isMessageDeleted)
             .type(type)
             .repliedMemberState(repliedMemberState)
+            .repliedMemberId(repliedMemberId)
             .deleteMessage(deleteMessage)
     }
 }

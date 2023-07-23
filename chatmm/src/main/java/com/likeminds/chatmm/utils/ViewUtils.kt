@@ -2,19 +2,35 @@ package com.likeminds.chatmm.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
 import com.likeminds.chatmm.member.util.MemberImageUtil
@@ -24,6 +40,14 @@ import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 object ViewUtils {
     fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
+    }
+
+    fun spToPx(sp: Int): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp.toFloat(),
+            Resources.getSystem().displayMetrics
+        )
     }
 
     fun View.hide() {
@@ -44,6 +68,20 @@ object ViewUtils {
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    fun hideKeyboard(context: Context) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        if (context is Activity) {
+            var view = context.currentFocus
+            if (view == null) {
+                view = View(context)
+            }
+            imm!!.hideSoftInputFromWindow(
+                view.windowToken,
+                0
+            )
+        }
     }
 
     fun hideKeyboard(view: View) {
@@ -75,6 +113,69 @@ object ViewUtils {
             snackBar.setAnchorView(anchorView)
         }
         snackBar.show()
+    }
+
+    fun showAnchoredToast(layoutToast: ConstraintLayout) {
+        layoutToast.apply {
+            if (visibility == View.GONE) {
+                this.show()
+                alpha = 0.0f
+                this.animate()
+                    .setDuration(400)
+                    .alpha(1.0f)
+                    .setListener(null)
+            }
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (visibility == View.VISIBLE) {
+                    this.animate()
+                        .setDuration(400)
+                        .alpha(0.0f)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                super.onAnimationEnd(animation)
+                                hide()
+                            }
+                        })
+                }
+            }, 1500)
+        }
+    }
+
+    fun copyToClipboard(
+        context: Context,
+        text: String?,
+        successMessage: String,
+        labelText: String
+    ) {
+        val clipboard: ClipboardManager? =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val clip = ClipData.newPlainText(labelText, text)
+        clipboard?.setPrimaryClip(clip)
+        showLongToast(context, successMessage)
+    }
+
+    fun showLongToast(context: Context, text: String?) {
+        if (text.isNullOrEmpty()) return
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+    }
+
+    fun getDeviceDimension(context: Context): Pair<Int, Int> {
+        val activity = (context as Activity)
+        val width: Int
+        val height: Int
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = activity.windowManager.currentWindowMetrics
+            val insets =
+                windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            width = windowMetrics.bounds.width()
+            height = windowMetrics.bounds.height() - insets.top - insets.bottom
+        } else {
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            width = displayMetrics.widthPixels
+            height = displayMetrics.heightPixels
+        }
+        return Pair(width, height)
     }
 
     //find parent for a particular view
@@ -172,5 +273,34 @@ object ViewUtils {
             }
         })
         anim.start()
+    }
+
+    fun getDrawable(
+        context: Context,
+        resource: Int,
+        sizeInDp: Int,
+        colorResource: Int? = null,
+    ): Drawable? {
+        val drawable = ResourcesCompat.getDrawable(
+            context.resources,
+            resource,
+            null
+        ) ?: return null
+        val size = dpToPx(sizeInDp)
+        if (colorResource != null) {
+            val color = ResourcesCompat.getColor(context.resources, colorResource, null)
+            drawable.setTint(color)
+        }
+        drawable.setBounds(0, 0, size, size)
+        return drawable
+    }
+
+    fun Context.fetchDrawable(@DrawableRes resId: Int): Drawable {
+        return ContextCompat.getDrawable(this, resId)!!
+    }
+
+    fun FragmentManager.currentFragment(navHostId: Int): Fragment? {
+        val navHostFragment = this.findFragmentById(navHostId) as? NavHostFragment
+        return navHostFragment?.childFragmentManager?.fragments?.firstOrNull()
     }
 }

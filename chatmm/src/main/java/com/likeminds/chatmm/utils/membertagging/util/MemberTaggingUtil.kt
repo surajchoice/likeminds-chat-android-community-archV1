@@ -10,14 +10,15 @@ import android.view.WindowInsets
 import androidx.annotation.FloatRange
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
+import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.likemindschat.helper.model.GroupTag
-import com.likeminds.likemindschat.helper.model.UserTag
 
 object MemberTaggingUtil {
 
     private const val DEFAULT_MAX_HEIGHT = 200
     const val PAGE_SIZE = 20
 
+    // todo:
     /**
      * return tagging list to the view
      * @param groupTags: list og groups like: @everyone
@@ -28,8 +29,8 @@ object MemberTaggingUtil {
      * */
     fun getTaggingData(
         groupTags: List<GroupTag>,
-        chatroomParticipants: List<UserTag>,
-        communityMembers: List<UserTag>
+//        chatroomParticipants: List<UserTag>,
+//        communityMembers: List<UserTag>
     ): ArrayList<TagViewData> {
         //list send to view
         val listOfGroupAndMember = ArrayList<TagViewData>()
@@ -43,15 +44,37 @@ object MemberTaggingUtil {
         listOfGroupAndMember.addAll(groupViewData)
 
         //convert members
-        val chatroomParticipantsViewData =
-            ArrayList(chatroomParticipants + communityMembers).mapNotNull { userTag ->
-                ViewDataConverter.convertUserTag(userTag)
-            }
-
-        //add to result list
-        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
+//        val chatroomParticipantsViewData =
+//            ArrayList(chatroomParticipants + communityMembers).mapNotNull { userTag ->
+//                ViewDataConverter.convertUserTag(userTag)
+//            }
+//
+//        //add to result list
+//        listOfGroupAndMember.addAll(chatroomParticipantsViewData)
 
         return listOfGroupAndMember
+    }
+
+    /**
+     * handles result and set result to [memberTagging] view as per [page]
+     * */
+    fun setMembersInView(
+        memberTagging: MemberTaggingView,
+        result: Pair<Int, ArrayList<TagViewData>>?
+    ) {
+        if (result != null) {
+            val page = result.first
+            val list = result.second
+            if (page == 1) {
+                //clear and set in adapter
+                memberTagging.setMembersAndGroup(list)
+            } else {
+                //add to the adapter
+                memberTagging.addMembers(list)
+            }
+        } else {
+            return
+        }
     }
 
     @JvmSynthetic
