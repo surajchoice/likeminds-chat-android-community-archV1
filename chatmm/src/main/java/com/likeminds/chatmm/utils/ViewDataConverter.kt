@@ -8,10 +8,10 @@ import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
-import com.likeminds.chatmm.search.model.*
-import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.search.model.*
+import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.chatroom.model.ChatroomAction
@@ -19,6 +19,8 @@ import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.poll.model.Poll
+import com.likeminds.likemindschat.search.model.SearchChatroom
+import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.User
 
 object ViewDataConverter {
