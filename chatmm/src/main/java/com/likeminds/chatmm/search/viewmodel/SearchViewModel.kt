@@ -1,10 +1,7 @@
 package com.likeminds.chatmm.search.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.likeminds.chatmm.homefeed.model.ChatroomListShimmerViewData
+import androidx.lifecycle.*
+import com.likeminds.chatmm.homefeed.model.HomeChatroomListShimmerViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -49,7 +46,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     fun getSingleShimmerView() = SingleShimmerViewData.Builder().build()
 
-    fun getShimmerView() = ChatroomListShimmerViewData.Builder().build()
+    fun getShimmerView() = HomeChatroomListShimmerViewData.Builder().build()
 
     private fun getLineBreakView() = SearchLineBreakViewData.Builder().build()
 

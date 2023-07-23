@@ -8,7 +8,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="SearchedConversationViewData"
+            name="searchedConversationViewData"
             type="com.likeminds.chatmm.search.model.SearchConversationViewData" />
 
         <variable
@@ -79,7 +79,7 @@
             android:layout_height="18dp"
             android:layout_marginStart="4dp"
             android:src="@drawable/ic_secret_lock"
-            android:visibility="@{SearchedConversationViewData.chatroom.isSecret() ? View.VISIBLE : View.GONE}"
+            android:visibility="@{searchedConversationViewData.chatroom.isSecret() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
             app:layout_constraintStart_toEndOf="@+id/iv_chatroom_type"
             app:layout_constraintTop_toTopOf="@+id/tv_chatroom_name"

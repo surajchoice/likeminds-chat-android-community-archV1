@@ -1,12 +1,11 @@
 package com.likeminds.chatmm.chatroom.detail.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
+import com.likeminds.chatmm.member.model.MemberState
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getUrlIfExist
@@ -16,15 +15,10 @@ import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
-import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.helper.model.GetTaggingListRequest
-import com.likeminds.likemindschat.helper.model.GetTaggingListResponse
-import kotlinx.coroutines.Job
+import com.likeminds.likemindschat.helper.model.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatroomDetailViewModel @Inject constructor(

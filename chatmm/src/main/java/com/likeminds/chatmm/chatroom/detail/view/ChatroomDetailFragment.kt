@@ -11,9 +11,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.R
@@ -21,19 +19,15 @@ import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
 import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailResultExtras
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.chatroom.detail.model.SCROLL_DOWN
+import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomScrollListener
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapter
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.ChatroomDetailViewModel
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.FragmentChatroomDetailBinding
-import com.likeminds.chatmm.media.model.GIF
-import com.likeminds.chatmm.media.model.IMAGE
-import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
@@ -77,6 +71,9 @@ class ChatroomDetailFragment :
 
     @Inject
     lateinit var sdkPreferences: SDKPreferences
+
+    @Inject
+    lateinit var userPreferences: UserPreferences
 
     lateinit var chatroomDetailAdapter: ChatroomDetailAdapter
     private lateinit var chatroomScrollListener: ChatroomScrollListener
@@ -125,7 +122,7 @@ class ChatroomDetailFragment :
             return
         }
         chatroomDetailExtras = requireArguments().getParcelable(CHATROOM_DETAIL_EXTRAS)!!
-        isGuestUser = sdkPreferences.getIsGuestUser()
+        isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         addToCohortAndFollowChatroom()
         fetchInitialData()

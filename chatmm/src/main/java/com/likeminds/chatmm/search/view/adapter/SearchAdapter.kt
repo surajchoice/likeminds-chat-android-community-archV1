@@ -1,18 +1,16 @@
 package com.likeminds.chatmm.search.view.adapter
 
 import com.likeminds.chatmm.homefeed.view.adapter.databinder.HomeChatroomListShimmerViewDataBinder
-import com.likeminds.chatmm.search.model.SearchChatroomHeaderViewData
-import com.likeminds.chatmm.search.model.SearchChatroomTitleViewData
-import com.likeminds.chatmm.search.model.SearchConversationViewData
+import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.view.adapter.databinder.*
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 class SearchAdapter(
     private val listener: SearchAdapterListener,
-    private val sdkPreferences: SDKPreferences
+    private val userPreferences: UserPreferences
 ) : BaseRecyclerAdapter<BaseViewType>() {
 
     init {
@@ -32,7 +30,7 @@ class SearchAdapter(
         viewDataBinders.add(homeChatroomListShimmerViewDataBinder)
 
         val searchConversationViewDataBinder =
-            SearchConversationViewDataBinder(listener, sdkPreferences)
+            SearchConversationViewDataBinder(listener, userPreferences)
         viewDataBinders.add(searchConversationViewDataBinder)
 
         val searchLineBreakViewDataBinder = SearchLineBreakViewDataBinder()
@@ -42,7 +40,7 @@ class SearchAdapter(
         viewDataBinders.add(searchContentHeaderBinder)
 
         val searchChatroomTitleViewDataBinder =
-            SearchChatroomTitleViewDataBinder(listener, sdkPreferences)
+            SearchChatroomTitleViewDataBinder(listener, userPreferences)
         viewDataBinders.add(searchChatroomTitleViewDataBinder)
 
         val singleShimmerViewDataBinder = SingleShimmerViewDataBinder()
