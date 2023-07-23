@@ -1,10 +1,11 @@
-package com.likeminds.chatmm.conversation.model
+package com.likeminds.chatmm.polls.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
+import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM_POLL
+import com.likeminds.chatmm.utils.model.ITEM_POLL
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -19,12 +20,11 @@ class PollViewData private constructor(
     var parentChatroom: ChatroomViewData?,
     var parentConversation: ConversationViewData?,
     var parentViewItemPosition: Int?,
-    var pollSourceType: Int?,
     var pollInfoData: PollInfoData?,
     var parentId: String?// Can be either ChatroomId or ConversationId based on pollSourceType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
-        get() = ITEM_CHAT_ROOM_POLL
+        get() = ITEM_POLL
 
     class Builder {
         private var id: String? = null
@@ -37,7 +37,6 @@ class PollViewData private constructor(
         private var parentChatroom: ChatroomViewData? = null
         private var parentConversation: ConversationViewData? = null
         private var parentViewItemPosition: Int? = null
-        private var pollSourceType: Int? = null
         private var pollInfoData: PollInfoData? = null
         private var parentId: String? = null
 
@@ -58,7 +57,6 @@ class PollViewData private constructor(
         fun parentViewItemPosition(parentViewItemPosition: Int?) =
             apply { this.parentViewItemPosition = parentViewItemPosition }
 
-        fun pollSourceType(pollSourceType: Int?) = apply { this.pollSourceType = pollSourceType }
         fun pollInfoData(pollInfoData: PollInfoData?) = apply { this.pollInfoData = pollInfoData }
         fun parentId(parentId: String?) = apply { this.parentId = parentId }
 
@@ -73,7 +71,6 @@ class PollViewData private constructor(
             parentChatroom,
             parentConversation,
             parentViewItemPosition,
-            pollSourceType,
             pollInfoData,
             parentId
         )
@@ -90,7 +87,6 @@ class PollViewData private constructor(
             .parentChatroom(parentChatroom)
             .parentConversation(parentConversation)
             .parentViewItemPosition(parentViewItemPosition)
-            .pollSourceType(pollSourceType)
             .pollInfoData(pollInfoData)
             .parentId(parentId)
     }

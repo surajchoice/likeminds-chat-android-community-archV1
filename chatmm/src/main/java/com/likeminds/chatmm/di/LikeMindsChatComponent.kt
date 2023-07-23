@@ -10,6 +10,7 @@ import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.media.MediaComponentModule
+import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.search.SearchComponent
 import dagger.BindsInstance
 import dagger.Component
@@ -31,6 +32,7 @@ interface LikeMindsChatComponent {
     fun exploreComponent(): ExploreComponent.Factory
     fun chatroomDetailComponent(): ChatroomDetailComponent.Factory
     fun mediaComponent(): MediaComponent.Factory
+    fun pollsComponent(): PollsComponent.Factory
     fun searchComponent(): SearchComponent.Factory
 
     @Component.Builder

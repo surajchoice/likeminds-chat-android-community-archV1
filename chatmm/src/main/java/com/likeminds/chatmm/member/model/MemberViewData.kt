@@ -19,7 +19,6 @@ class MemberViewData private constructor(
     val state: Int,
     val communityId: String?,
     val communityName: String?,
-    val removeState: Int?,
     val isGuest: Boolean?,
     val isOwner: Boolean?,
     val hideBottomLine: Boolean?,
@@ -49,7 +48,6 @@ class MemberViewData private constructor(
 
         private var state: Int = STATE_NOTHING
         private var communityId: String? = null
-        private var removeState: Int? = null
         private var isGuest: Boolean? = null
         private var hideBottomLine: Boolean? = null
         private var customIntroText: String? = null
@@ -79,7 +77,6 @@ class MemberViewData private constructor(
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
         fun communityName(communityName: String?) = apply { this.communityName = communityName }
 
-        fun removeState(removeState: Int?) = apply { this.removeState = removeState }
         fun isGuest(isGuest: Boolean?) = apply { this.isGuest = isGuest }
         fun isOwner(isOwner: Boolean?) = apply { this.isOwner = isOwner }
         fun hideBottomLine(hideBottomLine: Boolean?) =
@@ -119,7 +116,6 @@ class MemberViewData private constructor(
             state,
             communityId,
             communityName,
-            removeState,
             isGuest,
             isOwner,
             hideBottomLine,
@@ -148,7 +144,6 @@ class MemberViewData private constructor(
             .state(state)
             .communityId(communityId)
             .communityName(communityName)
-            .removeState(removeState)
             .isGuest(isGuest)
             .isOwner(isOwner)
             .hideBottomLine(hideBottomLine)

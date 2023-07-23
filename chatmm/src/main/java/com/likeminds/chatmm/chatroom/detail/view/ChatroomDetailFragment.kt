@@ -66,6 +66,9 @@ import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_P
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.polls.model.*
+import com.likeminds.chatmm.polls.util.AddPollOptionListener
+import com.likeminds.chatmm.polls.view.*
 import com.likeminds.chatmm.pushnotification.NotificationUtils
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
@@ -109,6 +112,7 @@ import kotlin.math.abs
 class ChatroomDetailFragment :
     BaseFragment<FragmentChatroomDetailBinding, ChatroomDetailViewModel>(),
     ChatroomDetailAdapterListener,
+    AddPollOptionListener,
     ActionModeListener<ChatroomDetailActionModeData>,
     YouTubeVideoPlayerPopup.VideoPlayerListener,
     VoiceNoteInterface,
@@ -358,6 +362,9 @@ class ChatroomDetailFragment :
         const val MUTE_ACTION_TITLE = "Mute notifications"
         const val UNMUTE_ACTION_TITLE = "Unmute notifications"
         const val UNMUTE_ACTION_IDENTIFIER = "unmute"
+
+        const val POLL_CLICK_ENABLED = "POLL_CLICK_ENABLED"
+        const val POLL_CLICK_DISABLED = "POLL_CLICK_DISABLED"
 
         const val FOLLOW_ACTION_TITLE = "Join chatroom"
         const val UNFOLLOW_ACTION_TITLE = "Leave chatroom"
@@ -692,12 +699,11 @@ class ChatroomDetailFragment :
             tvPollTitle.isVisible = viewModel.isMicroPollsEnabled()
             ivPoll.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
-                // todo: polls
-//                CreateConversationPollDialog.show(
-//                    childFragmentManager,
-//                    getChatroomViewData(),
-//                    chatroomDetailExtras
-//                )
+                CreateConversationPollDialog.show(
+                    childFragmentManager,
+                    getChatroomViewData(),
+                    chatroomDetailExtras
+                )
             }
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
@@ -2288,6 +2294,8 @@ class ChatroomDetailFragment :
         observeConversations()
         observeChatroomActions()
         observeLinkOgTags()
+        observeNewOptionAddedLiveData()
+        observePollResponse()
         observeTopic()
         observeContentDownloadSettings()
         observeMemberState()
@@ -2827,6 +2835,7 @@ class ChatroomDetailFragment :
         }
     }
 
+
     private fun initLinkView(linkOgTags: LinkOGTagsViewData?) {
         binding.inputBox.apply {
             hideLinkProgress()
@@ -2885,6 +2894,50 @@ class ChatroomDetailFragment :
     private fun hideLinkProgress() {
         ProgressHelper.hideProgress(binding.inputBox.viewLink.progressBar)
     }
+
+    private fun observeNewOptionAddedLiveData() {
+        viewModel.addOptionResponse.observe(viewLifecycleOwner) { _ ->
+            ProgressHelper.hideProgress(binding.progressBar)
+        }
+    }
+
+    private fun observePollResponse() {
+        viewModel.pollAnswerUpdated.observe(viewLifecycleOwner) {
+            val conversationId = it?.pollViewDataList?.firstOrNull()?.parentId
+            onPollSubmitComplete(it, conversationId)
+        }
+    }
+
+    private fun onPollSubmitComplete(
+        pollInfoData: PollInfoData?,
+        conversationId: String? = null,
+    ) {
+        //remove Follow button if showing
+        if (pollInfoData?.pollType == POLL_TYPE_INSTANT) {
+            val message = if (removeFollowView()) {
+                getString(R.string.your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms)
+            } else {
+                getString(R.string.your_vote_submitted_successfully)
+            }
+            ViewUtils.showShortToast(requireContext(), message)
+        } else {
+            if (removeFollowView()) {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.added_to_your_joined_chat_rooms)
+                )
+            }
+            PollVoteSubmitSuccessDialog.newInstance(
+                childFragmentManager,
+                DateUtil.getPollExpireTimeString(
+                    pollInfoData?.expiryTime
+                )
+            )
+            viewModel.sendPollVotingEditedEvent(conversationId)
+        }
+        viewModel.updateChatRoomFollowStatus(true)
+    }
+
 
     private fun observeTopic() {
         viewModel.setTopicResponse.observe(viewLifecycleOwner) { response ->
@@ -2983,6 +3036,18 @@ class ChatroomDetailFragment :
 
                 is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
+                is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
+                    ViewUtils.showShortToast(
+                        context,
+                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                    )
+                }
+                is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
+                    ViewUtils.showShortToast(
+                        context,
+                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                    )
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
@@ -3782,6 +3847,154 @@ class ChatroomDetailFragment :
     override fun onLinkClicked(conversationId: String?, url: String) {
         super.onLinkClicked(conversationId, url)
         viewModel.sendChatLinkClickedEvent(conversationId, url)
+    }
+
+    override fun showConversationPollVotersList(
+        conversationId: String,
+        pollId: String?,
+        hasPollEnded: Boolean,
+        toShowResult: Boolean?,
+        positionOfPoll: Int
+    ) {
+        when {
+            toShowResult == true -> {
+                val extra = PollResultExtras.Builder()
+                    .communityId(communityId)
+                    .communityName(getChatroomViewData()?.communityName)
+                    .conversationId(conversationId)
+                    .selectedPoll(positionOfPoll)
+                    .build()
+                viewModel.sendMicroPollResultsViewed(conversationId)
+                navigateToPollResult(extra)
+            }
+
+            hasPollEnded -> {
+                val extra = PollResultExtras.Builder()
+                    .communityId(communityId)
+                    .communityName(getChatroomViewData()?.communityName)
+                    .conversationId(conversationId)
+                    .selectedPoll(positionOfPoll)
+                    .build()
+                viewModel.sendMicroPollResultsViewed(conversationId)
+                navigateToPollResult(extra)
+            }
+
+            else -> {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.poll_ended_result_message)
+                )
+            }
+        }
+    }
+
+    override fun onConversationPollSubmitClicked(
+        conversation: ConversationViewData,
+        pollViewDataList: List<PollViewData>
+    ) {
+        if (isGuestUser) {
+            callGuestFlowCallback()
+        } else {
+            viewModel.submitConversationPoll(conversation, pollViewDataList)
+        }
+    }
+
+    override fun showToastMessage(message: String) {
+        // todo: use snackbar instead of bottomToast
+//        binding.bottomToast.tvToast.text = message
+//        binding.bottomToast.root.visibility = View.VISIBLE
+    }
+
+    override fun dismissToastMessage() {
+        // todo: use snackbar instead of bottomToast
+//        binding.bottomToast.root.visibility = View.GONE
+    }
+
+    override fun getBinding(conversationId: String?): DataBoundViewHolder<*>? {
+        if (conversationId.isNullOrEmpty()) {
+            return null
+        }
+        val index = chatroomDetailAdapter.items().indexOfFirst {
+            it is ConversationViewData && it.id == conversationId
+        }
+        if (index.isValidIndex()) {
+            return binding.rvChatroom.findViewHolderForAdapterPosition(index)
+                    as? DataBoundViewHolder<*>
+        }
+        return null
+    }
+
+    override fun addConversationPollOptionClicked(conversationId: String) {
+        AddPollOptionDialog.newInstance(
+            childFragmentManager,
+            AddPollOptionExtras.Builder().conversationId(conversationId).build()
+        )
+    }
+
+    override fun onConversationMembersVotedCountClick(
+        conversation: ConversationViewData,
+        hasPollEnded: Boolean,
+        isAnonymous: Boolean?,
+        isCreator: Boolean,
+    ) {
+        if (isAnonymous == true) {
+            showAnonymousPollDialog(requireContext())
+        } else {
+            when {
+                conversation.pollInfoData?.toShowResult == true -> {
+                    val extra = PollResultExtras.Builder()
+                        .communityId(communityId)
+                        .communityName(getChatroomViewData()?.communityName)
+                        .conversationId(conversation.id)
+                        .build()
+                    viewModel.sendMicroPollResultsViewed(conversation.id)
+                    navigateToPollResult(extra)
+                }
+
+                hasPollEnded -> {
+                    val extra = PollResultExtras.Builder()
+                        .communityId(communityId)
+                        .communityName(getChatroomViewData()?.communityName)
+                        .conversationId(conversation.id)
+                        .build()
+                    viewModel.sendMicroPollResultsViewed(conversation.id)
+                    navigateToPollResult(extra)
+                }
+
+                else -> {
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.poll_ended_result_message)
+                    )
+                }
+            }
+        }
+    }
+
+    // shows alert dialog for anonymous poll
+    private fun showAnonymousPollDialog(context: Context) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.anonymous_poll))
+            .setMessage(context.getString(R.string.anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        val alertDialog = builder.create()
+        alertDialog.setOnShowListener {
+            alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.black_40
+                )
+            )
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                ?.setTextColor(LMBranding.getButtonsColor())
+        }
+        alertDialog.show()
+    }
+
+    override fun getPollRemainingTime(expiryTime: Long?): String? {
+        return DateUtil.getPollRemainingTime(expiryTime)
     }
 
     /**------------------------------------------------------------
@@ -4682,6 +4895,16 @@ class ChatroomDetailFragment :
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun newPollOptionEntered(addPollOptionExtras: AddPollOptionExtras) {
+        ProgressHelper.showProgress(binding.progressBar)
+        if (addPollOptionExtras.conversationId != null) {
+            viewModel.addNewConversationPollOption(
+                addPollOptionExtras.conversationId!!,
+                addPollOptionExtras.pollOptionText ?: ""
+            )
+        }
+    }
+
     private fun updateChatroomActionMenu(actionsMenu: Menu?) {
         if (getChatroomViewData() == null) {
             return
@@ -4917,6 +5140,11 @@ class ChatroomDetailFragment :
     private fun showLeaveChatroomConfirmationPopup() {
         val dialog = LeaveSecretChatroomDialog(this)
         dialog.show(childFragmentManager, LeaveSecretChatroomDialog.TAG)
+    }
+
+    //start PollResultActivity
+    private fun navigateToPollResult(extras: PollResultExtras) {
+        PollResultsActivity.start(requireContext(), extras)
     }
 
     /**------------------------------------------------------------

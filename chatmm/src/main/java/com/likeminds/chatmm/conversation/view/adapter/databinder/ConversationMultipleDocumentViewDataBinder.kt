@@ -1,9 +1,7 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
@@ -17,9 +15,7 @@ import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
-import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT
+import com.likeminds.chatmm.utils.model.*
 
 internal class ConversationMultipleDocumentViewDataBinder constructor(
     private val userPreferences: UserPreferences,
@@ -170,6 +166,7 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
     ) {
         binding.apply {
             val documentsItemAdapter = ChatroomItemAdapter(
+                userPreferences,
                 chatroomItemAdapterListener = this@ConversationMultipleDocumentViewDataBinder
             )
             rvDocuments.adapter = documentsItemAdapter

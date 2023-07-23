@@ -6,6 +6,7 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomDateViewData
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 internal class ChatroomDetailDiffUtilCallback(

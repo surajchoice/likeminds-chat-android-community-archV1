@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.conversation.model
+package com.likeminds.chatmm.polls.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -23,7 +23,7 @@ class PollInfoData private constructor(
         return if (this.pollAnswerText.isNullOrEmpty()) {
             "Be the first to respond"
         } else {
-            pollAnswerText!!
+            pollAnswerText
         }
     }
 

@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -161,6 +159,7 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
             val gridLayoutManager = GridLayoutManager(root.context, 2)
             rvDocuments.layoutManager = gridLayoutManager
             val documentsItemAdapter = ChatroomItemAdapter(
+                userPreferences,
                 chatroomItemAdapterListener = this@ConversationMultipleMediaItemViewDataBinder
             )
             rvDocuments.adapter = documentsItemAdapter

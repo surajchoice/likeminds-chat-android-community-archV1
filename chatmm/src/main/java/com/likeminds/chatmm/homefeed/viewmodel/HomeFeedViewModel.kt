@@ -111,7 +111,7 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     fun isDBEmpty(): Boolean {
-        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: true)
+        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: false)
     }
 
     fun getUserFromLocalDb() {

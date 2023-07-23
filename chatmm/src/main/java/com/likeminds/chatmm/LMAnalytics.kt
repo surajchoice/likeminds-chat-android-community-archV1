@@ -97,6 +97,7 @@ object LMAnalytics {
         const val COMMUNITY_FEED = "explore_feed"
         const val NOTIFICATION = "notification"
         const val DEEP_LINK = "deep_link"
+        const val POLL_RESULT = "poll_result"
     }
 
     /**

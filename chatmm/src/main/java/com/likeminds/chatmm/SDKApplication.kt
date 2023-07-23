@@ -2,9 +2,7 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserStateDetails
+import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
@@ -14,6 +12,7 @@ import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.media.MediaComponent
+import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.likemindschat.LMChatClient
 import com.vanniktech.emoji.EmojiManager
@@ -34,6 +33,7 @@ class SDKApplication {
     private var chatroomDetailComponent: ChatroomDetailComponent? = null
     private var mediaComponent: MediaComponent? = null
     private var searchComponent: SearchComponent? = null
+    private var pollsComponent: PollsComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -143,6 +143,13 @@ class SDKApplication {
             mediaComponent = likeMindsChatComponent?.mediaComponent()?.create()
         }
         return mediaComponent
+    }
+
+    fun pollsComponent(): PollsComponent? {
+        if (pollsComponent == null) {
+            pollsComponent = likeMindsChatComponent?.pollsComponent()?.create()
+        }
+        return pollsComponent
     }
 
     /**
