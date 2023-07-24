@@ -14,8 +14,8 @@ import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
-import com.likeminds.likemindschat.chatroom.model.Chatroom
-import com.likeminds.likemindschat.chatroom.model.ChatroomAction
+import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
+import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
@@ -830,6 +830,19 @@ object ViewDataConverter {
             .answer(searchConversation.answer)
             .date(searchConversation.chatroom.date)
             .deletedBy(searchConversation.chatroom.deletedBy)
+            .build()
+    }
+
+    // todo: uuid
+    fun convertParticipants(participant: Member): MemberViewData {
+        return MemberViewData.Builder()
+            .dynamicViewType(ITEM_VIEW_PARTICIPANTS)
+            .id(participant.id)
+            .imageUrl(participant.imageUrl)
+            .isGuest(participant.isGuest)
+            .name(participant.name)
+            .userUniqueId(participant.userUniqueId)
+            .customTitle(participant.customTitle)
             .build()
     }
 }

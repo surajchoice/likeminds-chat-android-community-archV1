@@ -2,10 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph_chatroom_explore.xml"
-    app:startDestination="@id/chatroomDetailFragment">
+    app:startDestination="@id/chatroom_detail_fragment">
 
     <fragment
-        android:id="@+id/chatroomDetailFragment"
+        android:id="@+id/chatroom_detail_fragment"
         android:name="com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment"
         android:label="ChatroomDetailFragment" />
 </navigation>

@@ -7,7 +7,7 @@ import android.text.format.DateFormat
 import androidx.fragment.app.DialogFragment
 import java.util.*
 
-internal class TimePickerFragment(private val onTimeSetListener: TimePickerDialog.OnTimeSetListener) :
+class TimePickerFragment(private val onTimeSetListener: TimePickerDialog.OnTimeSetListener) :
     DialogFragment() {
 
     companion object {

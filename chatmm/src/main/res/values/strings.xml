@@ -225,4 +225,5 @@
     <string name="reactions">Reactions</string>
     <string name="reaction_removed">Reaction Removed</string>
     <string name="tap_to_remove">Tap to remove</string>
+    <string name="participants">Participants</string>
 </resources>
