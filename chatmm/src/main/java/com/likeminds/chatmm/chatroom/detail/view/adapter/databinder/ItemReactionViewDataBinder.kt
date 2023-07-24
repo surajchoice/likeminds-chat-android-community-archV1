@@ -19,16 +19,12 @@ class ItemReactionViewDataBinder constructor(
 
     override fun createBinder(parent: ViewGroup): ItemReactionListBinding {
         return ItemReactionListBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
     }
 
     override fun bindData(
-        binding: ItemReactionListBinding,
-        data: ReactionViewData,
-        position: Int
+        binding: ItemReactionListBinding, data: ReactionViewData, position: Int
     ) {
         binding.apply {
             reactionViewData = data

@@ -28,6 +28,7 @@ class ChatroomViewData private constructor(
     val showFollowTelescope: Boolean?,
     val showFollowAutoTag: Boolean?,
     val cardCreationTime: String?,
+    val participantsCount: Int,
     val totalResponseCount: Int,
     val totalAllResponseCount: Int,
     val muteStatus: Boolean,
@@ -35,10 +36,13 @@ class ChatroomViewData private constructor(
     val date: String?,
     val hideBottomLine: Boolean?,
     val isTagged: Boolean?,
+    val isPending: Boolean?,
+    val isPinned: Boolean?,
     val deletedBy: String?,
     val updatedAt: Long?,
     val draftConversation: String?,
     val isSecret: Boolean?,
+    val isDisabled: Boolean?,
     val secretChatroomParticipants: List<Int>?,
     val secretChatroomLeft: Boolean?,
     val unseenCount: Int?,
@@ -47,6 +51,8 @@ class ChatroomViewData private constructor(
     val reactions: List<ReactionViewData>?,
     val memberCanMessage: Boolean?,
     val chatroomImageUrl: String?,
+    val unreadConversationCount: Int?,
+    val autoFollowDone: Boolean?,
     val dynamicViewType: Int?,
 ) : BaseViewType, Parcelable {
     override val viewType: Int
@@ -79,6 +85,7 @@ class ChatroomViewData private constructor(
         private var showFollowTelescope: Boolean? = null
         private var showFollowAutoTag: Boolean? = null
         private var cardCreationTime: String? = null
+        private var participantsCount: Int = 0
         private var totalResponseCount: Int = 0
         private var totalAllResponseCount: Int = 0
         private var muteStatus: Boolean = false
@@ -86,10 +93,13 @@ class ChatroomViewData private constructor(
         private var date: String? = null
         private var hideBottomLine: Boolean? = null
         private var isTagged: Boolean? = null
+        private var isPending: Boolean? = null
+        private var isPinned: Boolean? = null
         private var deletedBy: String? = null
         private var updatedAt: Long? = null
         private var draftConversation: String? = null
         private var isSecret: Boolean? = null
+        private var isDisabled: Boolean? = null
         private var secretChatroomParticipants: List<Int>? = null
         private var secretChatroomLeft: Boolean? = null
         private var unseenCount: Int? = null
@@ -98,6 +108,8 @@ class ChatroomViewData private constructor(
         private var reactions: List<ReactionViewData>? = null
         private var memberCanMessage: Boolean? = null
         private var chatroomImageUrl: String? = null
+        private var unreadConversationCount: Int? = null
+        private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
 
         fun id(id: String) = apply { this.id = id }
@@ -128,6 +140,9 @@ class ChatroomViewData private constructor(
         fun cardCreationTime(cardCreationTime: String?) =
             apply { this.cardCreationTime = cardCreationTime }
 
+        fun participantsCount(participantsCount: Int) =
+            apply { this.participantsCount = participantsCount }
+
         fun totalResponseCount(totalResponseCount: Int) =
             apply { this.totalResponseCount = totalResponseCount }
 
@@ -141,12 +156,15 @@ class ChatroomViewData private constructor(
             apply { this.hideBottomLine = hideBottomLine }
 
         fun isTagged(isTagged: Boolean?) = apply { this.isTagged = isTagged }
+        fun isPending(isPending: Boolean?) = apply { this.isPending = isPending }
+        fun isPinned(isPinned: Boolean?) = apply { this.isPinned = isPinned }
         fun deletedBy(deletedBy: String?) = apply { this.deletedBy = deletedBy }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
         fun draftConversation(draftConversation: String?) =
             apply { this.draftConversation = draftConversation }
 
         fun isSecret(isSecret: Boolean?) = apply { this.isSecret = isSecret }
+        fun isDisabled(isDisabled: Boolean?) = apply { this.isDisabled = isDisabled }
         fun secretChatroomParticipants(secretChatroomParticipants: List<Int>?) =
             apply { this.secretChatroomParticipants = secretChatroomParticipants }
 
@@ -162,6 +180,12 @@ class ChatroomViewData private constructor(
 
         fun chatroomImageUrl(chatroomImageUrl: String?) =
             apply { this.chatroomImageUrl = chatroomImageUrl }
+
+        fun unreadConversationCount(unreadConversationCount: Int?) =
+            apply { this.unreadConversationCount = unreadConversationCount }
+
+        fun autoFollowDone(autoFollowDone: Boolean?) =
+            apply { this.autoFollowDone = autoFollowDone }
 
         fun dynamicViewType(dynamicViewType: Int?) =
             apply { this.dynamicViewType = dynamicViewType }
@@ -185,6 +209,7 @@ class ChatroomViewData private constructor(
             showFollowTelescope,
             showFollowAutoTag,
             cardCreationTime,
+            participantsCount,
             totalResponseCount,
             totalAllResponseCount,
             muteStatus,
@@ -192,10 +217,13 @@ class ChatroomViewData private constructor(
             date,
             hideBottomLine,
             isTagged,
+            isPending,
+            isPinned,
             deletedBy,
             updatedAt,
             draftConversation,
             isSecret,
+            isDisabled,
             secretChatroomParticipants,
             secretChatroomLeft,
             unseenCount,
@@ -204,6 +232,8 @@ class ChatroomViewData private constructor(
             reactions,
             memberCanMessage,
             chatroomImageUrl,
+            unreadConversationCount,
+            autoFollowDone,
             dynamicViewType
         )
     }
@@ -227,6 +257,7 @@ class ChatroomViewData private constructor(
             .showFollowTelescope(showFollowTelescope)
             .showFollowAutoTag(showFollowAutoTag)
             .cardCreationTime(cardCreationTime)
+            .participantsCount(participantsCount)
             .totalResponseCount(totalResponseCount)
             .totalAllResponseCount(totalAllResponseCount)
             .muteStatus(muteStatus)
@@ -234,10 +265,13 @@ class ChatroomViewData private constructor(
             .date(date)
             .hideBottomLine(hideBottomLine)
             .isTagged(isTagged)
+            .isPending(isPending)
+            .isPinned(isPinned)
             .deletedBy(deletedBy)
             .updatedAt(updatedAt)
             .draftConversation(draftConversation)
             .isSecret(isSecret)
+            .isDisabled(isDisabled)
             .secretChatroomParticipants(secretChatroomParticipants)
             .secretChatroomLeft(secretChatroomLeft)
             .unseenCount(unseenCount)
@@ -246,6 +280,8 @@ class ChatroomViewData private constructor(
             .reactions(reactions)
             .memberCanMessage(memberCanMessage)
             .chatroomImageUrl(chatroomImageUrl)
+            .unreadConversationCount(unreadConversationCount)
+            .autoFollowDone(autoFollowDone)
             .dynamicViewType(dynamicViewType)
     }
 }
