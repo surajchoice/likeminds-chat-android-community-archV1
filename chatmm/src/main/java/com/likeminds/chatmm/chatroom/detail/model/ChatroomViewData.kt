@@ -39,6 +39,7 @@ class ChatroomViewData private constructor(
     val updatedAt: Long?,
     val draftConversation: String?,
     val isSecret: Boolean?,
+    val isDisabled: Boolean?,
     val secretChatroomParticipants: List<Int>?,
     val secretChatroomLeft: Boolean?,
     val unseenCount: Int?,
@@ -90,6 +91,7 @@ class ChatroomViewData private constructor(
         private var updatedAt: Long? = null
         private var draftConversation: String? = null
         private var isSecret: Boolean? = null
+        private var isDisabled: Boolean? = null
         private var secretChatroomParticipants: List<Int>? = null
         private var secretChatroomLeft: Boolean? = null
         private var unseenCount: Int? = null
@@ -147,6 +149,7 @@ class ChatroomViewData private constructor(
             apply { this.draftConversation = draftConversation }
 
         fun isSecret(isSecret: Boolean?) = apply { this.isSecret = isSecret }
+        fun isDisabled(isDisabled: Boolean?) = apply { this.isDisabled = isDisabled }
         fun secretChatroomParticipants(secretChatroomParticipants: List<Int>?) =
             apply { this.secretChatroomParticipants = secretChatroomParticipants }
 
@@ -196,6 +199,7 @@ class ChatroomViewData private constructor(
             updatedAt,
             draftConversation,
             isSecret,
+            isDisabled,
             secretChatroomParticipants,
             secretChatroomLeft,
             unseenCount,
@@ -238,6 +242,7 @@ class ChatroomViewData private constructor(
             .updatedAt(updatedAt)
             .draftConversation(draftConversation)
             .isSecret(isSecret)
+            .isDisabled(isDisabled)
             .secretChatroomParticipants(secretChatroomParticipants)
             .secretChatroomLeft(secretChatroomLeft)
             .unseenCount(unseenCount)

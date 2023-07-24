@@ -309,8 +309,10 @@ class ChatroomDetailFragment :
 
     private val workersMap by lazy { ArrayList<UUID>() }
 
+    // variable to hold the youtube popup player
     private var inAppVideoPlayerPopup: YouTubeVideoPlayerPopup? = null
 
+    // launcher for gallery picker
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -320,6 +322,7 @@ class ChatroomDetailFragment :
             }
         }
 
+    // launcher for document picker
     private val documentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -329,6 +332,7 @@ class ChatroomDetailFragment :
             }
         }
 
+    // launcher for audio picker
     private val audioLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -348,12 +352,14 @@ class ChatroomDetailFragment :
         return viewModel.isNotAdminInAnnouncementRoom()
     }
 
+    // fetches the first conversation from the adapter
     private fun getTopConversation(): ConversationViewData? {
         return viewModel.getFirstConversationFromAdapter(
             chatroomDetailAdapter.items()
         )
     }
 
+    // fetches the last conversation from the adapter
     private fun getBottomConversation(): ConversationViewData? {
         return viewModel.getLastConversationFromAdapter(
             chatroomDetailAdapter.items()
@@ -440,6 +446,7 @@ class ChatroomDetailFragment :
         )
     }
 
+    // fetches initial data for chatroom
     private fun fetchInitialData() {
         viewModel.getInitialData(requireContext(), chatroomDetailExtras)
     }
@@ -458,7 +465,7 @@ class ChatroomDetailFragment :
         initEnterClick()
         initAttachmentClick()
         initAttachmentsView()
-//        disableAnswerPosting()
+        disableAnswerPosting()
         initReplyView()
         syncChatroom()
         getContentDownloadSettings()
@@ -483,6 +490,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    // initialized the fragment view
     private fun initView() {
         binding.apply {
             initRecyclerView()
@@ -4922,6 +4930,7 @@ class ChatroomDetailFragment :
         reactedToMessage(unicode, conversationId, isConversation)
     }
 
+    // processes the reaction on message request
     private fun reactedToMessage(
         reaction: String,
         conversationId: String,
@@ -4944,6 +4953,7 @@ class ChatroomDetailFragment :
                 .chatroomId(if (isConversation) null else chatroomId)
                 .build()
 
+            // updates the grid
             if (isConversation) {
                 reactionsViewModel.putConversationReaction(conversationId, reactionViewData)
                 updateReactionsGridUI(reactionViewData, conversationId)
@@ -4952,6 +4962,7 @@ class ChatroomDetailFragment :
                 updateChatroomReactionGridUI(reactionViewData)
             }
 
+            // follows the chatroom in case it is not followed already
             if (getChatroomViewData()?.followStatus == false) {
                 removeFollowView()
                 viewModel.followChatroom(
@@ -4965,6 +4976,8 @@ class ChatroomDetailFragment :
             } else {
                 ""
             }
+
+            // sends reaction added analytics event
             reactionsViewModel.sendReactionAddedEvent(
                 reaction,
                 LMAnalytics.Source.MESSAGE_REACTIONS_FROM_LONG_PRESS,
@@ -5018,6 +5031,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    // updates the chatroom reaction grid based on addition/removal of reaction
     private fun updateChatroomReactionGridUI(reactionViewData: ReactionViewData?) {
         val chatroomIndex = getIndexOfChatroom() ?: return
         val chatroom = getChatroomViewData()
@@ -5313,14 +5327,13 @@ class ChatroomDetailFragment :
         } else {
             val chatroomViewData = getChatroomViewData() ?: return
             onScreenChanged()
-            // todo: in participants
-//            val extras = ViewParticipantsExtra.Builder()
-//                .chatroomId(chatroomViewData.id)
-//                .communityId(chatroomViewData.communityId ?: "")
-//                .isSecretChatroom(chatroomViewData.isSecret ?: false)
-//                .chatroomName(chatroomViewData.header ?: "")
-//                .build()
-//            ViewParticipantsActivity.start(requireContext(), extras)
+            val extras = ViewParticipantsExtras.Builder()
+                .chatroomId(chatroomViewData.id)
+                .communityId(chatroomViewData.communityId ?: "")
+                .isSecretChatroom(chatroomViewData.isSecret ?: false)
+                .chatroomName(chatroomViewData.header ?: "")
+                .build()
+            ViewParticipantsActivity.start(requireContext(), extras)
         }
     }
 

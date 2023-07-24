@@ -153,7 +153,7 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launchIO {
             val request = FollowChatroomRequest.Builder()
                 .chatroomId(exploreViewData.id)
-                .uuid(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .value(follow)
                 .build()
 
