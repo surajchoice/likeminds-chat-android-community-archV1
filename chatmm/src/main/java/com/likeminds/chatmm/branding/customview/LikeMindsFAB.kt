@@ -4,15 +4,16 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
 
 class LikeMindsFAB : FloatingActionButton {
     constructor(context: Context) : super(context) {
-        initiate()
+        initiate(null)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initiate()
+        initiate(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
@@ -20,12 +21,18 @@ class LikeMindsFAB : FloatingActionButton {
         attrs,
         defStyle
     ) {
-        initiate()
+        initiate(attrs)
     }
 
-    private fun initiate() {
+    private fun initiate(attrs: AttributeSet?) {
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsFAB)
+        val fabType = array.getString(R.styleable.LikeMindsFAB_fab_type)
+
         // color
-        this.backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
-    }
+        if (!fabType.equals("normal")) {
+            this.backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+        }
 
+        array.recycle()
+    }
 }

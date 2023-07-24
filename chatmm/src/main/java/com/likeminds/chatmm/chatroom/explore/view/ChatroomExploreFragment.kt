@@ -96,6 +96,7 @@ class ChatroomExploreFragment :
         fetchExploreChatrooms()
         initToolbar()
         initExploreRecyclerView()
+        initClickListeners()
     }
 
     private fun initClickListeners() {

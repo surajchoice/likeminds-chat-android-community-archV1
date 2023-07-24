@@ -34,11 +34,8 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
-import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
-import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.poll.model.*
-import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.*
+import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -1356,7 +1353,11 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
         sendConversationUpdatesToUI(conversations.map {
-            it.toBuilder().deletedBy(userPreferences.getUUID()).build()
+            Log.d("TAG", "postConversationsDeleted: ${currentMemberFromDb?.userUniqueId}")
+            it.toBuilder()
+                .deletedBy(userPreferences.getMemberId())
+                .deletedByMember(currentMemberFromDb)
+                .build()
         })
     }
 

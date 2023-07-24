@@ -39,6 +39,7 @@ class ConversationViewData private constructor(
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
     val isExpanded: Boolean,
+    val deletedByMember: MemberViewData?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -178,6 +179,7 @@ class ConversationViewData private constructor(
         private var isLastItem: Boolean? = null
         private var pollInfoData: PollInfoData? = null
         private var isExpanded: Boolean = false
+        private var deletedByMember: MemberViewData? = null
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -227,6 +229,8 @@ class ConversationViewData private constructor(
         fun isLastItem(isLastItem: Boolean?) = apply { this.isLastItem = isLastItem }
         fun pollInfoData(pollInfoData: PollInfoData?) = apply { this.pollInfoData = pollInfoData }
         fun isExpanded(isExpanded: Boolean) = apply { this.isExpanded = isExpanded }
+        fun deletedByMember(deletedByMember: MemberViewData?) =
+            apply { this.deletedByMember = deletedByMember }
 
         fun build() = ConversationViewData(
             id,
@@ -257,6 +261,7 @@ class ConversationViewData private constructor(
             isLastItem,
             pollInfoData,
             isExpanded,
+            deletedByMember
         )
     }
 
@@ -289,5 +294,6 @@ class ConversationViewData private constructor(
             .isLastItem(isLastItem)
             .pollInfoData(pollInfoData)
             .isExpanded(isExpanded)
+            .deletedByMember(deletedByMember)
     }
 }

@@ -154,6 +154,7 @@
             app:backgroundTint="@color/white"
             app:elevation="2dp"
             app:fabSize="mini"
+            app:fab_type="normal"
             app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="ContentDescription"
@@ -294,10 +295,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="top"
-            app:constraint_referenced_ids="input_box, textViewRestrictedMessage" />
+            app:constraint_referenced_ids="input_box, tv_restricted_message" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-            android:id="@+id/textViewRestrictedMessage"
+            android:id="@+id/tv_restricted_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"

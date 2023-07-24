@@ -67,12 +67,10 @@ internal class ChatroomExploreViewDataBinder(
 
             //for participants count
             val participantsCount = data.participantsCount
-            tvParticipant.isVisible = participantsCount != 0
             tvParticipant.text = participantsCount.toString()
 
             // for conversation count
             val totalResponseCount = data.totalResponseCount
-            tvResponses.isVisible = totalResponseCount != 0
             tvResponses.text = totalResponseCount.toString()
 
             //for title

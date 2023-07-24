@@ -98,6 +98,7 @@ object ViewDataConverter {
             .isPinned(chatroom.isPinned)
             .unreadConversationCount(chatroom.unreadConversationCount)
             .autoFollowDone(chatroom.autoFollowDone)
+            .deletedByMember(convertMember(chatroom.deletedByMember))
             .build()
     }
 
@@ -138,6 +139,7 @@ object ViewDataConverter {
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
             .deletedBy(chatroom.deletedBy)
+            .deletedByMember(convertMember(chatroom.deletedByMember))
             .updatedAt(chatroom.updatedAt)
             .isSecret(chatroom.isSecret)
             .unseenCount(chatroom.unseenCount)
@@ -220,6 +222,7 @@ object ViewDataConverter {
             .pollInfoData(convertPollInfoData(conversation))
             .lastSeen(conversation.lastSeen)
             .reactions(convertConversationReactions(conversation.reactions, conversation.id))
+            .deletedByMember(convertMember(conversation.deletedByMember))
             .build()
     }
 
@@ -763,6 +766,7 @@ object ViewDataConverter {
             .isTagged(searchChatroom.isTagged)
             .isPending(searchChatroom.chatroom.isPending)
             .deletedBy(searchChatroom.chatroom.deletedBy)
+            .deletedByMember(convertMember(searchChatroom.chatroom.deletedByMember))
             .updatedAt(searchChatroom.updatedAt)
             .isSecret(searchChatroom.chatroom.isSecret)
             .isDisabled(searchChatroom.isDisabled)
@@ -836,10 +840,11 @@ object ViewDataConverter {
             .createdAt(searchConversation.createdAt.toString())
             .communityId(searchConversation.community.id)
             .memberViewData(member)
-//            .createdAt(searchConversation.chatroom.createdAt)
+            .createdAt(searchConversation.chatroom.createdAt.toString())
             .answer(searchConversation.answer)
             .date(searchConversation.chatroom.date)
             .deletedBy(searchConversation.chatroom.deletedBy)
+            .deletedByMember(convertMember(searchConversation.chatroom.deletedByMember))
             .build()
     }
 

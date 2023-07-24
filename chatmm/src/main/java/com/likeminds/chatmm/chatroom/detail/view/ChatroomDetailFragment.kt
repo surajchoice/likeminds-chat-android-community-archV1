@@ -1239,52 +1239,52 @@ class ChatroomDetailFragment :
         binding.apply {
             if (!viewModel.hasMemberRespondRight()) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text =
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text =
                     getString(R.string.the_community_managers_have_restricted_you_from_responding_here)
                 return
             }
             if (!viewModel.isAdminMember() && viewModel.isAnnouncementChatroom()) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text =
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text =
                     getString(R.string.only_community_managers_can_respond)
-                textViewRestrictedMessage.gravity = Gravity.CENTER
+                tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
             if (!viewModel.isAdminMember() && viewModel.canMembersCanMessage() == false) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text =
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text =
                     getString(R.string.only_community_managers_can_respond)
-                textViewRestrictedMessage.gravity = Gravity.CENTER
+                tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
             if (isSecretChatRoom() && getChatRoom()?.followStatus != true) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text =
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text =
                     getString(R.string.secret_chatroom_restricted_message)
                 return
             }
             if (lastConversationState == DM_CM_BECOMES_MEMBER_DISABLE) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text =
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text =
                     getString(R.string.direct_messages_community_manager_removed)
                 return
             }
             if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
                 hideAllChatBoxViews()
-                textViewRestrictedMessage.visibility = View.VISIBLE
-                textViewRestrictedMessage.text = getString(R.string.direct_messaging_member_left)
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text = getString(R.string.direct_messaging_member_left)
                 return
             }
             if (type == null) {
                 return
             }
             inputBox.clChatContainer.visibility = View.VISIBLE
-            textViewRestrictedMessage.visibility = View.GONE
+            tvRestrictedMessage.visibility = View.GONE
             when (type) {
                 CHAT_BOX_NORMAL -> {
                     if (!memberTagging.isShowing) {

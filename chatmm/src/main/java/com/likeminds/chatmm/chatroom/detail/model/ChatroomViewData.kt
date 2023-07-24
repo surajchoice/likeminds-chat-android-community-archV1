@@ -54,6 +54,7 @@ class ChatroomViewData private constructor(
     val unreadConversationCount: Int?,
     val autoFollowDone: Boolean?,
     val dynamicViewType: Int?,
+    val deletedByMember: MemberViewData?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_HOME_CHAT_ROOM
@@ -111,6 +112,7 @@ class ChatroomViewData private constructor(
         private var unreadConversationCount: Int? = null
         private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
+        private var deletedByMember: MemberViewData? = null
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -190,6 +192,9 @@ class ChatroomViewData private constructor(
         fun dynamicViewType(dynamicViewType: Int?) =
             apply { this.dynamicViewType = dynamicViewType }
 
+        fun deletedByMember(deletedByMember: MemberViewData?) =
+            apply { this.deletedByMember = deletedByMember }
+
         fun build() = ChatroomViewData(
             id,
             memberViewData,
@@ -234,7 +239,8 @@ class ChatroomViewData private constructor(
             chatroomImageUrl,
             unreadConversationCount,
             autoFollowDone,
-            dynamicViewType
+            dynamicViewType,
+            deletedByMember
         )
     }
 
@@ -283,5 +289,6 @@ class ChatroomViewData private constructor(
             .unreadConversationCount(unreadConversationCount)
             .autoFollowDone(autoFollowDone)
             .dynamicViewType(dynamicViewType)
+            .deletedByMember(deletedByMember)
     }
 }
