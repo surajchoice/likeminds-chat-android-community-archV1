@@ -10,6 +10,7 @@ import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.adapter.PollResultTabFragmentAdapter
 import com.likeminds.chatmm.polls.adapter.PollResultTabFragmentInterface
 import com.likeminds.chatmm.polls.viewmodel.PollResultViewModel
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -60,18 +61,17 @@ class PollResultTabFragment :
             mAdapter.replace(it)
         }
 
-        // todo:
-//        viewModel.memberStateData.observe(viewLifecycleOwner) {
-//            if (it != null) {
-//                viewModel.fetchPollParticipantsData(
-//                    extra.pollViewData?.id,
-//                    extra.communityId,
-//                    conversationId = extra.conversationId
-//                )
-//            } else {
-//                ViewUtils.showSomethingWentWrongToast(requireContext())
-//            }
-//        }
+        viewModel.memberState.observe(viewLifecycleOwner) {
+            if (it != null) {
+                viewModel.fetchPollParticipantsData(
+                    extra.pollViewData?.id,
+                    extra.communityId,
+                    conversationId = extra.conversationId
+                )
+            } else {
+                ViewUtils.showSomethingWentWrongToast(requireContext())
+            }
+        }
     }
 
     override fun isMemberOfCommunity(): Boolean {
@@ -116,8 +116,7 @@ class PollResultTabFragment :
         if (extra.pollViewData?.noVotes!! > 0) {
             binding.rvPollUsers.show()
             binding.layoutNoResponse.clLayout.hide()
-            // todo:
-//            viewModel.fetchMemberState()
+            viewModel.fetchMemberState()
         } else {
             binding.rvPollUsers.hide()
             binding.layoutNoResponse.clLayout.show()

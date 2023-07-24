@@ -1,10 +1,8 @@
 package com.likeminds.chatmm.polls.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.likeminds.chatmm.LMAnalytics
+import com.likeminds.chatmm.member.model.MemberState
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -19,27 +17,23 @@ class PollResultViewModel @Inject constructor() : ViewModel() {
 
     private val lmChatClient = LMChatClient.getInstance()
 
-    // todo:
-//    val memberStateData by lazy { MutableLiveData<MemberStateData?>() }
+    private val _memberState by lazy { MutableLiveData<Int?>() }
+    val memberState: LiveData<Int?> = _memberState
 
-    val _memberList by lazy { MutableLiveData<List<BaseViewType>>() }
+    private val _memberList by lazy { MutableLiveData<List<BaseViewType>>() }
     val memberList: LiveData<List<BaseViewType>> = _memberList
 
-    val _pollInfoData by lazy { MutableLiveData<PollInfoData?>() }
+    private val _pollInfoData by lazy { MutableLiveData<PollInfoData?>() }
     val pollInfoData: LiveData<PollInfoData?> = _pollInfoData
 
     val chatroomId by lazy { MutableLiveData<String?>() }
 
     fun isAdmin(): Boolean {
-        // TODO:
-        return false
-//        return MemberState.isAdmin(memberStateData.value?.state)
+        return MemberState.isAdmin(_memberState.value)
     }
 
     fun isMember(): Boolean {
-        // TODO:
-        return true
-//        return MemberState.isMember(memberStateData.value?.state)
+        return MemberState.isMember(_memberState.value)
     }
 
     fun getPollInfoDataFromConversation(conversationId: String?) {
@@ -57,20 +51,16 @@ class PollResultViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // todo:
-//    fun fetchMemberState() {
-//        viewModelScope.launchIO {
-//            when (val response = profileRepository.fetchMemberState()) {
-//                is NetworkResponse.Error -> {
-//                    memberStateData.postValue(null)
-//                }
-//
-//                is NetworkResponse.Success -> {
-//                    memberStateData.postValue(ViewDataConverter.convertMemberState(response.body.data))
-//                }
-//            }
-//        }
-//    }
+    fun fetchMemberState() {
+        viewModelScope.launchIO {
+            val response = lmChatClient.getMemberState()
+            if (response.success) {
+                _memberState.postValue(response.data?.state)
+            } else {
+                _memberState.postValue(null)
+            }
+        }
+    }
 
     fun fetchPollParticipantsData(
         pollId: String?,

@@ -244,6 +244,7 @@ object ViewDataConverter {
             .sdkClientInfo(convertSDKClientInfo(member.sdkClientInfo))
             .uuid(member.uuid)
             .isOwner(member.isOwner)
+            .memberSince(member.memberSince)
             .build()
     }
 

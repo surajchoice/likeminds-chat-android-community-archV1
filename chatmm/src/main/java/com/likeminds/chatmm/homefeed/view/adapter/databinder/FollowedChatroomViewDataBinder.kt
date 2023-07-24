@@ -107,16 +107,6 @@ class FollowedChatroomViewDataBinder(
             val lastConversation = data.lastConversation
             if (lastConversation?.deletedBy == null) {
                 if (lastConversation != null) {
-                    //Last conversation's chatroom preview was deleted
-                    tvLastConversationMemberName.visibility = View.GONE
-                    tvLastConversationAttachment.visibility = View.GONE
-                    tvLastConversation.setTypeface(
-                        tvLastConversation.typeface,
-                        Typeface.ITALIC
-                    )
-                    tvLastConversation.text =
-                        root.context.getString(R.string.chatroom_was_deleted)
-
                     //If last conversation exists and it is not deleted
                     tvLastConversation.setTypeface(
                         tvLastConversation.typeface,
