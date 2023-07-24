@@ -49,7 +49,7 @@ object MemberTaggingUtil {
                 ViewDataConverter.convertMemberTag(memberTag)
             }
 
-//        //add to result list
+        //add to result list
         listOfGroupAndMember.addAll(chatroomParticipantsViewData)
 
         return listOfGroupAndMember

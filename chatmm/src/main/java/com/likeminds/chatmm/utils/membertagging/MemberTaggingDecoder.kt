@@ -187,7 +187,9 @@ object MemberTaggingDecoder {
     fun getMemberUUIDFromRegex(text: String?): String? {
         val uri = getRouteFromRegex(text) ?: return null
         val pathSegments = uri.pathSegments
-        if ((uri.host == "member_profile" || uri.host == "member") && pathSegments.size == 1)
+        if ((uri.host == "member_profile" || uri.host == "member"
+                    || uri.host == "user_profile") && pathSegments.size == 1
+        )
             return pathSegments[0]
         return null
     }

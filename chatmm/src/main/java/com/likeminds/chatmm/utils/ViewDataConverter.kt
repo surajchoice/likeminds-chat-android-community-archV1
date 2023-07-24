@@ -474,7 +474,7 @@ object ViewDataConverter {
             .isGuest(member.isGuest)
             .userUniqueId(member.userUniqueId)
             .placeHolder(nameDrawable.first)
-            .sdkClientInfo(convertSDKClientInfo(member.sdkClientInfo))
+            .uuid(member.sdkClientInfo?.uuid ?: "")
             .build()
     }
 

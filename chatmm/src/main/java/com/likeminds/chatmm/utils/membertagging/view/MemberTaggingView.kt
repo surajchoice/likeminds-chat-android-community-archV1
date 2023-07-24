@@ -148,13 +148,13 @@ class MemberTaggingView(
 
     private fun getMemberFromSelectedList(uuid: String): TagViewData? {
         return selectedMembers.firstOrNull { member ->
-            member.sdkClientInfo.uuid == uuid
+            member.uuid == uuid
         }
     }
 
     private fun getMember(uuid: String): TagViewData? {
         return communityMembersAndGroups.firstOrNull { member ->
-            member.sdkClientInfo.uuid == uuid
+            member.uuid == uuid
         }
     }
 
@@ -163,7 +163,7 @@ class MemberTaggingView(
             memberTaggingViewListener?.onShow()
             val lastItem = communityMembersAndGroups.lastOrNull()
             mAdapter.setMembers(communityMembersAndGroups.map {
-                if (it.sdkClientInfo.uuid == lastItem?.sdkClientInfo?.uuid) {
+                if (it.uuid == lastItem?.uuid) {
                     //if last item hide bottom line in item view
                     it.toBuilder().isLastItem(true).build()
                 } else {
@@ -204,7 +204,7 @@ class MemberTaggingView(
             user.tag
         } else {
             //create regex from name and id
-            "<<${user.name}|route://member/${user.sdkClientInfo.uuid}>>"
+            "<<${user.name}|route://member/${user.uuid}>>"
         }
 
         //set span
@@ -214,7 +214,7 @@ class MemberTaggingView(
                 regex
             ), 0, memberName.length, 0
         )
-        val selectedMember = getMemberFromSelectedList(user.sdkClientInfo.uuid)
+        val selectedMember = getMemberFromSelectedList(user.uuid)
         if (selectedMember == null) {
             selectedMembers.add(user)
         }
@@ -233,7 +233,7 @@ class MemberTaggingView(
         val firstMember = MemberTaggingDecoder.decodeAndReturnAllTaggedMembers(text).firstOrNull()
             ?: return null
         val member = getMember(firstMember.first) ?: return null
-        if (getMemberFromSelectedList(member.sdkClientInfo.uuid) == null) {
+        if (getMemberFromSelectedList(member.uuid) == null) {
             selectedMembers.add(member)
         }
         return member.name
