@@ -249,6 +249,7 @@ class MediaHorizontalListFragment :
             .mediaScreenType(MEDIA_VIDEO_PLAY_SCREEN)
             .chatroomId(mediaExtras.chatroomId)
             .conversationId(mediaExtras.conversationId)
+            .isSecretChatroom(mediaExtras.isSecretChatroom)
             .medias(
                 listOf(
                     MediaSwipeViewData.Builder()

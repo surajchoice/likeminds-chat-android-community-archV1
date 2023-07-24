@@ -638,6 +638,7 @@ class ChatroomDetailFragment :
                     .chatroomId(chatroomId)
                     .communityId(communityId?.toIntOrNull())
                     .text(text)
+                    .isSecretChatroom(getChatroomViewData()?.isSecret)
                     .build()
 
                 val intent = MediaActivity.getIntent(
@@ -3201,6 +3202,7 @@ class ChatroomDetailFragment :
             .communityId(communityId?.toIntOrNull())
             .text(text)
             .isExternallyShared(isExternallyShared)
+            .isSecretChatroom(getChatroomViewData()?.isSecret)
             .build()
         if (attachments.isNotEmpty()) {
             val intent =
@@ -3253,6 +3255,7 @@ class ChatroomDetailFragment :
                 .searchKey(chatroomDetailExtras.searchKey)
                 .text(text)
                 .isExternallyShared(isExternallyShared)
+                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .build()
             if (attachments.isNotEmpty()) {
                 val intent = MediaActivity.getIntent(
@@ -3290,6 +3293,7 @@ class ChatroomDetailFragment :
             .chatroomId(chatroomId)
             .communityId(communityId?.toIntOrNull())
             .text(text)
+            .isSecretChatroom(getChatroomViewData()?.isSecret)
             .build()
         val intent =
             MediaActivity.getIntent(requireContext(), mediaExtras, activity?.intent?.clipData)
@@ -3328,6 +3332,7 @@ class ChatroomDetailFragment :
                 .communityId(communityId?.toIntOrNull())
                 .text(text)
                 .isExternallyShared(isExternallyShared)
+                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .build()
 
             val intent =

@@ -94,6 +94,11 @@ object ViewDataConverter {
             })
             .memberCanMessage(chatroom.memberCanMessage)
             .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .participantsCount(chatroom.participantsCount?.toInt() ?: 0)
+            .isPending(chatroom.isPending)
+            .isPinned(chatroom.isPinned)
+            .unreadConversationCount(chatroom.unreadConversationCount)
+            .autoFollowDone(chatroom.autoFollowDone)
             .build()
     }
 
@@ -235,6 +240,7 @@ object ViewDataConverter {
             .customTitle(member.customTitle)
             .communityId(member.communityId.toString())
             .isGuest(member.isGuest)
+            .isOwner(member.isOwner)
             .build()
     }
 
@@ -290,6 +296,7 @@ object ViewDataConverter {
             .isGuest(memberStateResponse.isGuest)
             .name(memberStateResponse.name)
             .updatedAt(memberStateResponse.updatedAt)
+            .isOwner(memberStateResponse.isOwner)
             .build()
     }
 

@@ -65,5 +65,4 @@ internal object CustomTabHelper {
             ViewUtils.showShortToast(context, "No app to share the link")
         }
     }
-
 }
