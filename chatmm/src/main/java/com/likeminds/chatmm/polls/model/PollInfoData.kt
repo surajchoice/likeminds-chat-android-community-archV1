@@ -14,7 +14,7 @@ class PollInfoData private constructor(
     val multipleSelectNum: Int?,
     val multipleSelectState: Int?,
     val pollViewDataList: List<PollViewData>?,
-    val pollAnswerText: String?,
+    private val pollAnswerText: String?,
     val isPollSubmitted: Boolean?,
     val toShowResult: Boolean?
 ) : Parcelable {

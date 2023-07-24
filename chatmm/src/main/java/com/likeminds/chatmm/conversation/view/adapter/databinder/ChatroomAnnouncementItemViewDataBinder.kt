@@ -1,8 +1,6 @@
-package com.likeminds.chatmm.conversation.model
+package com.likeminds.chatmm.conversation.view.adapter.databinder
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil

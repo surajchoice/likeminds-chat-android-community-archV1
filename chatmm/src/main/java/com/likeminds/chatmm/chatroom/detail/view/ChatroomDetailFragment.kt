@@ -637,8 +637,8 @@ class ChatroomDetailFragment :
                     .mediaScreenType(MEDIA_GIF_SEND_SCREEN)
                     .chatroomId(chatroomId)
                     .communityId(communityId?.toIntOrNull())
-                    .isSecretChatroom(getChatroomViewData()?.isSecret)
                     .text(text)
+                    .isSecretChatroom(getChatroomViewData()?.isSecret)
                     .build()
 
                 val intent = MediaActivity.getIntent(
@@ -3254,8 +3254,8 @@ class ChatroomDetailFragment :
                 .chatroomType(getChatroomViewData()?.getTypeName())
                 .searchKey(chatroomDetailExtras.searchKey)
                 .text(text)
-                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .isExternallyShared(isExternallyShared)
+                .isSecretChatroom(getChatroomViewData()?.isSecret)
                 .build()
             if (attachments.isNotEmpty()) {
                 val intent = MediaActivity.getIntent(
@@ -3293,6 +3293,7 @@ class ChatroomDetailFragment :
             .chatroomId(chatroomId)
             .communityId(communityId?.toIntOrNull())
             .text(text)
+            .isSecretChatroom(getChatroomViewData()?.isSecret)
             .build()
         val intent =
             MediaActivity.getIntent(requireContext(), mediaExtras, activity?.intent?.clipData)
@@ -4369,14 +4370,10 @@ class ChatroomDetailFragment :
         chatroomResultExtras = chatroomResultExtras?.also {
             chatroomResultExtras?.toBuilder()
                 ?.chatroomId(chatroomId)
-                ?.takeActionOnReportedMessage(true)
-                ?.reportedConversationId(reportedConversationId)
                 ?.build()
         } ?: run {
             ChatroomDetailResultExtras.Builder()
                 .chatroomId(chatroomId)
-                .takeActionOnReportedMessage(true)
-                .reportedConversationId(reportedConversationId)
                 .build()
         }
         setChatroomDetailActivityResult()

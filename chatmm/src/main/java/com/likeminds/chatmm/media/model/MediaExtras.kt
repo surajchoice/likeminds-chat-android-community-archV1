@@ -14,7 +14,6 @@ class MediaExtras private constructor(
     val attachments: List<AttachmentViewData>?,
     val singleUriData: SingleUriData?,
     val mediaUris: ArrayList<SingleUriData>?,
-    val selectedMediaPosition: Int?,
     val conversation: String?,
     val text: String?,
     val position: Int?,
@@ -40,7 +39,6 @@ class MediaExtras private constructor(
         private var attachments: List<AttachmentViewData>? = null
         private var singleUriData: SingleUriData? = null
         private var mediaUris: ArrayList<SingleUriData>? = null
-        private var selectedMediaPosition: Int? = null
         private var conversation: String? = null
         private var text: String? = null
         private var position: Int? = null
@@ -70,8 +68,6 @@ class MediaExtras private constructor(
             apply { this.singleUriData = singleUriData }
 
         fun mediaUris(mediaUris: ArrayList<SingleUriData>?) = apply { this.mediaUris = mediaUris }
-        fun selectedMediaPosition(selectedMediaPosition: Int?) =
-            apply { this.selectedMediaPosition = selectedMediaPosition }
 
         fun conversation(conversation: String?) = apply { this.conversation = conversation }
         fun text(text: String?) = apply { this.text = text }
@@ -100,7 +96,6 @@ class MediaExtras private constructor(
             attachments,
             singleUriData,
             mediaUris,
-            selectedMediaPosition,
             conversation,
             text,
             position,
@@ -127,7 +122,6 @@ class MediaExtras private constructor(
             .attachments(attachments)
             .singleUriData(singleUriData)
             .mediaUris(mediaUris)
-            .selectedMediaPosition(selectedMediaPosition)
             .conversation(conversation)
             .text(text)
             .position(position)

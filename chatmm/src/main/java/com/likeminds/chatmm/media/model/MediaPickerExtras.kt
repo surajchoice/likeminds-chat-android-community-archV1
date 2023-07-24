@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 class MediaPickerExtras private constructor(
     val senderName: String?,
     @InternalMediaType val mediaTypes: List<String>,
-    val allowMultipleSelect: Boolean,
+    val allowMultipleSelect: Boolean
 ) : Parcelable {
 
     class Builder {

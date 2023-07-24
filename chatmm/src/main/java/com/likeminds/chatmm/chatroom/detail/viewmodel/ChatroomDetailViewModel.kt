@@ -408,9 +408,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 ChatroomUtil.getChatroomViewType(chatroom)
             ) ?: return@launchIO
             chatroomDetail = ChatroomDetailViewData.Builder()
-                .isMemberNotPartOfCommunity(currentMemberFromDb == null)
                 .chatroom(chatroomViewData)
-                .currentMember(currentMemberFromDb)
                 .build()
 
             _canMemberRespond.postValue(true)
@@ -1204,7 +1202,6 @@ class ChatroomDetailViewModel @Inject constructor(
             val data = getChatroomActionsResponse.data ?: return@launchIO
             chatroomDetail = chatroomDetail.toBuilder()
                 .actions(ViewDataConverter.convertChatroomActions(data.chatroomActions))
-                .placeholderText(data.placeHolder)
                 .participantCount(data.participantCount)
                 .canAccessSecretChatRoom(data.canAccessSecretChatroom)
                 .build()
@@ -2119,7 +2116,7 @@ class ChatroomDetailViewModel @Inject constructor(
                     LMAnalytics.Keys.COMMUNITY_ID to chatroomViewData.communityId,
                     LMAnalytics.Keys.SOURCE to source,
                     "member_state" to MemberState.getMemberState(
-                        chatroomViewData.state
+                        chatroomViewData.memberState
                     )
                 )
             )

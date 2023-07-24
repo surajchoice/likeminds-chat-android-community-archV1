@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MediaHeaderViewData private constructor(
-    var title: String,
+    val title: String
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = ITEM_MEDIA_PICKER_HEADER

@@ -78,10 +78,8 @@ object ViewDataConverter {
             .dynamicViewType(viewType)
             .muteStatus(chatroom.muteStatus ?: false)
             .followStatus(chatroom.followStatus ?: false)
-            .hasBeenNamed(chatroom.hasBeenNamed)
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
-            .isPending(chatroom.isPending)
             .deletedBy(chatroom.deletedBy)
             .updatedAt(chatroom.updatedAt)
             .draftConversation(chatroom.draftConversation)
@@ -90,15 +88,17 @@ object ViewDataConverter {
             .secretChatroomLeft(chatroom.secretChatroomLeft)
             .unseenCount(chatroom.unseenCount)
             .isEdited(chatroom.isEdited)
-            .autoFollowDone(chatroom.autoFollowDone)
             .topic(convertConversation(chatroom.topic))
             .reactions(chatroom.reactions?.mapNotNull { reaction ->
                 convertChatroomReactions(reaction, chatroom.id)
             })
-            .access(chatroom.access)
             .memberCanMessage(chatroom.memberCanMessage)
-            .unreadConversationCount(chatroom.unreadConversationCount)
             .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .participantsCount(chatroom.participantsCount?.toInt() ?: 0)
+            .isPending(chatroom.isPending)
+            .isPinned(chatroom.isPinned)
+            .unreadConversationCount(chatroom.unreadConversationCount)
+            .autoFollowDone(chatroom.autoFollowDone)
             .build()
     }
 
@@ -138,7 +138,6 @@ object ViewDataConverter {
             .followStatus(chatroom.followStatus ?: false)
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
-            .isPending(chatroom.isPending)
             .deletedBy(chatroom.deletedBy)
             .updatedAt(chatroom.updatedAt)
             .isSecret(chatroom.isSecret)
@@ -163,7 +162,6 @@ object ViewDataConverter {
             .followStatus(chatroom.followStatus ?: false)
             .participantsCount(chatroom.participantsCount?.toInt() ?: 0)
             .totalResponseCount(chatroom.totalResponseCount)
-            .sortIndex(sortIndex)
             .id(chatroom.id)
             .header(chatroom.header ?: "")
             .title(chatroom.title)
@@ -241,8 +239,8 @@ object ViewDataConverter {
             .customClickText(member.customClickText)
             .customTitle(member.customTitle)
             .communityId(member.communityId.toString())
-            .isOwner(member.isOwner)
             .isGuest(member.isGuest)
+            .isOwner(member.isOwner)
             .build()
     }
 
@@ -275,9 +273,6 @@ object ViewDataConverter {
         return MemberStateViewData.Builder()
             .state(memberStateResponse.state)
             .memberViewData(convertMemberFromMemberState(memberStateResponse))
-            .managerRights(memberStateResponse.managerRights?.mapNotNull {
-                convertManagementRights(it)
-            })
             .memberRights(memberStateResponse.memberRights.mapNotNull {
                 convertManagementRights(it)
             })
@@ -299,9 +294,9 @@ object ViewDataConverter {
             .customTitle(memberStateResponse.customTitle)
             .imageUrl(memberStateResponse.imageUrl)
             .isGuest(memberStateResponse.isGuest)
-            .isOwner(memberStateResponse.isOwner)
             .name(memberStateResponse.name)
             .updatedAt(memberStateResponse.updatedAt)
+            .isOwner(memberStateResponse.isOwner)
             .build()
     }
 

@@ -7,9 +7,7 @@ import kotlinx.parcelize.Parcelize
 class ChatroomDetailExtras private constructor(
     val chatroomId: String,
     val fromNotification: Boolean,
-    val chatroomViewData: ChatroomViewData?,
     val communityId: String?,
-    val showNewChatInfo: Boolean?,
     val source: String?,
     val reportedConversationId: String?,
     val conversationId: String?,
@@ -22,16 +20,13 @@ class ChatroomDetailExtras private constructor(
     val loadFromTop: Boolean?,
     val loadingAfterSync: Boolean,
     val searchKey: String?,
-    val openAttachmentsScreen: Boolean,
     val sourceLinkOrRoute: String?,
     val cohortId: String?
 ) : Parcelable {
     class Builder {
         private var chatroomId: String = ""
         private var fromNotification: Boolean = false
-        private var chatroomViewData: ChatroomViewData? = null
         private var communityId: String? = null
-        private var showNewChatInfo: Boolean? = null
         private var source: String? = null
         private var reportedConversationId: String? = null
         private var conversationId: String? = null
@@ -44,7 +39,6 @@ class ChatroomDetailExtras private constructor(
         private var loadFromTop: Boolean? = false
         private var loadingAfterSync: Boolean = false
         private var searchKey: String? = null
-        private var openAttachmentsScreen: Boolean = false
         private var sourceLinkOrRoute: String? = null
         private var cohortId: String? = null
 
@@ -52,12 +46,7 @@ class ChatroomDetailExtras private constructor(
         fun fromNotification(fromNotification: Boolean) =
             apply { this.fromNotification = fromNotification }
 
-        fun chatroomViewData(chatroomViewData: ChatroomViewData?) =
-            apply { this.chatroomViewData = chatroomViewData }
-
         fun communityId(communityId: String?) = apply { this.communityId = communityId }
-        fun showNewChatInfo(showNewChatInfo: Boolean?) =
-            apply { this.showNewChatInfo = showNewChatInfo }
 
         fun source(source: String?) = apply { this.source = source }
         fun reportedConversationId(reportedConversationId: String?) =
@@ -89,8 +78,6 @@ class ChatroomDetailExtras private constructor(
             apply { this.loadingAfterSync = loadingAfterSync }
 
         fun searchKey(searchKey: String?) = apply { this.searchKey = searchKey }
-        fun openAttachmentsScreen(openAttachmentsScreen: Boolean) =
-            apply { this.openAttachmentsScreen = openAttachmentsScreen }
 
         fun sourceLinkOrRoute(sourceLinkOrRoute: String?) =
             apply { this.sourceLinkOrRoute = sourceLinkOrRoute }
@@ -100,9 +87,7 @@ class ChatroomDetailExtras private constructor(
         fun build() = ChatroomDetailExtras(
             chatroomId,
             fromNotification,
-            chatroomViewData,
             communityId,
-            showNewChatInfo,
             source,
             reportedConversationId,
             conversationId,
@@ -115,7 +100,6 @@ class ChatroomDetailExtras private constructor(
             loadFromTop,
             loadingAfterSync,
             searchKey,
-            openAttachmentsScreen,
             sourceLinkOrRoute,
             cohortId
         )
@@ -124,9 +108,7 @@ class ChatroomDetailExtras private constructor(
     fun toBuilder(): Builder {
         return Builder().chatroomId(chatroomId)
             .fromNotification(fromNotification)
-            .chatroomViewData(chatroomViewData)
             .communityId(communityId)
-            .showNewChatInfo(showNewChatInfo)
             .source(source)
             .reportedConversationId(reportedConversationId)
             .conversationId(conversationId)
@@ -139,7 +121,6 @@ class ChatroomDetailExtras private constructor(
             .loadFromTop(loadFromTop)
             .loadingAfterSync(loadingAfterSync)
             .searchKey(searchKey)
-            .openAttachmentsScreen(openAttachmentsScreen)
             .sourceLinkOrRoute(sourceLinkOrRoute)
             .cohortId(cohortId)
     }

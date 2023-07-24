@@ -2,16 +2,11 @@ package com.likeminds.chatmm.member.model
 
 import androidx.annotation.IntDef
 
-// todo: remove unused keys
 const val STATE_NOTHING = 0
 const val STATE_ADMIN = 1
 const val STATE_TEMP_ADMIN = 2
 const val STATE_PENDING = 3
 const val STATE_MEMBER = 4
-const val STATE_DECLINED = 5
-const val STATE_ACCEPT_INVITATION = 6
-const val STATE_MEMBER_ACCEPT_INVITATION = 7
-const val STATE_INTERESTED_MEMBER = 8
 const val STATE_SKIP_PRIVATE_LINK = 9
 
 @IntDef(
@@ -20,10 +15,6 @@ const val STATE_SKIP_PRIVATE_LINK = 9
     STATE_TEMP_ADMIN,
     STATE_PENDING,
     STATE_MEMBER,
-    STATE_DECLINED,
-    STATE_ACCEPT_INVITATION,
-    STATE_MEMBER_ACCEPT_INVITATION,
-    STATE_INTERESTED_MEMBER,
     STATE_SKIP_PRIVATE_LINK
 )
 @Retention(AnnotationRetention.SOURCE)

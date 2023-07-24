@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ChatroomDateViewData private constructor(
-    var date: String?,
+    val date: String?,
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = ITEM_CHATROOM_DATE

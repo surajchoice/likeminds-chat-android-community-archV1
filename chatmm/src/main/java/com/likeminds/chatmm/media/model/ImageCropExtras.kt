@@ -5,8 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ImageCropExtras private constructor(
-    var singleUriData: SingleUriData?,
-    var cropSquare: Boolean,
+    val singleUriData: SingleUriData?
 ) : Parcelable {
     internal class Builder {
         private var singleUriData: SingleUriData? = null
@@ -14,9 +13,5 @@ class ImageCropExtras private constructor(
 
         fun singleUriData(singleUriData: SingleUriData?) =
             apply { this.singleUriData = singleUriData }
-
-        fun cropSquare(cropSquare: Boolean) = apply { this.cropSquare = cropSquare }
-
-        fun build() = ImageCropExtras(singleUriData, cropSquare)
     }
 }

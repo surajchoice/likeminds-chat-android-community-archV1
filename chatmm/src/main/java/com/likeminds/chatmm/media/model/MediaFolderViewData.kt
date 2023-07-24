@@ -12,7 +12,7 @@ class MediaFolderViewData private constructor(
     val title: String,
     val itemCount: Int,
     val bucketId: String,
-    val folderType: MediaFolderType,
+    val folderType: MediaFolderType
 ) : Parcelable, BaseViewType {
 
     override val viewType: Int

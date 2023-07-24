@@ -3,10 +3,7 @@ package com.likeminds.chatmm.media.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -142,7 +139,6 @@ class MediaPickerDocumentFragment :
 
     private fun sendSelectedMedias(medias: List<MediaViewData>) {
         val extra = MediaPickerResult.Builder()
-            .isResultOk(true)
             .mediaPickerResultType(MEDIA_RESULT_PICKED)
             .mediaTypes(mediaPickerExtras.mediaTypes)
             .allowMultipleSelect(mediaPickerExtras.allowMultipleSelect)
@@ -202,7 +198,6 @@ class MediaPickerDocumentFragment :
 
     override fun browseDocumentClicked() {
         val extra = MediaPickerResult.Builder()
-            .isResultOk(true)
             .mediaPickerResultType(MEDIA_RESULT_BROWSE)
             .mediaTypes(mediaPickerExtras.mediaTypes)
             .allowMultipleSelect(mediaPickerExtras.allowMultipleSelect)

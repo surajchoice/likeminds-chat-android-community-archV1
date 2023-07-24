@@ -5,17 +5,14 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class MediaPickerResult private constructor(
-    val isResultOk: Boolean,
-    @MediaPickerResultType var mediaPickerResultType: Int,
+    @MediaPickerResultType val mediaPickerResultType: Int,
     val mediaTypes: List<String>,
     val medias: List<MediaViewData>?,
     val browseClassName: Pair<String, String>?,
-    val allowMultipleSelect: Boolean,
+    val allowMultipleSelect: Boolean
 ) : Parcelable {
 
     class Builder {
-        private var isResultOk: Boolean = false
-
         @MediaPickerResultType
         private var mediaPickerResultType: Int = MEDIA_RESULT_BROWSE
         private var mediaTypes: List<String> = emptyList()
@@ -23,7 +20,6 @@ class MediaPickerResult private constructor(
         private var browseClassName: Pair<String, String>? = null
         private var allowMultipleSelect: Boolean = false
 
-        fun isResultOk(isResultOk: Boolean) = apply { this.isResultOk = isResultOk }
         fun mediaPickerResultType(@MediaPickerResultType mediaPickerResultType: Int) =
             apply { this.mediaPickerResultType = mediaPickerResultType }
 
@@ -36,7 +32,6 @@ class MediaPickerResult private constructor(
             apply { this.allowMultipleSelect = allowMultipleSelect }
 
         fun build() = MediaPickerResult(
-            isResultOk,
             mediaPickerResultType,
             mediaTypes,
             medias,
@@ -46,7 +41,7 @@ class MediaPickerResult private constructor(
     }
 
     fun toBuilder(): Builder {
-        return Builder().isResultOk(isResultOk)
+        return Builder()
             .mediaPickerResultType(mediaPickerResultType)
             .mediaTypes(mediaTypes)
             .medias(medias)

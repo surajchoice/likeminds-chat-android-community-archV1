@@ -1,19 +1,14 @@
 package com.likeminds.chatmm.member.model
 
 import android.os.Parcelable
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MEMBER
 import kotlinx.parcelize.Parcelize
 
-// todo: removed a few keys
 @Parcelize
 class MemberViewData private constructor(
     val id: String?,
-    val uid: String?,
     val name: String?,
-    val email: String?,
-    val headline: String?,
     val imageUrl: String?,
     val dynamicViewType: Int,
     val state: Int,
@@ -27,10 +22,7 @@ class MemberViewData private constructor(
     val customClickText: String?,
     val memberSince: String?,
     val listOfMenu: List<MemberActionViewData>?,
-    val parentChatroom: ChatroomViewData?,
     val parentViewItemPosition: Int?,
-    val showMoreView: Boolean?,
-    val screenType: Int?,
     val updatedAt: Long?,
     val userUniqueId: String?
 ) : Parcelable, BaseViewType {
@@ -39,37 +31,28 @@ class MemberViewData private constructor(
 
     class Builder {
         private var id: String? = null
-        private var uid: String? = null
         private var name: String? = null
-        private var email: String? = null
-        private var headline: String? = null
         private var imageUrl: String? = null
         private var dynamicViewType: Int = ITEM_MEMBER
 
         private var state: Int = STATE_NOTHING
         private var communityId: String? = null
         private var isGuest: Boolean? = null
+        private var isOwner: Boolean? = null
         private var hideBottomLine: Boolean? = null
         private var customIntroText: String? = null
         private var customClickText: String? = null
         private var memberSince: String? = null
         private var communityName: String? = null
-        private var isOwner: Boolean? = null
         private var customTitle: String? = null
 
         private var listOfMenu: List<MemberActionViewData>? = null
-        private var parentChatroom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
-        private var showMoreView: Boolean? = null
-        private var screenType: Int? = null
         private var updatedAt: Long? = null
         private var userUniqueId: String? = null
 
         fun id(id: String?) = apply { this.id = id }
-        fun uid(uid: String?) = apply { this.uid = uid }
         fun name(name: String?) = apply { this.name = name }
-        fun email(email: String?) = apply { this.email = email }
-        fun headline(headline: String?) = apply { this.headline = headline }
         fun imageUrl(imageUrl: String?) = apply { this.imageUrl = imageUrl }
         fun dynamicViewType(dynamicViewType: Int) = apply { this.dynamicViewType = dynamicViewType }
 
@@ -93,24 +76,16 @@ class MemberViewData private constructor(
         fun listOfMenu(listOfMenu: List<MemberActionViewData>?) =
             apply { this.listOfMenu = listOfMenu }
 
-        fun parentChatroom(parentChatroom: ChatroomViewData?) =
-            apply { this.parentChatroom = parentChatroom }
-
         fun parentViewItemPosition(parentViewItemPosition: Int?) =
             apply { this.parentViewItemPosition = parentViewItemPosition }
 
-        fun showMoreView(showMoreView: Boolean?) = apply { this.showMoreView = showMoreView }
-        fun screenType(screenType: Int?) = apply { this.screenType = screenType }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
 
         fun userUniqueId(userUniqueId: String?) = apply { this.userUniqueId = userUniqueId }
 
         fun build() = MemberViewData(
             id,
-            uid,
             name,
-            email,
-            headline,
             imageUrl,
             dynamicViewType,
             state,
@@ -124,10 +99,7 @@ class MemberViewData private constructor(
             customClickText,
             memberSince,
             listOfMenu,
-            parentChatroom,
             parentViewItemPosition,
-            showMoreView,
-            screenType,
             updatedAt,
             userUniqueId
         )
@@ -135,10 +107,7 @@ class MemberViewData private constructor(
 
     fun toBuilder(): Builder {
         return Builder().id(id)
-            .uid(uid)
             .name(name)
-            .email(email)
-            .headline(headline)
             .imageUrl(imageUrl)
             .dynamicViewType(dynamicViewType)
             .state(state)
@@ -152,10 +121,7 @@ class MemberViewData private constructor(
             .customClickText(customClickText)
             .memberSince(memberSince)
             .listOfMenu(listOfMenu)
-            .parentChatroom(parentChatroom)
             .parentViewItemPosition(parentViewItemPosition)
-            .showMoreView(showMoreView)
-            .screenType(screenType)
             .updatedAt(updatedAt)
             .userUniqueId(userUniqueId)
     }

@@ -33,7 +33,6 @@ class ChatroomViewData private constructor(
     val totalAllResponseCount: Int,
     val muteStatus: Boolean,
     val followStatus: Boolean,
-    val hasBeenNamed: Boolean?,
     val date: String?,
     val hideBottomLine: Boolean?,
     val isTagged: Boolean?,
@@ -50,7 +49,6 @@ class ChatroomViewData private constructor(
     val isEdited: Boolean?,
     val topic: ConversationViewData?,
     val reactions: List<ReactionViewData>?,
-    val access: Int?,
     val memberCanMessage: Boolean?,
     val chatroomImageUrl: String?,
     val unreadConversationCount: Int?,
@@ -92,7 +90,6 @@ class ChatroomViewData private constructor(
         private var totalAllResponseCount: Int = 0
         private var muteStatus: Boolean = false
         private var followStatus: Boolean = false
-        private var hasBeenNamed: Boolean? = null
         private var date: String? = null
         private var hideBottomLine: Boolean? = null
         private var isTagged: Boolean? = null
@@ -109,7 +106,6 @@ class ChatroomViewData private constructor(
         private var isEdited: Boolean? = null
         private var topic: ConversationViewData? = null
         private var reactions: List<ReactionViewData>? = null
-        private var access: Int? = null
         private var memberCanMessage: Boolean? = null
         private var chatroomImageUrl: String? = null
         private var unreadConversationCount: Int? = null
@@ -155,7 +151,6 @@ class ChatroomViewData private constructor(
 
         fun muteStatus(muteStatus: Boolean) = apply { this.muteStatus = muteStatus }
         fun followStatus(followStatus: Boolean) = apply { this.followStatus = followStatus }
-        fun hasBeenNamed(hasBeenNamed: Boolean?) = apply { this.hasBeenNamed = hasBeenNamed }
         fun date(date: String?) = apply { this.date = date }
         fun hideBottomLine(hideBottomLine: Boolean?) =
             apply { this.hideBottomLine = hideBottomLine }
@@ -180,7 +175,6 @@ class ChatroomViewData private constructor(
         fun isEdited(isEdited: Boolean?) = apply { this.isEdited = isEdited }
         fun topic(topic: ConversationViewData?) = apply { this.topic = topic }
         fun reactions(reactions: List<ReactionViewData>?) = apply { this.reactions = reactions }
-        fun access(access: Int?) = apply { this.access = access }
         fun memberCanMessage(memberCanMessage: Boolean?) =
             apply { this.memberCanMessage = memberCanMessage }
 
@@ -220,7 +214,6 @@ class ChatroomViewData private constructor(
             totalAllResponseCount,
             muteStatus,
             followStatus,
-            hasBeenNamed,
             date,
             hideBottomLine,
             isTagged,
@@ -237,7 +230,6 @@ class ChatroomViewData private constructor(
             isEdited,
             topic,
             reactions,
-            access,
             memberCanMessage,
             chatroomImageUrl,
             unreadConversationCount,
@@ -270,7 +262,6 @@ class ChatroomViewData private constructor(
             .totalAllResponseCount(totalAllResponseCount)
             .muteStatus(muteStatus)
             .followStatus(followStatus)
-            .hasBeenNamed(hasBeenNamed)
             .date(date)
             .hideBottomLine(hideBottomLine)
             .isTagged(isTagged)
@@ -287,7 +278,6 @@ class ChatroomViewData private constructor(
             .isEdited(isEdited)
             .topic(topic)
             .reactions(reactions)
-            .access(access)
             .memberCanMessage(memberCanMessage)
             .chatroomImageUrl(chatroomImageUrl)
             .unreadConversationCount(unreadConversationCount)

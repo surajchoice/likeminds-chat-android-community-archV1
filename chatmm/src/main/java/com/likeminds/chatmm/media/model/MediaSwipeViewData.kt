@@ -14,7 +14,7 @@ class MediaSwipeViewData private constructor(
     val index: Int,
     val title: String?,
     val subTitle: String?,
-    val type: String?,
+    val type: String?
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_IMAGE_SWIPE

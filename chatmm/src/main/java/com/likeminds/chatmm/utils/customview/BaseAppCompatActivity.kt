@@ -7,18 +7,13 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.annotation.NonNull
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
-import com.likeminds.chatmm.utils.permissions.Permission
-import com.likeminds.chatmm.utils.permissions.PermissionCallback
-import com.likeminds.chatmm.utils.permissions.SessionPermission
+import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import javax.inject.Inject
 
@@ -98,8 +93,8 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        @NonNull permissions: Array<String>,
-        @NonNull grantResults: IntArray,
+        permissions: Array<String>,
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         val callback = permissionCallbackSparseArray.get(requestCode, null) ?: return

@@ -7,13 +7,13 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ManagementRightPermissionViewData private constructor(
-    var id: Int,
-    var state: Int?,
-    var title: String,
-    var subtitle: String?,
-    var isSelected: Boolean,
-    var isLocked: Boolean?,
-    var hideBottomLine: Boolean?
+    val id: Int,
+    val state: Int?,
+    val title: String,
+    val subtitle: String?,
+    val isSelected: Boolean,
+    val isLocked: Boolean?,
+    val hideBottomLine: Boolean?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = ITEM_MANAGEMENT_RIGHT_PERMISSION

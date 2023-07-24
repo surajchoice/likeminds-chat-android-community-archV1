@@ -15,7 +15,6 @@ class ExploreViewData private constructor(
     var followStatus: Boolean,
     val participantsCount: Int,
     val totalResponseCount: Int,
-    val sortIndex: Int,
     val id: String,
     val header: String,
     val title: String?,
@@ -35,7 +34,6 @@ class ExploreViewData private constructor(
         private var followStatus: Boolean = false
         private var participantsCount: Int = 0
         private var totalResponseCount: Int = 0
-        private var sortIndex: Int = 0
         private var id: String = ""
         private var header: String = ""
         private var title: String? = null
@@ -61,10 +59,6 @@ class ExploreViewData private constructor(
             this.totalResponseCount = totalResponseCount
         }
 
-        fun sortIndex(sortIndex: Int) = apply {
-            this.sortIndex = sortIndex
-        }
-
         fun id(id: String) = apply { this.id = id }
 
         fun header(header: String) = apply { this.header = header }
@@ -87,7 +81,6 @@ class ExploreViewData private constructor(
             followStatus,
             participantsCount,
             totalResponseCount,
-            sortIndex,
             id,
             header,
             title,
@@ -106,7 +99,6 @@ class ExploreViewData private constructor(
             .followStatus(followStatus)
             .participantsCount(participantsCount)
             .totalResponseCount(totalResponseCount)
-            .sortIndex(sortIndex)
             .id(id)
             .header(header)
             .title(title)
