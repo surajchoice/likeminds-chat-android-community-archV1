@@ -8,6 +8,8 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.databinding.ItemChatroomBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -15,7 +17,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CHAT_ROOM
 
 internal class ChatroomItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener
 ) : ViewDataBinder<ItemChatroomBinding, BaseViewType>() {
 
@@ -53,7 +55,7 @@ internal class ChatroomItemViewDataBinder constructor(
                 chatRoom = data,
                 adapterListener = chatroomDetailAdapterListener
             )
-            val time = DateUtil.createDateFormat("hh:mm", data.createdAt ?: 0)
+            val time = DateUtil.createDateFormat("hh:mm", data.createdAt)
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
                 userPreferences.getMemberId(),
@@ -79,33 +81,33 @@ internal class ChatroomItemViewDataBinder constructor(
                 chatroomDetailAdapterListener
             )
 
-//            val messageReactionsGridViewData = ChatroomUtil.getChatroomReactionsGrid(data)
+            val reactionsGridViewData = ReactionUtil.getChatroomReactionsGrid(data)
 
-//            ChatroomConversationItemViewDataBinderUtil.initChatroomReactionGridView(
-//                messageReactionsGridViewData,
-//                clBubble,
-//                clMain,
-//                messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                chatroomDetailAdapterListener,
-//                data
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initChatroomReactionGridView(
+                reactionsGridViewData,
+                clBubble,
+                clMain,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                chatroomDetailAdapterListener,
+                data
+            )
 
-//            val isReactionHintShown =
-//                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                    data.totalResponseCount == 0,
-//                    messageReactionsPreferences.getHasUserReactedOnce(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                    tvDoubleTap,
-//                    data.memberViewData,
-//                    userPreferences.getMemberId(),
-//                    clBubble,
-//                    clMain
-//                )
-//            if (isReactionHintShown) {
-//                chatroomDetailAdapterListener.messageReactionHintShown()
-//            }
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.totalResponseCount == 0,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getTotalNoOfHintsAllowed(),
+                    tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    clBubble,
+                    clMain
+                )
+            if (isReactionHintShown) {
+                chatroomDetailAdapterListener.reactionHintShown()
+            }
         }
     }
 }

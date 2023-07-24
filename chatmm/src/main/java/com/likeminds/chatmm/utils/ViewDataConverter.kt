@@ -1,15 +1,16 @@
 package com.likeminds.chatmm.utils
 
 import android.net.Uri
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomActionViewData
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
+import com.likeminds.chatmm.member.model.MemberStateViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
@@ -21,7 +22,7 @@ import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
-import com.likeminds.likemindschat.user.model.User
+import com.likeminds.likemindschat.user.model.*
 
 object ViewDataConverter {
 
@@ -221,6 +222,8 @@ object ViewDataConverter {
             .temporaryId(conversation.temporaryId)
             .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
             .pollInfoData(convertPollInfoData(conversation))
+            .lastSeen(conversation.lastSeen)
+            .reactions(convertConversationReactions(conversation.reactions, conversation.id))
             .build()
     }
 
@@ -243,6 +246,82 @@ object ViewDataConverter {
             .build()
     }
 
+    // converts list of conversation reactions to list of [ReactionViewData]
+    private fun convertConversationReactions(
+        reactions: List<Reaction>?,
+        conversationId: String?
+    ): List<ReactionViewData>? {
+        return reactions?.map {
+            convertConversationReaction(it, conversationId)
+        }
+    }
+
+    // converts a [Reaction] to [ReactionViewData]
+    private fun convertConversationReaction(
+        reactionData: Reaction,
+        conversationId: String?
+    ): ReactionViewData {
+        return ReactionViewData.Builder()
+            .reaction(reactionData.reaction)
+            .conversationId(conversationId)
+            .build()
+    }
+
+    // converts network model [MemberStateResponse] to [MemberStateViewData]
+    fun convertMemberState(memberStateResponse: MemberStateResponse?): MemberStateViewData? {
+        if (memberStateResponse == null) {
+            return null
+        }
+        return MemberStateViewData.Builder()
+            .state(memberStateResponse.state)
+            .memberViewData(convertMemberFromMemberState(memberStateResponse))
+            .managerRights(memberStateResponse.managerRights?.mapNotNull {
+                convertManagementRights(it)
+            })
+            .memberRights(memberStateResponse.memberRights.mapNotNull {
+                convertManagementRights(it)
+            })
+            .build()
+    }
+
+    // todo: remove
+    private fun convertMemberFromMemberState(
+        memberStateResponse: MemberStateResponse?
+    ): MemberViewData? {
+        if (memberStateResponse == null) {
+            return null
+        }
+
+        return MemberViewData.Builder()
+            .id(memberStateResponse.id)
+            .state(memberStateResponse.state)
+            .userUniqueId(memberStateResponse.userUniqueId)
+            .customTitle(memberStateResponse.customTitle)
+            .imageUrl(memberStateResponse.imageUrl)
+            .isGuest(memberStateResponse.isGuest)
+            .isOwner(memberStateResponse.isOwner)
+            .name(memberStateResponse.name)
+            .updatedAt(memberStateResponse.updatedAt)
+            .build()
+    }
+
+    // converts network model [ManagementRightPermissionData] to [ManagementRightPermissionViewData]
+    fun convertManagementRights(
+        managementRightPermissionData: ManagementRightPermissionData?
+    ): ManagementRightPermissionViewData? {
+        if (managementRightPermissionData == null) {
+            return null
+        }
+        return ManagementRightPermissionViewData.Builder()
+            .id(managementRightPermissionData.id)
+            .state(managementRightPermissionData.state)
+            .title(managementRightPermissionData.title)
+            .subtitle(managementRightPermissionData.subtitle)
+            .isSelected(managementRightPermissionData.isSelected)
+            .isLocked(managementRightPermissionData.isLocked)
+            .build()
+    }
+
     // converts poll data from network conversation to [PollInfoData]
     private fun convertPollInfoData(conversation: Conversation): PollInfoData {
         return PollInfoData.Builder()
@@ -261,6 +340,7 @@ object ViewDataConverter {
             .build()
     }
 
+    // checks if poll is submitted or not and sets poll isSelected key
     private fun checkIsPollSubmitted(polls: MutableList<Poll>?): Boolean {
         var isPollSubmitted = false
         polls?.forEach {

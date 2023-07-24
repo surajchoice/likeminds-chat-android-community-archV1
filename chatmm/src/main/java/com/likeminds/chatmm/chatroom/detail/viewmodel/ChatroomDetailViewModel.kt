@@ -15,8 +15,7 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.member.model.MemberState
-import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.utils.*
@@ -40,6 +39,7 @@ import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.*
+import com.likeminds.likemindschat.user.model.MemberStateResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -1232,7 +1232,56 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun fetchMemberState() {
         viewModelScope.launch {
-            // todo:
+            val response = lmChatClient.getMemberState()
+            if (response.success) {
+                //update manager rights and chatroom view as per rights.
+                updateManagementRights(response.data)
+
+                //convert Network Model to ViewData Model
+                ViewDataConverter.convertMemberState(response.data)?.let {
+                    //update member rights as per rights
+                    fetchMemberStateResponse(it)
+                }
+            } else {
+                //set default value as true
+                _canMemberRespond.postValue(true)
+                _canMemberCreatePoll.postValue(true)
+                Log.e(TAG, "${response.errorMessage}")
+            }
+        }
+    }
+
+    /**
+     * Update member state of the community to update the chatroom views
+     */
+    private fun updateManagementRights(memberStateResponse: MemberStateResponse?) {
+        if (memberStateResponse == null) return
+
+        memberStateResponse.managerRights?.mapNotNull {
+            ViewDataConverter.convertManagementRights(it)
+        }?.let {
+            this.managementRights.clear()
+            this.managementRights.addAll(it)
+        }
+    }
+
+    //update member rights as per rights
+    private fun fetchMemberStateResponse(memberStateViewData: MemberStateViewData) {
+        this.currentMemberDataFromMemberState = memberStateViewData.memberViewData
+        if (!memberStateViewData.memberRights.isNullOrEmpty()) {
+            //check for respond in chatroom
+            val memberRespondRight = memberStateViewData.memberRights.firstOrNull {
+                it.state == MEMBER_RIGHT_RESPOND_IN_ROOM
+            }
+
+            //check for create poll
+            val createPollRight = memberStateViewData.memberRights.firstOrNull {
+                it.state == MEMBER_RIGHT_CREATE_POLL
+            }
+
+            //send to LiveData
+            _canMemberRespond.postValue(memberRespondRight?.isSelected ?: true)
+            _canMemberCreatePoll.postValue(createPollRight?.isSelected ?: true)
         }
     }
 
@@ -1633,6 +1682,7 @@ class ChatroomDetailViewModel @Inject constructor(
         uploadData.first.enqueue()
     }
 
+
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
     private fun uploadFilesViaWorker(
         context: Context,
@@ -1687,6 +1737,7 @@ class ChatroomDetailViewModel @Inject constructor(
             .build()
         sendConversationUpdatesToUI(listOf(updatedConversation))
     }
+
 
     fun resendFailedConversation(context: Context, conversation: ConversationViewData) {
         postFailedConversation(context, conversation)

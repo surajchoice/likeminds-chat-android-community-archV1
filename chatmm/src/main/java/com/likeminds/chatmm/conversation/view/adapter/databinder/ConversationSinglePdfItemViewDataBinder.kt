@@ -10,6 +10,8 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationSinglePdfBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.AndroidUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -20,7 +22,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_PDF
 
 internal class ConversationSinglePdfItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationSinglePdfBinding, BaseViewType>() {
 
@@ -82,11 +84,11 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 initSinglePdfView(this, data)
             }
 
-//            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
-//                ivAddReaction,
-//                data,
-//                userPreferences.getMemberId()
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
+                ivAddReaction,
+                data,
+                userPreferences.getMemberId()
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initDocument(binding, data)
 
@@ -142,32 +144,32 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 adapterListener
             )
 
-//            val messageReactionsGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
-//
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionsGridViewData,
-//                clConversationRoot,
-//                clConversationBubble,
-//                messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                adapterListener,
-//                data
-//            )
-//            val isReactionHintShown =
-//                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                    data.isLastItem,
-//                    messageReactionsPreferences.getHasUserReactedOnce(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                    tvDoubleTap,
-//                    data.memberViewData,
-//                    userPreferences.getMemberId(),
-//                    clConversationRoot,
-//                    clConversationBubble
-//                )
-//            if (isReactionHintShown) {
-//                adapterListener.messageReactionHintShown()
-//            }
+            val reactionsGridViewData = ReactionUtil.getReactionsGrid(data)
+
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionsGridViewData,
+                clConversationRoot,
+                clConversationBubble,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                adapterListener,
+                data
+            )
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.isLastItem,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getTotalNoOfHintsAllowed(),
+                    tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    clConversationRoot,
+                    clConversationBubble
+                )
+            if (isReactionHintShown) {
+                adapterListener.reactionHintShown()
+            }
         }
     }
 

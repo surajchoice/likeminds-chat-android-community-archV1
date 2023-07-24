@@ -13,6 +13,7 @@ import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.polls.PollsComponent
+import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.likemindschat.LMChatClient
 import com.vanniktech.emoji.EmojiManager
@@ -34,6 +35,7 @@ class SDKApplication {
     private var mediaComponent: MediaComponent? = null
     private var searchComponent: SearchComponent? = null
     private var pollsComponent: PollsComponent? = null
+    private var reactionsComponent: ReactionsComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -145,6 +147,9 @@ class SDKApplication {
         return mediaComponent
     }
 
+    /**
+     * initiate and return PollsComponent: All dependencies required for polls package
+     * */
     fun pollsComponent(): PollsComponent? {
         if (pollsComponent == null) {
             pollsComponent = likeMindsChatComponent?.pollsComponent()?.create()
@@ -161,5 +166,15 @@ class SDKApplication {
         }
 
         return searchComponent
+    }
+
+    /**
+     * initiate and return ReactionsComponent: All dependencies required for reactions package
+     * */
+    fun reactionsComponent(): ReactionsComponent? {
+        if (reactionsComponent == null) {
+            reactionsComponent = likeMindsChatComponent?.reactionsComponent()?.create()
+        }
+        return reactionsComponent
     }
 }

@@ -6,7 +6,7 @@ import com.likeminds.chatmm.utils.model.ITEM_MANAGEMENT_RIGHT_PERMISSION
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class ManagementRightPermissionViewData private constructor(
+class ManagementRightPermissionViewData private constructor(
     var id: Int,
     var state: Int?,
     var title: String,

@@ -11,6 +11,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationMultipleDocumentBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -88,11 +89,11 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                 initDocumentsListView(this, data, position)
             }
 
-//            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
-//                ivAddReaction,
-//                data,
-//                userPreferences.getMemberId()
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
+                ivAddReaction,
+                data,
+                userPreferences.getMemberId()
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
@@ -144,17 +145,17 @@ internal class ConversationMultipleDocumentViewDataBinder constructor(
                     chatroomDetailAdapterListener
                 )
 
-//            val messageReactionsGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
-//
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionsGridViewData,
-//                clConversationRoot,
-//                clConversationBubble,
-//                messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                chatroomDetailAdapterListener,
-//                data
-//            )
+            val reactionsGridViewData = ReactionUtil.getReactionsGrid(data)
+
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionsGridViewData,
+                clConversationRoot,
+                clConversationBubble,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                chatroomDetailAdapterListener,
+                data
+            )
         }
     }
 

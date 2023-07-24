@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.R
@@ -14,6 +13,8 @@ import com.likeminds.chatmm.databinding.ItemConversationPollBinding
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.view.PollViewListener
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.setVisible
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -22,7 +23,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_POLL
 
 internal class ConversationPollItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationPollBinding, ConversationViewData>(),
     PollViewListener {
@@ -128,33 +129,33 @@ internal class ConversationPollItemViewDataBinder constructor(
                 chatroomDetailAdapterListener
             )
 
-//        val messageReactionsGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
-//
-//        ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//            messageReactionsGridViewData,
-//            clConversationRoot,
-//            clConversationBubble,
-//            messageReactionsGridLayout,
-//            userPreferences.getMemberId(),
-//            chatroomDetailAdapterListener,
-//            data
-//        )
+            val reactionsGridViewData = ReactionUtil.getReactionsGrid(data)
 
-//        val isReactionHintShown =
-//            ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                data.isLastItem,
-//                messageReactionsPreferences.getHasUserReactedOnce(),
-//                messageReactionsPreferences.getNoOfTimesHintShown(),
-//                messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                tvDoubleTap,
-//                data.memberViewData(),
-//                userPreferences.getMemberId(),
-//                clConversationRoot,
-//                clConversationBubble
-//            )
-//        if (isReactionHintShown) {
-//            chatroomDetailAdapterListener.messageReactionHintShown()
-//        }
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionsGridViewData,
+                clConversationRoot,
+                clConversationBubble,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                chatroomDetailAdapterListener,
+                data
+            )
+
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.isLastItem,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getTotalNoOfHintsAllowed(),
+                    tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    clConversationRoot,
+                    clConversationBubble
+                )
+            if (isReactionHintShown) {
+                chatroomDetailAdapterListener.reactionHintShown()
+            }
         }
     }
 
@@ -186,10 +187,6 @@ internal class ConversationPollItemViewDataBinder constructor(
         data: ConversationViewData,
     ) {
         binding.apply {
-            Log.d(
-                "TAG",
-                "initializePollViews: called ${data.pollInfoData?.pollViewDataList?.size} ---- ${System.currentTimeMillis()}"
-            )
             pollView.init(
                 position,
                 data,
@@ -275,7 +272,6 @@ internal class ConversationPollItemViewDataBinder constructor(
         binding: ItemConversationPollBinding, memberViewData: MemberViewData,
     ) {
         binding.apply {
-            Log.d("TAG", "initPollAddButtonView: ${pollView.isPollSubmitted()}")
             val isAddOptionAllowedForInstantPoll =
                 pollView.isInstantPoll() && !pollView.isPollSubmitted()
             val isAddOptionAllowedForDeferredPoll = !pollView.isInstantPoll()

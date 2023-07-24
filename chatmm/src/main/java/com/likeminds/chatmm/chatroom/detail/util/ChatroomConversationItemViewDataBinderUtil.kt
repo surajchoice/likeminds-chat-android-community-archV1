@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.*
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
+import android.text.style.*
 import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
@@ -22,17 +20,12 @@ import androidx.core.view.isVisible
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.button.MaterialButton
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
-import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_DIRECT_MESSAGE
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
-import com.likeminds.chatmm.conversation.model.AttachmentViewData
-import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.model.LinkOGTagsViewData
-import com.likeminds.chatmm.conversation.model.ReportLinkExtras
+import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
 import com.likeminds.chatmm.media.model.*
@@ -41,12 +34,10 @@ import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.polls.view.PollViewListener
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.DateUtil
-import com.likeminds.chatmm.utils.Route
+import com.likeminds.chatmm.reactions.model.ReactionsGridViewData
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getValidTextForLinkify
 import com.likeminds.chatmm.utils.ValueUtils.isValidYoutubeLink
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.chrometabs.CustomTabIntent
@@ -54,10 +45,7 @@ import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.link.LMLinkMovementMethod
 import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_IMAGE
-import com.likeminds.chatmm.utils.model.ITEM_PDF
-import com.likeminds.chatmm.utils.model.ITEM_VIDEO
+import com.likeminds.chatmm.utils.model.*
 import java.util.*
 
 object ChatroomConversationItemViewDataBinderUtil {
@@ -1607,5 +1595,304 @@ object ChatroomConversationItemViewDataBinderUtil {
         }
 
         return Pair(updatedPollViewList, selectedItemsCount)
+    }
+
+    fun initChatroomReactionGridView(
+        viewData: ReactionsGridViewData?,
+        clBubbleRoot: ConstraintLayout,
+        bubbleLayout: ConstraintLayout,
+        binding: GridMessageReactionsBinding,
+        currentMemberId: String,
+        chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
+        chatroomViewData: ChatroomViewData,
+    ) {
+        binding.apply {
+            if (viewData == null || chatroomViewData.deletedBy != null) {
+                clRoot.visibility = View.GONE
+            } else {
+                if (!viewData.mostRecentReaction.isNullOrEmpty()
+                    && viewData.mostRecentReactionCount != null
+                ) {
+                    firstReaction.text = viewData.mostRecentReaction
+                    firstReactionCount.text =
+                        viewData.mostRecentReactionCount.toString()
+                    clRoot.show()
+                    showReactionView(firstReactionCount, firstReaction, layoutReaction1)
+                } else {
+                    hideReactionView(firstReactionCount, firstReaction, layoutReaction1)
+                }
+
+                if (viewData.secondMostRecentReaction != null
+                    && viewData.secondMostRecentReactionCount != null
+                ) {
+                    secondReaction.text = viewData.secondMostRecentReaction
+                    secondReactionCount.text =
+                        viewData.secondMostRecentReactionCount.toString()
+                    showReactionView(secondReactionCount, secondReaction, layoutReaction2)
+                } else {
+                    hideReactionView(secondReactionCount, secondReaction, layoutReaction2)
+                }
+
+                if (viewData.moreThanTwoReactionsPresent == true) {
+                    ivDots.show()
+                    showMoreReactionView(ivDots)
+                } else {
+                    hideMoreReactionView(ivDots)
+                }
+
+                val gridRoot = clRoot
+                val set = ConstraintSet()
+                set.clone(clBubbleRoot)
+                set.clear(gridRoot.id, ConstraintSet.END)
+                set.clear(gridRoot.id, ConstraintSet.START)
+
+                if (chatroomViewData.memberViewData.id.equals(currentMemberId)) {
+                    set.connect(
+                        gridRoot.id,
+                        ConstraintSet.END,
+                        bubbleLayout.id,
+                        ConstraintSet.END
+                    )
+                } else {
+                    set.connect(
+                        gridRoot.id,
+                        ConstraintSet.START,
+                        bubbleLayout.id,
+                        ConstraintSet.START
+                    )
+                }
+                set.applyTo(clBubbleRoot)
+
+                initChatroomGridClickListeners(
+                    binding,
+                    chatroomDetailAdapterListener,
+                    chatroomViewData
+                )
+            }
+
+        }
+    }
+
+    private fun initChatroomGridClickListeners(
+        binding: GridMessageReactionsBinding,
+        chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
+        chatroomViewData: ChatroomViewData,
+    ) {
+        binding.layoutReaction1.setOnClickListener {
+            chatroomDetailAdapterListener.chatroomEmoticonGridClicked(
+                chatroomViewData,
+                binding.firstReaction.text.toString(),
+                1
+            )
+        }
+        binding.layoutReaction2.setOnClickListener {
+            chatroomDetailAdapterListener.chatroomEmoticonGridClicked(
+                chatroomViewData,
+                binding.secondReaction.text.toString(), 2
+            )
+        }
+        binding.ivDots.setOnClickListener {
+            chatroomDetailAdapterListener.chatroomEmoticonGridClicked(
+                chatroomViewData,
+                null, 3
+            )
+        }
+    }
+
+    private fun showReactionView(reactionCount: TextView, reaction: TextView, background: View) {
+        reactionCount.show()
+        reaction.show()
+        background.show()
+    }
+
+    private fun hideReactionView(reactionCount: TextView, reaction: TextView, background: View) {
+        reactionCount.hide()
+        reaction.hide()
+        background.hide()
+    }
+
+    private fun showMoreReactionView(ivDots: ImageView) {
+        ivDots.show()
+    }
+
+    private fun hideMoreReactionView(ivDots: ImageView) {
+        ivDots.hide()
+    }
+
+    fun isReactionHintViewShown(
+        lastItem: Boolean?,
+        hasUserReactedOnce: Boolean,
+        noOfTimesHintShown: Int,
+        totalNoOfHintsAllowed: Int,
+        tvDoubleTap: TextView,
+        memberViewData: MemberViewData,
+        currentMemberId: String,
+        clBubbleRoot: ConstraintLayout,
+        bubbleLayout: ConstraintLayout,
+    ): Boolean {
+        val set = ConstraintSet()
+        set.clone(clBubbleRoot)
+        set.clear(tvDoubleTap.id, ConstraintSet.END)
+        set.clear(tvDoubleTap.id, ConstraintSet.START)
+
+        if (memberViewData.id.equals(currentMemberId)) {
+            set.connect(
+                tvDoubleTap.id,
+                ConstraintSet.END,
+                bubbleLayout.id,
+                ConstraintSet.END
+            )
+        } else {
+            set.connect(
+                tvDoubleTap.id,
+                ConstraintSet.START,
+                bubbleLayout.id,
+                ConstraintSet.START
+            )
+        }
+        set.applyTo(clBubbleRoot)
+        if (hasUserReactedOnce || (noOfTimesHintShown > totalNoOfHintsAllowed) || lastItem == false) {
+            tvDoubleTap.visibility = View.GONE
+        } else if (lastItem == true) {
+            tvDoubleTap.visibility = View.VISIBLE
+        } else {
+            tvDoubleTap.visibility = View.GONE
+        }
+        return tvDoubleTap.visibility == View.VISIBLE
+    }
+
+    fun initMessageReactionGridView(
+        viewData: ReactionsGridViewData?,
+        clBubbleRoot: ConstraintLayout,
+        bubbleLayout: ConstraintLayout,
+        binding: GridMessageReactionsBinding,
+        currentMemberId: String,
+        chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
+        conversation: ConversationViewData,
+    ) {
+        binding.apply {
+            if (viewData == null || conversation.deletedBy != null) {
+                clRoot.visibility = View.GONE
+            } else {
+                if (!viewData.mostRecentReaction.isNullOrEmpty()
+                    && viewData.mostRecentReactionCount != null
+                ) {
+                    firstReaction.text = viewData.mostRecentReaction
+                    firstReactionCount.text =
+                        viewData.mostRecentReactionCount.toString()
+                    clRoot.visibility = View.VISIBLE
+                    showReactionView(
+                        firstReactionCount,
+                        firstReaction,
+                        layoutReaction1
+                    )
+                } else {
+                    hideReactionView(
+                        firstReactionCount,
+                        firstReaction,
+                        layoutReaction1
+                    )
+                }
+
+                if (viewData.secondMostRecentReaction != null
+                    && viewData.secondMostRecentReactionCount != null
+                ) {
+                    secondReaction.text = viewData.secondMostRecentReaction
+                    secondReactionCount.text =
+                        viewData.secondMostRecentReactionCount.toString()
+                    showReactionView(
+                        secondReactionCount,
+                        secondReaction,
+                        layoutReaction2
+                    )
+                } else {
+                    hideReactionView(
+                        secondReactionCount,
+                        secondReaction,
+                        layoutReaction2
+                    )
+                }
+
+                if (viewData.moreThanTwoReactionsPresent == true) {
+                    ivDots.visibility = View.VISIBLE
+                    showMoreReactionView(ivDots)
+                } else {
+                    hideMoreReactionView(ivDots)
+                }
+
+                val gridRoot = clRoot
+                val set = ConstraintSet()
+                set.clone(clBubbleRoot)
+                set.clear(gridRoot.id, ConstraintSet.END)
+                set.clear(gridRoot.id, ConstraintSet.START)
+
+                if (conversation.memberViewData.id.equals(currentMemberId)) {
+                    set.connect(
+                        gridRoot.id,
+                        ConstraintSet.END,
+                        bubbleLayout.id,
+                        ConstraintSet.END
+                    )
+                } else {
+                    set.connect(
+                        gridRoot.id,
+                        ConstraintSet.START,
+                        bubbleLayout.id,
+                        ConstraintSet.START
+                    )
+                }
+                set.applyTo(clBubbleRoot)
+
+                initGridClickListeners(
+                    binding,
+                    chatroomDetailAdapterListener,
+                    conversation
+                )
+            }
+        }
+    }
+
+    private fun initGridClickListeners(
+        binding: GridMessageReactionsBinding,
+        chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
+        conversation: ConversationViewData,
+    ) {
+        binding.apply {
+            layoutReaction1.setOnClickListener {
+                chatroomDetailAdapterListener.emoticonGridClicked(
+                    conversation,
+                    firstReaction.text.toString(),
+                    1
+                )
+            }
+            layoutReaction2.setOnClickListener {
+                chatroomDetailAdapterListener.emoticonGridClicked(
+                    conversation,
+                    secondReaction.text.toString(), 2
+                )
+            }
+            ivDots.setOnClickListener {
+                chatroomDetailAdapterListener.emoticonGridClicked(
+                    conversation,
+                    null, 3
+                )
+            }
+        }
+    }
+
+    fun initReactionButton(
+        ivReaction: ImageView,
+        conversation: ConversationViewData,
+        currentMemberId: String,
+    ) {
+        if (conversation.isDeleted()) {
+            ivReaction.hide()
+        } else {
+            if (conversation.memberViewData.id.equals(currentMemberId)) {
+                ivReaction.hide()
+            } else {
+                ivReaction.show()
+            }
+        }
     }
 }
