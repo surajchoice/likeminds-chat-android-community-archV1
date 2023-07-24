@@ -1617,7 +1617,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     firstReaction.text = viewData.mostRecentReaction
                     firstReactionCount.text =
                         viewData.mostRecentReactionCount.toString()
-                    clRoot.visibility = View.VISIBLE
+                    clRoot.show()
                     showReactionView(firstReactionCount, firstReaction, layoutReaction1)
                 } else {
                     hideReactionView(firstReactionCount, firstReaction, layoutReaction1)
@@ -1635,7 +1635,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 }
 
                 if (viewData.moreThanTwoReactionsPresent == true) {
-                    ivDots.visibility = View.VISIBLE
+                    ivDots.show()
                     showMoreReactionView(ivDots)
                 } else {
                     hideMoreReactionView(ivDots)
@@ -1702,23 +1702,23 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     private fun showReactionView(reactionCount: TextView, reaction: TextView, background: View) {
-        reactionCount.visibility = View.VISIBLE
-        reaction.visibility = View.VISIBLE
-        background.visibility = View.VISIBLE
+        reactionCount.show()
+        reaction.show()
+        background.show()
     }
 
     private fun hideReactionView(reactionCount: TextView, reaction: TextView, background: View) {
-        reactionCount.visibility = View.GONE
-        reaction.visibility = View.GONE
-        background.visibility = View.GONE
+        reactionCount.hide()
+        reaction.hide()
+        background.hide()
     }
 
     private fun showMoreReactionView(ivDots: ImageView) {
-        ivDots.visibility = View.VISIBLE
+        ivDots.show()
     }
 
     private fun hideMoreReactionView(ivDots: ImageView) {
-        ivDots.visibility = View.GONE
+        ivDots.hide()
     }
 
     fun isReactionHintViewShown(

@@ -2,6 +2,7 @@ package com.likeminds.chatmm.chatroom.detail.util
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.*
 import android.text.style.ImageSpan
@@ -284,6 +285,16 @@ object ChatroomUtil {
                 return null
             }
         }
+    }
+
+    fun getTypeDrawable(context: Context, type: Int?): Drawable? {
+        val drawableId = getTypeDrawableId(type)
+        return getDrawable(context, drawableId)
+    }
+
+    fun getDrawable(context: Context, drawableId: Int?): Drawable? {
+        return if (drawableId != null) ContextCompat.getDrawable(context, drawableId)
+        else null
     }
 
     fun getLastConversationTextForHome(lastConversation: ConversationViewData?): String {

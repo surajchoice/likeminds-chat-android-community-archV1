@@ -20,12 +20,21 @@ class UserPreferences @Inject constructor(
         private const val IS_GUEST = "is_guest"
     }
 
+    // todo:
     fun getUUID(): String {
         return getPreference(UUID, "") ?: ""
     }
 
     fun setUUID(uuid: String) {
         putPreference(UUID, uuid)
+    }
+
+    fun getMemberId(): String {
+        return getPreference(MEMBER_ID, "") ?: ""
+    }
+
+    fun setMemberId(memberId: String) {
+        putPreference(MEMBER_ID, memberId)
     }
 
     fun getUserUniqueId(): String {
@@ -52,6 +61,7 @@ class UserPreferences @Inject constructor(
 
     fun clearPrefs() {
         setUserUniqueId("")
+        setMemberId("")
         setUUID("")
         setIsGuestUser(false)
     }

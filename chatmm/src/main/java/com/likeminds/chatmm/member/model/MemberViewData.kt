@@ -15,6 +15,7 @@ class MemberViewData private constructor(
     val communityId: String?,
     val communityName: String?,
     val isGuest: Boolean?,
+    val isOwner: Boolean?,
     val hideBottomLine: Boolean?,
     val customTitle: String?,
     val customIntroText: String?,
@@ -38,6 +39,7 @@ class MemberViewData private constructor(
         private var state: Int = STATE_NOTHING
         private var communityId: String? = null
         private var isGuest: Boolean? = null
+        private var isOwner: Boolean? = null
         private var hideBottomLine: Boolean? = null
         private var customIntroText: String? = null
         private var customClickText: String? = null
@@ -61,6 +63,7 @@ class MemberViewData private constructor(
         fun communityName(communityName: String?) = apply { this.communityName = communityName }
 
         fun isGuest(isGuest: Boolean?) = apply { this.isGuest = isGuest }
+        fun isOwner(isOwner: Boolean?) = apply { this.isOwner = isOwner }
         fun hideBottomLine(hideBottomLine: Boolean?) =
             apply { this.hideBottomLine = hideBottomLine }
 
@@ -95,6 +98,7 @@ class MemberViewData private constructor(
             communityId,
             communityName,
             isGuest,
+            isOwner,
             hideBottomLine,
             customTitle,
             customIntroText,
@@ -118,6 +122,7 @@ class MemberViewData private constructor(
             .communityId(communityId)
             .communityName(communityName)
             .isGuest(isGuest)
+            .isOwner(isOwner)
             .hideBottomLine(hideBottomLine)
             .customTitle(customTitle)
             .customIntroText(customIntroText)

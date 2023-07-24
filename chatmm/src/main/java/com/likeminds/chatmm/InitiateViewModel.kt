@@ -76,12 +76,14 @@ class InitiateViewModel @Inject constructor(
         } else {
             val user = data.user
             val userUniqueId = user?.userUniqueId ?: ""
+            val memberId = user?.id.toString()
             val uuid = user?.sdkClientInfo?.uuid ?: ""
 
             // save details to prefs
             saveDetailsToPrefs(
                 apiKey,
                 userUniqueId,
+                memberId,
                 uuid
             )
 
@@ -97,13 +99,15 @@ class InitiateViewModel @Inject constructor(
     private fun saveDetailsToPrefs(
         apiKey: String,
         userUniqueId: String,
-        uuid: String
+        memberId: String,
+        uuid: String,
     ) {
         sdkPreferences.setAPIKey(apiKey)
         userPreferences.apply {
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
             setUUID(uuid)
+            setMemberId(memberId)
         }
     }
 
