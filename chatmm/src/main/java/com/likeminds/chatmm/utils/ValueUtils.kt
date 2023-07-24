@@ -189,4 +189,8 @@ object ValueUtils {
         }
         return collection
     }
+
+    fun <T> Collection<T>?.orEmptyMutable(): MutableList<T> {
+        return this?.toMutableList() ?: mutableListOf()
+    }
 }

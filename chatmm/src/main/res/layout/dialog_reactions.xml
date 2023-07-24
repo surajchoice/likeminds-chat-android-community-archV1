@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_red_heart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_red_heart"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reaction_crying_laugh"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_crying_laugh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_crying_laugh"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reaction_wow"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_red_heart"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_wow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_wow"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reaction_cry"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_crying_laugh"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_cry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_cry"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reaction_anger"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_wow"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_anger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_anger"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reaction_like"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_cry"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_reaction_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="@string/reaction_like"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_more_reactions"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_anger"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_more_reactions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_add_reactions_bubble"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_reaction_like"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

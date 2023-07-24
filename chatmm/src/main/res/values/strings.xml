@@ -222,5 +222,8 @@
     <string name="vote_submission_successful">Vote submission successful</string>
     <string name="your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms">Your vote submitted successfully. Poll room has been added to your followed chat rooms</string>
     <string name="your_vote_submitted_successfully">Your vote submitted successfully</string>
+    <string name="reactions">Reactions</string>
+    <string name="reaction_removed">Reaction Removed</string>
+    <string name="tap_to_remove">Tap to remove</string>
     <string name="participants">Participants</string>
 </resources>

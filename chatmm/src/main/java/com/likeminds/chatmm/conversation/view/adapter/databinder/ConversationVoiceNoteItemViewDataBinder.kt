@@ -3,10 +3,7 @@ package com.likeminds.chatmm.conversation.view.adapter.databinder
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewConfiguration
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SeekBar
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -16,6 +13,8 @@ import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationVoiceNoteBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
@@ -26,6 +25,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_VOICE_NOTE
 
 internal class ConversationVoiceNoteItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationVoiceNoteBinding, BaseViewType>() {
 
@@ -94,11 +94,11 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
                 initVoiceNoteView(this, data)
             }
 
-//            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
-//                ivAddReaction,
-//                data,
-//                userPreferences.getMemberId()
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
+                ivAddReaction,
+                data,
+                userPreferences.getMemberId()
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(tvProgress, data)
 
@@ -149,34 +149,34 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
                 adapterListener
             )
 
-//            val messageReactionGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
+            val reactionGridViewData = ReactionUtil.getReactionsGrid(data)
 
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionGridViewData,
-//                clConversationRoot,
-//                clConversationBubble,
-//                messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                adapterListener,
-//                data
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionGridViewData,
+                clConversationRoot,
+                clConversationBubble,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                adapterListener,
+                data
+            )
 
-//            val isReactionHintShown =
-//                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                    data.isLastItem,
-//                    messageReactionsPreferences.getHasUserReactedOnce(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    binding.tvDoubleTap,
-//                    data.memberViewData(),
-//                    userPreferences.getMemberId(),
-//                    binding.clConversationRoot,
-//                    binding.clConversationBubble
-//                )
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.isLastItem,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    binding.tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    binding.clConversationRoot,
+                    binding.clConversationBubble
+                )
 
-//            if (isReactionHintShown) {
-//                adapterListener.messageReactionHintShown()
-//            }
+            if (isReactionHintShown) {
+                adapterListener.reactionHintShown()
+            }
         }
     }
 

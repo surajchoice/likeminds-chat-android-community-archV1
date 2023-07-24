@@ -11,6 +11,8 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationBinding
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -19,7 +21,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION
 
 internal class ConversationItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationBinding, BaseViewType>() {
 
@@ -141,33 +143,33 @@ internal class ConversationItemViewDataBinder constructor(
                     adapterListener
                 )
 
-//            val messageReactionsGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
-//
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionsGridViewData,
-//                clConversationRoot,
-//                binding.clConversationBubble,
-//                binding.messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                adapterListener,
-//                data
-//            )
+            val messageReactionsGridViewData = ReactionUtil.getReactionsGrid(data)
 
-//            val isReactionHintShown =
-//                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                    data.isLastItem,
-//                    messageReactionsPreferences.getHasUserReactedOnce(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                    binding.tvDoubleTap,
-//                    data.memberViewData,
-//                    userPreferences.getMemberId(),
-//                    clConversationRoot,
-//                    clConversationBubble
-//                )
-//            if (isReactionHintShown) {
-//                adapterListener.messageReactionHintShown()
-//            }
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                messageReactionsGridViewData,
+                clConversationRoot,
+                binding.clConversationBubble,
+                binding.messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                adapterListener,
+                data
+            )
+
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.isLastItem,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getTotalNoOfHintsAllowed(),
+                    binding.tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    clConversationRoot,
+                    clConversationBubble
+                )
+            if (isReactionHintShown) {
+                adapterListener.reactionHintShown()
+            }
 
             ivAddReaction.setOnClickListener {
                 adapterListener.onLongPressConversation(

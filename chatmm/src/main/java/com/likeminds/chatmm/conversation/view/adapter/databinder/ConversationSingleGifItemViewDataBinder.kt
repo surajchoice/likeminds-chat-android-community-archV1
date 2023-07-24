@@ -2,9 +2,7 @@ package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -24,22 +22,20 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterLi
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.databinding.ItemConversationSingleGifBinding
-import com.likeminds.chatmm.media.model.MEDIA_HORIZONTAL_LIST_SCREEN
-import com.likeminds.chatmm.media.model.MediaExtras
-import com.likeminds.chatmm.media.model.MediaSwipeViewData
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.reactions.util.ReactionUtil
+import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.ProgressHelper
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_GIF
-import com.likeminds.chatmm.utils.model.ITEM_IMAGE_SWIPE
+import com.likeminds.chatmm.utils.model.*
 
 internal class ConversationSingleGifItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
-//    private val messageReactionsPreferences: MessageReactionsPreferences,
+    private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener,
 ) : ViewDataBinder<ItemConversationSingleGifBinding, BaseViewType>() {
 
@@ -104,11 +100,11 @@ internal class ConversationSingleGifItemViewDataBinder constructor(
                 initSingleGifView(binding, data)
             }
 
-//            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
-//                ivAddReaction,
-//                data,
-//                userPreferences.getMemberId()
-//            )
+            ChatroomConversationItemViewDataBinderUtil.initReactionButton(
+                ivAddReaction,
+                data,
+                userPreferences.getMemberId()
+            )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
@@ -161,32 +157,32 @@ internal class ConversationSingleGifItemViewDataBinder constructor(
                     adapterListener
                 )
 
-//            val messageReactionsGridViewData = ChatroomUtil.getMessageReactionsGrid(data)
-//
-//            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
-//                messageReactionsGridViewData,
-//                clConversationRoot,
-//                clConversationBubble,
-//                messageReactionsGridLayout,
-//                userPreferences.getMemberId(),
-//                adapterListener,
-//                data
-//            )
-//            val isReactionHintShown =
-//                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
-//                    data.isLastItem,
-//                    messageReactionsPreferences.getHasUserReactedOnce(),
-//                    messageReactionsPreferences.getNoOfTimesHintShown(),
-//                    messageReactionsPreferences.getTotalNoOfHintsAllowed(),
-//                    tvDoubleTap,
-//                    data.memberViewData,
-//                    userPreferences.getMemberId(),
-//                    clConversationRoot,
-//                    clConversationBubble
-//                )
-//            if (isReactionHintShown) {
-//                adapterListener.messageReactionHintShown()
-//            }
+            val reactionsGridViewData = ReactionUtil.getReactionsGrid(data)
+
+            ChatroomConversationItemViewDataBinderUtil.initMessageReactionGridView(
+                reactionsGridViewData,
+                clConversationRoot,
+                clConversationBubble,
+                messageReactionsGridLayout,
+                userPreferences.getMemberId(),
+                adapterListener,
+                data
+            )
+            val isReactionHintShown =
+                ChatroomConversationItemViewDataBinderUtil.isReactionHintViewShown(
+                    data.isLastItem,
+                    reactionsPreferences.getHasUserReactedOnce(),
+                    reactionsPreferences.getNoOfTimesHintShown(),
+                    reactionsPreferences.getTotalNoOfHintsAllowed(),
+                    tvDoubleTap,
+                    data.memberViewData,
+                    userPreferences.getMemberId(),
+                    clConversationRoot,
+                    clConversationBubble
+                )
+            if (isReactionHintShown) {
+                adapterListener.reactionHintShown()
+            }
         }
     }
 

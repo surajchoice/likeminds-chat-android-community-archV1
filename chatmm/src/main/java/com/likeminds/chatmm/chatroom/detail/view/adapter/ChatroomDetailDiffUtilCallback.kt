@@ -1,12 +1,11 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.likeminds.chatmm.chatroom.detail.model.AutoFollowedTaggedActionViewData
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDateViewData
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
+import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.polls.model.PollViewData
+import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 
 internal class ChatroomDetailDiffUtilCallback(
