@@ -29,8 +29,8 @@ class AttachmentViewData private constructor(
     val thumbnailLocalFilePath: String?,
     val meta: AttachmentMetaViewData?,
     val progress: Int?,
-    val currentDuration: String?,
-    val mediaState: String?,
+    val currentDuration: String,
+    val mediaState: String,
     val communityId: Int?,
     val createdAt: Long?,
     val updatedAt: Long?,
@@ -74,8 +74,8 @@ class AttachmentViewData private constructor(
         private var thumbnailLocalFilePath: String? = null
         private var meta: AttachmentMetaViewData? = null
         private var progress: Int? = null
-        private var currentDuration: String? = null
-        private var mediaState: String? = null
+        private var currentDuration: String = "00:00"
+        private var mediaState: String = MEDIA_ACTION_NONE
         private var communityId: Int? = null
         private var createdAt: Long? = null
         private var updatedAt: Long? = null
@@ -114,10 +114,10 @@ class AttachmentViewData private constructor(
 
         fun meta(meta: AttachmentMetaViewData?) = apply { this.meta = meta }
         fun progress(progress: Int?) = apply { this.progress = progress }
-        fun currentDuration(currentDuration: String?) =
+        fun currentDuration(currentDuration: String) =
             apply { this.currentDuration = currentDuration }
 
-        fun mediaState(mediaState: String?) = apply { this.mediaState = mediaState }
+        fun mediaState(mediaState: String) = apply { this.mediaState = mediaState }
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }

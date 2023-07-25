@@ -1,8 +1,7 @@
 package com.likeminds.chatmm.chatroom.create.view.adapter
 
 import android.content.Context
-import com.likeminds.chatmm.chatroom.create.view.adapter.databinder.ItemAudioViewDataBinder
-import com.likeminds.chatmm.chatroom.create.view.adapter.databinder.ItemImageViewDataBinder
+import com.likeminds.chatmm.chatroom.create.view.adapter.databinder.*
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -48,6 +47,9 @@ class ChatroomItemAdapter constructor(
 
         val imageItemViewDataBinder = ItemImageViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(imageItemViewDataBinder)
+
+        val documentItemViewDataBinder = ItemDocumentViewDataBinder(chatroomItemAdapterListener)
+        viewDataBinders.add(documentItemViewDataBinder)
 
         val audioItemViewDataBinder = ItemAudioViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(audioItemViewDataBinder)

@@ -60,7 +60,7 @@ class ItemAudioViewDataBinder @Inject constructor(
                 ivAudioCover.setImageResource(R.drawable.view_corner_radius_audio)
             }
 
-            binding.seekBar.max = attachment.meta?.duration ?: 100
+            seekBar.max = attachment.meta?.duration ?: 100
 
             ChatroomConversationItemViewDataBinderUtil.initAudioItemView(this, attachment)
 
@@ -77,7 +77,7 @@ class ItemAudioViewDataBinder @Inject constructor(
 
             if (attachment.parentConversation != null) {
                 val hasAnswer = attachment.parentConversation.hasAnswer()
-                val isLastItem = attachment.parentConversation.attachmentCount!! - 1 == position
+                val isLastItem = attachment.parentConversation.attachmentCount - 1 == position
                 if (hasAnswer || !isLastItem) {
                     setConstraintsForName(this, true)
                 } else {

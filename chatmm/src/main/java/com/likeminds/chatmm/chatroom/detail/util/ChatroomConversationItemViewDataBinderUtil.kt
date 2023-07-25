@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.text.*
 import android.text.style.*
 import android.text.util.Linkify
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -921,11 +922,13 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun initAudioItemView(binding: ItemAudioBinding, attachment: AttachmentViewData) {
+        Log.d("987654", "initAudioItemVie-meta: ${attachment.meta}")
         binding.apply {
             when (attachment.mediaState) {
                 MEDIA_ACTION_NONE -> {
                     ivPlayPause.setImageResource(R.drawable.ic_play_grey)
                     ivPlayPause.isClickable = true
+                    Log.d("987654", "initAudioItemVie-meta: ${attachment.currentDuration}")
                     if (attachment.meta != null) {
                         tvAudioDuration.text =
                             if (!attachment.currentDuration.equals("00:00")) {

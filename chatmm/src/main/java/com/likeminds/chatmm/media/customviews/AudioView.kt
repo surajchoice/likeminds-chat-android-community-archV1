@@ -55,16 +55,14 @@ class AudioView(
     }
 
     private fun initRecyclerView() {
-        binding.rvAudio.apply {
-            adapter = ChatroomItemAdapter(
-                userPreferences,
-                chatroomItemAdapterListener = this@AudioView
-            )
-            this@AudioView.adapter?.replace(attachments.toList())
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
-                false
-            this.adapter = adapter
-        }
+        adapter = ChatroomItemAdapter(
+            userPreferences,
+            chatroomItemAdapterListener = this@AudioView
+        )
+        adapter?.replace(attachments.toList())
+        (binding.rvAudio.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
+            false
+        binding.rvAudio.adapter = adapter
     }
 
     fun replaceList(attachments: List<AttachmentViewData>) {

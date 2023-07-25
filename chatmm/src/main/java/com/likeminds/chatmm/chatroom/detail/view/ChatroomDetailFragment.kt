@@ -242,7 +242,10 @@ class ChatroomDetailFragment :
 
                             attachment = attachment.toBuilder()
                                 .progress(audioDurationInt)
-                                .currentDuration(audioDurationString)
+                                .currentDuration(
+                                    audioDurationString
+                                        ?: requireContext().getString(R.string.start_duration)
+                                )
                                 .build()
 
                             updateAudioVoiceNoteBinder(
@@ -289,7 +292,7 @@ class ChatroomDetailFragment :
                             if (isAudioComplete) {
                                 attachment = attachment.toBuilder()
                                     .progress(0)
-                                    .currentDuration(context?.getString(R.string.start_duration))
+                                    .currentDuration(requireContext().getString(R.string.start_duration))
                                     .mediaState(MEDIA_ACTION_NONE)
                                     .build()
                             }
@@ -986,7 +989,7 @@ class ChatroomDetailFragment :
 
                         attachment = attachment.toBuilder()
                             .progress(0)
-                            .currentDuration(context?.getString(R.string.start_duration))
+                            .currentDuration(requireContext().getString(R.string.start_duration))
                             .mediaState(MEDIA_ACTION_NONE)
                             .build()
 
