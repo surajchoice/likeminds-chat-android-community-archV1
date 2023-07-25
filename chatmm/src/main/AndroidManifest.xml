@@ -55,6 +55,24 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <service android:name=".utils.chrometabs.CustomTabService" />
+
+        <service
+            android:name=".media.util.MediaAudioForegroundService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <provider
+            android:name="com.likeminds.chatmm.utils.file.util.LMFileProvider"
+            android:authorities="${applicationId}.likeminds.groupchat.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/groupchat_filepaths" />
+        </provider>
+
     </application>
 
 </manifest>
