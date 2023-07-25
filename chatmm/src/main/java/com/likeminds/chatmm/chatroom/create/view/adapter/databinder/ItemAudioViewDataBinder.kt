@@ -3,10 +3,7 @@ package com.likeminds.chatmm.chatroom.create.view.adapter.databinder
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewConfiguration
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintSet
 import com.likeminds.chatmm.R
@@ -45,7 +42,7 @@ class ItemAudioViewDataBinder @Inject constructor(
             this.attachment = attachment
             this.position = position
             parentConversation = attachment.parentConversation
-            parentChatRoom = attachment.parentChatRoom
+            parentChatRoom = attachment.parentChatroom
             parentViewItemPosition = attachment.parentViewItemPosition
 
             setListeners(this)
@@ -203,7 +200,7 @@ class ItemAudioViewDataBinder @Inject constructor(
         checkForSelectionEnabled: Boolean = false,
     ): Boolean {
         val attachmentViewData = binding.attachment
-        if (attachmentViewData?.parentChatRoom == null) {
+        if (attachmentViewData?.parentChatroom == null) {
             val parentConversation = attachmentViewData?.parentConversation ?: return false
             val parentPosition = attachmentViewData.parentViewItemPosition ?: return false
             if (checkForSelectionEnabled) {
@@ -216,7 +213,7 @@ class ItemAudioViewDataBinder @Inject constructor(
                 return true
             }
         } else {
-            val parentChatroom = attachmentViewData.parentChatRoom
+            val parentChatroom = attachmentViewData.parentChatroom
             val parentPosition = attachmentViewData.parentViewItemPosition ?: return false
             if (checkForSelectionEnabled) {
                 if (adapterListener?.isSelectionEnabled() == true) {

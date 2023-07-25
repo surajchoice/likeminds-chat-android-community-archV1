@@ -1135,7 +1135,7 @@ class ChatroomDetailFragment :
         isVoiceNoteRecording = true
         voiceNoteUtils.startVoiceNote(binding)
         if (sdkPreferences.getSlideUpVoiceNoteToast()) {
-            viewModel.setSlideUpVoiceNoteToast(false)
+            sdkPreferences.setSlideUpVoiceNoteToast(false)
             ViewUtils.showAnchoredToast(binding.voiceNoteSlideUpToast.layoutToast)
         }
         requireView().performHapticFeedback(
@@ -1645,9 +1645,9 @@ class ChatroomDetailFragment :
                 val updatedText = memberTagging.replaceSelectedMembers(editableText).trim()
                 when (inputBox.viewReply.replySourceType) {
                     REPLY_SOURCE_CHATROOM -> {
-                        val chatRoom = inputBox.viewReply.chatRoomViewData
-                        if (chatRoom != null) {
-                            viewModel.postEditedChatRoom(updatedText, chatRoom)
+                        val chatroom = inputBox.viewReply.chatRoomViewData
+                        if (chatroom != null) {
+                            viewModel.postEditedChatRoom(updatedText, chatroom)
                         } else {
                             ViewUtils.showShortSnack(root, "Please enter your response")
                         }
@@ -2161,6 +2161,7 @@ class ChatroomDetailFragment :
                 binding.inputBox.etAnswer.text?.toString()
             )
         } catch (e: Exception) {
+            Log.e(TAG, e.toString())
         }
     }
 
@@ -2719,10 +2720,10 @@ class ChatroomDetailFragment :
     private fun observeChatroom() {
         viewModel.chatroomDetailLiveData.observe(viewLifecycleOwner) {
             val chatroomDetail = it ?: return@observe
-            if (chatroomDetail.chatroom == null || chatroomDetail.chatroom?.isDeleted() == true) {
+            if (chatroomDetail.chatroom == null || chatroomDetail.chatroom.isDeleted()) {
                 childFragmentManager.popBackStack()
                 return@observe
-            } else if (chatroomDetail.chatroom?.isSecret == true && chatroomDetail.canAccessSecretChatRoom == false) {
+            } else if (chatroomDetail.chatroom.isSecret == true && chatroomDetail.canAccessSecretChatRoom == false) {
                 childFragmentManager.popBackStack()
                 return@observe
             }
@@ -2733,7 +2734,7 @@ class ChatroomDetailFragment :
 
                 else -> {
                     if (chatroomDetail.participantCount != null) {
-                        updateParticipantsCount(chatroomDetail.participantCount ?: 0)
+                        updateParticipantsCount(chatroomDetail.participantCount)
                     }
                 }
             }
@@ -2914,7 +2915,7 @@ class ChatroomDetailFragment :
     }
 
     private fun observeNewOptionAddedLiveData() {
-        viewModel.addOptionResponse.observe(viewLifecycleOwner) { _ ->
+        viewModel.addOptionResponse.observe(viewLifecycleOwner) {
             ProgressHelper.hideProgress(binding.progressBar)
         }
     }
@@ -3548,23 +3549,22 @@ class ChatroomDetailFragment :
         repliedConversationId: String,
     ) {
         if (!highlightConversation(repliedConversationId)) {
-            // todo:
-//            viewModel.fetchRepliedConversationOnClick(
-//                conversation,
-//                repliedConversationId,
-//                chatroomDetailAdapter.items()
-//            )
+            viewModel.fetchRepliedConversationOnClick(
+                conversation,
+                repliedConversationId,
+                chatroomDetailAdapter.items()
+            )
         }
     }
 
     /**
      * Invoked on click of a replied chatRoom. The motive is to scroll the recyclerview to the
      * original chatroom so that it comes in the viewport of the screen and gets highlighted.
-     * @param repliedChatRoomId Id of the original chatRoom in which conversation was replied.
+     * @param repliedChatroomId Id of the original chatRoom in which conversation was replied.
      */
-    override fun scrollToRepliedChatRoom(repliedChatRoomId: String) {
-        if (!highlightChatroom(repliedChatRoomId)) {
-            scrollToExtremeTop(repliedChatRoomId)
+    override fun scrollToRepliedChatroom(repliedChatroomId: String) {
+        if (!highlightChatroom(repliedChatroomId)) {
+            scrollToExtremeTop(repliedChatroomId)
         }
     }
 
@@ -4050,7 +4050,7 @@ class ChatroomDetailFragment :
                     ((it is ConversationViewData) && (it.id == localParentConversationId))
                 } as? ConversationViewData ?: return
 
-            if ((item.attachmentCount ?: 0) >= 1) {
+            if ((item.attachmentCount) >= 1) {
                 var attachment = item.attachments?.get(localChildPosition) ?: return
 
                 attachment = attachment.toBuilder()
@@ -4246,11 +4246,11 @@ class ChatroomDetailFragment :
 
     /**
      * Highlight the chatRoom view. This is usually used to highlight the replied conversation's parent
-     * @param chatRoomId The chatRoom id to highlight
+     * @param chatroomId The chatRoom id to highlight
      */
-    private fun highlightChatroom(chatRoomId: String?): Boolean {
-        if (!chatRoomId.isNullOrEmpty()) {
-            val index = getIndexOfChatRoom(chatRoomId)
+    private fun highlightChatroom(chatroomId: String?): Boolean {
+        if (!chatroomId.isNullOrEmpty()) {
+            val index = getIndexOfChatRoom(chatroomId)
             if (index.isValidIndex()) {
                 scrolledConversationPosition = index
                 scrollToPositionWithOffset(index)
@@ -5142,7 +5142,7 @@ class ChatroomDetailFragment :
                 .isConversation(false)
                 .build()
         ).show(childFragmentManager, ReactionsListDialog.TAG)
-        if (!chatroomViewData.communityId.isNullOrEmpty())
+        if (chatroomViewData.communityId.isNotEmpty())
             reactionsViewModel.sendReactionListOpenedEvent(
                 "",
                 chatroomId,
@@ -5193,7 +5193,7 @@ class ChatroomDetailFragment :
         ProgressHelper.showProgress(binding.progressBar)
         if (addPollOptionExtras.conversationId != null) {
             viewModel.addNewConversationPollOption(
-                addPollOptionExtras.conversationId!!,
+                addPollOptionExtras.conversationId,
                 addPollOptionExtras.pollOptionText ?: ""
             )
         }
@@ -5334,7 +5334,7 @@ class ChatroomDetailFragment :
             onScreenChanged()
             val extras = ViewParticipantsExtras.Builder()
                 .chatroomId(chatroomViewData.id)
-                .communityId(chatroomViewData.communityId ?: "")
+                .communityId(chatroomViewData.communityId)
                 .isSecretChatroom(chatroomViewData.isSecret ?: false)
                 .chatroomName(chatroomViewData.header ?: "")
                 .build()

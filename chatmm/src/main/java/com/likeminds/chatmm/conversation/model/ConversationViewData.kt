@@ -70,26 +70,46 @@ class ConversationViewData private constructor(
                 val videoCount: Int = ChatroomUtil.getMediaCount(VIDEO, attachments)
                 val audioCount: Int = ChatroomUtil.getMediaCount(AUDIO, attachments)
                 val voiceNoteCount: Int = ChatroomUtil.getMediaCount(VOICE_NOTE, attachments)
-                if (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_IMAGE
-                if (imageCount == 0 && gifCount == 1 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_GIF
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 1 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_PDF
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 1 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_VIDEO
-                if (imageCount == 0 && gifCount == 0 && pdfCount > 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) {
-                    ITEM_CONVERSATION_MULTIPLE_DOCUMENT
-                }
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount > 0 && voiceNoteCount == 0) {
-                    ITEM_CONVERSATION_AUDIO
-                }
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount > 0) {
-                    ITEM_CONVERSATION_VOICE_NOTE
-                }
-                if (imageCount + gifCount + pdfCount + videoCount > 1) {
-                    ITEM_CONVERSATION_MULTIPLE_MEDIA
-                }
-                if (ogTags != null) {
-                    ITEM_CONVERSATION_LINK
-                } else {
-                    ITEM_CONVERSATION
+                when {
+                    (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_IMAGE
+                    }
+
+                    (imageCount == 0 && gifCount == 1 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_GIF
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 1 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_PDF
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 1 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_VIDEO
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount > 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_MULTIPLE_DOCUMENT
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount > 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_AUDIO
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount > 0) -> {
+                        ITEM_CONVERSATION_VOICE_NOTE
+                    }
+
+                    (imageCount + gifCount + pdfCount + videoCount > 1) -> {
+                        ITEM_CONVERSATION_MULTIPLE_MEDIA
+                    }
+
+                    (ogTags != null) -> {
+                        ITEM_CONVERSATION_LINK
+                    }
+
+                    else -> {
+                        ITEM_CONVERSATION
+                    }
                 }
             }
         }

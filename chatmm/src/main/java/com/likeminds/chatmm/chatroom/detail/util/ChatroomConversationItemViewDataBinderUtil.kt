@@ -883,7 +883,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                             if (replyConversation != null) {
                                 listener.scrollToRepliedAnswer(conversation, replyConversation.id)
                             } else if (replyChatRoom != null) {
-                                listener.scrollToRepliedChatRoom(replyChatRoom.id)
+                                listener.scrollToRepliedChatroom(replyChatRoom.id)
                             }
                         }
                     }
@@ -1114,14 +1114,14 @@ object ChatroomConversationItemViewDataBinderUtil {
                                     .dynamicType(viewType)
                                     .attachments(attachmentList)
                                     .parentConversation(parentConversation)
-                                    .parentChatRoom(parentChatRoom)
+                                    .parentChatroom(parentChatRoom)
                                     .parentViewItemPosition(parentViewItemPosition)
                                     .build()
                             } else {
                                 return@mapIndexed attachmentViewData.toBuilder()
                                     .dynamicType(viewType)
                                     .parentConversation(parentConversation)
-                                    .parentChatRoom(parentChatRoom)
+                                    .parentChatroom(parentChatRoom)
                                     .parentViewItemPosition(parentViewItemPosition)
                                     .build()
                             }
@@ -1142,14 +1142,14 @@ object ChatroomConversationItemViewDataBinderUtil {
                                     .dynamicType(viewType)
                                     .attachments(attachmentList)
                                     .parentConversation(parentConversation)
-                                    .parentChatRoom(parentChatRoom)
+                                    .parentChatroom(parentChatRoom)
                                     .parentViewItemPosition(parentViewItemPosition)
                                     .build()
                             } else {
                                 return@mapIndexed attachmentViewData.toBuilder()
                                     .dynamicType(viewType)
                                     .parentConversation(parentConversation)
-                                    .parentChatRoom(parentChatRoom)
+                                    .parentChatroom(parentChatRoom)
                                     .parentViewItemPosition(parentViewItemPosition)
                                     .build()
                             }
@@ -1166,7 +1166,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                         return@map attachmentViewData.toBuilder()
                             .dynamicType(viewType)
                             .parentConversation(parentConversation)
-                            .parentChatRoom(parentChatRoom)
+                            .parentChatroom(parentChatRoom)
                             .parentViewItemPosition(parentViewItemPosition)
                             .build()
 

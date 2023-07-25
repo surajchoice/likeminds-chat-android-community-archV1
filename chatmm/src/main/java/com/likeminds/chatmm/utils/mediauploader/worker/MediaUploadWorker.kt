@@ -1,26 +1,16 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.WorkInfo
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.WorkerUtil.getIntOrNull
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.conversation.model.AttachmentMeta
-import com.likeminds.likemindschat.conversation.model.PutMultimediaRequest
-import com.likeminds.likemindschat.conversation.model.PutMultimediaResponse
-import com.likeminds.likemindschat.conversation.model.UpdateConversationRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import com.likeminds.likemindschat.conversation.model.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.*
 
 abstract class MediaUploadWorker(
     appContext: Context,
@@ -171,7 +161,7 @@ abstract class MediaUploadWorker(
             .filesCount(totalMediaCount)
             .url(downloadUri?.first ?: "")
             .thumbnailUrl(downloadUri?.second)
-            .type(awsFileResponse.fileType.toString())
+            .type(awsFileResponse.fileType)
             .index(awsFileResponse.index)
             .width(awsFileResponse.width)
             .height(awsFileResponse.height)

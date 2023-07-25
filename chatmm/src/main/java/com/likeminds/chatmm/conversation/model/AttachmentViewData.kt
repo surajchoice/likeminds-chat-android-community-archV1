@@ -3,9 +3,7 @@ package com.likeminds.chatmm.conversation.model
 import android.net.Uri
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
-import com.likeminds.chatmm.media.model.AUDIO
-import com.likeminds.chatmm.media.model.PDF
-import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.model.*
 import kotlinx.parcelize.Parcelize
 
@@ -22,7 +20,7 @@ class AttachmentViewData private constructor(
     val subTitle: String?,
     val attachments: List<AttachmentViewData>?,
     val parentConversation: ConversationViewData?,
-    val parentChatRoom: ChatroomViewData?,
+    val parentChatroom: ChatroomViewData?,
     val parentViewItemPosition: Int?,
     val awsFolderPath: String?,
     val localFilePath: String?,
@@ -67,7 +65,7 @@ class AttachmentViewData private constructor(
         private var subTitle: String? = null
         private var attachments: List<AttachmentViewData>? = null
         private var parentConversation: ConversationViewData? = null
-        private var parentChatRoom: ChatroomViewData? = null
+        private var parentChatroom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
         private var awsFolderPath: String? = null
         private var localFilePath: String? = null
@@ -99,8 +97,8 @@ class AttachmentViewData private constructor(
         fun parentConversation(parentConversation: ConversationViewData?) =
             apply { this.parentConversation = parentConversation }
 
-        fun parentChatRoom(parentChatRoom: ChatroomViewData?) =
-            apply { this.parentChatRoom = parentChatRoom }
+        fun parentChatroom(parentChatroom: ChatroomViewData?) =
+            apply { this.parentChatroom = parentChatroom }
 
         fun parentViewItemPosition(parentViewItemPosition: Int?) =
             apply { this.parentViewItemPosition = parentViewItemPosition }
@@ -138,7 +136,7 @@ class AttachmentViewData private constructor(
             subTitle,
             attachments,
             parentConversation,
-            parentChatRoom,
+            parentChatroom,
             parentViewItemPosition,
             awsFolderPath,
             localFilePath,
@@ -169,7 +167,7 @@ class AttachmentViewData private constructor(
             .subTitle(subTitle)
             .attachments(attachments)
             .parentConversation(parentConversation)
-            .parentChatRoom(parentChatRoom)
+            .parentChatroom(parentChatroom)
             .parentViewItemPosition(parentViewItemPosition)
             .awsFolderPath(awsFolderPath)
             .localFilePath(localFilePath)

@@ -197,9 +197,8 @@ class ChatroomDetailViewModel @Inject constructor(
         return sdkPreferences.isGifSupportEnabled()
     }
 
-    // todo: member rights
     fun isMicroPollsEnabled(): Boolean {
-        return sdkPreferences.isMicroPollsEnabled() /* && hasCreatePollRights() */
+        return sdkPreferences.isMicroPollsEnabled() && hasCreatePollRights()
     }
 
     fun isAnnouncementChatroom(): Boolean {
@@ -208,6 +207,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun canMembersCanMessage(): Boolean? {
         return chatroomDetail.chatroom?.memberCanMessage
+    }
+
+    private fun hasCreatePollRights(): Boolean {
+        return canMemberCreatePoll.value == true
     }
 
     /**
@@ -251,14 +254,6 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun canSetChatroomTopic(): Boolean {
         return isAdminMember() || isChatroomCreator()
-    }
-
-    fun getSlideUpVoiceNoteToast(): Boolean {
-        return sdkPreferences.getSlideUpVoiceNoteToast()
-    }
-
-    fun setSlideUpVoiceNoteToast(value: Boolean) {
-        sdkPreferences.setSlideUpVoiceNoteToast(value)
     }
 
     fun getOtherDmMember(): MemberViewData? {
@@ -1142,7 +1137,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 if (oldChatroomViewData != null) {
 
                     //change follow status for chatroom
-                    val followStatus = oldChatroomViewData.followStatus ?: return@launchIO
+                    val followStatus = oldChatroomViewData.followStatus
                     val newChatroomViewData = oldChatroomViewData.toBuilder()
                         .followStatus(!followStatus)
                         .build()
@@ -1519,6 +1514,11 @@ class ChatroomDetailViewModel @Inject constructor(
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)
             .build()
+        Log.d("attachments", "saveTemporaryConversation: ${conversation.id}")
+        Log.d(
+            "attachments",
+            "saveTemporaryConversation - attachmentssize: ${conversation.attachments?.size}"
+        )
         lmChatClient.saveTemporaryConversation(saveConversationRequest)
         val replyConversation = if (conversation.replyConversationId != null) {
             val getConversationRequest = GetConversationRequest.Builder()
@@ -1573,7 +1573,9 @@ class ChatroomDetailViewModel @Inject constructor(
         if (response?.conversation != null) {
             var uploadData: Pair<WorkContinuation?, String>? = null
             val requestList = ArrayList<GenericFileRequest>()
+            Log.d("attachments", "onConversationPosted: ${updatedFileUris?.size}")
             if (!updatedFileUris.isNullOrEmpty()) {
+                Log.d("attachments", "onConversationPosted: ${updatedFileUris.size}")
                 uploadData = uploadFilesViaWorker(context, response.id!!, updatedFileUris.size)
                 requestList.addAll(
                     getUploadFileRequestList(
@@ -1700,6 +1702,24 @@ class ChatroomDetailViewModel @Inject constructor(
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
 
+    fun fetchRepliedConversationOnClick(
+        conversation: ConversationViewData,
+        repliedConversationId: String,
+        oldConversations: List<BaseViewType>,
+    ) {
+        val data = fetchPaginatedData(
+            SCROLL_UP,
+            conversation,
+            oldConversations,
+            repliedConversationId = repliedConversationId
+        )
+        if (data != null) {
+            viewModelScope.launchMain {
+                _paginatedData.value = data
+            }
+        }
+    }
+
     fun postEditedChatRoom(text: String, chatroom: ChatroomViewData) {
         viewModelScope.launchIO {
             // todo:
@@ -1791,7 +1811,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 uploadData = uploadFilesViaWorker(
                     context,
                     response.id!!,
-                    conversation.attachmentCount ?: 0
+                    conversation.attachmentCount
                 )
                 requestList.addAll(getUploadFileRequestList(context, conversation))
             }
