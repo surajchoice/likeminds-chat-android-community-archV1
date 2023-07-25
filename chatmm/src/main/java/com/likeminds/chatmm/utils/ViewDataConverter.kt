@@ -199,7 +199,11 @@ object ViewDataConverter {
             .state(conversation.state)
             .attachments(
                 conversation.attachments?.mapNotNull { attachment ->
-                    convertAttachment(attachment)
+                    convertAttachment(
+                        attachment,
+                        conversation.member?.name ?: "",
+                        "${conversation.date ?: ""}, ${conversation.createdAt ?: ""}"
+                    )
                 }?.let {
                     ArrayList(it)
                 }

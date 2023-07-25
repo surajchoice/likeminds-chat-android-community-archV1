@@ -1,9 +1,8 @@
 package com.likeminds.chatmm.media.view
 
-import android.content.ClipData
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
@@ -66,6 +65,12 @@ class MediaActivity : BaseAppCompatActivity() {
                     when (mediaExtras.mediaScreenType) {
                         MEDIA_VERTICAL_LIST_SCREEN -> {
                             initActionBar(mediaExtras, R.style.LMAppTheme_Black)
+                            Log.d(
+                                "12344-11", """
+                                title: ${mediaExtras.medias?.first()?.title}
+                                subtitle ${mediaExtras.medias?.first()?.subTitle}
+                            """.trimIndent()
+                            )
                             val args = Bundle().apply {
                                 putParcelable(ARG_MEDIA_EXTRAS, mediaExtras)
                             }
