@@ -1650,7 +1650,7 @@ class ChatroomDetailFragment :
                     REPLY_SOURCE_CHATROOM -> {
                         val chatroom = inputBox.viewReply.chatRoomViewData
                         if (chatroom != null) {
-                            viewModel.postEditedChatRoom(updatedText, chatroom)
+                            viewModel.postEditedChatroom(updatedText, chatroom)
                         } else {
                             ViewUtils.showShortSnack(root, "Please enter your response")
                         }
@@ -3068,6 +3068,9 @@ class ChatroomDetailFragment :
                         context,
                         context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
+                }
+                is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
+                    ViewUtils.showLongSnack(binding.root, response.errorMessage)
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)

@@ -157,6 +157,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class DeleteConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
+        data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -1719,13 +1720,21 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
-    fun postEditedChatRoom(text: String, chatroom: ChatroomViewData) {
+    fun postEditedChatroom(text: String, chatroom: ChatroomViewData) {
         viewModelScope.launchIO {
-            // todo:
-//            val request = EditChatroomRequest.Builder()
-//                .text(text)
-//                .chatroomId(chatroom.id())
-//                .build()
+            val request = EditChatroomTitleRequest.Builder()
+                .text(text)
+                .chatroomId(chatroom.id)
+                .build()
+
+            val response = lmChatClient.editChatroomTitle(request)
+            if (!response.success) {
+                errorEventChannel.send(
+                    ErrorMessageEvent.EditChatroomTitle(
+                        response.errorMessage
+                    )
+                )
+            }
         }
     }
 

@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -162,6 +163,17 @@ object ViewUtils {
             snackBar.setAnchorView(anchorView)
         }
         snackBar.show()
+    }
+
+    // shows long snack bar with message
+    fun showLongSnack(view: View, text: String?, anchorView: View? = null): Snackbar? {
+        if (text.isNullOrEmpty()) return null
+        val snackBar = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+        anchorView?.let {
+            snackBar.setAnchorView(anchorView)
+        }
+        snackBar.show()
+        return snackBar
     }
 
     fun showAnchoredToast(layoutToast: ConstraintLayout) {
