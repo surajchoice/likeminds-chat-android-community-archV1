@@ -239,6 +239,7 @@ object ViewDataConverter {
             .id(member.id)
             .name(member.name)
             .imageUrl(member.imageUrl)
+            .userUniqueId(member.userUniqueId)
             .state(member.state ?: 0)
             .customIntroText(member.customIntroText)
             .customClickText(member.customClickText)

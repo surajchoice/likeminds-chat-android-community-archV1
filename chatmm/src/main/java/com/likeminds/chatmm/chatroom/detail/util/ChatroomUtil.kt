@@ -227,22 +227,9 @@ object ChatroomUtil {
     ): String {
         val uuid = conversation.memberViewData.sdkClientInfo.uuid
         return if (uuid == currentMemberId) {
-            // todo: check
-            Log.d(
-                "TAG", """
-                1 deletedby: ${conversation.deletedBy}
-                currentMemberId: $currentMemberId
-            """.trimIndent()
-            )
+            val deletedBy = conversation.deletedBy
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
-            Log.d(
-                "TAG", """
-                2 deletedByUUID: $deletedByUUID
-                currentMemberId: $currentMemberId
-                check: ${deletedByUUID == currentMemberId}
-            """.trimIndent()
-            )
-            if (deletedByUUID == currentMemberId) {
+            if ((deletedBy == currentMemberId) || (deletedByUUID == currentMemberId)) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)

@@ -1348,7 +1348,6 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
         sendConversationUpdatesToUI(conversations.map {
-            Log.d("TAG", "postConversationsDeleted: ${currentMemberFromDb?.userUniqueId}")
             it.toBuilder()
                 .deletedBy(userPreferences.getMemberId())
                 .deletedByMember(currentMemberFromDb)
