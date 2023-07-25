@@ -1919,14 +1919,12 @@ class ChatroomDetailFragment :
     }
 
     private fun openMedia(contentUri: Uri, mimeType: String) {
-        Log.d(TAG, "openMedia: ")
         val singleUri = SingleUriData.Builder()
             .uri(contentUri)
             .fileType(mimeType)
             .build()
         when {
             viewModel.isGifSupportEnabled() && singleUri.fileType == GIF -> {
-                Log.d(TAG, "openMedia: ")
                 showGifEditScreen(singleUri)
             }
 

@@ -265,6 +265,7 @@ object ViewDataConverter {
     ): ReactionViewData {
         return ReactionViewData.Builder()
             .reaction(reactionData.reaction)
+            .memberViewData(convertMember(reactionData.member))
             .conversationId(conversationId)
             .build()
     }
@@ -301,6 +302,7 @@ object ViewDataConverter {
             .name(memberStateResponse.name)
             .updatedAt(memberStateResponse.updatedAt)
             .isOwner(memberStateResponse.isOwner)
+            .sdkClientInfo(convertSDKClientInfo(memberStateResponse.sdkClientInfo))
             .build()
     }
 

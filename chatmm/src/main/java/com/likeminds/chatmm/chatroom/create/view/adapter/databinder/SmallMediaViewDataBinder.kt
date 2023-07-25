@@ -1,22 +1,17 @@
 package com.likeminds.chatmm.chatroom.create.view.adapter.databinder
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
 import com.likeminds.chatmm.databinding.ItemMediaSmallBinding
-import com.likeminds.chatmm.media.model.SingleUriData
-import com.likeminds.chatmm.media.model.SmallMediaViewData
-import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_MEDIA_SMALL
 
 class SmallMediaViewDataBinder constructor(private val imageAdapterListener: ImageAdapterListener) :
-    ViewDataBinder<ItemMediaSmallBinding, BaseViewType>() {
+    ViewDataBinder<ItemMediaSmallBinding, SmallMediaViewData>() {
 
     override val viewType: Int
         get() = ITEM_MEDIA_SMALL
@@ -26,10 +21,13 @@ class SmallMediaViewDataBinder constructor(private val imageAdapterListener: Ima
         return ItemMediaSmallBinding.inflate(inflater, parent, false)
     }
 
-    override fun bindData(binding: ItemMediaSmallBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemMediaSmallBinding,
+        data: SmallMediaViewData,
+        position: Int
+    ) {
         binding.apply {
-            val smallMediaViewData = data as SmallMediaViewData
-            this.smallMediaViewData = smallMediaViewData
+            smallMediaViewData = data
             initMedia(this, data.singleUriData)
 
             if (data.isSelected) {
@@ -44,7 +42,7 @@ class SmallMediaViewDataBinder constructor(private val imageAdapterListener: Ima
                 )
             }
             ivImg.setOnClickListener {
-                imageAdapterListener.mediaSelected(position, smallMediaViewData)
+                imageAdapterListener.mediaSelected(position, data)
             }
         }
     }

@@ -14,7 +14,7 @@ import com.likeminds.chatmm.utils.model.*
 
 class ItemImageViewDataBinder constructor(
     private val adapterListener: ChatroomItemAdapterListener?,
-) : ViewDataBinder<ItemImageBinding, BaseViewType>() {
+) : ViewDataBinder<ItemImageBinding, AttachmentViewData>() {
 
     override val viewType: Int
         get() = ITEM_IMAGE
@@ -70,16 +70,19 @@ class ItemImageViewDataBinder constructor(
         return binding
     }
 
-    override fun bindData(binding: ItemImageBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemImageBinding,
+        data: AttachmentViewData,
+        position: Int
+    ) {
         binding.apply {
-            val attachmentViewData = data as AttachmentViewData
-            this.attachmentViewData = attachmentViewData
+            this.attachmentViewData = data
             this.position = position
-            parentConversation = attachmentViewData.parentConversation
-            parentChatroom = attachmentViewData.parentChatroom
-            parentViewItemPosition = attachmentViewData.parentViewItemPosition
-            initImage(this, attachmentViewData)
-            initImagesLeftView(this, attachmentViewData)
+            parentConversation = data.parentConversation
+            parentChatroom = data.parentChatroom
+            parentViewItemPosition = data.parentViewItemPosition
+            initImage(this, data)
+            initImagesLeftView(this, data)
         }
     }
 

@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.chatroom.create.view.adapter.databinder
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
@@ -11,11 +9,10 @@ import com.likeminds.chatmm.media.model.SmallMediaViewData
 import com.likeminds.chatmm.utils.DateUtil
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_AUDIO_SMALL
 
 class SmallAudioViewDataBinder constructor(private val imageAdapterListener: ImageAdapterListener) :
-    ViewDataBinder<ItemAudioSmallBinding, BaseViewType>() {
+    ViewDataBinder<ItemAudioSmallBinding, SmallMediaViewData>() {
 
     override val viewType: Int
         get() = ITEM_AUDIO_SMALL
@@ -26,13 +23,11 @@ class SmallAudioViewDataBinder constructor(private val imageAdapterListener: Ima
 
     override fun bindData(
         binding: ItemAudioSmallBinding,
-        data: BaseViewType,
+        data: SmallMediaViewData,
         position: Int
     ) {
         binding.apply {
-            val smallMediaData = data as SmallMediaViewData
-
-            this.smallMediaViewData = smallMediaData
+            smallMediaViewData = data
 
             if (data.isSelected) {
                 constraintLayout.background = ContextCompat.getDrawable(
@@ -61,7 +56,7 @@ class SmallAudioViewDataBinder constructor(private val imageAdapterListener: Ima
             }
 
             root.setOnClickListener {
-                imageAdapterListener.mediaSelected(position, smallMediaData)
+                imageAdapterListener.mediaSelected(position, data)
             }
         }
     }

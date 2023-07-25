@@ -89,6 +89,7 @@ class MediaHorizontalListFragment :
     }
 
     private fun observeCommunity() {
+        // todo:
 //        viewModel.communityLiveData.observe(viewLifecycleOwner) { communityViewData ->
 //            downloadableContentTypes = communityViewData.downloadableContentType()
 //            if (!mediaExtras.medias.isNullOrEmpty()) {
@@ -202,10 +203,15 @@ class MediaHorizontalListFragment :
         val videosCount = mediaExtras.medias?.filter {
             it.viewType == ITEM_VIDEO_SWIPE
         }?.size ?: 0
-        return if (imagesCount > 0 && videosCount > 0) "multimedia"
-        else if (imagesCount > 0) "photos"
-        else if (videosCount > 0) "videos"
-        else "media"
+        return if (imagesCount > 0 && videosCount > 0) {
+            "multimedia"
+        } else if (imagesCount > 0) {
+            "photos"
+        } else if (videosCount > 0) {
+            "videos"
+        } else {
+            "media"
+        }
     }
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {

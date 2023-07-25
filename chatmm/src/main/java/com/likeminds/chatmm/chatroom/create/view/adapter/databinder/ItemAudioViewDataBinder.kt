@@ -17,13 +17,12 @@ import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_AUDIO
 import javax.inject.Inject
 
 class ItemAudioViewDataBinder @Inject constructor(
     private val adapterListener: ChatroomItemAdapterListener?,
-) : ViewDataBinder<ItemAudioBinding, BaseViewType>() {
+) : ViewDataBinder<ItemAudioBinding, AttachmentViewData>() {
 
     override val viewType: Int
         get() = ITEM_AUDIO
@@ -36,9 +35,13 @@ class ItemAudioViewDataBinder @Inject constructor(
         )
     }
 
-    override fun bindData(binding: ItemAudioBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemAudioBinding,
+        data: AttachmentViewData,
+        position: Int
+    ) {
         binding.apply {
-            val attachment = data as AttachmentViewData
+            val attachment = data
             this.attachment = attachment
             this.position = position
             parentConversation = attachment.parentConversation

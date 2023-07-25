@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -68,7 +67,6 @@ class ConversationAudioItemViewBinder @Inject constructor(
                 imageViewFailed = ivConversationFailed
             )
 
-            Log.d("987654", "bindData: ${data.deletedBy}")
             if (data.deletedBy != null) {
                 audioView.visibility = View.GONE
                 tvShowMore.hide()

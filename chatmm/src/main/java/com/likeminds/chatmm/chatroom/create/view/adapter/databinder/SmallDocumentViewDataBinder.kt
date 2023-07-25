@@ -9,11 +9,10 @@ import com.likeminds.chatmm.databinding.ItemDocumentSmallBinding
 import com.likeminds.chatmm.media.model.SmallMediaViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT_SMALL
 
 class SmallDocumentViewDataBinder constructor(private val imageAdapterListener: ImageAdapterListener) :
-    ViewDataBinder<ItemDocumentSmallBinding, BaseViewType>() {
+    ViewDataBinder<ItemDocumentSmallBinding, SmallMediaViewData>() {
 
     override val viewType: Int
         get() = ITEM_DOCUMENT_SMALL
@@ -22,14 +21,17 @@ class SmallDocumentViewDataBinder constructor(private val imageAdapterListener: 
         return ItemDocumentSmallBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
-    override fun bindData(binding: ItemDocumentSmallBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemDocumentSmallBinding,
+        data: SmallMediaViewData,
+        position: Int
+    ) {
         binding.apply {
-            val smallMediaViewData = data as SmallMediaViewData
-            this.smallMediaViewData = smallMediaViewData
+            smallMediaViewData = data
 
             ImageBindingUtil.loadImage(
                 ivIcon,
-                smallMediaViewData.singleUriData.thumbnailUri,
+                data.singleUriData.thumbnailUri,
                 R.drawable.ic_pdf
             )
             if (data.isSelected) {
@@ -44,7 +46,7 @@ class SmallDocumentViewDataBinder constructor(private val imageAdapterListener: 
                 )
             }
             root.setOnClickListener {
-                imageAdapterListener.mediaSelected(position, smallMediaViewData)
+                imageAdapterListener.mediaSelected(position, data)
             }
         }
     }

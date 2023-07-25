@@ -204,7 +204,7 @@ class MemberTaggingView(
             user.tag
         } else {
             //create regex from name and id
-            "<<${user.name}|route://member/${user.uuid}>>"
+            "<<${user.name}|route://user_profile/${user.uuid}>>"
         }
 
         //set span

@@ -24,7 +24,9 @@ class ItemReactionViewDataBinder constructor(
     }
 
     override fun bindData(
-        binding: ItemReactionListBinding, data: ReactionViewData, position: Int
+        binding: ItemReactionListBinding,
+        data: ReactionViewData,
+        position: Int
     ) {
         binding.apply {
             reactionViewData = data

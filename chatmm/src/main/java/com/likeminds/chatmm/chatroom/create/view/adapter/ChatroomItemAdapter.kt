@@ -48,6 +48,15 @@ class ChatroomItemAdapter constructor(
         val imageItemViewDataBinder = ItemImageViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(imageItemViewDataBinder)
 
+        val videoViewDataBinder = ItemVideoViewDataBinder(chatroomItemAdapterListener)
+        viewDataBinders.add(videoViewDataBinder)
+
+        val itemImageExpandedViewDataBinder = ItemImageExpandedViewDataBinder()
+        viewDataBinders.add(itemImageExpandedViewDataBinder)
+
+        val itemVideoExpandedViewDataBinder = ItemVideoExpandedViewDataBinder()
+        viewDataBinders.add(itemVideoExpandedViewDataBinder)
+
         val documentItemViewDataBinder = ItemDocumentViewDataBinder(chatroomItemAdapterListener)
         viewDataBinders.add(documentItemViewDataBinder)
 

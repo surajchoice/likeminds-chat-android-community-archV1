@@ -12,12 +12,11 @@ import com.likeminds.chatmm.utils.AndroidUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_DOCUMENT
 
 class ItemDocumentViewDataBinder constructor(
     private val adapterListener: ChatroomItemAdapterListener?,
-) : ViewDataBinder<ItemDocumentBinding, BaseViewType>() {
+) : ViewDataBinder<ItemDocumentBinding, AttachmentViewData>() {
 
     override val viewType: Int
         get() = ITEM_DOCUMENT
@@ -29,9 +28,13 @@ class ItemDocumentViewDataBinder constructor(
         return binding
     }
 
-    override fun bindData(binding: ItemDocumentBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemDocumentBinding,
+        data: AttachmentViewData,
+        position: Int
+    ) {
         binding.apply {
-            val attachment = data as AttachmentViewData
+            val attachment = data
             this.attachment = attachment
             this.position = position
             parentConversation = attachment.parentConversation

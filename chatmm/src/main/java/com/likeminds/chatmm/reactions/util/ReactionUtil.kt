@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.reactions.util
 
+import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
@@ -12,6 +13,13 @@ object ReactionUtil {
         conversationViewData: ConversationViewData
     ): Map<String, List<ReactionViewData>>? {
         val reactions = conversationViewData.reactions
+        Log.d(
+            "123456789", """
+            getMessageReactions
+            name: ${reactions?.first()?.memberViewData?.name}
+            uuid: ${reactions?.first()?.memberViewData?.sdkClientInfo?.uuid}
+        """.trimIndent()
+        )
         return reactions?.groupBy {
             it.reaction
         }

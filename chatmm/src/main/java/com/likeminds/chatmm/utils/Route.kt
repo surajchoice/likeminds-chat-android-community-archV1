@@ -213,7 +213,7 @@ object Route {
     }
 
     fun createRouteForMemberProfile(member: MemberViewData?, communityId: String?): String {
-        return "<<${member?.name}|route://member/${member?.id}?community_id=${communityId}>>"
+        return "<<${member?.name}|route://user_profile/${member?.sdkClientInfo?.uuid}?community_id=${communityId}>>"
     }
 
     fun Uri.getNullableQueryParameter(key: String): String? {
