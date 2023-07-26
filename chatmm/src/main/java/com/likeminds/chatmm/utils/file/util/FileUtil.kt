@@ -1,16 +1,12 @@
 package com.likeminds.chatmm.utils.file.util
 
-import android.content.ComponentName
-import android.content.ContentResolver
-import android.content.Context
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.Build
-import android.os.CancellationSignal
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log

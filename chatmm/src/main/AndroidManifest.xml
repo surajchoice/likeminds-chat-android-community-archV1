@@ -65,7 +65,7 @@
 
         <provider
             android:name="com.likeminds.chatmm.utils.file.util.LMFileProvider"
-            android:authorities="${applicationId}.likeminds.groupchat.fileprovider"
+            android:authorities="${applicationId}.likeminds.chatmm.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

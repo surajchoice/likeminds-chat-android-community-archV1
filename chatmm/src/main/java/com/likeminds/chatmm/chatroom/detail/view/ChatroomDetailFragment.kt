@@ -888,6 +888,9 @@ class ChatroomDetailFragment :
                     if (isFirstTime) {
                         startBackgroundSync()
                     }
+
+                    //we should observe the live conversation once, sync is complete to avoid duplicate conversation
+                    viewModel.observeLiveConversations(requireContext(), chatroomId)
                 }
 
                 WorkInfo.State.CANCELLED -> {

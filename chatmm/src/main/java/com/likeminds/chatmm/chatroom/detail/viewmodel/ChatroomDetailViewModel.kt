@@ -712,7 +712,14 @@ class ChatroomDetailViewModel @Inject constructor(
                 .chatroomId(chatroomId)
                 .listener(conversationChangeListener)
                 .build()
-            lmChatClient.observeConversations(context, observeConversationsRequest)
+            lmChatClient.observeConversations(observeConversationsRequest)
+        }
+    }
+
+    // starts observing live conversations
+    fun observeLiveConversations(context: Context, chatroomId: String) {
+        viewModelScope.launchIO {
+            lmChatClient.observeLiveConversations(context, chatroomId)
         }
     }
 
@@ -1461,13 +1468,18 @@ class ChatroomDetailViewModel @Inject constructor(
             when (it.fileType) {
                 IMAGE, GIF -> {
                     val dimensions = FileUtil.getImageDimensions(context, it.uri)
-                    it.toBuilder().width(dimensions.first).height(dimensions.second).build()
+                    it.toBuilder()
+                        .width(dimensions.first)
+                        .height(dimensions.second)
+                        .build()
                 }
 
                 VIDEO -> {
                     val thumbnailUri = FileUtil.getVideoThumbnailUri(context, it.uri)
                     if (thumbnailUri != null) {
-                        it.toBuilder().thumbnailUri(thumbnailUri).build()
+                        it.toBuilder()
+                            .thumbnailUri(thumbnailUri)
+                            .build()
                     } else {
                         it
                     }
@@ -1573,10 +1585,12 @@ class ChatroomDetailViewModel @Inject constructor(
         if (response?.conversation != null) {
             var uploadData: Pair<WorkContinuation?, String>? = null
             val requestList = ArrayList<GenericFileRequest>()
-            Log.d("attachments", "onConversationPosted: ${updatedFileUris?.size}")
             if (!updatedFileUris.isNullOrEmpty()) {
-                Log.d("attachments", "onConversationPosted: ${updatedFileUris.size}")
-                uploadData = uploadFilesViaWorker(context, response.id!!, updatedFileUris.size)
+                uploadData = uploadFilesViaWorker(
+                    context,
+                    response.id!!,
+                    updatedFileUris.size
+                )
                 requestList.addAll(
                     getUploadFileRequestList(
                         context,
@@ -1586,6 +1600,11 @@ class ChatroomDetailViewModel @Inject constructor(
                     )
                 )
             }
+            savePostedConversation(
+                requestList,
+                response,
+                uploadData?.second
+            )
             postedConversation(
                 taggedUsers,
                 tempConversation,
@@ -1647,6 +1666,49 @@ class ChatroomDetailViewModel @Inject constructor(
 
             builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
         }
+    }
+
+    private fun savePostedConversation(
+        requestList: ArrayList<GenericFileRequest>,
+        response: PostConversationResponse,
+        uploadWorkerUUID: String?
+    ) {
+        val attachmentList = requestList.map { request ->
+            var builder = Attachment.Builder()
+                .name(request.name)
+                .url(request.fileUri.toString())
+                .type(request.fileType)
+                .index(request.index)
+                .width(request.width)
+                .height(request.height)
+                .awsFolderPath(request.awsFolderPath)
+                .localFilePath(request.localFilePath)
+                .meta(
+                    AttachmentMeta.Builder()
+                        .duration(request.meta?.duration)
+                        .numberOfPage(request.meta?.numberOfPage)
+                        .size(request.meta?.size)
+                        .build()
+                )
+            if (request.thumbnailUri != null) {
+                builder = builder.thumbnailUrl(request.thumbnailUri.toString())
+                    .thumbnailAWSFolderPath(request.thumbnailAWSFolderPath)
+                    .thumbnailLocalFilePath(request.thumbnailLocalFilePath)
+            }
+            return@map builder.build()
+        }
+
+        val updatedConversation = response.conversation.toBuilder()
+            .uploadWorkerUUID(uploadWorkerUUID)
+            .attachments(attachmentList)
+            .build()
+
+        // request to save the posted conversation
+        val request = SavePostedConversationRequest.Builder()
+            .conversation(updatedConversation)
+            .isFromNotification(false)
+            .build()
+        lmChatClient.savePostedConversation(request)
     }
 
     private fun postedConversation(

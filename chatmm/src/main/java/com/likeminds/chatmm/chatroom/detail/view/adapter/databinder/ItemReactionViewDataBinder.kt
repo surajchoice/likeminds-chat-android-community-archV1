@@ -44,12 +44,16 @@ class ItemReactionViewDataBinder constructor(
                 data.memberViewData.sdkClientInfo.uuid,
                 memberImage
             )
-            tvRemoveReaction.setOnClickListener {
-                if (data.conversationId != null) {
-                    reactionAdapterListener.removeReaction(data.conversationId.toString())
-                }
-                if (data.chatroomId != null) {
-                    reactionAdapterListener.removeChatroomReaction()
+            this.root.setOnClickListener {
+                if (uuid == data.memberViewData.sdkClientInfo.uuid) {
+                    if (data.conversationId != null) {
+                        reactionAdapterListener.removeReaction(data.conversationId.toString())
+                    }
+                    if (data.chatroomId != null) {
+                        reactionAdapterListener.removeChatroomReaction()
+                    }
+                } else {
+                    return@setOnClickListener
                 }
             }
         }

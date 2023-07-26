@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -57,29 +56,17 @@ class ConversationMediaUploadWorker(
     }
 
     override fun init() {
-        Log.d("attachments", "init id: ${conversationId}")
         val getConversationRequest = GetConversationRequest.Builder()
             .conversationId(conversationId)
             .build()
         val response = lmChatClient.getConversation(getConversationRequest)
-        Log.d("attachments", "init text: ${response.data?.conversation?.answer}")
-        Log.d(
-            "attachments",
-            "init-attachments cnttt: ${response.data?.conversation?.attachmentCount}"
-        )
-        Log.d(
-            "attachments",
-            "init-attachments size: ${response.data?.conversation?.attachments?.size}"
-        )
         conversation = ViewDataConverter.convertConversation(response.data?.conversation) ?: return
-        Log.d("attachments", "init-attachments size: ${conversation.attachments?.size}")
     }
 
     override fun uploadFiles(continuation: Continuation<Int>) {
         val attachmentsToUpload = conversation.attachmentsToUpload() ?: emptyList()
         val thumbnailsToUpload = conversation.thumbnailsToUpload() ?: emptyList()
         val totalFilesToUpload = attachmentsToUpload.size
-        Log.d("attachments", "uploadFiles: ${totalFilesToUpload}")
 
         if (attachmentsToUpload.isEmpty() && thumbnailsToUpload.isEmpty()) {
             continuation.resume(WORKER_SUCCESS)
