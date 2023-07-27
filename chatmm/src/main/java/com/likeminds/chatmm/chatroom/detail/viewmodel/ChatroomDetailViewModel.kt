@@ -414,6 +414,12 @@ class ChatroomDetailViewModel @Inject constructor(
                 null
             }
 
+            Log.d(
+                "PUI-2", """
+                chatroom.isConversationStored: ${chatroom.isConversationStored}
+            """.trimIndent()
+            )
+
             val initialData = when {
                 //3rd case -> open a conversation directly through search/deep links
                 medianConversationId != null -> {
