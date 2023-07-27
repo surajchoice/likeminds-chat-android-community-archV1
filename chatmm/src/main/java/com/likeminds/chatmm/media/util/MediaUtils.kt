@@ -2,21 +2,22 @@ package com.likeminds.chatmm.media.util
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.res.ResourcesCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.media.model.MediaViewData
 import com.likeminds.chatmm.media.model.SingleUriData
+import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil.isLargeFile
 import com.likeminds.chatmm.utils.file.util.MemoryUnitFormat
+import kotlinx.coroutines.*
 
 object MediaUtils {
 
@@ -185,5 +186,69 @@ object MediaUtils {
             }
         }
         return uris
+    }
+
+
+    fun fetchImage(
+        context: Context,
+        image: String?,
+        isRound: Boolean = false,
+        px: Int? = null,
+        callback: (bitmap: Bitmap?) -> Unit
+    ) {
+        if (image.isNullOrBlank()) {
+            callback(null)
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            callback(getBitmap(context, image, isRound, px))
+        }
+    }
+
+    /**
+     * Fetches the Uris asynchronously
+     */
+    fun fetchImageUri(
+        context: Context,
+        image: String?,
+        callback: (bitmap: Uri?) -> Unit
+    ) {
+        if (image.isNullOrBlank()) {
+            callback(null)
+            return
+        }
+        CoroutineScope(Dispatchers.Default).launch {
+            callback(
+                FileUtil.getUriFromBitmapWithRandomName(
+                    context,
+                    getBitmap(context, image),
+                    true
+                )
+            )
+        }
+    }
+
+    /**
+     * Fetches the Bitmap synchronously. Be sure to call it from a background thread
+     */
+    private fun getBitmap(
+        context: Context,
+        url: String?,
+        isRound: Boolean = false,
+        px: Int? = null
+    ): Bitmap? {
+        return try {
+            var glideBuilder = Glide.with(context).asBitmap().load(url)
+            if (isRound) {
+                glideBuilder = glideBuilder.apply(RequestOptions().circleCrop())
+            }
+            if (px != null) {
+                glideBuilder = glideBuilder.override(MemberImageUtil.SIXTY_PX)
+            }
+            glideBuilder.submit().get()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

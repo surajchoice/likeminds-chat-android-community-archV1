@@ -1,10 +1,10 @@
-package com.likeminds.chatmm.pushnotification
+package com.likeminds.chatmm.pushnotification.util
 
 import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
-import com.likeminds.chatmm.pushnotification.LMChatNotificationHandler.Companion.NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID
+import com.likeminds.chatmm.pushnotification.util.LMChatNotificationHandler.Companion.NOTIFICATION_UNREAD_CONVERSATION_GROUP_ID
 
 object NotificationUtils {
 
