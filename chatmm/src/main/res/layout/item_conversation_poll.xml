@@ -281,6 +281,7 @@
                     app:icon="@drawable/ic_vote"
                     app:iconPadding="12dp"
                     app:iconTint="@{buttonColor}"
+                    app:button_type="normal"
                     app:layout_constraintStart_toStartOf="@+id/tv_conversation"
                     app:layout_constraintTop_toBottomOf="@+id/tv_answer_text"
                     app:strokeColor="@{buttonColor}"
