@@ -59,6 +59,10 @@
         <service android:name=".utils.chrometabs.CustomTabService" />
 
         <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <service
             android:name=".media.util.MediaAudioForegroundService"
             android:enabled="true"
             android:exported="true" />

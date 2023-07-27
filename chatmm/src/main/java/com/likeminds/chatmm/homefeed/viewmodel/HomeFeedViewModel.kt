@@ -5,19 +5,17 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.*
 import com.likeminds.chatmm.*
-import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
-import com.likeminds.chatmm.member.util.MemberUtil
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
+import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
@@ -54,6 +52,13 @@ class HomeFeedViewModel @Inject constructor(
             if (chatrooms.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
+            Log.d(
+                TAG, """
+                showInitialChatrooms
+                name: ${chatrooms.map { it.header }}
+                id: ${chatrooms.map { it.id }}
+            """.trimIndent()
+            )
             showInitialChatrooms(chatrooms)
         }
 
@@ -70,6 +75,15 @@ class HomeFeedViewModel @Inject constructor(
             if (inserted.isNotEmpty() || changed.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
+            Log.d(
+                TAG, """
+                updateChatroomChanges
+                name-inserted: ${inserted.map { it.second.header }}
+                id-inserted: ${inserted.map { it.second.id }}
+                name-changed: ${changed.map { it.second.header }}
+                id-changed: ${changed.map { it.second.id }}
+            """.trimIndent()
+            )
             updateChatroomChanges(
                 removedIndex,
                 inserted,
@@ -173,37 +187,15 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
-    private fun getChatRoomViewData(chatroom: Chatroom): HomeFeedItemViewData {
-        val chatroomViewData =
-            ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
-        val lastConversation =
-            ViewDataConverter.convertConversation(chatroom.lastConversation)
-
-        val lastConversationMemberName = MemberUtil.getFirstNameToShow(
-            userPreferences,
-            lastConversation?.memberViewData
-        )
-        val lastConversationText = ChatroomUtil.getLastConversationTextForHome(lastConversation)
-        val lastConversationTime = if (chatroom.isDraft == true) {
-            chatroomViewData.cardCreationTime ?: ""
-        } else {
-            TimeUtil.getLastConversationTime(chatroomViewData.updatedAt)
-        }
-        return HomeFeedItemViewData.Builder()
-            .chatroom(chatroomViewData)
-            .lastConversation(lastConversation)
-            .lastConversationTime(lastConversationTime)
-            .unseenConversationCount(chatroomViewData.unseenCount ?: 0)
-            .chatTypeDrawableId(ChatroomUtil.getTypeDrawableId(chatroomViewData.type))
-            .lastConversationText(lastConversationText)
-            .lastConversationMemberName(lastConversationMemberName)
-            .isLastItem(true)
-            .chatroomImageUrl(chatroomViewData.chatroomImageUrl)
-            .build()
-    }
-
     fun getHomeFeedList(context: Context): List<BaseViewType> {
         val dataList = mutableListOf<BaseViewType>()
+
+        Log.d(
+            TAG, """
+            totalChatroomCount: $totalChatroomCount
+            unseenChatroomCount: $unseenChatroomCount
+        """.trimIndent()
+        )
 
         dataList.add(
             HomeFeedViewData.Builder()
@@ -213,6 +205,12 @@ class HomeFeedViewModel @Inject constructor(
         )
 
         dataList.add(lineBreakViewData)
+
+        Log.d(
+            TAG, """
+            size: ${allChatRoomsData.size}
+        """.trimIndent()
+        )
 
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))

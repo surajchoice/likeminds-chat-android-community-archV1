@@ -200,8 +200,19 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun updateChatrooms() {
+        val list = viewModel.getHomeFeedList(requireContext())
+        val items = list.filterIsInstance<HomeFeedItemViewData>()
+        Log.d(
+            "PUI", """
+            name: ${
+                items.map {
+                    it.chatroom.header
+                }
+            }
+        """.trimIndent()
+        )
         homeFeedAdapter.setItemsViaDiffUtilForHome(
-            viewModel.getHomeFeedList(requireContext())
+            list
         )
     }
 
@@ -246,8 +257,8 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             //if user is guest user hide, profile icon from toolbar
             memberImage.isVisible = !isGuestUser
 
-        //get user from local db
-        viewModel.getUserFromLocalDb()
+            //get user from local db
+            viewModel.getUserFromLocalDb()
 
             ivSearch.setOnClickListener {
                 SearchActivity.start(requireContext())

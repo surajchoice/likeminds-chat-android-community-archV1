@@ -446,6 +446,7 @@ object FileUtil {
         return newUri
     }
 
+    @Suppress("DEPRECATION")
     fun getVideoThumbnailUri(context: Context, videoUri: Uri?): Uri? {
         var bitmap: Bitmap? = null
         var mediaMetadataRetriever: MediaMetadataRetriever? = null
@@ -506,11 +507,22 @@ object FileUtil {
         var uri: Uri? = null
         try {
             imagesFolder.mkdirs()
+            Log.d(
+                "PUI", """
+                getUriFromBitmapWithRandomName
+                imagesFolder: ${imagesFolder.absolutePath}
+                shareUriExternally: $shareUriExternally
+            """.trimIndent()
+            )
             val file = File(imagesFolder, "${System.currentTimeMillis()}.png")
 
             val stream = FileOutputStream(file)
             val compressFormat =
-                if (isPNGFormat) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+                if (isPNGFormat) {
+                    Bitmap.CompressFormat.PNG
+                } else {
+                    Bitmap.CompressFormat.JPEG
+                }
             bitmap.compress(compressFormat, 100, stream)
             stream.flush()
             stream.close()

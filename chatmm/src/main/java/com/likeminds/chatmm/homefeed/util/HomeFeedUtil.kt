@@ -2,15 +2,13 @@ package com.likeminds.chatmm.homefeed.util
 
 import android.content.Context
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
-import com.likeminds.chatmm.homefeed.model.ContentHeaderViewData
-import com.likeminds.chatmm.homefeed.model.EmptyScreenViewData
-import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
+import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.member.util.MemberUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.TimeUtil
 import com.likeminds.chatmm.utils.ViewDataConverter
+import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 
 object HomeFeedUtil {
@@ -32,7 +30,7 @@ object HomeFeedUtil {
         userPreferences: UserPreferences
     ): HomeFeedItemViewData {
         val chatroomViewData =
-            ViewDataConverter.convertChatroom(chatroom) ?: ChatroomViewData.Builder().build()
+            ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 

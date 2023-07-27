@@ -138,6 +138,7 @@ object ViewDataConverter {
             .followStatus(chatroom.followStatus ?: false)
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
+            .isPending(chatroom.isPending)
             .deletedBy(chatroom.deletedBy)
             .deletedByMember(convertMember(chatroom.deletedByMember))
             .updatedAt(chatroom.updatedAt)

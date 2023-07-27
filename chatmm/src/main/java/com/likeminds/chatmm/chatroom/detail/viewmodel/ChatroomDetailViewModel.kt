@@ -1475,6 +1475,13 @@ class ChatroomDetailViewModel @Inject constructor(
                 }
 
                 VIDEO -> {
+                    Log.d(
+                        "PUI", """
+                        includeAttachmentMetaData
+                        uri: ${it.uri}
+                        path: ${it.uri.path}
+                    """.trimIndent()
+                    )
                     val thumbnailUri = FileUtil.getVideoThumbnailUri(context, it.uri)
                     if (thumbnailUri != null) {
                         it.toBuilder()
