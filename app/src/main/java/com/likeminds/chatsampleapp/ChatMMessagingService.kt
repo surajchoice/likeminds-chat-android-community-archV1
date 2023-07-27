@@ -4,7 +4,7 @@ import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
-import com.likeminds.chatmm.pushnotification.LMChatNotificationHandler
+import com.likeminds.chatmm.pushnotification.util.LMChatNotificationHandler
 
 class ChatMMessagingService : FirebaseMessagingService() {
 

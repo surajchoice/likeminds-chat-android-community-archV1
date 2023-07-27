@@ -121,7 +121,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-                    .chatroomViewData(searchChatroomHeaderViewData.chatroom)
+//                    .chatroomViewData(searchChatroomHeaderViewData.chatroom)
                     .chatroomId(searchChatroomHeaderViewData.chatroom.id)
 //                    .communityId(searchChatroomTitleViewData.community?.id())
 //                    .source(LMAnalytics.Sources.SOURCE_HOME_FEED)
@@ -142,7 +142,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-                    .chatroomViewData(searchChatroomTitleViewData.chatroom)
+//                    .chatroomViewData(searchChatroomTitleViewData.chatroom)
                     .chatroomId(searchChatroomTitleViewData.chatroom.id)
 //                    .communityId(searchChatroomTitleViewData.community?.id())
 //                    .source(LMAnalytics.Sources.SOURCE_HOME_FEED)
@@ -164,7 +164,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-                    .chatroomViewData(searchConversationViewData.chatroom)
+//                    .chatroomViewData(searchConversationViewData.chatroom)
                     .chatroomId(searchConversationViewData.chatroom?.id ?: "")
 //                    .communityId(searchConversationViewData.community.id())
                     .conversationId(searchConversationViewData.chatroomAnswer.id)

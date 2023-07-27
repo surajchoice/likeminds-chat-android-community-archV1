@@ -69,7 +69,7 @@ import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.*
 import com.likeminds.chatmm.polls.util.AddPollOptionListener
 import com.likeminds.chatmm.polls.view.*
-import com.likeminds.chatmm.pushnotification.NotificationUtils
+import com.likeminds.chatmm.pushnotification.util.NotificationUtils
 import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.reactions.model.ReactionsListExtras
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences

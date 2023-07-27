@@ -1,11 +1,11 @@
-package com.likeminds.chatmm.pushnotification
+package com.likeminds.chatmm.pushnotification.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class NotificationActionData private constructor(
-    var chatroomId: Int?,
+class NotificationActionData private constructor(
+    var chatroomId: String?,
     var communityId: Int?,
     var groupRoute: String,
     var childRoute: String,
@@ -16,7 +16,7 @@ internal class NotificationActionData private constructor(
 ) : Parcelable {
 
     class Builder {
-        private var chatroomId: Int? = null
+        private var chatroomId: String? = null
         private var communityId: Int? = null
         private var groupRoute: String = ""
         private var childRoute: String = ""
@@ -25,7 +25,7 @@ internal class NotificationActionData private constructor(
         private var category: String? = null
         private var subcategory: String? = null
 
-        fun chatroomId(chatroomId: Int?) = apply { this.chatroomId = chatroomId }
+        fun chatroomId(chatroomId: String?) = apply { this.chatroomId = chatroomId }
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun groupRoute(groupRoute: String) = apply { this.groupRoute = groupRoute }
         fun childRoute(childRoute: String) = apply { this.childRoute = childRoute }

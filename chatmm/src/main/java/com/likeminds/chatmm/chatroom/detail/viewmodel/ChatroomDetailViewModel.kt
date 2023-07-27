@@ -34,11 +34,8 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
-import com.likeminds.likemindschat.helper.model.DecodeUrlRequest
-import com.likeminds.likemindschat.helper.model.DecodeUrlResponse
-import com.likeminds.likemindschat.poll.model.*
-import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.*
+import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -719,7 +716,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 .chatroomId(chatroomId)
                 .listener(conversationChangeListener)
                 .build()
-            lmChatClient.observeConversations(context, observeConversationsRequest)
+            lmChatClient.observeConversations(observeConversationsRequest)
         }
     }
 

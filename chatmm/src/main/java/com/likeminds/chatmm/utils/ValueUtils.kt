@@ -9,8 +9,47 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil.isLargeFile
 import java.io.File
+import java.util.*
 
 object ValueUtils {
+
+    private val alphabets = "abcdefghijklmnopqrstuvwxyz".toCharArray()
+
+    fun generateLexicoGraphicalList(totalSize: Int): List<String> {
+        val set: TreeSet<String> = TreeSet()
+        val builder = StringBuilder()
+
+        var diff = 1
+        var possibleCombinations = 1
+        for (position in alphabets.indices) {
+            builder.append(alphabets[position])
+            if (position > 0) {
+                diff *= 2
+                possibleCombinations += diff
+            }
+            if (possibleCombinations >= totalSize) break
+        }
+
+        generateLexCombinations(set, builder.toString())
+        return set.take(totalSize)
+    }
+
+    private fun generateLexCombinations(set: MutableSet<String>, string: String) {
+        if (string.isEmpty()) return
+
+        // If current string is not already present.
+        if (!set.contains(string)) {
+            set.add(string)
+
+            // Traverse current string, one by one remove every character and recur.
+            for (i in string.indices) {
+                var temp = string
+                temp = temp.substring(0, i) + temp.substring(i + 1)
+                generateLexCombinations(set, temp)
+            }
+        }
+        return
+    }
 
     fun getTemporaryId(): String {
         return "-${System.currentTimeMillis()}"

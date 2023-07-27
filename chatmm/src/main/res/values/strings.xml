@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">LikeMinds</string>
     <string name="no_internet">No internet!</string>
     <string name="check_your_connection_and_try_again">Check your connection and try again.</string>
     <string name="not_now">Not now</string>
@@ -226,4 +227,13 @@
     <string name="reaction_removed">Reaction Removed</string>
     <string name="tap_to_remove">Tap to remove</string>
     <string name="participants">Participants</string>
+    <string name="camera_emoji">📷</string>
+    <string name="gif_emoji">👾</string>
+    <string name="document_emoji">📄</string>
+    <string name="video_emoji">🎥</string>
+    <string name="audio_emoji">🎧</string>
+    <string name="mic_emoji">🎤</string>
+    <string name="mark_as_read">Mark as Read</string>
+    <string name="chatroom_channel_name">Chatroom notifications</string>
+    <string name="chatroom_channel_description">All chatroom notifications</string>
 </resources>
