@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.likeminds.chatmm">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,6 +13,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application>
         <activity
@@ -77,6 +79,19 @@
                 android:resource="@xml/groupchat_filepaths" />
         </provider>
 
+
+        <receiver
+            android:name=".pushnotification.util.NotificationActionBroadcastReceiver"
+            android:exported="false"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_FOLLOW" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_REPLY" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_CHATROOM_REPLY" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_CHATROOM_MARK_AS_READ" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_VOTE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 class AttachmentViewData private constructor(
     val id: String?,
     val name: String?,
+    val url: String?,
     val uri: Uri,
     val type: String,
     val index: Int?,
@@ -56,6 +57,7 @@ class AttachmentViewData private constructor(
     class Builder {
         private var id: String? = null
         private var name: String? = null
+        private var url: String? = null
         private var uri: Uri = Uri.parse("")
         private var type: String = ""
         private var index: Int? = null
@@ -84,6 +86,7 @@ class AttachmentViewData private constructor(
 
         fun id(id: String?) = apply { this.id = id }
         fun name(name: String?) = apply { this.name = name }
+        fun url(url: String?) = apply { this.url = url }
         fun uri(uri: Uri) = apply { this.uri = uri }
         fun type(type: String) = apply { this.type = type }
         fun index(index: Int?) = apply { this.index = index }
@@ -127,6 +130,7 @@ class AttachmentViewData private constructor(
         fun build() = AttachmentViewData(
             id,
             name,
+            url,
             uri,
             type,
             index,
@@ -158,6 +162,7 @@ class AttachmentViewData private constructor(
     fun toBuilder(): Builder {
         return Builder().id(id)
             .name(name)
+            .url(url)
             .uri(uri)
             .type(type)
             .index(index)

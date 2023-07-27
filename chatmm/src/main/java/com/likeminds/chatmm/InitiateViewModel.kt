@@ -78,13 +78,15 @@ class InitiateViewModel @Inject constructor(
             val userUniqueId = user?.userUniqueId ?: ""
             val memberId = user?.id.toString()
             val uuid = user?.sdkClientInfo?.uuid ?: ""
+            val name = user?.name ?: ""
 
             // save details to prefs
             saveDetailsToPrefs(
                 apiKey,
                 userUniqueId,
                 memberId,
-                uuid
+                uuid,
+                name
             )
 
             // todo: member state
@@ -101,13 +103,15 @@ class InitiateViewModel @Inject constructor(
         userUniqueId: String,
         memberId: String,
         uuid: String,
+        name: String
     ) {
         sdkPreferences.setAPIKey(apiKey)
         userPreferences.apply {
             setIsGuestUser(false)
             setUserUniqueId(userUniqueId)
-            setUUID(uuid)
             setMemberId(memberId)
+            setUUID(uuid)
+            setMemberName(name)
         }
     }
 

@@ -15,8 +15,9 @@ class UserPreferences @Inject constructor(
     companion object {
         const val USER_PREFS = "user_prefs"
         const val USER_UNIQUE_ID = "user_unique_id"
-        const val MEMBER_ID = "member_id"
         const val UUID = "uuid"
+        const val MEMBER_ID = "member_id"
+        const val MEMBER_NAME = "member_name"
         private const val IS_GUEST = "is_guest"
     }
 
@@ -30,11 +31,19 @@ class UserPreferences @Inject constructor(
     }
 
     fun getMemberId(): String {
-        return getPreference(MEMBER_ID, "") ?: ""
+        return getPreference(MEMBER_NAME, "") ?: ""
     }
 
     fun setMemberId(memberId: String) {
-        putPreference(MEMBER_ID, memberId)
+        putPreference(MEMBER_NAME, memberId)
+    }
+
+    fun getMemberName(): String {
+        return getPreference(MEMBER_ID, "") ?: ""
+    }
+
+    fun setMemberName(memberName: String) {
+        putPreference(MEMBER_ID, memberName)
     }
 
     fun getUserUniqueId(): String {
@@ -64,5 +73,6 @@ class UserPreferences @Inject constructor(
         setMemberId("")
         setUUID("")
         setIsGuestUser(false)
+        setMemberName("")
     }
 }
