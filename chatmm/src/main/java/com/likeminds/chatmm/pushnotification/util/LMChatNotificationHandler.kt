@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import androidx.annotation.Keep
 import androidx.core.app.*
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
@@ -13,6 +14,8 @@ import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
+import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.pushnotification.model.*
@@ -24,13 +27,17 @@ import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import org.json.JSONObject
 import javax.inject.Inject
 
+@Keep
 class LMChatNotificationHandler {
 
     @Inject
     lateinit var lmNotificationViewModel: LMNotificationViewModel
 
-    @Inject
-    lateinit var gson: Gson
+    private val gson by lazy {
+        Gson()
+    }
+
+    private var appComponent: LikeMindsChatComponent? = null
 
     private lateinit var mApplication: Application
 
@@ -246,12 +253,23 @@ class LMChatNotificationHandler {
     //create the instance of the handler and channel for notification
     fun create(application: Application) {
         mApplication = application
+        createRockyComponent(application)
+
+        appComponent!!.inject(this)
 
         notificationIcon = R.drawable.ic_notification
 
         notificationTextColor = LMBranding.getButtonsColor()
 
         createNotificationChannel()
+    }
+
+    private fun createRockyComponent(application: Application) {
+        if (appComponent == null) {
+            appComponent = DaggerLikeMindsChatComponent.builder()
+                .application(application)
+                .build()
+        }
     }
 
     private fun getCommunityId(route: String?): String? {
@@ -317,8 +335,8 @@ class LMChatNotificationHandler {
                             initConversationsGroupNotification(
                                 mApplication,
                                 conversations,
-                                title ?: "",
-                                subTitle ?: "",
+                                title,
+                                subTitle,
                                 category,
                                 subcategory
                             )
@@ -327,7 +345,7 @@ class LMChatNotificationHandler {
                 }
             }
 
-            !title.isNullOrBlank() && !subTitle.isNullOrBlank() && !route.isNullOrBlank() -> {
+            !title.isBlank() && !subTitle.isBlank() && !route.isBlank() -> {
                 when (routeHost) {
                     //for poll chatroom
                     Route.ROUTE_POLL_CHATROOM -> {

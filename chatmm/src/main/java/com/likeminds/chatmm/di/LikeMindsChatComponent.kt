@@ -11,10 +11,12 @@ import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.media.MediaComponentModule
 import com.likeminds.chatmm.di.polls.PollsComponent
-import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.chatmm.di.polls.PollsComponentModule
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponentModule
+import com.likeminds.chatmm.di.search.SearchComponent
+import com.likeminds.chatmm.pushnotification.util.LMChatNotificationHandler
+import com.likeminds.chatmm.pushnotification.util.NotificationActionBroadcastReceiver
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -33,6 +35,8 @@ import javax.inject.Singleton
 )
 interface LikeMindsChatComponent {
     fun inject(sdkApplication: SDKApplication)
+    fun inject(lmNotificationHandler: LMChatNotificationHandler)
+    fun inject(broadcastReceiver: NotificationActionBroadcastReceiver)
     fun homeFeedComponent(): HomeFeedComponent.Factory
     fun exploreComponent(): ExploreComponent.Factory
     fun chatroomDetailComponent(): ChatroomDetailComponent.Factory

@@ -24,6 +24,7 @@ import com.likeminds.chatmm.homefeed.viewmodel.HomeFeedViewModel
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
 import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
 import com.likeminds.chatmm.utils.ViewUtils
@@ -45,6 +46,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     @Inject
     lateinit var snackBar: CustomSnackBar
+
+    @Inject
+    lateinit var lmNotificationViewModel: LMNotificationViewModel
 
     @Inject
     lateinit var userPreferences: UserPreferences

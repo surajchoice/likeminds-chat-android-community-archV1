@@ -1,12 +1,15 @@
 package com.likeminds.chatmm.pushnotification.util
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.*
 import android.util.Log
 import androidx.core.app.*
 import com.google.gson.Gson
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
+import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.model.NotificationActionData
 import com.likeminds.chatmm.pushnotification.model.NotificationExtras
@@ -25,6 +28,8 @@ import javax.inject.Inject
 @SuppressLint("CheckResult")
 class NotificationActionBroadcastReceiver : BroadcastReceiver() {
 
+    private var appComponent: LikeMindsChatComponent? = null
+
     private val lmChatClient = LMChatClient.getInstance()
 
     @Inject
@@ -33,8 +38,9 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
     @Inject
     lateinit var lmNotificationViewModel: LMNotificationViewModel
 
-    @Inject
-    lateinit var gson: Gson
+    private val gson: Gson by lazy {
+        Gson()
+    }
 
     //icon of notification
     private var notificationIcon: Int = 0
@@ -59,21 +65,27 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         const val BUNDLE_NEW_POLL_VOTE_CHAT_ROOM = "new_poll_vote_chatroom"
 
         const val ACTION_NEW_CHATROOM_FOLLOW =
-            "com.likeminds.utils.notification.ACTION_NEW_CHATROOM_FOLLOW"
+            "com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_FOLLOW"
 
         const val ACTION_NEW_CHATROOM_VOTE =
-            "com.likeminds.utils.notification.ACTION_NEW_CHATROOM_VOTE"
+            "com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_VOTE"
 
         const val ACTION_NEW_CHATROOM_REPLY =
-            "com.likeminds.utils.notification.ACTION_NEW_CHATROOM_REPLY"
+            "com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_REPLY"
 
-        const val ACTION_CHATROOM_REPLY = "com.likeminds.utils.notification.ACTION_CHATROOM_REPLY"
+        const val ACTION_CHATROOM_REPLY =
+            "com.likeminds.chatmm.pushnotification.util.ACTION_CHATROOM_REPLY"
 
         const val ACTION_CHATROOM_MARK_AS_READ =
-            "com.likeminds.utils.notification.ACTION_CHATROOM_MARK_AS_READ"
+            "com.likeminds.chatmm.pushnotification.util.notification.ACTION_CHATROOM_MARK_AS_READ"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        createRockyComponent(context.applicationContext as Application)
+        appComponent!!.inject(this)
+
+        notificationIcon = R.drawable.ic_notification
+
         // set notification text color as Branding color
         notificationTextColor = LMBranding.getButtonsColor()
 
@@ -100,6 +112,14 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
+    private fun createRockyComponent(application: Application) {
+        if (appComponent == null) {
+            appComponent = DaggerLikeMindsChatComponent.builder()
+                .application(application)
+                .build()
+        }
+    }
+
     private fun replyNewChatroom(context: Context, intent: Intent) {
         val extras = intent.getStringExtra(BUNDLE_NEW_REPLY_CHAT_ROOM)
         val data = gson.fromJson(extras, NotificationExtras::class.java)
@@ -113,16 +133,16 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         }
         postReply(context, true, data, replyText)
 
-        // todo: analytics
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_NOTIFICATION_CLICKED,
-//            JSONObject().apply {
-//                put("payload", gson.toJson(data))
-//                put("type_clicked", "cta")
-//                put("cta_title", "reply")
-//                put("category", data.extraCategory)
-//                put("subcategory", data.extraSubcategory)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.NOTIFICATION_CLICKED,
+            mapOf(
+                "payload" to gson.toJson(data),
+                "type_clicked" to "cta",
+                "cta_title" to "reply",
+                "category" to data.extraCategory,
+                "subcategory" to data.extraSubcategory
+            )
+        )
     }
 
     private fun reply(context: Context, intent: Intent) {
@@ -138,16 +158,16 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         }
         postReply(context, false, data, replyText)
 
-        // todo: analytics
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_NOTIFICATION_CLICKED,
-//            JSONObject().apply {
-//                put("payload", gson.toJson(data))
-//                put("type_clicked", "cta")
-//                put("cta_title", "reply")
-//                put("category", data.extraCategory)
-//                put("subcategory", data.extraSubcategory)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.NOTIFICATION_CLICKED,
+            mapOf(
+                "payload" to gson.toJson(data),
+                "type_clicked" to "cta",
+                "cta_title" to "reply",
+                "category" to data.extraCategory,
+                "subcategory" to data.extraSubcategory
+            )
+        )
     }
 
     private fun markAsReadChatroom(context: Context, intent: Intent) {
@@ -163,11 +183,10 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                     .build()
                 val response = lmChatClient.markReadChatroom(request)
                 if (response.success) {
-                    // todo:
-//                    chatroomRepository.setLastSeenTrueAndSaveDraftResponse(
-//                        data.chatroomId,
-//                        null
-//                    )
+                    val updateLastSeenAndDraftRequest = UpdateLastSeenAndDraftRequest.Builder()
+                        .chatroomId(data.chatroomId)
+                        .build()
+                    lmChatClient.updateLastSeenAndDraft(updateLastSeenAndDraftRequest)
                     onMarkedAsRead(context, data)
                 } else {
                     Log.e(
@@ -177,16 +196,16 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                     onMarkedAsRead(context, data)
                 }
             }
-            // todo: Analytics
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_NOTIFICATION_CLICKED,
-//                JSONObject().apply {
-//                    put("payload", gson.toJson(data))
-//                    put("type_clicked", "cta")
-//                    put("cta_title", "mark as read")
-//                    put("category", data.extraCategory)
-//                    put("subcategory", data.extraSubcategory)
-//                })
+            LMAnalytics.track(
+                LMAnalytics.Events.NOTIFICATION_CLICKED,
+                mapOf(
+                    "payload" to gson.toJson(data),
+                    "type_clicked" to "cta",
+                    "cta_title" to "mark as read",
+                    "category" to data.extraCategory,
+                    "subcategory" to data.extraSubcategory,
+                )
+            )
         } else {
             Log.e(TAG, "notification data is empty")
         }
@@ -214,16 +233,16 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                 }
             }
 
-            // todo: analytics
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_NOTIFICATION_CLICKED,
-//                JSONObject().apply {
-//                    put("payload", gson.toJson(data))
-//                    put("type_clicked", "cta")
-//                    put("cta_title", "follow")
-//                    put("category", data.category)
-//                    put("subcategory", data.subcategory)
-//                })
+            LMAnalytics.track(
+                LMAnalytics.Events.NOTIFICATION_CLICKED,
+                mapOf(
+                    "payload" to gson.toJson(data),
+                    "type_clicked" to "cta",
+                    "cta_title" to "reply",
+                    "category" to data.category,
+                    "subcategory" to data.subcategory
+                )
+            )
         }
     }
 
@@ -235,16 +254,16 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                 cancel(notificationId)
             }
 
-            // todo: analytics
-//            LMAnalytics.track(
-//                LMAnalytics.Keys.EVENT_NOTIFICATION_CLICKED,
-//                JSONObject().apply {
-//                    put("payload", gson.toJson(data))
-//                    put("type_clicked", "cta")
-//                    put("cta_title", "vote")
-//                    put("category", data.category)
-//                    put("subcategory", data.subcategory)
-//                })
+            LMAnalytics.track(
+                LMAnalytics.Events.NOTIFICATION_CLICKED,
+                mapOf(
+                    "payload" to gson.toJson(data),
+                    "type_clicked" to "cta",
+                    "cta_title" to "reply",
+                    "category" to data.category,
+                    "subcategory" to data.subcategory
+                )
+            )
 
             //Open poll chatroom
             context.startActivity(
@@ -304,7 +323,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
 
                 val unreadConversationPerson = Person.Builder()
                     .setKey(data.chatroomId)
-                    .setName(userPreferences.getMemberName() ?: "User")
+                    .setName(userPreferences.getMemberName())
                     .build()
 
                 val time = System.currentTimeMillis()
@@ -378,7 +397,11 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                     )
                 }
                 NotificationManagerCompat.from(context).apply {
-                    notify(data.route, data.chatroomId.toInt(), notificationBuilder.build())
+                    notify(
+                        data.route,
+                        data.chatroomId.toInt(),
+                        notificationBuilder.build()
+                    )
                 }
             } else {
                 Log.e(SDKApplication.LOG_TAG, "reply failed")
