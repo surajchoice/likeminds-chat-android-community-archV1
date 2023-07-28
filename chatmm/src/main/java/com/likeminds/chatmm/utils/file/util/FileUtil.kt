@@ -82,7 +82,7 @@ object FileUtil {
             else -> {
                 FileData.Builder()
                     .type(LOCAL_PROVIDER)
-                    .path(pathTempFile)
+                    .path(returnedPath)
                     .build()
             }
         }

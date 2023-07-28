@@ -390,7 +390,7 @@ class ChatroomDetailViewModel @Inject constructor(
             }
 
             val getMemberRequest = GetMemberRequest.Builder()
-                .memberId(userPreferences.getUUID())
+                .uuid(userPreferences.getUUID())
                 .build()
             currentMemberFromDb =
                 ViewDataConverter.convertMember(lmChatClient.getMember(getMemberRequest).data?.member)
@@ -413,12 +413,6 @@ class ChatroomDetailViewModel @Inject constructor(
             } else {
                 null
             }
-
-            Log.d(
-                "PUI-2", """
-                chatroom.isConversationStored: ${chatroom.isConversationStored}
-            """.trimIndent()
-            )
 
             val initialData = when {
                 //3rd case -> open a conversation directly through search/deep links
@@ -575,7 +569,7 @@ class ChatroomDetailViewModel @Inject constructor(
         medianConversationId: String? = null,
     ): List<BaseViewType> {
         val getConversationRequest = GetConversationRequest.Builder()
-            .conversationId(medianConversationId ?: "")
+            .conversationId(medianConversationId ?: medianConversation?.id ?: "")
             .build()
         val getConversationResponse = lmChatClient.getConversation(getConversationRequest)
         val median = medianConversation
@@ -1481,13 +1475,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 }
 
                 VIDEO -> {
-                    Log.d(
-                        "PUI", """
-                        includeAttachmentMetaData
-                        uri: ${it.uri}
-                        path: ${it.uri.path}
-                    """.trimIndent()
-                    )
                     val thumbnailUri = FileUtil.getVideoThumbnailUri(context, it.uri)
                     if (thumbnailUri != null) {
                         it.toBuilder()
@@ -1553,16 +1540,8 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             null
         }
-
-        Log.d(
-            "TAG", """
-            getMemberRequest
-            memberId: ${conversation.memberId}
-            uuid: ${conversation.member?.uuid}
-        """.trimIndent()
-        )
         val getMemberRequest = GetMemberRequest.Builder()
-            .memberId(conversation.memberId ?: "")
+            .uuid(uuid)
             .build()
         val member = lmChatClient.getMember(getMemberRequest).data?.member
         val memberViewData = ViewDataConverter.convertMember(member)
@@ -1652,6 +1631,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 .index(index)
 
             val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
+
             val file = File(localFilePath)
             val serverPath = UploadHelper.getConversationAttachmentFilePath(
                 chatroomId,

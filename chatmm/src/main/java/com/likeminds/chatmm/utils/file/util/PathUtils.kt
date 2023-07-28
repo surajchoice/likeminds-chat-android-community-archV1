@@ -1,9 +1,7 @@
 package com.likeminds.chatmm.utils.file.util
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.Context
+import android.content.*
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -41,7 +39,6 @@ object PathUtils {
             }
             // MediaStore (and general)
             uri.isMediaStore -> {
-                val path = ContentUriUtils.getPathFromColumn(contentResolver, uri, COLUMN_DATA)
                 return if (uri.isGooglePhotosUri) {
                     googlePhotosUri(uri) ?: ""
                 } else {

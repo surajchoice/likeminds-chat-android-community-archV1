@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.utils.mediauploader.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
@@ -122,22 +121,8 @@ class ConversationMediaUploadWorker(
         val file = if (request.fileType == IMAGE) {
             FileHelper.compressFile(applicationContext, filePath)
         } else {
-            Log.d(
-                "PUI", """
-                    else
-            filepathhhh: $filePath
-        """.trimIndent()
-            )
             File(filePath)
         }
-        Log.d(
-            "PUI", """
-            filepathhhh: $filePath
-            filePath: ${file?.absolutePath}
-            file: $file
-            type: ${file?.javaClass}
-        """.trimIndent()
-        )
         val observer = transferUtility.upload(
             request.awsFolderPath,
             file,
