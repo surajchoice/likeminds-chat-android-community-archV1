@@ -10,6 +10,7 @@ import com.github.dhaval2404.colorpicker.model.ColorSwatch
 import com.likeminds.chatmm.LikeMindsChatUI
 import com.likeminds.chatmm.branding.model.LMFonts
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
+import com.likeminds.chatmm.utils.Route
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatsampleapp.ChatMMApplication
 import com.likeminds.chatsampleapp.R
@@ -46,7 +47,6 @@ class AuthActivity : AppCompatActivity() {
         if (isLoggedIn) {
             // user already logged in, navigate using deep linking or to [MainActivity]
             if (intent.data != null) {
-                // todo: handle deep links.
                 parseDeepLink()
             } else {
                 navigateToAfterLoginActivity()
@@ -72,12 +72,12 @@ class AuthActivity : AppCompatActivity() {
     // parses deep link to start corresponding activity
     private fun parseDeepLink() {
         //get intent for route
-//        val intent = Route.handleDeepLink(
-//            this,
-//            intent.data.toString()
-//        )
-//        startActivity(intent)
-//        finish()
+        val intent = Route.handleDeepLink(
+            this,
+            intent.data.toString()
+        )
+        startActivity(intent)
+        finish()
     }
 
     // validates user input and save login details

@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.di.search
 
+import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.search.view.SearchFragment
 import dagger.Subcomponent
 
@@ -11,5 +12,6 @@ interface SearchComponent {
         fun create(): SearchComponent
     }
 
+    fun inject(searchActivity: SearchActivity)
     fun inject(searchFragment: SearchFragment)
 }

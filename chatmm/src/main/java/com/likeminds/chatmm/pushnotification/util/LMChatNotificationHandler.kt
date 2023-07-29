@@ -203,7 +203,6 @@ class LMChatNotificationHandler {
             category: String?,
             subcategory: String?,
         ): PendingIntent? {
-            // todo: analytics
             //get intent for route
             val intent = Route.getRouteIntent(
                 context,

@@ -282,7 +282,7 @@ class CreateConversationPollDialog :
         ArrayAdapter(
             requireContext(),
             R.layout.item_spinner_dropdown,
-            viewModel.getMultipleOptionStateList()
+            viewModel.getMultipleOptionStateList(),
         ).also { adapter ->
             adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
             binding.spinnerMultipleOption.adapter = adapter

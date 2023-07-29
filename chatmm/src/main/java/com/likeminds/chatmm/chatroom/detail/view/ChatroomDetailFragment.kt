@@ -1301,6 +1301,7 @@ class ChatroomDetailFragment :
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
+
                 }
 
                 CHAT_BOX_REPLY -> {
@@ -1640,7 +1641,7 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, "Please enter your response")
+                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
             }
         }
     }
@@ -1655,7 +1656,10 @@ class ChatroomDetailFragment :
                         if (chatroom != null) {
                             viewModel.postEditedChatroom(updatedText, chatroom)
                         } else {
-                            ViewUtils.showShortSnack(root, "Please enter your response")
+                            ViewUtils.showShortSnack(
+                                root,
+                                getString(R.string.please_enter_your_response)
+                            )
                         }
                     }
 
@@ -1681,7 +1685,10 @@ class ChatroomDetailFragment :
                                 initTopChatroomView(getChatroomViewData()!!)
                             }
                         } else {
-                            ViewUtils.showShortSnack(root, "Please enter your response")
+                            ViewUtils.showShortSnack(
+                                root,
+                                getString(R.string.please_enter_your_response)
+                            )
                         }
                     }
                 }
@@ -1691,7 +1698,7 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, "Please enter your response")
+                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
             }
         }
     }
@@ -2900,6 +2907,7 @@ class ChatroomDetailFragment :
                     viewLink.tvLinkUrl.text = linkOgTags.url
 
                     viewLink.ivCross.setOnClickListener {
+                        viewModel.clearLinkPreview()
                         viewLink.clLink.visibility = View.GONE
                         setChatInputBoxViewType(CHAT_BOX_NORMAL)
                     }

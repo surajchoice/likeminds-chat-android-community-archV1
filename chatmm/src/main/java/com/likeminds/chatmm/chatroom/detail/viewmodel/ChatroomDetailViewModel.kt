@@ -1412,15 +1412,27 @@ class ChatroomDetailViewModel @Inject constructor(
                             postConversationRequestBuilder.ogTags(null).shareLink(null)
                     }
 
-                    linkOgTags.value?.url == shareLink &&
-                            isValidLinkViewData(linkOgTags.value) -> {
+                    _linkOgTags.value?.url == shareLink &&
+                            isValidLinkViewData(_linkOgTags.value) -> {
+                        Log.d(
+                            "link", """
+                            linkOgTags
+                            ${linkOgTags?.value?.url}
+                            ${linkOgTags?.value?.image}
+                        """.trimIndent()
+                        )
                         postConversationRequestBuilder = postConversationRequestBuilder
                             .ogTags(
-                                ViewDataConverter.convertLinkOGTags(linkOgTags.value)
+                                ViewDataConverter.convertLinkOGTags(_linkOgTags.value)
                             ).shareLink(shareLink)
                     }
 
                     isURLReachable(shareLink) -> {
+                        Log.d(
+                            "shareLink", """
+                            sharelink
+                        """.trimIndent()
+                        )
                         postConversationRequestBuilder =
                             postConversationRequestBuilder.shareLink(shareLink)
                     }
@@ -2092,6 +2104,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun clearLinkPreview() {
+        Log.d("link", "clearLinkPreview: ")
         previewLinkJob?.cancel()
         previewLink = null
         _linkOgTags.postValue(null)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
@@ -14,11 +15,12 @@ import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
-import com.likeminds.chatmm.utils.coroutine.launchMain
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
-import com.likeminds.likemindschat.homefeed.util.HomeFeedChangeListener
+import com.likeminds.likemindschat.homefeed.util.HomeChatroomListener
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -35,6 +37,8 @@ class HomeFeedViewModel @Inject constructor(
 
     private val lmChatClient = LMChatClient.getInstance()
 
+    private val compositeDisposable = CompositeDisposable()
+
     private val _userData = MutableLiveData<MemberViewData?>()
     val userData: LiveData<MemberViewData?> = _userData
 
@@ -46,14 +50,13 @@ class HomeFeedViewModel @Inject constructor(
         data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
     }
 
-    private val chatroomListener = object : HomeFeedChangeListener {
-        override fun initialChatrooms(chatrooms: List<Chatroom>) {
-            super.initialChatrooms(chatrooms)
+    private val chatroomListener = object : HomeChatroomListener() {
+        override fun initial(chatrooms: List<Chatroom>) {
             if (chatrooms.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
             Log.d(
-                TAG, """
+                "PUI-1", """
                 showInitialChatrooms
                 name: ${chatrooms.map { it.header }}
                 id: ${chatrooms.map { it.id }}
@@ -62,21 +65,16 @@ class HomeFeedViewModel @Inject constructor(
             showInitialChatrooms(chatrooms)
         }
 
-        override fun changedChatrooms(
+        override fun onChanged(
             removedIndex: List<Int>,
             inserted: List<Pair<Int, Chatroom>>,
             changed: List<Pair<Int, Chatroom>>
         ) {
-            super.changedChatrooms(
-                removedIndex,
-                inserted,
-                changed
-            )
             if (inserted.isNotEmpty() || changed.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
             Log.d(
-                TAG, """
+                "PUI-1", """
                 updateChatroomChanges
                 name-inserted: ${inserted.map { it.second.header }}
                 id-inserted: ${inserted.map { it.second.id }}
@@ -91,8 +89,7 @@ class HomeFeedViewModel @Inject constructor(
             )
         }
 
-        override fun error(throwable: Throwable) {
-            super.error(throwable)
+        override fun onError(throwable: Throwable) {
             viewModelScope.launchIO {
                 errorMessageChannel.send(ErrorMessageEvent.GetChatroom(throwable.message))
             }
@@ -133,16 +130,32 @@ class HomeFeedViewModel @Inject constructor(
         _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 
-    fun observeChatrooms(context: Context) {
-        viewModelScope.launchMain {
-            lmChatClient.getChatrooms(context, chatroomListener)
-        }
+    fun refetchChatrooms() {
+        compositeDisposable.clear()
+        observeChatrooms()
+    }
+
+    fun observeChatrooms() {
+        Log.d(
+            "PUI", """
+                observeChatrooms
+                instance: $chatroomListener
+            """.trimIndent()
+        )
+        compositeDisposable.clear()
+        val disposable = lmChatClient.getChatrooms(
+            chatroomListener,
+        )?.subscribeOn(Schedulers.computation())
+            ?.observeOn(Schedulers.newThread())
+            ?.subscribe() ?: return
+        compositeDisposable.add(disposable)
     }
 
     private fun showInitialChatrooms(
-        chatrooms: List<Chatroom>,
+        chatrooms: List<Chatroom?>,
     ) = viewModelScope.launch {
         val chatViewDataList = chatrooms.map { chatroom ->
+            if (chatroom == null) return@launch
             HomeFeedUtil.getChatRoomViewData(chatroom, userPreferences)
         }
         allChatRoomsData.clear()
@@ -191,7 +204,7 @@ class HomeFeedViewModel @Inject constructor(
         val dataList = mutableListOf<BaseViewType>()
 
         Log.d(
-            TAG, """
+            "PUI-1", """
             totalChatroomCount: $totalChatroomCount
             unseenChatroomCount: $unseenChatroomCount
         """.trimIndent()
@@ -207,7 +220,7 @@ class HomeFeedViewModel @Inject constructor(
         dataList.add(lineBreakViewData)
 
         Log.d(
-            TAG, """
+            "PUI-1", """
             size: ${allChatRoomsData.size}
         """.trimIndent()
         )
@@ -249,6 +262,14 @@ class HomeFeedViewModel @Inject constructor(
         return dataList
     }
 
+    fun syncChatrooms(context: Context): Pair<LiveData<MutableList<WorkInfo>>?, LiveData<MutableList<WorkInfo>>?>? {
+        return lmChatClient.syncChatrooms(context)
+    }
+
+    fun observeLiveHomeFeed(context: Context) {
+        lmChatClient.observeLiveHomeFeed(context)
+    }
+
     fun getConfig() {
         viewModelScope.launchIO {
             val getConfigResponse = lmChatClient.getConfig()
@@ -260,9 +281,6 @@ class HomeFeedViewModel @Inject constructor(
                     sdkPreferences.setGifSupportEnabled(data.enableGifs)
                     sdkPreferences.setAudioSupportEnabled(data.enableAudio)
                     sdkPreferences.setVoiceNoteSupportEnabled(data.enableVoiceNote)
-
-                    // todo:
-//                    LMAnalytics.setSentryUserData(member)
                 }
             } else {
                 Log.d(
@@ -295,6 +313,12 @@ class HomeFeedViewModel @Inject constructor(
                 Log.e(SDKApplication.LOG_TAG, "$errorMessage")
             }
         }
+    }
+
+    override fun onCleared() {
+        chatroomListener.clear()
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     /**------------------------------------------------------------
@@ -333,5 +357,15 @@ class HomeFeedViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    //When sync is complete for the user for normal as well as guest
+    fun sendSyncCompleteEvent(timeTaken: Float) {
+        LMAnalytics.track(
+            LMAnalytics.Events.SYNC_COMPLETE,
+            mapOf(
+                "time_taken_to_complete" to "$timeTaken secs"
+            )
+        )
     }
 }

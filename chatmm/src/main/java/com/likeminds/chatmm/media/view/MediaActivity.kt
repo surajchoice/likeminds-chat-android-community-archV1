@@ -47,8 +47,12 @@ class MediaActivity : BaseAppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun attachDagger() {
+        super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
 

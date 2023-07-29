@@ -25,6 +25,7 @@ dependencies {
 
     //rx
     implementation deps.rxJava.main
+
     implementation deps.rxJava.android
 
     //lifecycle - viewModel & liveData

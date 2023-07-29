@@ -12,6 +12,10 @@
             type="Integer" />
 
         <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
             name="data"
             type="com.likeminds.chatmm.chatroom.explore.model.ExploreViewData" />
     </data>
@@ -136,37 +140,48 @@
 
             <com.likeminds.chatmm.branding.customview.LikeMindsButton
                 android:id="@+id/btn_join"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_round_8dp_filled"
-                android:drawableLeft="@drawable/ic_explore_join"
                 android:letterSpacing="0.04"
+                android:paddingVertical="8dp"
                 android:text="@string/join"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:visibility="gone"
+                app:cornerRadius="8dp"
                 app:drawable_type="normal"
                 app:font_type="medium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_header"
+                app:icon="@drawable/ic_explore_join"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="20dp"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/white"
                 app:text_type="normal" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsButton
                 android:id="@+id/btn_joined"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_round_8dp"
-                android:drawableLeft="@drawable/ic_explore_joined"
                 android:letterSpacing="0.04"
+                android:paddingVertical="8dp"
                 android:text="@string/joined"
                 android:textAllCaps="false"
                 android:textColor="@color/teal"
                 android:textSize="12sp"
                 android:visibility="gone"
+                app:button_type="normal"
+                app:cornerRadius="8dp"
                 app:font_type="medium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_header"
+                app:icon="@drawable/ic_explore_joined"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="20dp"
+                app:iconTint="@color/teal"
+                app:strokeColor="@{buttonColor}"
                 tools:visibility="visible" />
 
         </LinearLayout>

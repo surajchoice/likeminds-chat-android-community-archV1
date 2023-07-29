@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ViewParticipantsExtras
 import com.likeminds.chatmm.databinding.ActivityViewParticipantsBinding
 import com.likeminds.chatmm.utils.ViewUtils
@@ -41,6 +42,11 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
             intent.putExtra("bundle", bundle)
             return intent
         }
+    }
+
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

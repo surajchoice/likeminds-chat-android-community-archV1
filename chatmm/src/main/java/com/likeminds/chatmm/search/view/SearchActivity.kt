@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
 class SearchActivity : BaseAppCompatActivity() {
@@ -17,6 +18,11 @@ class SearchActivity : BaseAppCompatActivity() {
         fun getIntent(context: Context): Intent {
             return Intent(context, SearchActivity::class.java)
         }
+    }
+
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().searchComponent()?.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

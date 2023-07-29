@@ -236,4 +236,6 @@
     <string name="mark_as_read">Mark as Read</string>
     <string name="chatroom_channel_name">Chatroom notifications</string>
     <string name="chatroom_channel_description">All chatroom notifications</string>
+    <string name="internet_connection_restored">Internet connection restored</string>
+    <string name="please_enter_your_response">Please enter your response</string>
 </resources>

@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.utils.connectivity
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -26,8 +24,22 @@ open class ConnectivityBroadcastReceiver : BroadcastReceiver() {
             try {
                 val capabilities =
                     manager.getNetworkCapabilities(manager.activeNetwork) // need ACCESS_NETWORK_STATE permission
-                result =
-                    capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                if (capabilities != null) {
+                    result = when {
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                            true
+                        }
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                            true
+                        }
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                            true
+                        }
+                        else -> {
+                            false
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
