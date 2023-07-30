@@ -3971,7 +3971,11 @@ class ChatroomDetailFragment :
         if (isGuestUser) {
             callGuestFlowCallback()
         } else {
-            viewModel.submitConversationPoll(conversation, pollViewDataList)
+            viewModel.submitConversationPoll(
+                requireContext(),
+                conversation,
+                pollViewDataList
+            )
         }
     }
 

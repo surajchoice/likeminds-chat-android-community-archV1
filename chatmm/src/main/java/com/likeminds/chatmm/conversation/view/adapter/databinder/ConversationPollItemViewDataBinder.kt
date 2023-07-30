@@ -283,7 +283,7 @@ internal class ConversationPollItemViewDataBinder constructor(
                 btnAddOption.hide()
             }
 
-            if (memberViewData.id == userPreferences.getUUID()) {
+            if (memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()) {
                 btnAddOption.strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
             } else {
                 btnAddOption.setStrokeColorResource(R.color.cloudy_blue)
@@ -305,9 +305,9 @@ internal class ConversationPollItemViewDataBinder constructor(
             btnSubmitVote.setOnClickListener {
                 if (btnSubmitVote.text.toString() == root.context.getString(R.string.edit_vote)) {
                     //enable editing poll
-                    updatePollSubmittedValue(binding, false)
+                    updatePollSubmittedValue(this, false)
                     pollView.reload()
-                    updatePollButtonVisibility(binding)
+                    updatePollButtonVisibility(this)
                 } else {
                     // enable submitting poll
                     when (btnSubmitVote.tag) {
@@ -316,8 +316,8 @@ internal class ConversationPollItemViewDataBinder constructor(
                         }
 
                         ChatroomDetailFragment.POLL_CLICK_ENABLED -> {
-                            submitPoll(binding)
-                            updatePollButtonVisibility(binding)
+                            submitPoll(this)
+                            updatePollButtonVisibility(this)
                         }
                     }
                 }

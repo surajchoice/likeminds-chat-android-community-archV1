@@ -3,6 +3,7 @@ package com.likeminds.chatmm.report.view
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import androidx.core.view.isVisible
 import com.google.android.flexbox.*
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
@@ -59,6 +60,21 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
         initViewAsType()
         initListeners()
         getReportTags()
+    }
+
+    override fun reportTagSelected(reportTagViewData: ReportTagViewData) {
+        super.reportTagSelected(reportTagViewData)
+        //check if [Others] is selected, edit text for reason should be visible
+        binding.etOthers.isVisible = reportTagViewData.name.contains("Others", true)
+
+        //replace list in adapter and only highlight selected tag
+        mAdapter.replace(
+            mAdapter.items()
+                .map {
+                    (it as ReportTagViewData).toBuilder()
+                        .isSelected(it.id == reportTagViewData.id)
+                        .build()
+                })
     }
 
     //setup recycler view

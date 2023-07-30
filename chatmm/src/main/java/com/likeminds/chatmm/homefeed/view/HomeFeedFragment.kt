@@ -349,12 +349,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         if (parentView.childCount > 0) {
             parentView.getChildAt(0)?.let { view ->
                 if (isConnected && wasNetworkGone) {
-                    Log.d(
-                        "connection", """
-                        isConnected: $isConnected
-                        wasNetworkGone: $wasNetworkGone
-                    """.trimIndent()
-                    )
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
@@ -363,13 +357,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                     )
                 }
                 if (!isConnected) {
-                    Log.d(
-                        "connection", """
-                            not
-                        isConnected: $isConnected
-                        wasNetworkGone: $wasNetworkGone
-                    """.trimIndent()
-                    )
                     wasNetworkGone = true
                     snackBar.showNoInternet(view)
                 }

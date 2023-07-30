@@ -57,7 +57,9 @@
             app:cornerRadius="10dp"
             app:font_type="regular"
             app:text_type="normal"
+            app:drawable_type="normal"
             app:icon="@drawable/ic_follow_v1"
+            app:iconTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_follow_const" />

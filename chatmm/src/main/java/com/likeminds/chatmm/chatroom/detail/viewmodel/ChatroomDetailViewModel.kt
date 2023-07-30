@@ -1413,13 +1413,6 @@ class ChatroomDetailViewModel @Inject constructor(
 
                     _linkOgTags.value?.url == shareLink &&
                             isValidLinkViewData(_linkOgTags.value) -> {
-                        Log.d(
-                            "link", """
-                            linkOgTags
-                            ${linkOgTags?.value?.url}
-                            ${linkOgTags?.value?.image}
-                        """.trimIndent()
-                        )
                         postConversationRequestBuilder = postConversationRequestBuilder
                             .ogTags(
                                 ViewDataConverter.convertLinkOGTags(_linkOgTags.value)
@@ -1427,11 +1420,6 @@ class ChatroomDetailViewModel @Inject constructor(
                     }
 
                     isURLReachable(shareLink) -> {
-                        Log.d(
-                            "shareLink", """
-                            sharelink
-                        """.trimIndent()
-                        )
                         postConversationRequestBuilder =
                             postConversationRequestBuilder.shareLink(shareLink)
                     }
@@ -1537,11 +1525,6 @@ class ChatroomDetailViewModel @Inject constructor(
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)
             .build()
-        Log.d("attachments", "saveTemporaryConversation: ${conversation.id}")
-        Log.d(
-            "attachments",
-            "saveTemporaryConversation - attachmentssize: ${conversation.attachments?.size}"
-        )
         lmChatClient.saveTemporaryConversation(saveConversationRequest)
         val replyConversation = if (conversation.replyConversationId != null) {
             val getConversationRequest = GetConversationRequest.Builder()
@@ -2000,6 +1983,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun submitConversationPoll(
+        context: Context,
         conversation: ConversationViewData,
         pollViewDataList: List<PollViewData>,
     ) {
@@ -2020,12 +2004,15 @@ class ChatroomDetailViewModel @Inject constructor(
             }
             val updatePollItems = allPollItems.filter { it.isSelected == true }
 
+            val chatroomId = conversation.chatroomId ?: return@launchIO
+
             val request = SubmitPollRequest.Builder()
                 .conversationId(conversationId)
+                .chatroomId(chatroomId)
                 .polls(updatePollItems)
                 .build()
 
-            val response = lmChatClient.submitPoll(request)
+            val response = lmChatClient.submitPoll(context, request)
             pollUpdateResponse(
                 response,
                 conversation.pollInfoData,
@@ -2103,7 +2090,6 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun clearLinkPreview() {
-        Log.d("link", "clearLinkPreview: ")
         previewLinkJob?.cancel()
         previewLink = null
         _linkOgTags.postValue(null)

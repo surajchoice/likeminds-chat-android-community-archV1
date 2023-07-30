@@ -11,14 +11,13 @@ import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
 
 internal class ConversationLinkItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
     private val reactionsPreferences: ReactionsPreferences,
     private val chatroomDetailAdapterListener: ChatroomDetailAdapterListener,
-) : ViewDataBinder<ItemConversationLinkBinding, BaseViewType>() {
+) : ViewDataBinder<ItemConversationLinkBinding, ConversationViewData>() {
 
     override val viewType: Int
         get() = ITEM_CONVERSATION_LINK
@@ -31,11 +30,15 @@ internal class ConversationLinkItemViewDataBinder constructor(
         )
     }
 
-    override fun bindData(binding: ItemConversationLinkBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemConversationLinkBinding,
+        data: ConversationViewData,
+        position: Int
+    ) {
         binding.apply {
             buttonColor = LMBranding.getButtonsColor()
             viewReply.buttonColor = LMBranding.getButtonsColor()
-            conversation = data as ConversationViewData
+            conversation = data
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
                 clConversationBubble,

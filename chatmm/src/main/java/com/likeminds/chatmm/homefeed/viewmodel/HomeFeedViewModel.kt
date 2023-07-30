@@ -55,13 +55,6 @@ class HomeFeedViewModel @Inject constructor(
             if (chatrooms.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
-            Log.d(
-                "PUI-1", """
-                showInitialChatrooms
-                name: ${chatrooms.map { it.header }}
-                id: ${chatrooms.map { it.id }}
-            """.trimIndent()
-            )
             showInitialChatrooms(chatrooms)
         }
 
@@ -73,15 +66,6 @@ class HomeFeedViewModel @Inject constructor(
             if (inserted.isNotEmpty() || changed.isNotEmpty()) {
                 setWasChatroomFetched(true)
             }
-            Log.d(
-                "PUI-1", """
-                updateChatroomChanges
-                name-inserted: ${inserted.map { it.second.header }}
-                id-inserted: ${inserted.map { it.second.id }}
-                name-changed: ${changed.map { it.second.header }}
-                id-changed: ${changed.map { it.second.id }}
-            """.trimIndent()
-            )
             updateChatroomChanges(
                 removedIndex,
                 inserted,
@@ -136,12 +120,6 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     fun observeChatrooms() {
-        Log.d(
-            "PUI", """
-                observeChatrooms
-                instance: $chatroomListener
-            """.trimIndent()
-        )
         compositeDisposable.clear()
         val disposable = lmChatClient.getChatrooms(
             chatroomListener,
@@ -203,13 +181,6 @@ class HomeFeedViewModel @Inject constructor(
     fun getHomeFeedList(context: Context): List<BaseViewType> {
         val dataList = mutableListOf<BaseViewType>()
 
-        Log.d(
-            "PUI-1", """
-            totalChatroomCount: $totalChatroomCount
-            unseenChatroomCount: $unseenChatroomCount
-        """.trimIndent()
-        )
-
         dataList.add(
             HomeFeedViewData.Builder()
                 .totalChatRooms(totalChatroomCount)
@@ -218,12 +189,6 @@ class HomeFeedViewModel @Inject constructor(
         )
 
         dataList.add(lineBreakViewData)
-
-        Log.d(
-            "PUI-1", """
-            size: ${allChatRoomsData.size}
-        """.trimIndent()
-        )
 
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))

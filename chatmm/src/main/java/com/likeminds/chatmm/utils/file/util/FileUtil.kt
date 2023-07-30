@@ -507,13 +507,6 @@ object FileUtil {
         var uri: Uri? = null
         try {
             imagesFolder.mkdirs()
-            Log.d(
-                "PUI", """
-                getUriFromBitmapWithRandomName
-                imagesFolder: ${imagesFolder.absolutePath}
-                shareUriExternally: $shareUriExternally
-            """.trimIndent()
-            )
             val file = File(imagesFolder, "${System.currentTimeMillis()}.png")
 
             val stream = FileOutputStream(file)

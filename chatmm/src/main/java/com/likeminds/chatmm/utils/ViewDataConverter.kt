@@ -835,7 +835,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: createdAt
     private fun convertConversationForSearch(
         searchConversation: SearchConversation
     ): ConversationViewData {
@@ -861,7 +860,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: uuid
     fun convertParticipants(participant: Member): MemberViewData {
         return MemberViewData.Builder()
             .dynamicViewType(ITEM_VIEW_PARTICIPANTS)
@@ -871,6 +869,7 @@ object ViewDataConverter {
             .name(participant.name)
             .userUniqueId(participant.userUniqueId)
             .customTitle(participant.customTitle)
+            .sdkClientInfo(convertSDKClientInfo(participant.sdkClientInfo))
             .build()
     }
 
