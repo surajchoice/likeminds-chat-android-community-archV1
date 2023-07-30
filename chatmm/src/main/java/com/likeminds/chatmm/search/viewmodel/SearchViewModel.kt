@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.search.viewmodel
 
 import androidx.lifecycle.*
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.homefeed.model.HomeChatroomListShimmerViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.utils.ViewDataConverter
@@ -333,46 +334,54 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         _searchLiveData.postValue(null)
     }
 
-    // todo:
     /**------------------------------------------------------------
      * Analytics functions
     ---------------------------------------------------------------*/
 
+    // Triggers when the user taps on searched message
     fun sendMessageClickedEvent(chatroomId: String?, communityId: String?) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_MESSAGE_SEARCHED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomId)
-//                put("community_id", communityId)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.MESSAGE_SEARCHED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
     }
 
+    // Triggers when the user taps on searched chatroom
     fun sendChatroomClickedEvent(chatroomId: String, communityId: String?) {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_CHATROOM_SEARCHED,
-//            JSONObject().apply {
-//                put("chatroom_id", chatroomId)
-//                put("community_id", communityId)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.CHATROOM_SEARCHED,
+            mapOf(
+                LMAnalytics.Keys.CHATROOM_ID to chatroomId,
+                LMAnalytics.Keys.COMMUNITY_ID to communityId,
+            )
+        )
     }
 
+    // Triggers when the user taps on search icon
     fun sendSearchIconClickedEvent() {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_SEARCH_ICON_CLICKED,
-//            JSONObject().apply {
-//                put("source", LMAnalytics.Sources.SOURCE_HOME_FEED)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.SEARCH_ICON_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.HOME_FEED,
+            )
+        )
     }
 
+    // Triggers when the user closes search
     fun sendSearchClosedEvent() {
-//        LMAnalytics.track(LMAnalytics.Keys.EVENT_CHATROOM_SEARCH_CLOSED)
+        LMAnalytics.track(LMAnalytics.Events.CHATROOM_SEARCH_CLOSED)
     }
 
+    // Triggers when the user clicks cross icon on search
     fun sendSearchCrossIconClickedEvent() {
-//        LMAnalytics.track(
-//            LMAnalytics.Keys.EVENT_SEARCH_CROSS_ICON_CLICKED,
-//            JSONObject().apply {
-//                put("source", LMAnalytics.Sources.SOURCE_HOME_FEED)
-//            })
+        LMAnalytics.track(
+            LMAnalytics.Events.SEARCH_CROSS_ICON_CLICKED,
+            mapOf(
+                LMAnalytics.Keys.SOURCE to LMAnalytics.Source.HOME_FEED,
+            )
+        )
     }
 }

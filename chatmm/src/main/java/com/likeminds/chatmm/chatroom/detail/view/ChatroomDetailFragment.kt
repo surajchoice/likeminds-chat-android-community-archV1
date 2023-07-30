@@ -75,6 +75,10 @@ import com.likeminds.chatmm.reactions.model.ReactionsListExtras
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.reactions.view.*
 import com.likeminds.chatmm.reactions.viewmodel.ReactionsViewModel
+import com.likeminds.chatmm.report.model.REPORT_TYPE_CONVERSATION
+import com.likeminds.chatmm.report.model.ReportExtras
+import com.likeminds.chatmm.report.view.ReportActivity
+import com.likeminds.chatmm.report.view.ReportSuccessDialog
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
@@ -345,6 +349,18 @@ class ChatroomDetailFragment :
             }
         }
 
+    // launcher for conversation reporting
+    private val reportConversationLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d(SDKApplication.LOG_TAG, "report done")
+                ReportSuccessDialog("Message").show(
+                    childFragmentManager,
+                    ReportSuccessDialog.TAG
+                )
+            }
+        }
+
     private val chatroomId
         get() = chatroomDetailExtras.chatroomId
 
@@ -516,6 +532,11 @@ class ChatroomDetailFragment :
                 if (it?.toString()?.trim().isNullOrEmpty()) {
                     viewModel.clearLinkPreview()
                 }
+            }
+
+            bottomSnack.ivCancelSnack.setOnClickListener {
+                bottomSnack.root.visibility = View.GONE
+                bottomSnack.tvSnack.text = ""
             }
 
             // scroll the recyclerview up when keyboard opens
@@ -786,8 +807,6 @@ class ChatroomDetailFragment :
         }
         val text = clipData.getItemAt(0)?.text?.toString()
         if (!text.isNullOrEmpty() && multiMediaList.isEmpty() && gifList.isEmpty() && documentList.isEmpty() && audioList.isEmpty()) {
-            // todo: ask about externally shared data
-//            showExternallySharedText(text)
             return
         }
 
@@ -3957,14 +3976,12 @@ class ChatroomDetailFragment :
     }
 
     override fun showToastMessage(message: String) {
-        // todo: use snackbar instead of bottomToast
-//        binding.bottomToast.tvToast.text = message
-//        binding.bottomToast.root.visibility = View.VISIBLE
+        binding.bottomSnack.tvSnack.text = message
+        binding.bottomSnack.root.visibility = View.VISIBLE
     }
 
     override fun dismissToastMessage() {
-        // todo: use snackbar instead of bottomToast
-//        binding.bottomToast.root.visibility = View.GONE
+        binding.bottomSnack.root.visibility = View.GONE
     }
 
     override fun getBinding(conversationId: String?): DataBoundViewHolder<*>? {
@@ -4912,25 +4929,22 @@ class ChatroomDetailFragment :
         //get conversation to be reported
         val conversation = selectedConversations.values.firstOrNull() ?: return
 
-        //create analytics data object
-//        val analyticsData = ReportAnalyticsEventData.Builder()
-//            .conversationType(ChatroomUtil.getConversationType(conversation))
-//            .chatroomId(getChatroomViewData()?.id)
-//            .chatroomName(getChatroomViewData()?.header)
-//            .build()
-//
-//        //create extras for [ReportActivity]
-//        val reportExtras = ReportExtras.Builder()
-//            .conversationId(conversation.id)
-//            .type(REPORT_TYPE_CONVERSATION)
-//            .analyticsData(analyticsData)
-//            .build()
-//
-//        //get Intent for [ReportActivity]
-//        val intent = ReportActivity.getIntent(requireContext(), reportExtras)
-//
-//        //start [ReportActivity] and check for result
-//        reportConversationLauncher.launch(intent)
+        //create extras for [ReportActivity]
+        val reportExtras = ReportExtras.Builder()
+            .conversationId(conversation.id)
+            .type(REPORT_TYPE_CONVERSATION)
+            .conversationType(ChatroomUtil.getConversationType(conversation))
+            .chatroomId(getChatroomViewData()?.id)
+            .chatroomName(getChatroomViewData()?.header)
+            .communityId(getChatroomViewData()?.communityId)
+            .uuid(conversation.memberViewData.sdkClientInfo.uuid)
+            .build()
+
+        //get Intent for [ReportActivity]
+        val intent = ReportActivity.getIntent(requireContext(), reportExtras)
+
+        //start [ReportActivity] and check for result
+        reportConversationLauncher.launch(intent)
     }
 
     private fun setChatroomTopic() {

@@ -11,6 +11,7 @@ import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.pushnotification.model.ChatroomNotificationViewData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
+import com.likeminds.chatmm.report.model.ReportTagViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
@@ -19,6 +20,7 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
+import com.likeminds.likemindschat.moderation.model.ReportTag
 import com.likeminds.likemindschat.notification.model.ChatroomNotificationData
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
@@ -908,5 +910,21 @@ object ViewDataConverter {
                     ArrayList(it)
                 })
             .build()
+    }
+
+    /**
+     * convert list of [ReportTag] to list of [ReportTagViewData]
+     * @param tags: list of [ReportTag]
+     * */
+    fun convertReportTag(
+        tags: List<ReportTag>
+    ): List<ReportTagViewData> {
+        return tags.map { tag ->
+            ReportTagViewData.Builder()
+                .id(tag.id)
+                .name(tag.name)
+                .isSelected(false)
+                .build()
+        }
     }
 }

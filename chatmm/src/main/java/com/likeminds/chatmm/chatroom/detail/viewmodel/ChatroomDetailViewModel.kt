@@ -62,7 +62,6 @@ class ChatroomDetailViewModel @Inject constructor(
     //Contains all chatroom data, community data and more
     lateinit var chatroomDetail: ChatroomDetailViewData
 
-    // todo: update this in initial data only
     /**
      * Returns the current member object
      */

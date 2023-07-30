@@ -160,6 +160,7 @@ class ChatroomExploreFragment :
                 }
 
                 is ExploreViewModel.ErrorMessageEvent.ExploreFeed -> {
+                    ProgressHelper.hideProgress(binding.progressBar)
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                     requireActivity().finish()
                 }
@@ -169,6 +170,7 @@ class ChatroomExploreFragment :
 
     //fetch explore feed open explore tab is clicked
     private fun fetchExploreChatrooms() {
+        ProgressHelper.showProgress(binding.progressBar)
         viewModel.getInitialExploreFeed()
     }
 
@@ -239,6 +241,7 @@ class ChatroomExploreFragment :
     //shows pinned chatrooms when user clicks pin icon
     private fun showPinnedChatrooms() {
         binding.apply {
+            ProgressHelper.showProgress(progressBar)
             ivPinned.hide()
             tvPinned.show()
             viewModel.setShowPinnedChatroomsOnly(true)
@@ -250,6 +253,7 @@ class ChatroomExploreFragment :
     //shows all the chatrooms whether unpinned or pinned
     private fun showUnpinnedChatrooms() {
         binding.apply {
+            ProgressHelper.showProgress(progressBar)
             ivPinned.show()
             tvPinned.hide()
             resetRecyclerView()

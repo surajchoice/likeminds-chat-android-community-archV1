@@ -7,7 +7,6 @@ import android.os.Build
 import android.text.*
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
@@ -252,20 +251,7 @@ object ChatroomUtil {
     ): String {
         val uuid = chatroom.memberViewData.sdkClientInfo.uuid
         return if (uuid == currentMemberId) {
-            // todo: check
-            Log.d(
-                "TAG", """
-                1 deletedby: ${chatroom.deletedBy}
-                currentMemberId: $currentMemberId
-            """.trimIndent()
-            )
             val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
-            Log.d(
-                "TAG", """
-                2 deletedByUUID: $deletedByUUID
-                currentMemberId: $currentMemberId
-            """.trimIndent()
-            )
             if (deletedByUUID == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {

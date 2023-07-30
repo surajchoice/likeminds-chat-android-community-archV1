@@ -90,10 +90,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
                     chatroomDetailFragment?.consumeTouch() == true -> {
                         return
                     }
-                    //todo
-//                    collabcardDetailFragment?.isPollInProgress() == true -> {
-//                        showPollDismissDialog(collabcardDetailFragment)
-//                    }
+
                     chatroomDetailExtras?.isFromSearchChatroom == true -> {
                         sendSearchChatroomClosedEvent()
                         redirectActivity(false)

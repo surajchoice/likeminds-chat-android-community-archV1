@@ -501,6 +501,16 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
+        <include
+            android:id="@+id/bottom_snack"
+            layout="@layout/layout_snack_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone" />
+
         <com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
             android:id="@+id/member_tagging_view"
             android:layout_width="0dp"

@@ -42,7 +42,7 @@ internal object BackgroundExecutor {
             if (executor is ExecutorService) {
                 future = executor.submit(runnable)
             } else {
-                /* non-cancellable task */
+                /* non-com.likeminds.chatmm.report.view.getCancellable task */
                 executor.execute(runnable)
             }
         }

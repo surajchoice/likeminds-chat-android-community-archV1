@@ -19,6 +19,7 @@ class PollViewData private constructor(
     val parentConversation: ConversationViewData?,
     val parentViewItemPosition: Int?,
     val pollInfoData: PollInfoData?,
+    val subText: String?,
     val parentId: String?// Can be either ChatroomId or ConversationId based on pollSourceType
 ) : Parcelable, BaseViewType {
     override val viewType: Int
@@ -35,6 +36,7 @@ class PollViewData private constructor(
         private var parentConversation: ConversationViewData? = null
         private var parentViewItemPosition: Int? = null
         private var pollInfoData: PollInfoData? = null
+        private var subText: String? = null
         private var parentId: String? = null
 
 
@@ -53,6 +55,7 @@ class PollViewData private constructor(
             apply { this.parentViewItemPosition = parentViewItemPosition }
 
         fun pollInfoData(pollInfoData: PollInfoData?) = apply { this.pollInfoData = pollInfoData }
+        fun subText(subText: String?) = apply { this.subText = subText }
         fun parentId(parentId: String?) = apply { this.parentId = parentId }
 
         fun build() = PollViewData(
@@ -66,6 +69,7 @@ class PollViewData private constructor(
             parentConversation,
             parentViewItemPosition,
             pollInfoData,
+            subText,
             parentId
         )
     }
@@ -81,6 +85,7 @@ class PollViewData private constructor(
             .parentConversation(parentConversation)
             .parentViewItemPosition(parentViewItemPosition)
             .pollInfoData(pollInfoData)
+            .subText(subText)
             .parentId(parentId)
     }
 }

@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SDKPreferences @Inject constructor(
-    private val application: Application
+    application: Application
 ) : BasePreferences(SDK_PREFS, application) {
     companion object {
         const val SDK_PREFS = "sdk_prefs"
