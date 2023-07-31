@@ -21,7 +21,7 @@ class AttachmentViewData private constructor(
     val subTitle: String?,
     val attachments: List<AttachmentViewData>?,
     val parentConversation: ConversationViewData?,
-    val parentChatRoom: ChatroomViewData?,
+    val parentChatroom: ChatroomViewData?,
     val parentViewItemPosition: Int?,
     val awsFolderPath: String?,
     val localFilePath: String?,
@@ -30,8 +30,8 @@ class AttachmentViewData private constructor(
     val thumbnailLocalFilePath: String?,
     val meta: AttachmentMetaViewData?,
     val progress: Int?,
-    val currentDuration: String?,
-    val mediaState: String?,
+    val currentDuration: String,
+    val mediaState: String,
     val communityId: Int?,
     val createdAt: Long?,
     val updatedAt: Long?,
@@ -67,7 +67,7 @@ class AttachmentViewData private constructor(
         private var subTitle: String? = null
         private var attachments: List<AttachmentViewData>? = null
         private var parentConversation: ConversationViewData? = null
-        private var parentChatRoom: ChatroomViewData? = null
+        private var parentChatroom: ChatroomViewData? = null
         private var parentViewItemPosition: Int? = null
         private var awsFolderPath: String? = null
         private var localFilePath: String? = null
@@ -76,8 +76,8 @@ class AttachmentViewData private constructor(
         private var thumbnailLocalFilePath: String? = null
         private var meta: AttachmentMetaViewData? = null
         private var progress: Int? = null
-        private var currentDuration: String? = null
-        private var mediaState: String? = null
+        private var currentDuration: String = "00:00"
+        private var mediaState: String = MEDIA_ACTION_NONE
         private var communityId: Int? = null
         private var createdAt: Long? = null
         private var updatedAt: Long? = null
@@ -100,8 +100,8 @@ class AttachmentViewData private constructor(
         fun parentConversation(parentConversation: ConversationViewData?) =
             apply { this.parentConversation = parentConversation }
 
-        fun parentChatRoom(parentChatRoom: ChatroomViewData?) =
-            apply { this.parentChatRoom = parentChatRoom }
+        fun parentChatroom(parentChatroom: ChatroomViewData?) =
+            apply { this.parentChatroom = parentChatroom }
 
         fun parentViewItemPosition(parentViewItemPosition: Int?) =
             apply { this.parentViewItemPosition = parentViewItemPosition }
@@ -117,10 +117,10 @@ class AttachmentViewData private constructor(
 
         fun meta(meta: AttachmentMetaViewData?) = apply { this.meta = meta }
         fun progress(progress: Int?) = apply { this.progress = progress }
-        fun currentDuration(currentDuration: String?) =
+        fun currentDuration(currentDuration: String) =
             apply { this.currentDuration = currentDuration }
 
-        fun mediaState(mediaState: String?) = apply { this.mediaState = mediaState }
+        fun mediaState(mediaState: String) = apply { this.mediaState = mediaState }
         fun communityId(communityId: Int?) = apply { this.communityId = communityId }
         fun createdAt(createdAt: Long?) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
@@ -140,7 +140,7 @@ class AttachmentViewData private constructor(
             subTitle,
             attachments,
             parentConversation,
-            parentChatRoom,
+            parentChatroom,
             parentViewItemPosition,
             awsFolderPath,
             localFilePath,
@@ -172,7 +172,7 @@ class AttachmentViewData private constructor(
             .subTitle(subTitle)
             .attachments(attachments)
             .parentConversation(parentConversation)
-            .parentChatRoom(parentChatRoom)
+            .parentChatroom(parentChatroom)
             .parentViewItemPosition(parentViewItemPosition)
             .awsFolderPath(awsFolderPath)
             .localFilePath(localFilePath)

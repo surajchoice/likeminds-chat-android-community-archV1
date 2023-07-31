@@ -244,31 +244,6 @@ internal class ChatroomDetailDiffUtilCallback(
                 && oldItem?.url == newItem?.url
     }
 
-    // todo:
-//    private fun community(
-//        oldItem: CommunityViewData?,
-//        newItem: CommunityViewData?,
-//    ): Boolean {
-//        return if (oldItem == null && newItem == null) {
-//            true
-//        } else if (oldItem == null || newItem == null) {
-//            false
-//        } else {
-//            oldItem.id() == newItem.id()
-//                    && oldItem.name() == newItem.name()
-//                    && oldItem.imageURL() == newItem.imageURL()
-//                    && oldItem.collabcardsUnseen() == newItem.collabcardsUnseen()
-//                    && oldItem.chatRoomCount() == newItem.chatRoomCount()
-//                    && oldItem.pendingMembersCount() == newItem.pendingMembersCount()
-//                    && oldItem.pendingChatRoomCount() == newItem.pendingChatRoomCount()
-//                    && oldItem.openReportsCount() == newItem.openReportsCount()
-//                    && oldItem.clickState() == newItem.clickState()
-//                    && memberList(oldItem.newChatRoomUsers(), newItem.newChatRoomUsers())
-//                    && memberList(oldItem.chatRoomUsers(), newItem.chatRoomUsers())
-//                    && oldItem.updatedAt() == newItem.updatedAt()
-//        }
-//    }
-
     private fun compareIntegerList(oldItem: List<Int>?, newItem: List<Int>?): Boolean {
         if (oldItem.isNullOrEmpty() && newItem.isNullOrEmpty()) {
             return true

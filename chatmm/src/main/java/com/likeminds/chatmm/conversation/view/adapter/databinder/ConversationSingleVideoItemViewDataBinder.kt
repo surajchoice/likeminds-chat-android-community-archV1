@@ -58,7 +58,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                 tvCustomTitle,
                 tvCustomTitleDot,
                 data.memberViewData,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 adapterListener,
                 position,
                 conversationViewData = data,
@@ -71,7 +71,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                 ChatroomConversationItemViewDataBinderUtil.initConversationBubbleDeletedTextView(
                     tvConversation,
                     tvDeleteMessage,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     conversationViewData = data
                 )
             } else {
@@ -91,14 +91,14 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
             ChatroomConversationItemViewDataBinderUtil.initReactionButton(
                 ivAddReaction,
                 data,
-                userPreferences.getMemberId()
+                userPreferences.getUUID()
             )
 
             ChatroomConversationItemViewDataBinderUtil.initProgress(binding.tvProgress, data)
 
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.createdAt,
                 data.answer.isEmpty() && data.deletedBy == null,
                 imageViewStatus = ivConversationStatus,
@@ -107,7 +107,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReplyView(
                 viewReply,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 data.replyConversation,
                 data.replyChatroomId,
                 adapterListener,
@@ -123,7 +123,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
 
             ChatroomConversationItemViewDataBinderUtil.initReportView(
                 ivReport,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 adapterListener,
                 conversationViewData = data
             )
@@ -151,7 +151,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                 clConversationRoot,
                 clConversationBubble,
                 messageReactionsGridLayout,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 adapterListener,
                 data
             )
@@ -163,7 +163,7 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                     reactionsPreferences.getTotalNoOfHintsAllowed(),
                     tvDoubleTap,
                     data.memberViewData,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     clConversationRoot,
                     clConversationBubble
                 )

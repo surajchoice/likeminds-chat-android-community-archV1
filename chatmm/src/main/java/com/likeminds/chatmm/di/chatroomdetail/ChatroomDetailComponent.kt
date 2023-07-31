@@ -1,7 +1,6 @@
 package com.likeminds.chatmm.di.chatroomdetail
 
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
-import com.likeminds.chatmm.chatroom.detail.view.ViewParticipantsFragment
+import com.likeminds.chatmm.chatroom.detail.view.*
 import dagger.Subcomponent
 
 @Subcomponent(modules = [ChatroomDetailViewModelModule::class])
@@ -13,5 +12,7 @@ interface ChatroomDetailComponent {
     }
 
     fun inject(chatroomDetailFragment: ChatroomDetailFragment)
+    fun inject(chatroomDetailActivity: ChatroomDetailActivity)
+    fun inject(viewParticipantsActivity: ViewParticipantsActivity)
     fun inject(viewParticipantsFragment: ViewParticipantsFragment)
 }

@@ -21,7 +21,6 @@ class HomeBlankSpaceItemViewDataBinder :
         )
     }
 
-    // todo: check if space width is required
     override fun bindData(
         binding: ItemHomeBlankSpaceBinding,
         data: HomeBlankSpaceViewData,

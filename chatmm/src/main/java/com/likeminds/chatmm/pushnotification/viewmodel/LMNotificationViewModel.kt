@@ -49,7 +49,7 @@ class LMNotificationViewModel @Inject constructor(
                 LMAnalytics.Keys.CHATROOM_NAME to chatroomName,
                 "message_type" to "text",
                 "message" to conversation?.answer,
-                "uuid" to userPreferences.getUUID(),
+                LMAnalytics.Keys.UUID to userPreferences.getUUID(),
                 LMAnalytics.Keys.SOURCE to "notification"
             )
         )

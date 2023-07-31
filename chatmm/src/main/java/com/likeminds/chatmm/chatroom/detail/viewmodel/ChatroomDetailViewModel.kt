@@ -3,8 +3,10 @@ package com.likeminds.chatmm.chatroom.detail.viewmodel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.util.Patterns
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
 import com.likeminds.chatmm.LMAnalytics
@@ -37,6 +39,7 @@ import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -59,10 +62,11 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private val lmChatClient = LMChatClient.getInstance()
 
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     //Contains all chatroom data, community data and more
     lateinit var chatroomDetail: ChatroomDetailViewData
 
-    // todo: update this in initial data only
     /**
      * Returns the current member object
      */
@@ -120,6 +124,8 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _deleteConversationsResponse by lazy { MutableLiveData<Int>() }
     val deleteConversationsResponse: LiveData<Int> = _deleteConversationsResponse
 
+    private var sendLinkPreview = true
+
     sealed class ConversationEvent {
         data class NewConversation(val conversations: List<ConversationViewData>) :
             ConversationEvent()
@@ -157,6 +163,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class DeleteConversation(val errorMessage: String?) : ErrorMessageEvent()
         data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
+        data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -197,9 +204,8 @@ class ChatroomDetailViewModel @Inject constructor(
         return sdkPreferences.isGifSupportEnabled()
     }
 
-    // todo: member rights
     fun isMicroPollsEnabled(): Boolean {
-        return sdkPreferences.isMicroPollsEnabled() /* && hasCreatePollRights() */
+        return sdkPreferences.isMicroPollsEnabled() && hasCreatePollRights()
     }
 
     fun isAnnouncementChatroom(): Boolean {
@@ -208,6 +214,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun canMembersCanMessage(): Boolean? {
         return chatroomDetail.chatroom?.memberCanMessage
+    }
+
+    private fun hasCreatePollRights(): Boolean {
+        return canMemberCreatePoll.value == true
     }
 
     /**
@@ -242,7 +252,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun isChatroomCreator(): Boolean {
-        return getChatroomViewData()?.memberViewData?.id == userPreferences.getMemberId()
+        return getChatroomViewData()?.memberViewData?.sdkClientInfo?.uuid == userPreferences.getUUID()
     }
 
     /**
@@ -251,14 +261,6 @@ class ChatroomDetailViewModel @Inject constructor(
      **/
     fun canSetChatroomTopic(): Boolean {
         return isAdminMember() || isChatroomCreator()
-    }
-
-    fun getSlideUpVoiceNoteToast(): Boolean {
-        return sdkPreferences.getSlideUpVoiceNoteToast()
-    }
-
-    fun setSlideUpVoiceNoteToast(value: Boolean) {
-        sdkPreferences.setSlideUpVoiceNoteToast(value)
     }
 
     fun getOtherDmMember(): MemberViewData? {
@@ -366,6 +368,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * 8th case ->
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
@@ -394,14 +397,14 @@ class ChatroomDetailViewModel @Inject constructor(
             }
 
             val getMemberRequest = GetMemberRequest.Builder()
-                .memberId(userPreferences.getMemberId())
+                .uuid(userPreferences.getUUID())
                 .build()
             currentMemberFromDb =
                 ViewDataConverter.convertMember(lmChatClient.getMember(getMemberRequest).data?.member)
 
             val chatroomViewData = ViewDataConverter.convertChatroom(
                 chatroom,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 ChatroomUtil.getChatroomViewType(chatroom)
             ) ?: return@launchIO
             chatroomDetail = ChatroomDetailViewData.Builder()
@@ -514,8 +517,6 @@ class ChatroomDetailViewModel @Inject constructor(
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
             observeConversations(context, chatroomDetailExtras.chatroomId)
-            // todo: write in db
-//            observeCommunity(chatroomViewData.communityId)
         }
     }
 
@@ -573,7 +574,7 @@ class ChatroomDetailViewModel @Inject constructor(
         medianConversationId: String? = null,
     ): List<BaseViewType> {
         val getConversationRequest = GetConversationRequest.Builder()
-            .conversationId(medianConversationId ?: "")
+            .conversationId(medianConversationId ?: medianConversation?.id ?: "")
             .build()
         val getConversationResponse = lmChatClient.getConversation(getConversationRequest)
         val median = medianConversation
@@ -717,6 +718,13 @@ class ChatroomDetailViewModel @Inject constructor(
                 .listener(conversationChangeListener)
                 .build()
             lmChatClient.observeConversations(observeConversationsRequest)
+        }
+    }
+
+    // starts observing live conversations
+    fun observeLiveConversations(context: Context, chatroomId: String) {
+        viewModelScope.launchIO {
+            lmChatClient.observeLiveConversations(context, chatroomId)
         }
     }
 
@@ -1095,8 +1103,24 @@ class ChatroomDetailViewModel @Inject constructor(
         return lmChatClient.getConversationsCount(getConversationsCountRequest).data?.count ?: 0
     }
 
-    fun getContentDownloadSettings(communityId: String) {
-        // todo:
+    fun getContentDownloadSettings() {
+        viewModelScope.launchIO {
+            val response = lmChatClient.getContentDownloadSettings()
+            if (response.success) {
+                val data = response.data ?: return@launchIO
+                val settings = data.settings
+                val optionsDownloadable = settings.filter { it.enabled }
+                val contentTypes = optionsDownloadable.map {
+                    it.downloadSettingType
+                }
+                _contentDownloadSettingsLiveData.postValue(contentTypes)
+            } else {
+                Log.e(
+                    SDKApplication.LOG_TAG,
+                    "content download setting failed: ${response.errorMessage}"
+                )
+            }
+        }
     }
 
     fun setLastSeenTrueAndSaveDraftResponse(
@@ -1142,7 +1166,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 if (oldChatroomViewData != null) {
 
                     //change follow status for chatroom
-                    val followStatus = oldChatroomViewData.followStatus ?: return@launchIO
+                    val followStatus = oldChatroomViewData.followStatus
                     val newChatroomViewData = oldChatroomViewData.toBuilder()
                         .followStatus(!followStatus)
                         .build()
@@ -1353,7 +1377,10 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private fun postConversationsDeleted(conversations: List<ConversationViewData>) {
         sendConversationUpdatesToUI(conversations.map {
-            it.toBuilder().deletedBy(userPreferences.getMemberId()).build()
+            it.toBuilder()
+                .deletedBy(userPreferences.getMemberId())
+                .deletedByMember(currentMemberFromDb)
+                .build()
         })
     }
 
@@ -1406,15 +1433,15 @@ class ChatroomDetailViewModel @Inject constructor(
                             postConversationRequestBuilder.ogTags(null).shareLink(null)
                     }
 
-                    linkOgTags.value?.url == shareLink &&
-                            isValidLinkViewData(linkOgTags.value) -> {
+                    _linkOgTags.value?.url == shareLink &&
+                            isValidLinkViewData(_linkOgTags.value) && sendLinkPreview -> {
                         postConversationRequestBuilder = postConversationRequestBuilder
                             .ogTags(
-                                ViewDataConverter.convertLinkOGTags(linkOgTags.value)
+                                ViewDataConverter.convertLinkOGTags(_linkOgTags.value)
                             ).shareLink(shareLink)
                     }
 
-                    isURLReachable(shareLink) -> {
+                    isURLReachable(shareLink) && sendLinkPreview -> {
                         postConversationRequestBuilder =
                             postConversationRequestBuilder.shareLink(shareLink)
                     }
@@ -1423,7 +1450,7 @@ class ChatroomDetailViewModel @Inject constructor(
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 communityId,
                 postConversationRequest,
                 updatedFileUris
@@ -1432,6 +1459,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val response = lmChatClient.postConversation(postConversationRequest)
             if (response.success) {
+                sendLinkPreview = true
                 val data = response.data
                 onConversationPosted(
                     context,
@@ -1462,13 +1490,18 @@ class ChatroomDetailViewModel @Inject constructor(
             when (it.fileType) {
                 IMAGE, GIF -> {
                     val dimensions = FileUtil.getImageDimensions(context, it.uri)
-                    it.toBuilder().width(dimensions.first).height(dimensions.second).build()
+                    it.toBuilder()
+                        .width(dimensions.first)
+                        .height(dimensions.second)
+                        .build()
                 }
 
                 VIDEO -> {
                     val thumbnailUri = FileUtil.getVideoThumbnailUri(context, it.uri)
                     if (thumbnailUri != null) {
-                        it.toBuilder().thumbnailUri(thumbnailUri).build()
+                        it.toBuilder()
+                            .thumbnailUri(thumbnailUri)
+                            .build()
                     } else {
                         it
                     }
@@ -1501,13 +1534,13 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private fun saveTemporaryConversation(
-        memberId: String,
+        uuid: String,
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?
     ): ConversationViewData? {
         val conversation = ViewDataConverter.convertConversation(
-            memberId,
+            uuid,
             communityId,
             request,
             fileUris
@@ -1524,9 +1557,8 @@ class ChatroomDetailViewModel @Inject constructor(
         } else {
             null
         }
-
         val getMemberRequest = GetMemberRequest.Builder()
-            .memberId(conversation.memberId ?: "")
+            .uuid(uuid)
             .build()
         val member = lmChatClient.getMember(getMemberRequest).data?.member
         val memberViewData = ViewDataConverter.convertMember(member)
@@ -1563,7 +1595,11 @@ class ChatroomDetailViewModel @Inject constructor(
             var uploadData: Pair<WorkContinuation?, String>? = null
             val requestList = ArrayList<GenericFileRequest>()
             if (!updatedFileUris.isNullOrEmpty()) {
-                uploadData = uploadFilesViaWorker(context, response.id!!, updatedFileUris.size)
+                uploadData = uploadFilesViaWorker(
+                    context,
+                    response.id!!,
+                    updatedFileUris.size
+                )
                 requestList.addAll(
                     getUploadFileRequestList(
                         context,
@@ -1573,6 +1609,11 @@ class ChatroomDetailViewModel @Inject constructor(
                     )
                 )
             }
+            savePostedConversation(
+                requestList,
+                response,
+                uploadData?.second
+            )
             postedConversation(
                 taggedUsers,
                 tempConversation,
@@ -1607,6 +1648,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 .index(index)
 
             val localFilePath = FileUtil.getRealPath(context, attachment.uri).path
+
             val file = File(localFilePath)
             val serverPath = UploadHelper.getConversationAttachmentFilePath(
                 chatroomId,
@@ -1634,6 +1676,49 @@ class ChatroomDetailViewModel @Inject constructor(
 
             builder.localFilePath(localFilePath).awsFolderPath(serverPath).build()
         }
+    }
+
+    private fun savePostedConversation(
+        requestList: ArrayList<GenericFileRequest>,
+        response: PostConversationResponse,
+        uploadWorkerUUID: String?
+    ) {
+        val attachmentList = requestList.map { request ->
+            var builder = Attachment.Builder()
+                .name(request.name)
+                .url(request.fileUri.toString())
+                .type(request.fileType)
+                .index(request.index)
+                .width(request.width)
+                .height(request.height)
+                .awsFolderPath(request.awsFolderPath)
+                .localFilePath(request.localFilePath)
+                .meta(
+                    AttachmentMeta.Builder()
+                        .duration(request.meta?.duration)
+                        .numberOfPage(request.meta?.numberOfPage)
+                        .size(request.meta?.size)
+                        .build()
+                )
+            if (request.thumbnailUri != null) {
+                builder = builder.thumbnailUrl(request.thumbnailUri.toString())
+                    .thumbnailAWSFolderPath(request.thumbnailAWSFolderPath)
+                    .thumbnailLocalFilePath(request.thumbnailLocalFilePath)
+            }
+            return@map builder.build()
+        }
+
+        val updatedConversation = response.conversation.toBuilder()
+            .uploadWorkerUUID(uploadWorkerUUID)
+            .attachments(attachmentList)
+            .build()
+
+        // request to save the posted conversation
+        val request = SavePostedConversationRequest.Builder()
+            .conversation(updatedConversation)
+            .isFromNotification(false)
+            .build()
+        lmChatClient.savePostedConversation(request)
     }
 
     private fun postedConversation(
@@ -1689,13 +1774,39 @@ class ChatroomDetailViewModel @Inject constructor(
         return Pair(workContinuation, oneTimeWorkRequest.id.toString())
     }
 
-    fun postEditedChatRoom(text: String, chatroom: ChatroomViewData) {
+    fun fetchRepliedConversationOnClick(
+        conversation: ConversationViewData,
+        repliedConversationId: String,
+        oldConversations: List<BaseViewType>,
+    ) {
+        val data = fetchPaginatedData(
+            SCROLL_UP,
+            conversation,
+            oldConversations,
+            repliedConversationId = repliedConversationId
+        )
+        if (data != null) {
+            viewModelScope.launchMain {
+                _paginatedData.value = data
+            }
+        }
+    }
+
+    fun postEditedChatroom(text: String, chatroom: ChatroomViewData) {
         viewModelScope.launchIO {
-            // todo:
-//            val request = EditChatroomRequest.Builder()
-//                .text(text)
-//                .chatroomId(chatroom.id())
-//                .build()
+            val request = EditChatroomTitleRequest.Builder()
+                .text(text)
+                .chatroomId(chatroom.id)
+                .build()
+
+            val response = lmChatClient.editChatroomTitle(request)
+            if (!response.success) {
+                errorEventChannel.send(
+                    ErrorMessageEvent.EditChatroomTitle(
+                        response.errorMessage
+                    )
+                )
+            }
         }
     }
 
@@ -1780,7 +1891,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 uploadData = uploadFilesViaWorker(
                     context,
                     response.id!!,
-                    conversation.attachmentCount ?: 0
+                    conversation.attachmentCount
                 )
                 requestList.addAll(getUploadFileRequestList(context, conversation))
             }
@@ -1895,6 +2006,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun submitConversationPoll(
+        context: Context,
         conversation: ConversationViewData,
         pollViewDataList: List<PollViewData>,
     ) {
@@ -1915,12 +2027,15 @@ class ChatroomDetailViewModel @Inject constructor(
             }
             val updatePollItems = allPollItems.filter { it.isSelected == true }
 
+            val chatroomId = conversation.chatroomId ?: return@launchIO
+
             val request = SubmitPollRequest.Builder()
                 .conversationId(conversationId)
+                .chatroomId(chatroomId)
                 .polls(updatePollItems)
                 .build()
 
-            val response = lmChatClient.submitPoll(request)
+            val response = lmChatClient.submitPoll(context, request)
             pollUpdateResponse(
                 response,
                 conversation.pollInfoData,
@@ -1974,7 +2089,7 @@ class ChatroomDetailViewModel @Inject constructor(
     ---------------------------------------------------------------*/
 
     fun linkPreview(text: String) {
-        if (text.isEmpty()) {
+        if (text.isEmpty() || !sendLinkPreview) {
             clearLinkPreview()
             return
         }
@@ -1997,13 +2112,20 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    fun removeLinkPreview() {
+        sendLinkPreview = false
+        previewLinkJob?.cancel()
+        previewLink = null
+        _linkOgTags.postValue(null)
+    }
+
     fun clearLinkPreview() {
         previewLinkJob?.cancel()
         previewLink = null
         _linkOgTags.postValue(null)
     }
 
-    fun decodeUrl(url: String) {
+    private fun decodeUrl(url: String) {
         viewModelScope.launchIO {
             val decodeUrlRequest = DecodeUrlRequest.Builder()
                 .url(url)
@@ -2021,6 +2143,12 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun decodeUrl(decodeUrlResponse: DecodeUrlResponse?) {
         val ogTags = decodeUrlResponse?.ogTags ?: return
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
+    }
+
+    override fun onCleared() {
+        previewLinkJob?.cancel()
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     /**------------------------------------------------------------
@@ -2247,7 +2375,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 mapOf(
                     LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
                     LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
-                    LMAnalytics.Keys.USER_ID to userPreferences.getMemberId(),
+                    LMAnalytics.Keys.UUID to userPreferences.getUUID(),
                     LMAnalytics.Keys.MESSAGE_ID to messageId,
                     "url" to url,
                     "type" to "link",

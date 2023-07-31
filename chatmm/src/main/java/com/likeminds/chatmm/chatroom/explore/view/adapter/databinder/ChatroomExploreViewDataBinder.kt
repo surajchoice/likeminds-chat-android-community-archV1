@@ -3,6 +3,7 @@ package com.likeminds.chatmm.chatroom.explore.view.adapter.databinder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.chatroom.explore.view.adapter.ChatroomExploreAdapterListener
 import com.likeminds.chatmm.databinding.ItemChatroomExploreBinding
@@ -45,6 +46,7 @@ internal class ChatroomExploreViewDataBinder(
         position: Int
     ) {
         binding.apply {
+            buttonColor = LMBranding.getButtonsColor()
             this.data = data
             this.position = position
 
@@ -67,12 +69,10 @@ internal class ChatroomExploreViewDataBinder(
 
             //for participants count
             val participantsCount = data.participantsCount
-            tvParticipant.isVisible = participantsCount != 0
             tvParticipant.text = participantsCount.toString()
 
             // for conversation count
             val totalResponseCount = data.totalResponseCount
-            tvResponses.isVisible = totalResponseCount != 0
             tvResponses.text = totalResponseCount.toString()
 
             //for title

@@ -146,7 +146,9 @@
 
         <include
             android:id="@+id/progress_bar"
-            layout="@layout/progress_bar" />
+            layout="@layout/progress_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/rv_explore" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

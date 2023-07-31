@@ -41,14 +41,6 @@ object LikeMindsChatUI {
         isGuest: Boolean? = false,
     ) {
         Log.d(SDKApplication.LOG_TAG, "initiate group chat called")
-        Log.d(
-            SDKApplication.LOG_TAG, """
-            container id: $containerViewId
-            user_name: $userName
-            user id: $userId
-            isGuest: $isGuest
-        """.trimIndent()
-        )
 
         val extra = HomeFeedExtras.Builder()
             .userName(userName)

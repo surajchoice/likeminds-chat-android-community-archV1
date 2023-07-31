@@ -8,15 +8,10 @@ import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.media.model.InternalMediaType
-import com.likeminds.chatmm.media.model.MEDIA_RESULT_BROWSE
-import com.likeminds.chatmm.media.model.MediaPickerExtras
-import com.likeminds.chatmm.media.model.MediaPickerResult
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.utils.ViewUtils.currentFragment
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
-import com.likeminds.chatmm.utils.permissions.Permission
-import com.likeminds.chatmm.utils.permissions.PermissionDeniedCallback
-import com.likeminds.chatmm.utils.permissions.PermissionManager
+import com.likeminds.chatmm.utils.permissions.*
 
 class MediaPickerActivity : BaseAppCompatActivity() {
 
@@ -51,9 +46,13 @@ class MediaPickerActivity : BaseAppCompatActivity() {
         }
     }
 
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().mediaComponent()?.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SDKApplication.getInstance().mediaComponent()?.inject(this)
 
         setContentView(R.layout.activity_media_picker)
         val extras = intent.extras?.getParcelable<MediaPickerExtras>(ARG_MEDIA_PICKER_EXTRAS)

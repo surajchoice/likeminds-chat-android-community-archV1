@@ -12,6 +12,10 @@
         <attr name="font_Style" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="LikeMindsFAB">
+        <attr name="fab_type" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="LikeMindsTextView">
         <attr name="fontType" format="string" />
         <attr name="textType" format="string" />

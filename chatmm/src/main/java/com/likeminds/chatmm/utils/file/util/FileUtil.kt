@@ -1,16 +1,12 @@
 package com.likeminds.chatmm.utils.file.util
 
-import android.content.ComponentName
-import android.content.ContentResolver
-import android.content.Context
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.Build
-import android.os.CancellationSignal
-import android.os.Environment
+import android.os.*
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
@@ -86,7 +82,7 @@ object FileUtil {
             else -> {
                 FileData.Builder()
                     .type(LOCAL_PROVIDER)
-                    .path(pathTempFile)
+                    .path(returnedPath)
                     .build()
             }
         }
@@ -450,6 +446,7 @@ object FileUtil {
         return newUri
     }
 
+    @Suppress("DEPRECATION")
     fun getVideoThumbnailUri(context: Context, videoUri: Uri?): Uri? {
         var bitmap: Bitmap? = null
         var mediaMetadataRetriever: MediaMetadataRetriever? = null
@@ -514,7 +511,11 @@ object FileUtil {
 
             val stream = FileOutputStream(file)
             val compressFormat =
-                if (isPNGFormat) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+                if (isPNGFormat) {
+                    Bitmap.CompressFormat.PNG
+                } else {
+                    Bitmap.CompressFormat.JPEG
+                }
             bitmap.compress(compressFormat, 100, stream)
             stream.flush()
             stream.close()

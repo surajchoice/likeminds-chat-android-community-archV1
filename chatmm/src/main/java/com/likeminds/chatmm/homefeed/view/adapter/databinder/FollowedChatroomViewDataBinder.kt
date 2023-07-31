@@ -2,9 +2,7 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -109,16 +107,6 @@ class FollowedChatroomViewDataBinder(
             val lastConversation = data.lastConversation
             if (lastConversation?.deletedBy == null) {
                 if (lastConversation != null) {
-                    //Last conversation's chatroom preview was deleted
-                    tvLastConversationMemberName.visibility = View.GONE
-                    tvLastConversationAttachment.visibility = View.GONE
-                    tvLastConversation.setTypeface(
-                        tvLastConversation.typeface,
-                        Typeface.ITALIC
-                    )
-                    tvLastConversation.text =
-                        root.context.getString(R.string.chatroom_was_deleted)
-
                     //If last conversation exists and it is not deleted
                     tvLastConversation.setTypeface(
                         tvLastConversation.typeface,
@@ -189,7 +177,7 @@ class FollowedChatroomViewDataBinder(
                 tvLastConversation.text = ChatroomUtil.getDeletedMessage(
                     root.context,
                     lastConversation,
-                    userPreferences.getMemberId()
+                    userPreferences.getUUID()
                 )
             }
         }

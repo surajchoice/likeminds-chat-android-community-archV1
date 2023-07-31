@@ -137,6 +137,7 @@
             android:paddingBottom="14dp"
             android:text="@string/submit"
             android:textColor="@color/white"
+            app:text_type="normal"
             android:textSize="14sp"
             app:cornerRadius="24dp"
             app:font_type="medium"

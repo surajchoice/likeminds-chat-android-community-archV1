@@ -24,7 +24,9 @@ class MemberViewData private constructor(
     val listOfMenu: List<MemberActionViewData>?,
     val parentViewItemPosition: Int?,
     val updatedAt: Long?,
-    val userUniqueId: String?
+    val userUniqueId: String?,
+    val sdkClientInfo: SDKClientInfoViewData,
+    val uuid: String
 ) : Parcelable, BaseViewType {
     override val viewType: Int
         get() = dynamicViewType
@@ -34,7 +36,6 @@ class MemberViewData private constructor(
         private var name: String? = null
         private var imageUrl: String? = null
         private var dynamicViewType: Int = ITEM_MEMBER
-
         private var state: Int = STATE_NOTHING
         private var communityId: String? = null
         private var isGuest: Boolean? = null
@@ -45,11 +46,12 @@ class MemberViewData private constructor(
         private var memberSince: String? = null
         private var communityName: String? = null
         private var customTitle: String? = null
-
         private var listOfMenu: List<MemberActionViewData>? = null
         private var parentViewItemPosition: Int? = null
         private var updatedAt: Long? = null
         private var userUniqueId: String? = null
+        private var sdkClientInfo: SDKClientInfoViewData = SDKClientInfoViewData.Builder().build()
+        private var uuid: String = ""
 
         fun id(id: String?) = apply { this.id = id }
         fun name(name: String?) = apply { this.name = name }
@@ -82,6 +84,10 @@ class MemberViewData private constructor(
         fun updatedAt(updatedAt: Long?) = apply { this.updatedAt = updatedAt }
 
         fun userUniqueId(userUniqueId: String?) = apply { this.userUniqueId = userUniqueId }
+        fun sdkClientInfo(sdkClientInfo: SDKClientInfoViewData) =
+            apply { this.sdkClientInfo = sdkClientInfo }
+
+        fun uuid(uuid: String) = apply { this.uuid = uuid }
 
         fun build() = MemberViewData(
             id,
@@ -101,7 +107,9 @@ class MemberViewData private constructor(
             listOfMenu,
             parentViewItemPosition,
             updatedAt,
-            userUniqueId
+            userUniqueId,
+            sdkClientInfo,
+            uuid
         )
     }
 
@@ -124,5 +132,7 @@ class MemberViewData private constructor(
             .parentViewItemPosition(parentViewItemPosition)
             .updatedAt(updatedAt)
             .userUniqueId(userUniqueId)
+            .sdkClientInfo(sdkClientInfo)
+            .uuid(uuid)
     }
 }

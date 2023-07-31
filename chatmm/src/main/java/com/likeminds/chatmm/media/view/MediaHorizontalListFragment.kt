@@ -1,9 +1,11 @@
 package com.likeminds.chatmm.media.view
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -73,8 +75,9 @@ class MediaHorizontalListFragment :
     override fun setUpViews() {
         super.setUpViews()
         initViewPager()
-        observeCommunity()
-        getCommunity()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            observeCommunity()
+        }
         binding.btnBack.setOnClickListener {
             activity?.finish()
         }
@@ -83,21 +86,23 @@ class MediaHorizontalListFragment :
         }
     }
 
-
-    private fun getCommunity() {
-//        mediaExtras.communityId?.let { viewModel.getCommunity(it) }
+    override fun observeData() {
+        super.observeData()
+        observeContentDownloadSettings()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun observeCommunity() {
-//        viewModel.communityLiveData.observe(viewLifecycleOwner) { communityViewData ->
-//            downloadableContentTypes = communityViewData.downloadableContentType()
-//            if (!mediaExtras.medias.isNullOrEmpty()) {
-//                handleOverflowMenuIcon(
-//                    downloadableContentTypes,
-//                    mediaExtras.medias!![binding.viewPager.currentItem].viewType
-//                )
-//            }
-//        }
+        viewModel.observeCommunity()
+    }
+
+    private fun observeContentDownloadSettings() {
+        viewModel.contentDownloadSettingsLiveData.observe(viewLifecycleOwner) { it ->
+            handleOverflowMenuIcon(
+                it?.toMutableList(),
+                mediaExtras.medias!![binding.viewPager.currentItem].viewType
+            )
+        }
     }
 
     private fun initViewPager() {
@@ -163,7 +168,6 @@ class MediaHorizontalListFragment :
     private fun saveToGallery() {
         val position = binding.viewPager.currentItem
         val media = mediaSwipeAdapter.items()[position] as? MediaSwipeViewData ?: return
-        // todo:
         val notificationIcon = R.drawable.ic_notification
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,
@@ -202,10 +206,15 @@ class MediaHorizontalListFragment :
         val videosCount = mediaExtras.medias?.filter {
             it.viewType == ITEM_VIDEO_SWIPE
         }?.size ?: 0
-        return if (imagesCount > 0 && videosCount > 0) "multimedia"
-        else if (imagesCount > 0) "photos"
-        else if (videosCount > 0) "videos"
-        else "media"
+        return if (imagesCount > 0 && videosCount > 0) {
+            "multimedia"
+        } else if (imagesCount > 0) {
+            "photos"
+        } else if (videosCount > 0) {
+            "videos"
+        } else {
+            "media"
+        }
     }
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {

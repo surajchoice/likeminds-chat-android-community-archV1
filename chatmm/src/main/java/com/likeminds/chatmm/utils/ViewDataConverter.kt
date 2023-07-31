@@ -5,13 +5,13 @@ import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
-import com.likeminds.chatmm.member.model.MemberStateViewData
-import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.pushnotification.model.ChatroomNotificationViewData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
+import com.likeminds.chatmm.report.model.ReportTagViewData
 import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
@@ -20,6 +20,7 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.helper.model.GroupTag
+import com.likeminds.likemindschat.moderation.model.ReportTag
 import com.likeminds.likemindschat.notification.model.ChatroomNotificationData
 import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
@@ -46,7 +47,7 @@ object ViewDataConverter {
         if (chatroom.followStatus == false) {
             showFollowTelescope = true
         }
-        if (chatroom.member?.id == currentMemberId) {
+        if (chatroom.member?.sdkClientInfo?.uuid == currentMemberId) {
             showFollowTelescope = false
         }
         if (chatroom.isTagged == true) {
@@ -101,6 +102,7 @@ object ViewDataConverter {
             .isPinned(chatroom.isPinned)
             .unreadConversationCount(chatroom.unreadConversationCount)
             .autoFollowDone(chatroom.autoFollowDone)
+            .deletedByMember(convertMember(chatroom.deletedByMember))
             .build()
     }
 
@@ -123,12 +125,12 @@ object ViewDataConverter {
         chatroom: Chatroom,
         dynamicViewType: Int? = null
     ): ChatroomViewData {
-        // todo: member state
         return ChatroomViewData.Builder()
             .id(chatroom.id)
             .communityId(chatroom.communityId ?: "")
             .communityName(chatroom.communityName ?: "")
             .memberViewData(convertMember(chatroom.member))
+            .memberState(chatroom.member?.state)
             .createdAt(chatroom.createdAt ?: 0)
             .title(chatroom.title)
             .answerText(chatroom.answerText)
@@ -140,7 +142,9 @@ object ViewDataConverter {
             .followStatus(chatroom.followStatus ?: false)
             .date(chatroom.date)
             .isTagged(chatroom.isTagged)
+            .isPending(chatroom.isPending)
             .deletedBy(chatroom.deletedBy)
+            .deletedByMember(convertMember(chatroom.deletedByMember))
             .updatedAt(chatroom.updatedAt)
             .isSecret(chatroom.isSecret)
             .unseenCount(chatroom.unseenCount)
@@ -149,16 +153,15 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: member to uuid
     fun convertChatroomForExplore(
         chatroom: Chatroom?,
-        memberId: String,
+        memberUUID: String,
         sortIndex: Int
     ): ExploreViewData? {
         if (chatroom == null) return null
         return ExploreViewData.Builder()
             .isPinned(chatroom.isPinned ?: false)
-            .isCreator(chatroom.member?.id == memberId)
+            .isCreator(chatroom.member?.sdkClientInfo?.uuid == memberUUID)
             .externalSeen(chatroom.externalSeen)
             .isSecret(chatroom.isSecret ?: false)
             .followStatus(chatroom.followStatus ?: false)
@@ -201,7 +204,11 @@ object ViewDataConverter {
             .state(conversation.state)
             .attachments(
                 conversation.attachments?.mapNotNull { attachment ->
-                    convertAttachment(attachment)
+                    convertAttachment(
+                        attachment,
+                        conversation.member?.name ?: "",
+                        "${conversation.date ?: ""}, ${conversation.createdAt ?: ""}"
+                    )
                 }?.let {
                     ArrayList(it)
                 }
@@ -224,6 +231,7 @@ object ViewDataConverter {
             .pollInfoData(convertPollInfoData(conversation))
             .lastSeen(conversation.lastSeen)
             .reactions(convertConversationReactions(conversation.reactions, conversation.id))
+            .deletedByMember(convertMember(conversation.deletedByMember))
             .build()
     }
 
@@ -236,13 +244,17 @@ object ViewDataConverter {
             .id(member.id)
             .name(member.name)
             .imageUrl(member.imageUrl)
+            .userUniqueId(member.userUniqueId)
             .state(member.state ?: 0)
             .customIntroText(member.customIntroText)
             .customClickText(member.customClickText)
             .customTitle(member.customTitle)
             .communityId(member.communityId.toString())
             .isGuest(member.isGuest)
+            .sdkClientInfo(convertSDKClientInfo(member.sdkClientInfo))
+            .uuid(member.uuid)
             .isOwner(member.isOwner)
+            .memberSince(member.memberSince)
             .build()
     }
 
@@ -263,6 +275,7 @@ object ViewDataConverter {
     ): ReactionViewData {
         return ReactionViewData.Builder()
             .reaction(reactionData.reaction)
+            .memberViewData(convertMember(reactionData.member))
             .conversationId(conversationId)
             .build()
     }
@@ -281,7 +294,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: remove
     private fun convertMemberFromMemberState(
         memberStateResponse: MemberStateResponse?
     ): MemberViewData? {
@@ -299,6 +311,7 @@ object ViewDataConverter {
             .name(memberStateResponse.name)
             .updatedAt(memberStateResponse.updatedAt)
             .isOwner(memberStateResponse.isOwner)
+            .sdkClientInfo(convertSDKClientInfo(memberStateResponse.sdkClientInfo))
             .build()
     }
 
@@ -368,6 +381,21 @@ object ViewDataConverter {
             .build()
     }
 
+    // converts SDKClientInfo network model to view data model
+    private fun convertSDKClientInfo(
+        sdkClientInfo: SDKClientInfo?
+    ): SDKClientInfoViewData {
+        if (sdkClientInfo == null) {
+            return SDKClientInfoViewData.Builder().build()
+        }
+        return SDKClientInfoViewData.Builder()
+            .communityId(sdkClientInfo.community)
+            .user(sdkClientInfo.user)
+            .userUniqueId(sdkClientInfo.userUniqueId)
+            .uuid(sdkClientInfo.uuid)
+            .build()
+    }
+
     // converts LinkOGTags view data model to network model
     private fun convertOGTags(
         linkOGTags: LinkOGTags?
@@ -419,7 +447,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: have to be refactored
     fun convertUser(user: User?): MemberViewData? {
         if (user == null) {
             return null
@@ -430,6 +457,7 @@ object ViewDataConverter {
             .imageUrl(user.imageUrl)
             .customTitle(user.customTitle)
             .isGuest(user.isGuest)
+            .sdkClientInfo(convertSDKClientInfo(user.sdkClientInfo))
             .build()
     }
 
@@ -444,21 +472,21 @@ object ViewDataConverter {
             .build()
     }
 
-    fun convertUserTag(member: Member?): TagViewData? {
+    fun convertMemberTag(member: Member?): TagViewData? {
         if (member == null) return null
         val nameDrawable = MemberImageUtil.getNameDrawable(
             MemberImageUtil.SIXTY_PX,
-            member.id,
+            member.sdkClientInfo?.uuid,
             member.name
         )
         return TagViewData.Builder()
             .name(member.name)
-            // todo:
             .id(member.id.toInt())
             .imageUrl(member.imageUrl)
             .isGuest(member.isGuest)
             .userUniqueId(member.userUniqueId)
             .placeHolder(nameDrawable.first)
+            .uuid(member.sdkClientInfo?.uuid ?: "")
             .build()
     }
 
@@ -499,7 +527,7 @@ object ViewDataConverter {
 
     // creates a Conversation network model for posting a conversation
     fun convertConversation(
-        memberId: String,
+        uuid: String,
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?
@@ -511,7 +539,7 @@ object ViewDataConverter {
             .answer(request.text)
             .state(STATE_NORMAL)
             .createdEpoch(System.currentTimeMillis())
-            .memberId(memberId)
+            .memberId(uuid)
             .createdAt(TimeUtil.generateCreatedAt())
             .attachments(convertAttachments(fileUris))
             .lastSeen(true)
@@ -569,7 +597,7 @@ object ViewDataConverter {
             .communityId(conversationViewData.communityId)
             .answer(conversationViewData.answer)
             .createdEpoch(conversationViewData.createdEpoch)
-            .memberId(conversationViewData.memberViewData.id)
+            .memberId(conversationViewData.memberViewData.sdkClientInfo.uuid)
             .createdAt(conversationViewData.createdAt)
             .attachments(convertAttachmentViewDataList(conversationViewData.attachments))
             .lastSeen(conversationViewData.lastSeen)
@@ -692,7 +720,6 @@ object ViewDataConverter {
         }
     }
 
-    // todo: community
     private fun convertSearchChatroomTitle(
         searchChatroom: SearchChatroom,
         followStatus: Boolean,
@@ -700,7 +727,6 @@ object ViewDataConverter {
     ): SearchChatroomTitleViewData {
         return SearchChatroomTitleViewData.Builder()
             .chatroom(convertChatroomForSearch(searchChatroom))
-//            .community(convertCommunityForSearch(searchChatroom.community))
             .followStatus(followStatus)
             .keywordMatchedInCommunityName(
                 SearchUtils.findMatchedKeywords(
@@ -750,6 +776,7 @@ object ViewDataConverter {
             .isTagged(searchChatroom.isTagged)
             .isPending(searchChatroom.chatroom.isPending)
             .deletedBy(searchChatroom.chatroom.deletedBy)
+            .deletedByMember(convertMember(searchChatroom.chatroom.deletedByMember))
             .updatedAt(searchChatroom.updatedAt)
             .isSecret(searchChatroom.chatroom.isSecret)
             .isDisabled(searchChatroom.isDisabled)
@@ -767,7 +794,6 @@ object ViewDataConverter {
         }
     }
 
-    // todo: community
     private fun convertSearchConversation(
         searchConversation: SearchConversation,
         followStatus: Boolean,
@@ -775,7 +801,6 @@ object ViewDataConverter {
     ): SearchConversationViewData {
         return SearchConversationViewData.Builder()
             .chatroom(convertChatroom(searchConversation.chatroom))
-//            .community(convertCommunityForSearch(searchConversation.community))
             .chatroomAnswer(convertConversationForSearch(searchConversation))
             .chatroomName(searchConversation.chatroom.header)
             .senderName(searchConversation.member.name)
@@ -805,7 +830,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: createdAt
     private fun convertConversationForSearch(
         searchConversation: SearchConversation
     ): ConversationViewData {
@@ -823,14 +847,14 @@ object ViewDataConverter {
             .createdAt(searchConversation.createdAt.toString())
             .communityId(searchConversation.community.id)
             .memberViewData(member)
-//            .createdAt(searchConversation.chatroom.createdAt)
+            .createdAt(searchConversation.chatroom.createdAt.toString())
             .answer(searchConversation.answer)
             .date(searchConversation.chatroom.date)
             .deletedBy(searchConversation.chatroom.deletedBy)
+            .deletedByMember(convertMember(searchConversation.chatroom.deletedByMember))
             .build()
     }
 
-    // todo: uuid
     fun convertParticipants(participant: Member): MemberViewData {
         return MemberViewData.Builder()
             .dynamicViewType(ITEM_VIEW_PARTICIPANTS)
@@ -840,6 +864,7 @@ object ViewDataConverter {
             .name(participant.name)
             .userUniqueId(participant.userUniqueId)
             .customTitle(participant.customTitle)
+            .sdkClientInfo(convertSDKClientInfo(participant.sdkClientInfo))
             .build()
     }
 
@@ -879,5 +904,21 @@ object ViewDataConverter {
                     ArrayList(it)
                 })
             .build()
+    }
+
+    /**
+     * convert list of [ReportTag] to list of [ReportTagViewData]
+     * @param tags: list of [ReportTag]
+     * */
+    fun convertReportTag(
+        tags: List<ReportTag>
+    ): List<ReportTagViewData> {
+        return tags.map { tag ->
+            ReportTagViewData.Builder()
+                .id(tag.id)
+                .name(tag.name)
+                .isSelected(false)
+                .build()
+        }
     }
 }

@@ -8,10 +8,11 @@ object MemberUtil {
         userPreferences: UserPreferences,
         memberViewData: MemberViewData?
     ): String {
-        val memberID = memberViewData?.id
+        val memberUUID = memberViewData?.sdkClientInfo?.uuid
         return if (memberViewData == null) ""
-        else if (userPreferences.getMemberId() == memberID) "You:"
-        else {
+        else if (userPreferences.getUUID() == memberUUID) {
+            "You:"
+        } else {
             val name = memberViewData.name?.trim()?.split(" ")?.get(0)
             if (name != null) "$name:" else ""
         }
@@ -21,7 +22,7 @@ object MemberUtil {
         member: MemberViewData,
         currentMemberId: String
     ): String {
-        return if (currentMemberId == member.id) {
+        return if (currentMemberId == member.sdkClientInfo.uuid) {
             "You"
         } else {
             member.name ?: ""

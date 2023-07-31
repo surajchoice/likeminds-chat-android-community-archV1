@@ -282,7 +282,7 @@ class CreateConversationPollDialog :
         ArrayAdapter(
             requireContext(),
             R.layout.item_spinner_dropdown,
-            viewModel.getMultipleOptionStateList()
+            viewModel.getMultipleOptionStateList(),
         ).also { adapter ->
             adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
             binding.spinnerMultipleOption.adapter = adapter
@@ -392,15 +392,14 @@ class CreateConversationPollDialog :
         }
         return PollViewData.Builder()
             .text(pollText)
-            // todo: ask
-//            .subText(createPollViewData.subText)
+            .subText(createPollViewData.subText)
             .build()
     }
 
     private fun showPastExpiryDateSelectedError() {
         ViewUtils.showShortToast(
             requireContext(),
-            "Please select future date as poll expire time"
+            getString(R.string.please_select_future_date_as_poll_expire_time)
         )
     }
 

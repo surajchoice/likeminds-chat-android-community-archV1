@@ -5,7 +5,7 @@ import android.content.Intent
 import com.likeminds.chatmm.R
 
 object ShareUtils {
-    const val domain = "https://www.sampleapp.com"
+    const val domain = "https://www.chatsampleapp.com"
 
     /**
      * Share post with url using default sharing in Android OS
@@ -13,13 +13,12 @@ object ShareUtils {
      * @param chatroomId - id of the shared chatroom
      * @param domain - domain required to create share link
      */
-    // todo: confirm share link
     fun shareChatroom(
         context: Context,
         chatroomId: String,
         domain: String
     ) {
-        val shareLink = "$domain/chatroom?chatroom_id=$chatroomId"
+        val shareLink = "$domain/chatroom_detail?chatroom_id=$chatroomId"
         val shareTitle = context.getString(R.string.share_chatroom)
         shareLink(context, shareLink, shareTitle)
     }

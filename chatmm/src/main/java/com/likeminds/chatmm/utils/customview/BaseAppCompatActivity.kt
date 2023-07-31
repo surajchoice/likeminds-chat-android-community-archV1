@@ -10,6 +10,7 @@ import android.util.SparseArray
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
@@ -36,8 +37,14 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         ConnectivityBroadcastReceiver()
     }
 
+    /**
+     * attachs to the component
+     */
+    protected open fun attachDagger() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        attachDagger()
         sessionPermission = SessionPermission(application)
     }
 
@@ -115,7 +122,11 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
             parentView.getChildAt(0)?.let { view ->
                 if (isConnected && wasNetworkGone) {
                     wasNetworkGone = false
-                    snackBar.showMessage(view, "Internet connection restored", true)
+                    snackBar.showMessage(
+                        view,
+                        getString(R.string.internet_connection_restored),
+                        true
+                    )
                 }
                 if (!isConnected) {
                     wasNetworkGone = true

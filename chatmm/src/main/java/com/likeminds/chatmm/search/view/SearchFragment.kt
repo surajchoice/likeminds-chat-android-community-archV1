@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.search.view
 
 import androidx.lifecycle.lifecycleScope
+import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
@@ -113,18 +114,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
 
     override fun onChatroomClicked(searchChatroomHeaderViewData: SearchChatroomHeaderViewData) {
         super.onChatroomClicked(searchChatroomHeaderViewData)
-//        todo: analytics
-//        viewModel.sendChatroomClickedEvent(
-//            searchChatroomHeaderViewData.chatroom.id(),
-//            searchChatroomHeaderViewData.community?.id()
-//        )
+        viewModel.sendChatroomClickedEvent(
+            searchChatroomHeaderViewData.chatroom.id,
+            searchChatroomHeaderViewData.chatroom.communityId
+        )
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-//                    .chatroomViewData(searchChatroomHeaderViewData.chatroom)
                     .chatroomId(searchChatroomHeaderViewData.chatroom.id)
-//                    .communityId(searchChatroomTitleViewData.community?.id())
-//                    .source(LMAnalytics.Sources.SOURCE_HOME_FEED)
+                    .communityId(searchChatroomHeaderViewData.chatroom.communityId)
+                    .source(LMAnalytics.Source.HOME_FEED)
                     .isFromSearchChatroom(true)
                     .build()
             )
@@ -133,19 +132,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
 
     override fun onTitleClicked(searchChatroomTitleViewData: SearchChatroomTitleViewData) {
         super.onTitleClicked(searchChatroomTitleViewData)
-        //        todo: analytics
-//        viewModel.sendChatroomClickedEvent(
-//            searchChatroomTitleViewData.chatroom.id(),
-//            searchChatroomTitleViewData.community?.id()
-//        )
+        viewModel.sendChatroomClickedEvent(
+            searchChatroomTitleViewData.chatroom.id,
+            searchChatroomTitleViewData.chatroom.communityId
+        )
 
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-//                    .chatroomViewData(searchChatroomTitleViewData.chatroom)
                     .chatroomId(searchChatroomTitleViewData.chatroom.id)
-//                    .communityId(searchChatroomTitleViewData.community?.id())
-//                    .source(LMAnalytics.Sources.SOURCE_HOME_FEED)
+                    .communityId(searchChatroomTitleViewData.chatroom.communityId)
+                    .source(LMAnalytics.Source.HOME_FEED)
                     .isFromSearchChatroom(true)
                     .scrollToExtremeTopForHighlightingTitle(true)
                     .build()
@@ -155,20 +152,18 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, SearchViewModel>(),
 
     override fun onMessageClicked(searchConversationViewData: SearchConversationViewData) {
         super.onMessageClicked(searchConversationViewData)
-        //        todo: analytics
-//        viewModel.sendMessageClickedEvent(
-//            searchConversationViewData.chatroom?.id(),
-//            searchConversationViewData.community.id()
-//        )
+        viewModel.sendMessageClickedEvent(
+            searchConversationViewData.chatroom?.id,
+            searchConversationViewData.chatroom?.communityId
+        )
 
         startActivity(
             ChatroomDetailActivity.getIntent(
                 requireContext(), ChatroomDetailExtras.Builder()
-//                    .chatroomViewData(searchConversationViewData.chatroom)
                     .chatroomId(searchConversationViewData.chatroom?.id ?: "")
-//                    .communityId(searchConversationViewData.community.id())
+                    .communityId(searchConversationViewData.chatroom?.communityId)
                     .conversationId(searchConversationViewData.chatroomAnswer.id)
-//                    .source(LMAnalytics.Sources.SOURCE_HOME_FEED)
+                    .source(LMAnalytics.Source.HOME_FEED)
                     .isFromSearchMessage(true)
                     .build()
             )

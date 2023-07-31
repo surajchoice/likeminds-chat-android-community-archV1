@@ -14,6 +14,8 @@ import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.polls.PollsComponentModule
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponentModule
+import com.likeminds.chatmm.di.report.ReportComponent
+import com.likeminds.chatmm.di.report.ReportComponentModule
 import com.likeminds.chatmm.di.search.SearchComponent
 import com.likeminds.chatmm.pushnotification.util.LMChatNotificationHandler
 import com.likeminds.chatmm.pushnotification.util.NotificationActionBroadcastReceiver
@@ -30,7 +32,8 @@ import javax.inject.Singleton
         ChatroomDetailComponentModule::class,
         MediaComponentModule::class,
         PollsComponentModule::class,
-        ReactionsComponentModule::class
+        ReactionsComponentModule::class,
+        ReportComponentModule::class
     ]
 )
 interface LikeMindsChatComponent {
@@ -44,6 +47,7 @@ interface LikeMindsChatComponent {
     fun pollsComponent(): PollsComponent.Factory
     fun searchComponent(): SearchComponent.Factory
     fun reactionsComponent(): ReactionsComponent.Factory
+    fun reportComponent(): ReportComponent.Factory
 
     @Component.Builder
     interface Builder {

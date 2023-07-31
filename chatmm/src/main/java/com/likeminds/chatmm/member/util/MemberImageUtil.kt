@@ -13,7 +13,7 @@ object MemberImageUtil {
     fun setImage(
         imageUrl: String?,
         name: String?,
-        id: String?,
+        uuid: String?,
         imageView: ImageView,
         showGreyScale: Boolean = false,
         showRoundImage: Boolean = false,
@@ -21,7 +21,13 @@ object MemberImageUtil {
         cornerRadius: Int = 0,
         objectKey: Any? = null
     ): Int {
-        val nameDrawable = getNameDrawable(SIXTY_PX, id, name, showRoundImage, showRectRoundImage)
+        val nameDrawable = getNameDrawable(
+            SIXTY_PX,
+            uuid,
+            name,
+            showRoundImage,
+            showRectRoundImage
+        )
         ImageBindingUtil.loadImage(
             imageView,
             imageUrl,

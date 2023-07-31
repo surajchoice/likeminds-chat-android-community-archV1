@@ -3,10 +3,7 @@ package com.likeminds.chatmm.chatroom.create.view.adapter.databinder
 import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.ViewConfiguration
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintSet
 import com.likeminds.chatmm.R
@@ -20,13 +17,12 @@ import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
-import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_AUDIO
 import javax.inject.Inject
 
 class ItemAudioViewDataBinder @Inject constructor(
     private val adapterListener: ChatroomItemAdapterListener?,
-) : ViewDataBinder<ItemAudioBinding, BaseViewType>() {
+) : ViewDataBinder<ItemAudioBinding, AttachmentViewData>() {
 
     override val viewType: Int
         get() = ITEM_AUDIO
@@ -39,13 +35,17 @@ class ItemAudioViewDataBinder @Inject constructor(
         )
     }
 
-    override fun bindData(binding: ItemAudioBinding, data: BaseViewType, position: Int) {
+    override fun bindData(
+        binding: ItemAudioBinding,
+        data: AttachmentViewData,
+        position: Int
+    ) {
         binding.apply {
-            val attachment = data as AttachmentViewData
+            val attachment = data
             this.attachment = attachment
             this.position = position
             parentConversation = attachment.parentConversation
-            parentChatRoom = attachment.parentChatRoom
+            parentChatRoom = attachment.parentChatroom
             parentViewItemPosition = attachment.parentViewItemPosition
 
             setListeners(this)
@@ -63,7 +63,7 @@ class ItemAudioViewDataBinder @Inject constructor(
                 ivAudioCover.setImageResource(R.drawable.view_corner_radius_audio)
             }
 
-            binding.seekBar.max = attachment.meta?.duration ?: 100
+            seekBar.max = attachment.meta?.duration ?: 100
 
             ChatroomConversationItemViewDataBinderUtil.initAudioItemView(this, attachment)
 
@@ -80,7 +80,7 @@ class ItemAudioViewDataBinder @Inject constructor(
 
             if (attachment.parentConversation != null) {
                 val hasAnswer = attachment.parentConversation.hasAnswer()
-                val isLastItem = attachment.parentConversation.attachmentCount!! - 1 == position
+                val isLastItem = attachment.parentConversation.attachmentCount - 1 == position
                 if (hasAnswer || !isLastItem) {
                     setConstraintsForName(this, true)
                 } else {
@@ -203,7 +203,7 @@ class ItemAudioViewDataBinder @Inject constructor(
         checkForSelectionEnabled: Boolean = false,
     ): Boolean {
         val attachmentViewData = binding.attachment
-        if (attachmentViewData?.parentChatRoom == null) {
+        if (attachmentViewData?.parentChatroom == null) {
             val parentConversation = attachmentViewData?.parentConversation ?: return false
             val parentPosition = attachmentViewData.parentViewItemPosition ?: return false
             if (checkForSelectionEnabled) {
@@ -216,7 +216,7 @@ class ItemAudioViewDataBinder @Inject constructor(
                 return true
             }
         } else {
-            val parentChatroom = attachmentViewData.parentChatRoom
+            val parentChatroom = attachmentViewData.parentChatroom
             val parentPosition = attachmentViewData.parentViewItemPosition ?: return false
             if (checkForSelectionEnabled) {
                 if (adapterListener?.isSelectionEnabled() == true) {

@@ -43,10 +43,9 @@ class InitiateViewModel @Inject constructor(
             }
 
             //If user is guest take user unique id from local prefs
-            val userUniqueId = if (isGuest) {
-                val userResponse = lmChatClient.getUser()
-                val user = userResponse.data?.user
-                user?.userUniqueId
+            val uuid = if (isGuest) {
+                val user = lmChatClient.getUser().data?.user
+                user?.sdkClientInfo?.uuid
             } else {
                 userId
             }
@@ -55,7 +54,7 @@ class InitiateViewModel @Inject constructor(
                 .apiKey(apiKey)
                 .deviceId(userPreferences.getDeviceId())
                 .userName(userName)
-                .userId(userUniqueId)
+                .userId(uuid)
                 .isGuest(isGuest)
                 .build()
 
@@ -89,8 +88,6 @@ class InitiateViewModel @Inject constructor(
                 uuid,
                 name
             )
-
-            // todo: member state
 
             //call register device api
             registerDevice()

@@ -12,7 +12,8 @@ class TagViewData private constructor(
     val route: String,
     val tag: String,
     val description: String,
-    val isLastItem: Boolean
+    val isLastItem: Boolean,
+    val uuid: String
 ) {
     class Builder {
         private var name: String = ""
@@ -25,6 +26,7 @@ class TagViewData private constructor(
         private var tag: String = ""
         private var description: String = ""
         private var isLastItem: Boolean = false
+        private var uuid: String = ""
 
         fun name(name: String) = apply { this.name = name }
         fun imageUrl(imageUrl: String) = apply { this.imageUrl = imageUrl }
@@ -36,6 +38,7 @@ class TagViewData private constructor(
         fun tag(tag: String) = apply { this.tag = tag }
         fun description(description: String) = apply { this.description = description }
         fun isLastItem(isLastItem: Boolean) = apply { this.isLastItem = isLastItem }
+        fun uuid(uuid: String) = apply { this.uuid = uuid }
 
         fun build() = TagViewData(
             name,
@@ -47,7 +50,8 @@ class TagViewData private constructor(
             route,
             tag,
             description,
-            isLastItem
+            isLastItem,
+            uuid
         )
     }
 
@@ -62,5 +66,6 @@ class TagViewData private constructor(
             .tag(tag)
             .description(description)
             .isLastItem(isLastItem)
+            .uuid(uuid)
     }
 }

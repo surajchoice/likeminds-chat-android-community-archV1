@@ -1,11 +1,16 @@
 package com.likeminds.chatmm.homefeed.view
 
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -30,11 +35,14 @@ import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
+import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.observeInLifecycle
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
@@ -63,6 +71,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private var communityId: String = ""
     private var communityName: String = ""
+
+    private val connectivityBroadcastReceiver by lazy {
+        ConnectivityBroadcastReceiver()
+    }
 
     companion object {
         const val TAG = "HomeFeedFragment"
@@ -106,10 +118,20 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     override fun setUpViews() {
         super.setUpViews()
         setBranding()
+        setupReceivers()
         initiateUser()
         initRecyclerView()
         initToolbar()
-        // todo: removed fetch data from here
+        fetchData()
+    }
+
+    //register receivers to the activity
+    private fun setupReceivers() {
+        connectivityBroadcastReceiver.setListener(this)
+        activity?.registerReceiver(
+            connectivityBroadcastReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
     }
 
     override fun observeData() {
@@ -173,7 +195,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             MemberImageUtil.setImage(
                 user.imageUrl,
                 user.name,
-                user.id,
+                user.sdkClientInfo.uuid,
                 binding.memberImage,
                 showRoundImage = true,
                 objectKey = user.updatedAt
@@ -187,6 +209,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         communityName = user?.communityName ?: ""
         initToolbar()
         fetchData()
+        startSync()
+
+        viewModel.observeLiveHomeFeed(requireContext())
         viewModel.getConfig()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
@@ -212,7 +237,43 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     override fun onResume() {
         super.onResume()
         if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
-            fetchData()
+            startSync()
+        }
+    }
+
+    private fun startSync() {
+        val pairOfObservers = viewModel.syncChatrooms(requireContext())
+
+        val firstTimeObserver = pairOfObservers?.first
+        val appConfigObserver = pairOfObservers?.second
+        lifecycleScope.launch(Dispatchers.Main) {
+            when {
+                firstTimeObserver != null -> {
+                    val syncStartedAt = System.currentTimeMillis()
+                    firstTimeObserver.observe(this@HomeFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        val timeTaken = (System.currentTimeMillis() - syncStartedAt) / 1000f
+                        viewModel.setWasChatroomFetched(true)
+                        viewModel.refetchChatrooms()
+                        viewModel.sendSyncCompleteEvent(timeTaken)
+                    })
+                }
+
+                appConfigObserver != null -> {
+                    appConfigObserver.observe(this@HomeFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        viewModel.refetchChatrooms()
+                    })
+                }
+            }
         }
     }
 
@@ -250,8 +311,8 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             //if user is guest user hide, profile icon from toolbar
             memberImage.isVisible = !isGuestUser
 
-        //get user from local db
-        viewModel.getUserFromLocalDb()
+            //get user from local db
+            viewModel.getUserFromLocalDb()
 
             ivSearch.setOnClickListener {
                 SearchActivity.start(requireContext())
@@ -261,7 +322,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     }
 
     private fun fetchData() {
-        viewModel.observeChatrooms(requireContext())
+        viewModel.observeChatrooms()
     }
 
     override fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData) {
@@ -289,7 +350,11 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             parentView.getChildAt(0)?.let { view ->
                 if (isConnected && wasNetworkGone) {
                     wasNetworkGone = false
-                    snackBar.showMessage(view, "Internet connection restored", true)
+                    snackBar.showMessage(
+                        view,
+                        getString(R.string.internet_connection_restored),
+                        true
+                    )
                 }
                 if (!isConnected) {
                     wasNetworkGone = true

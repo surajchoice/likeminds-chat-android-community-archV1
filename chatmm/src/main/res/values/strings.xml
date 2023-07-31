@@ -236,4 +236,16 @@
     <string name="mark_as_read">Mark as Read</string>
     <string name="chatroom_channel_name">Chatroom notifications</string>
     <string name="chatroom_channel_description">All chatroom notifications</string>
+    <string name="internet_connection_restored">Internet connection restored</string>
+    <string name="please_enter_your_response">Please enter your response</string>
+    <string name="please_select_future_date_as_poll_expire_time">Please select future date as poll expire time</string>
+    <string name="report_abuse">Report Abuse</string>
+    <string name="please_specify_the_problem_to_continue">Please specify the problem to continue.</string>
+    <string name="report_sub_header">You would be able to report this %s after selecting a problem.</string>
+    <string name="write_description">Write description</string>
+    <string name="report_s">Report %s</string>
+    <string name="please_select_at_least_one_report_tag">Please select at least one report tag.</string>
+    <string name="please_enter_a_reason">Please enter a reason.</string>
+    <string name="s_is_reported_for_review">%s is reported for review</string>
+    <string name="our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s">Our team will look into your feedback and will take appropriate action on this %s</string>
 </resources>

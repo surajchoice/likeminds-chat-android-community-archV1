@@ -135,7 +135,7 @@ class ExploreViewModel @Inject constructor(
             val sortIndex = ((page * 10) + index)
             ViewDataConverter.convertChatroomForExplore(
                 chatroom,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 sortIndex
             )?.apply {
                 baseViewTypeList.add(this)

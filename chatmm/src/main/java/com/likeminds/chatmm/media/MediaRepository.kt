@@ -407,7 +407,8 @@ class MediaRepository @Inject constructor() {
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.DATE_MODIFIED,
             MediaStore.Files.FileColumns.SIZE,
-            MediaStore.Files.FileColumns.DISPLAY_NAME
+            MediaStore.Files.FileColumns.DISPLAY_NAME,
+            MediaStore.Files.FileColumns.TITLE
         )
         val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=? AND " + isNotPending
         context.contentResolver.query(contentUri, projection, selection, mimeTypes, sortBy)
@@ -421,8 +422,12 @@ class MediaRepository @Inject constructor() {
                         cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_MODIFIED))
                     val size =
                         cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE))
-                    val mediaName =
+                    var mediaName =
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
+                    if (mediaName == null) {
+                        mediaName =
+                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE))
+                    }
                     if (!size.isLargeFile) {
                         media.add(
                             MediaViewData.Builder()

@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
+import android.text.*
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
 import android.view.WindowInsets
@@ -226,14 +224,18 @@ object ChatroomUtil {
         conversation: ConversationViewData,
         currentMemberId: String,
     ): String {
-        return if (conversation.memberViewData.userUniqueId == currentMemberId) {
-            if (conversation.deletedBy == currentMemberId) {
+        val uuid = conversation.memberViewData.sdkClientInfo.uuid
+        return if (uuid == currentMemberId) {
+            val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
+            if (deletedByUUID == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)
             }
         } else {
-            if (conversation.memberViewData.id == conversation.deletedBy) {
+            val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
+            val conversationCreator = conversation.memberViewData.sdkClientInfo.uuid
+            if (conversationCreator == deletedByUUID) {
                 context.getString(R.string.this_message_was_deleted)
             } else {
                 context.getString(R.string.this_message_was_deleted_by_cm)
@@ -243,17 +245,21 @@ object ChatroomUtil {
 
     fun getDeletedMessage(
         context: Context,
-        chatRoom: ChatroomViewData,
+        chatroom: ChatroomViewData,
         currentMemberId: String
     ): String {
-        return if (chatRoom.memberViewData?.id == currentMemberId) {
-            if (chatRoom.deletedBy == currentMemberId) {
+        val uuid = chatroom.memberViewData.sdkClientInfo.uuid
+        return if (uuid == currentMemberId) {
+            val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
+            if (deletedByUUID == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)
             }
         } else {
-            if (chatRoom.memberViewData?.id == chatRoom.deletedBy) {
+            val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
+            val creatorUUID = chatroom.memberViewData.sdkClientInfo.uuid
+            if (creatorUUID == deletedByUUID) {
                 context.getString(R.string.this_message_was_deleted)
             } else {
                 context.getString(R.string.this_message_was_deleted_by_cm)

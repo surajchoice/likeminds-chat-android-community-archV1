@@ -21,7 +21,7 @@ object ChatReplyUtil {
         checkForDeletedChatroom: Boolean = true,
         type: String? = null
     ): ChatReplyViewData {
-        val memberViewData = chatRoom.memberViewData ?: MemberViewData.Builder().build()
+        val memberViewData = chatRoom.memberViewData
         return if (checkForDeletedChatroom && chatRoom.deletedBy != null) {
             ChatReplyViewData.Builder()
                 .memberName(MemberUtil.getMemberNameForDisplay(memberViewData, currentMemberId))
@@ -90,7 +90,7 @@ object ChatReplyUtil {
     ): ChatReplyViewData {
         val memberName = MemberUtil.getMemberNameForDisplay(memberViewData, currentMemberId)
         val memberState = MemberState.getMemberState(memberViewData.state)
-        val memberId = memberViewData.id
+        val uuid = memberViewData.sdkClientInfo.uuid
 
         val sortedAttachments = attachments?.sortedBy { it.index }.orEmpty()
 
@@ -155,7 +155,7 @@ object ChatReplyUtil {
             .drawable(drawable)
             .imageUrl(imageUrl)
             .attachmentType(firstMediaType)
-            .repliedMemberId(memberId)
+            .repliedMemberId(uuid)
             .repliedMemberState(memberState)
             .type(type)
             .build()

@@ -58,7 +58,7 @@ internal class ChatroomItemViewDataBinder constructor(
             val time = DateUtil.createDateFormat("hh:mm", data.createdAt)
             ChatroomConversationItemViewDataBinderUtil.initTimeAndStatus(
                 tvTime,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 time
             )
 
@@ -88,7 +88,7 @@ internal class ChatroomItemViewDataBinder constructor(
                 clBubble,
                 clMain,
                 messageReactionsGridLayout,
-                userPreferences.getMemberId(),
+                userPreferences.getUUID(),
                 chatroomDetailAdapterListener,
                 data
             )
@@ -101,7 +101,7 @@ internal class ChatroomItemViewDataBinder constructor(
                     reactionsPreferences.getTotalNoOfHintsAllowed(),
                     tvDoubleTap,
                     data.memberViewData,
-                    userPreferences.getMemberId(),
+                    userPreferences.getUUID(),
                     clBubble,
                     clMain
                 )

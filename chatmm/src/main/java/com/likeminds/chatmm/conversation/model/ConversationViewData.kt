@@ -39,6 +39,7 @@ class ConversationViewData private constructor(
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
     val isExpanded: Boolean,
+    val deletedByMember: MemberViewData?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -69,26 +70,46 @@ class ConversationViewData private constructor(
                 val videoCount: Int = ChatroomUtil.getMediaCount(VIDEO, attachments)
                 val audioCount: Int = ChatroomUtil.getMediaCount(AUDIO, attachments)
                 val voiceNoteCount: Int = ChatroomUtil.getMediaCount(VOICE_NOTE, attachments)
-                if (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_IMAGE
-                if (imageCount == 0 && gifCount == 1 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_GIF
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 1 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_PDF
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 1 && audioCount == 0 && voiceNoteCount == 0) ITEM_CONVERSATION_SINGLE_VIDEO
-                if (imageCount == 0 && gifCount == 0 && pdfCount > 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) {
-                    ITEM_CONVERSATION_MULTIPLE_DOCUMENT
-                }
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount > 0 && voiceNoteCount == 0) {
-                    ITEM_CONVERSATION_AUDIO
-                }
-                if (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount > 0) {
-                    ITEM_CONVERSATION_VOICE_NOTE
-                }
-                if (imageCount + gifCount + pdfCount + videoCount > 1) {
-                    ITEM_CONVERSATION_MULTIPLE_MEDIA
-                }
-                if (ogTags != null) {
-                    ITEM_CONVERSATION_LINK
-                } else {
-                    ITEM_CONVERSATION
+                when {
+                    (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_IMAGE
+                    }
+
+                    (imageCount == 0 && gifCount == 1 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_GIF
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 1 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_PDF
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 1 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_SINGLE_VIDEO
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount > 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_MULTIPLE_DOCUMENT
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount > 0 && voiceNoteCount == 0) -> {
+                        ITEM_CONVERSATION_AUDIO
+                    }
+
+                    (imageCount == 0 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount > 0) -> {
+                        ITEM_CONVERSATION_VOICE_NOTE
+                    }
+
+                    (imageCount + gifCount + pdfCount + videoCount > 1) -> {
+                        ITEM_CONVERSATION_MULTIPLE_MEDIA
+                    }
+
+                    (ogTags != null) -> {
+                        ITEM_CONVERSATION_LINK
+                    }
+
+                    else -> {
+                        ITEM_CONVERSATION
+                    }
                 }
             }
         }
@@ -178,6 +199,7 @@ class ConversationViewData private constructor(
         private var isLastItem: Boolean? = null
         private var pollInfoData: PollInfoData? = null
         private var isExpanded: Boolean = false
+        private var deletedByMember: MemberViewData? = null
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -227,6 +249,8 @@ class ConversationViewData private constructor(
         fun isLastItem(isLastItem: Boolean?) = apply { this.isLastItem = isLastItem }
         fun pollInfoData(pollInfoData: PollInfoData?) = apply { this.pollInfoData = pollInfoData }
         fun isExpanded(isExpanded: Boolean) = apply { this.isExpanded = isExpanded }
+        fun deletedByMember(deletedByMember: MemberViewData?) =
+            apply { this.deletedByMember = deletedByMember }
 
         fun build() = ConversationViewData(
             id,
@@ -257,6 +281,7 @@ class ConversationViewData private constructor(
             isLastItem,
             pollInfoData,
             isExpanded,
+            deletedByMember
         )
     }
 
@@ -289,5 +314,6 @@ class ConversationViewData private constructor(
             .isLastItem(isLastItem)
             .pollInfoData(pollInfoData)
             .isExpanded(isExpanded)
+            .deletedByMember(deletedByMember)
     }
 }

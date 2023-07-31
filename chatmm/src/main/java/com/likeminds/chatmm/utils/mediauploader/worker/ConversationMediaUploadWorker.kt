@@ -8,9 +8,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.media.model.IMAGE
 import com.likeminds.chatmm.utils.ViewDataConverter
-import com.likeminds.chatmm.utils.mediauploader.model.AWSFileResponse
-import com.likeminds.chatmm.utils.mediauploader.model.GenericFileRequest
-import com.likeminds.chatmm.utils.mediauploader.model.WORKER_SUCCESS
+import com.likeminds.chatmm.utils.mediauploader.model.*
 import com.likeminds.chatmm.utils.mediauploader.utils.FileHelper
 import com.likeminds.likemindschat.conversation.model.GetConversationRequest
 import java.io.File

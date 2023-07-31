@@ -2,10 +2,10 @@ package com.likeminds.chatmm.media.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.*
 import com.giphy.sdk.core.models.Media
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.media.MediaRepository
@@ -13,15 +13,22 @@ import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.utils.GiphyUtil
 import com.likeminds.chatmm.utils.ValueUtils.filterThenMap
-import com.likeminds.chatmm.utils.coroutine.launchDefault
-import com.likeminds.chatmm.utils.coroutine.launchIO
+import com.likeminds.chatmm.utils.coroutine.*
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.likemindschat.LMChatClient
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MediaViewModel @Inject constructor(
     private val mediaRepository: MediaRepository,
 ) : ViewModel() {
+
+    private val lmChatClient = LMChatClient.getInstance()
+
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private val _mediaListUri by lazy { MutableLiveData<List<SingleUriData>>() }
     val mediaListUri: LiveData<List<SingleUriData>> = _mediaListUri
@@ -48,6 +55,12 @@ class MediaViewModel @Inject constructor(
     private val documentMediaList by lazy { ArrayList<MediaViewData>() }
 
     private val getMediaBrowserViewData by lazy { MediaBrowserViewData.Builder().build() }
+
+    private val _contentDownloadSettingsLiveData: MutableLiveData<List<String>?> by lazy {
+        MutableLiveData<List<String>?>()
+    }
+
+    val contentDownloadSettingsLiveData: LiveData<List<String>?> = _contentDownloadSettingsLiveData
 
     sealed class ErrorMessageEvent {
     }
@@ -265,6 +278,22 @@ class MediaViewModel @Inject constructor(
             }
             _updatedUriDataList.postValue(dataList)
         }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun observeCommunity() {
+        val disposable = lmChatClient.observeCommunity()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val downloadableContentTypes = it.downloadableContentTypes
+                this._contentDownloadSettingsLiveData.value = downloadableContentTypes
+            }, this::onError)
+        compositeDisposable.add(disposable)
+    }
+
+    private fun onError(e: Throwable) {
+        Log.e("MediaViewModel", "fetch - ", e)
+    }
 
     /**------------------------------------------------------------
      * Analytics events

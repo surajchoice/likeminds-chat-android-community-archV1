@@ -32,6 +32,11 @@ class PollResultsActivity : BaseAppCompatActivity() {
         }
     }
 
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().pollsComponent()?.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         SDKApplication.getInstance().pollsComponent()?.inject(this)
         super.onCreate(savedInstanceState)

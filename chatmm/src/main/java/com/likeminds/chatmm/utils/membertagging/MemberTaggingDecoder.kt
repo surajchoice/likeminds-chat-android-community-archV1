@@ -156,8 +156,8 @@ object MemberTaggingDecoder {
             val memberName = tag[0]
             val memberRoute = tag[1]
             val routeSplits = memberRoute.split("/".toRegex())
-            val memberId = routeSplits[routeSplits.size - 1]
-            result.add(Pair(memberId, memberName))
+            val memberUUID = routeSplits[routeSplits.size - 1]
+            result.add(Pair(memberUUID, memberName))
         }
         return result
     }
@@ -184,10 +184,12 @@ object MemberTaggingDecoder {
         return null
     }
 
-    fun getMemberIdFromRegex(text: String?): String? {
+    fun getMemberUUIDFromRegex(text: String?): String? {
         val uri = getRouteFromRegex(text) ?: return null
         val pathSegments = uri.pathSegments
-        if ((uri.host == "member_profile" || uri.host == "member") && pathSegments.size == 1)
+        if ((uri.host == "member_profile" || uri.host == "member"
+                    || uri.host == "user_profile") && pathSegments.size == 1
+        )
             return pathSegments[0]
         return null
     }

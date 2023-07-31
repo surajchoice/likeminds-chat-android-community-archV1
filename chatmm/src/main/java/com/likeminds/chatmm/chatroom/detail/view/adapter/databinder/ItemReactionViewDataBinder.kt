@@ -24,14 +24,16 @@ class ItemReactionViewDataBinder constructor(
     }
 
     override fun bindData(
-        binding: ItemReactionListBinding, data: ReactionViewData, position: Int
+        binding: ItemReactionListBinding,
+        data: ReactionViewData,
+        position: Int
     ) {
         binding.apply {
             reactionViewData = data
             tvMemberName.text = data.memberViewData.name
             tvReactionRedHeart.text = data.reaction
-            val memberId = userPreferences.getMemberId()
-            if (memberId == data.memberViewData.id) {
+            val uuid = userPreferences.getUUID()
+            if (uuid == data.memberViewData.sdkClientInfo.uuid) {
                 tvRemoveReaction.visibility = View.VISIBLE
             } else {
                 tvRemoveReaction.visibility = View.GONE
@@ -39,15 +41,19 @@ class ItemReactionViewDataBinder constructor(
             MemberImageUtil.setImage(
                 data.memberViewData.imageUrl,
                 data.memberViewData.name,
-                data.memberViewData.id,
+                data.memberViewData.sdkClientInfo.uuid,
                 memberImage
             )
-            tvRemoveReaction.setOnClickListener {
-                if (data.conversationId != null) {
-                    reactionAdapterListener.removeReaction(data.conversationId.toString())
-                }
-                if (data.chatroomId != null) {
-                    reactionAdapterListener.removeChatroomReaction()
+            this.root.setOnClickListener {
+                if (uuid == data.memberViewData.sdkClientInfo.uuid) {
+                    if (data.conversationId != null) {
+                        reactionAdapterListener.removeReaction(data.conversationId.toString())
+                    }
+                    if (data.chatroomId != null) {
+                        reactionAdapterListener.removeChatroomReaction()
+                    }
+                } else {
+                    return@setOnClickListener
                 }
             }
         }

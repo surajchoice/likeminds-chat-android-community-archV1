@@ -203,7 +203,6 @@ class LMChatNotificationHandler {
             category: String?,
             subcategory: String?,
         ): PendingIntent? {
-            // todo: analytics
             //get intent for route
             val intent = Route.getRouteIntent(
                 context,
@@ -301,13 +300,14 @@ class LMChatNotificationHandler {
 
         // Send notification received event other than sync notifications
         if (routeHost != Route.ROUTE_SYNC) {
-            // todo: analytics
-//            LMAnalytics.track(LMAnalytics.Keys.EVENT_NOTIFICATION_RECEIVED,
-//                JSONObject().apply {
-//                    put("payload", payloadJson)
-//                    put(NOTIFICATION_CATEGORY, category)
-//                    put(NOTIFICATION_SUBCATEGORY, subcategory)
-//                })
+            LMAnalytics.track(
+                LMAnalytics.Events.NOTIFICATION_RECEIVED,
+                mapOf(
+                    "payload" to payloadJson.toString(),
+                    NOTIFICATION_CATEGORY to category,
+                    NOTIFICATION_SUBCATEGORY to subcategory
+                )
+            )
         }
 
         when {

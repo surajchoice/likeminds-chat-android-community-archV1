@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.likeminds.chatmm">
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -57,6 +58,34 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".report.view.ReportActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <service android:name=".utils.chrometabs.CustomTabService" />
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <service
+            android:name=".media.util.MediaAudioForegroundService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <provider
+            android:name="com.likeminds.chatmm.utils.file.util.LMFileProvider"
+            android:authorities="${applicationId}.likeminds.chatmm.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/groupchat_filepaths" />
+        </provider>
+
 
         <receiver
             android:name=".pushnotification.util.NotificationActionBroadcastReceiver"

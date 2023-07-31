@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.ActivityChatroomExploreBinding
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -28,6 +29,11 @@ class ChatroomExploreActivity : BaseAppCompatActivity() {
         fun getIntent(context: Context): Intent {
             return Intent(context, ChatroomExploreActivity::class.java)
         }
+    }
+
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().exploreComponent()?.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

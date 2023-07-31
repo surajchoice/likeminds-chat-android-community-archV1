@@ -37,6 +37,7 @@ internal class LikeMindsButton : MaterialButton {
 
         // applies button color to button drawables
         if (!drawableType.equals("normal")) {
+            iconTint = ColorStateList.valueOf(LMBranding.getButtonsColor())
             compoundDrawables.forEach {
                 it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
             }

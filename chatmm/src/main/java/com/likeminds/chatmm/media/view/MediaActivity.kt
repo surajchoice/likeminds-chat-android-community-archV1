@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.media.view
 
-import android.content.ClipData
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.navigation.fragment.NavHostFragment
@@ -48,8 +46,12 @@ class MediaActivity : BaseAppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun attachDagger() {
+        super.attachDagger()
         SDKApplication.getInstance().mediaComponent()?.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
 

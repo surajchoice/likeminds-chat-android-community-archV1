@@ -1,14 +1,11 @@
 package com.likeminds.chatmm.chatroom.detail.view
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.likeminds.chatmm.LMAnalytics
-import com.likeminds.chatmm.R
+import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
 import com.likeminds.chatmm.utils.ViewUtils
@@ -55,6 +52,11 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         }
     }
 
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,10 +90,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
                     chatroomDetailFragment?.consumeTouch() == true -> {
                         return
                     }
-                    //todo
-//                    collabcardDetailFragment?.isPollInProgress() == true -> {
-//                        showPollDismissDialog(collabcardDetailFragment)
-//                    }
+
                     chatroomDetailExtras?.isFromSearchChatroom == true -> {
                         sendSearchChatroomClosedEvent()
                         redirectActivity(false)

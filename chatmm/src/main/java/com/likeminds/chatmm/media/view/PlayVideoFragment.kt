@@ -1,9 +1,11 @@
 package com.likeminds.chatmm.media.view
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -13,9 +15,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.FragmentPlayVideoBinding
-import com.likeminds.chatmm.media.model.MediaExtras
-import com.likeminds.chatmm.media.model.MediaSwipeViewData
-import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.MediaViewUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.utils.SDKPreferences
@@ -69,14 +69,20 @@ class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>
     override fun setUpViews() {
         super.setUpViews()
         initPlayer()
-        observeCommunity()
-        getCommunity()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            observeCommunity()
+        }
         binding.btnBack.setOnClickListener {
             activity?.finish()
         }
         binding.overflowMenu.setOnClickListener {
             showOverflowMenu(it)
         }
+    }
+
+    override fun observeData() {
+        super.observeData()
+        observeContentDownloadSettings()
     }
 
     private fun initPlayer() {
@@ -100,15 +106,15 @@ class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>
         }
     }
 
-    // todo:
-    private fun getCommunity() {
-//        mediaExtras.communityId?.let { viewModel.getCommunity(it) }
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun observeCommunity() {
+        viewModel.observeCommunity()
     }
 
-    private fun observeCommunity() {
-//        viewModel.communityLiveData.observe(viewLifecycleOwner) { communityViewData ->
-//            handleOverflowMenuIcon(communityViewData.downloadableContentType())
-//        }
+    private fun observeContentDownloadSettings() {
+        viewModel.contentDownloadSettingsLiveData.observe(viewLifecycleOwner) { it ->
+            handleOverflowMenuIcon(it?.toMutableList())
+        }
     }
 
     private fun handleOverflowMenuIcon(
@@ -144,8 +150,6 @@ class PlayVideoFragment : BaseFragment<FragmentPlayVideoBinding, MediaViewModel>
 
     private fun saveToGallery() {
         val media = mediaExtras.medias?.firstOrNull() ?: return
-        // todo:
-//        val notificationIcon = sdkPreferences.getNotificationIcon()
         val notificationIcon = R.drawable.ic_notification
         MediaViewUtils.saveToGallery(
             viewLifecycleOwner,

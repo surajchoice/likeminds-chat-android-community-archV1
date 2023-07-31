@@ -11,7 +11,6 @@ import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.member.model.MemberViewData
 
 object Route {
-    // todo:
     private const val ROUTE_SCHEME = "route"
     const val ROUTE_CHATROOM = "collabcard"
     const val ROUTE_CHATROOM_DETAIL = "chatroom_detail"
@@ -25,6 +24,7 @@ object Route {
 
     private const val DEEP_LINK_CHATROOM = "collabcard"
     private const val DEEP_LINK_SCHEME = "likeminds"
+    private const val DEEP_LINK_CHATROOM_DETAIL = "chatroom_detail"
     private const val DEEP_LINK_COMMUNITY_FEED = "community_feed"
 
     const val PARAM_CHATROOM_ID = "chatroom_id"
@@ -50,7 +50,7 @@ object Route {
     }
 
     fun handleDeepLink(context: Context, url: String?): Intent? {
-        val data = Uri.parse(url) ?: return null
+        val data = Uri.parse(url).normalizeScheme() ?: return null
         if (data.pathSegments.isNullOrEmpty()) {
             return null
         }
@@ -66,8 +66,13 @@ object Route {
     private fun getRouteFromDeepLink(data: Uri?): String? {
         val host = data?.host ?: return null
         val firstPathSegment = data.pathSegments.firstOrNull()
-        if (firstPathSegment == DEEP_LINK_CHATROOM) {
-            return createChatroomRoute(data)
+        when {
+            (firstPathSegment == DEEP_LINK_CHATROOM) -> {
+                return createChatroomRoute(data)
+            }
+            (firstPathSegment == DEEP_LINK_CHATROOM_DETAIL) -> {
+                return createChatroomDetailRoute(data)
+            }
         }
         return when {
             data.scheme == DEEP_LINK_SCHEME -> {
@@ -82,6 +87,17 @@ object Route {
                 createWebsiteRoute(data)
             }
         }
+    }
+
+    // https://<domain>/chatroom/chatroom_id=<chatroom_id>
+    private fun createChatroomDetailRoute(data: Uri): String? {
+        val chatroomId = data.getQueryParameter(PARAM_CHATROOM_ID) ?: return null
+        return Uri.Builder()
+            .scheme(ROUTE_SCHEME)
+            .authority(ROUTE_CHATROOM_DETAIL)
+            .appendQueryParameter(PARAM_CHATROOM_ID, chatroomId)
+            .build()
+            .toString()
     }
 
     //https://www.likeminds.community/collabcard/<collabcard_id>
@@ -125,7 +141,7 @@ object Route {
             .toString()
     }
 
-    // todo: removed profle routes
+    // todo: removed profile routes
     fun getRouteIntent(
         context: Context,
         routeString: String,
@@ -149,7 +165,7 @@ object Route {
                 intent = getRouteToBrowser(route)
             }
             route.host == ROUTE_CHATROOM_DETAIL -> {
-                intent = getRouteToChatRoomDetail(context, route, source, deepLinkUrl)
+                intent = getRouteToChatroomDetail(context, route, source, deepLinkUrl)
             }
             route.host == ROUTE_MAIL -> {
                 intent = getRouteToMail(route)
@@ -230,7 +246,7 @@ object Route {
     }
 
     //route://chatroom_detail?chatroom_id=
-    private fun getRouteToChatRoomDetail(
+    private fun getRouteToChatroomDetail(
         context: Context,
         route: Uri,
         source: String?,
@@ -272,7 +288,7 @@ object Route {
     }
 
     fun createRouteForMemberProfile(member: MemberViewData?, communityId: String?): String {
-        return "<<${member?.name}|route://member/${member?.id}?community_id=${communityId}>>"
+        return "<<${member?.name}|route://user_profile/${member?.sdkClientInfo?.uuid}?community_id=${communityId}>>"
     }
 
     fun Uri.getNullableQueryParameter(key: String): String? {

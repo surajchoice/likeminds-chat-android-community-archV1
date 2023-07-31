@@ -46,7 +46,6 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
     private lateinit var tabAdapter: PollResultTabAdapter
     private lateinit var pollInfoData: PollInfoData
     private var chatroomId: String? = null
-    private var brandColor: Int = -1
 
     override fun attachDagger() {
         super.attachDagger()
@@ -62,7 +61,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
 
     override fun setUpViews() {
         super.setUpViews()
-        binding.buttonColor = LMBranding.getButtonsColor()
+        binding.tabHeader.setSelectedTabIndicatorColor(LMBranding.getButtonsColor())
         initData()
         initListener()
     }
@@ -135,7 +134,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
         tab?.select()
         val firstViewAtTab = tab?.customView?.findViewById<TextView>(R.id.tv_poll_count)
         firstViewAtTab?.apply {
-            setTextColor(brandColor)
+            setTextColor(LMBranding.getButtonsColor())
             setTypeface(null, Typeface.BOLD)
         }
 
@@ -143,7 +142,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val view = tab?.customView?.findViewById<TextView>(R.id.tv_poll_count) ?: return
                 view.apply {
-                    setTextColor(brandColor)
+                    setTextColor(LMBranding.getButtonsColor())
                     setTypeface(null, Typeface.BOLD)
                 }
 
@@ -169,7 +168,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val view = tab?.customView?.findViewById<TextView>(R.id.tv_poll_count) ?: return
                 view.apply {
-                    setTextColor(brandColor)
+                    setTextColor(LMBranding.getButtonsColor())
                     setTypeface(null, Typeface.BOLD)
                 }
             }

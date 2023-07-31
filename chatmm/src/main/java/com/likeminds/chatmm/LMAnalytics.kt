@@ -86,7 +86,7 @@ object LMAnalytics {
         const val COMMUNITY_NAME = "community_name"
         const val MESSAGE_ID = "message_id"
         const val COMMUNITY_ID = "community_id"
-        const val USER_ID = "user_id"
+        const val UUID = "uuid"
         const val SOURCE = "source"
     }
 
@@ -94,7 +94,8 @@ object LMAnalytics {
         const val MESSAGE_REACTIONS_FROM_LONG_PRESS = "long press"
         const val MESSAGE_REACTIONS_FROM_REACTION_BUTTON = "reaction button"
         const val COMMUNITY_TAB = "community_tab"
-        const val COMMUNITY_FEED = "explore_feed"
+        const val COMMUNITY_FEED = "home_feed"
+        const val HOME_FEED = "explore_feed"
         const val NOTIFICATION = "notification"
         const val DEEP_LINK = "deep_link"
         const val POLL_RESULT = "poll_result"
