@@ -1,7 +1,9 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.ColorUtils
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -194,6 +196,13 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
             } else {
                 tvPdfName.setBackgroundResource(R.drawable.background_item_document_name_without_preview)
             }
+            tvPdfName.setBackgroundColor(
+                ColorUtils.blendARGB(
+                    LMBranding.getButtonsColor(),
+                    Color.WHITE,
+                    0.5f
+                )
+            )
             if (attachment.thumbnail.isNullOrEmpty()) {
                 ivSingleImage.hide()
                 tvPdfNameTopLine.hide()

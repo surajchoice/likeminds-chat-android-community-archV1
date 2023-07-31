@@ -507,6 +507,7 @@ class ChatroomDetailFragment :
     private fun initToolbar() {
         binding.apply {
             toolbarColor = LMBranding.getToolbarColor()
+            buttonColor = LMBranding.getButtonsColor()
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 

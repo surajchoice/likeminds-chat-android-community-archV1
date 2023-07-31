@@ -12,6 +12,10 @@
         <variable
             name="isVoiceNoteSupportEnabled"
             type="Boolean" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,6 +169,7 @@
             android:layout_width="21dp"
             android:layout_height="21dp"
             android:background="@drawable/background_circle_green_dot"
+            android:backgroundTint="@{buttonColor}"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="13sp"
@@ -215,6 +220,7 @@
             android:textColor="@color/turquoise"
             android:textSize="13sp"
             android:visibility="gone"
+            app:textType="special"
             app:fontType="regular"
             app:layout_constraintLeft_toRightOf="@+id/member_image"
             app:layout_constraintTop_toTopOf="@id/view_top_background"
