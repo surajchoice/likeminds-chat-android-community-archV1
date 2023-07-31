@@ -3,8 +3,10 @@ package com.likeminds.chatmm.chatroom.detail.viewmodel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.util.Patterns
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
 import com.likeminds.chatmm.LMAnalytics
@@ -37,6 +39,7 @@ import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -58,6 +61,8 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     private val lmChatClient = LMChatClient.getInstance()
+
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     //Contains all chatroom data, community data and more
     lateinit var chatroomDetail: ChatroomDetailViewData
@@ -363,6 +368,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * 8th case ->
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
@@ -511,8 +517,6 @@ class ChatroomDetailViewModel @Inject constructor(
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
             observeConversations(context, chatroomDetailExtras.chatroomId)
-            // todo: write in db
-//            observeCommunity(chatroomViewData.communityId)
         }
     }
 
@@ -1099,7 +1103,7 @@ class ChatroomDetailViewModel @Inject constructor(
         return lmChatClient.getConversationsCount(getConversationsCountRequest).data?.count ?: 0
     }
 
-    fun getContentDownloadSettings(communityId: String) {
+    fun getContentDownloadSettings() {
         viewModelScope.launchIO {
             val response = lmChatClient.getContentDownloadSettings()
             if (response.success) {
@@ -2139,6 +2143,12 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun decodeUrl(decodeUrlResponse: DecodeUrlResponse?) {
         val ogTags = decodeUrlResponse?.ogTags ?: return
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
+    }
+
+    override fun onCleared() {
+        previewLinkJob?.cancel()
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     /**------------------------------------------------------------

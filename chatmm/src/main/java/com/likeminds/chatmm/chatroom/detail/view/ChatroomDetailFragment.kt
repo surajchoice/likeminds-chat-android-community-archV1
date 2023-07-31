@@ -18,6 +18,7 @@ import android.view.*
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -424,6 +425,7 @@ class ChatroomDetailFragment :
         SDKApplication.getInstance().chatroomDetailComponent()?.inject(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun receiveExtras() {
         super.receiveExtras()
         if (arguments == null || arguments?.containsKey(CHATROOM_DETAIL_EXTRAS) == false) {
@@ -465,7 +467,10 @@ class ChatroomDetailFragment :
         )
     }
 
-    // fetches initial data for chatroom
+    /**
+     * Fetches initial data for loading chatroom and conversations
+     */
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun fetchInitialData() {
         viewModel.getInitialData(requireContext(), chatroomDetailExtras)
     }
@@ -486,7 +491,9 @@ class ChatroomDetailFragment :
         initAttachmentsView()
         disableAnswerPosting()
         initReplyView()
-        syncChatroom()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            syncChatroom()
+        }
         getContentDownloadSettings()
         initMediaAudioServiceConnection()
         registerAudioCompleteBroadcast()
@@ -888,6 +895,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun syncChatroom() {
         val pair = viewModel.syncChatroom(requireContext(), chatroomId)
         val worker = pair.first
@@ -946,7 +954,7 @@ class ChatroomDetailFragment :
     }
 
     private fun getContentDownloadSettings() {
-        communityId?.let { viewModel.getContentDownloadSettings(it) }
+        viewModel.getContentDownloadSettings()
     }
 
     private fun initMediaAudioServiceConnection() {
@@ -2383,7 +2391,6 @@ class ChatroomDetailFragment :
             viewModel.sendViewEvent(chatroomDetailExtras)
             invalidateActionsMenu()
             observeChatroom()
-            observeCommunity()
             enableAnswerPosting()
             checkForExternalSharedContent()
             handleDmChatrooms()
@@ -2818,14 +2825,6 @@ class ChatroomDetailFragment :
         if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
             setChatInputBoxViewType(null, DM_MEMBER_REMOVED_OR_LEFT)
         }
-    }
-
-    private fun observeCommunity() {
-        // todo: ask
-//        viewModel.communityLiveData.observe(viewLifecycleOwner) {
-//            val community = it ?: return@observe
-//            handleScreenshot(community.downloadableContentType())
-//        }
     }
 
     /**

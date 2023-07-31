@@ -89,8 +89,6 @@ class InitiateViewModel @Inject constructor(
                 name
             )
 
-            // todo: member state
-
             //call register device api
             registerDevice()
 

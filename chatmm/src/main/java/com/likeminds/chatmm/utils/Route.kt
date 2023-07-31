@@ -141,7 +141,7 @@ object Route {
             .toString()
     }
 
-    // todo: removed profle routes
+    // todo: removed profile routes
     fun getRouteIntent(
         context: Context,
         routeString: String,

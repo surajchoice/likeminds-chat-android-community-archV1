@@ -125,12 +125,12 @@ object ViewDataConverter {
         chatroom: Chatroom,
         dynamicViewType: Int? = null
     ): ChatroomViewData {
-        // todo: member state
         return ChatroomViewData.Builder()
             .id(chatroom.id)
             .communityId(chatroom.communityId ?: "")
             .communityName(chatroom.communityName ?: "")
             .memberViewData(convertMember(chatroom.member))
+            .memberState(chatroom.member?.state)
             .createdAt(chatroom.createdAt ?: 0)
             .title(chatroom.title)
             .answerText(chatroom.answerText)
@@ -294,7 +294,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: remove
     private fun convertMemberFromMemberState(
         memberStateResponse: MemberStateResponse?
     ): MemberViewData? {
@@ -448,7 +447,6 @@ object ViewDataConverter {
             .build()
     }
 
-    // todo: have to be refactored
     fun convertUser(user: User?): MemberViewData? {
         if (user == null) {
             return null
@@ -459,6 +457,7 @@ object ViewDataConverter {
             .imageUrl(user.imageUrl)
             .customTitle(user.customTitle)
             .isGuest(user.isGuest)
+            .sdkClientInfo(convertSDKClientInfo(user.sdkClientInfo))
             .build()
     }
 
@@ -721,7 +720,6 @@ object ViewDataConverter {
         }
     }
 
-    // todo: community
     private fun convertSearchChatroomTitle(
         searchChatroom: SearchChatroom,
         followStatus: Boolean,
@@ -729,7 +727,6 @@ object ViewDataConverter {
     ): SearchChatroomTitleViewData {
         return SearchChatroomTitleViewData.Builder()
             .chatroom(convertChatroomForSearch(searchChatroom))
-//            .community(convertCommunityForSearch(searchChatroom.community))
             .followStatus(followStatus)
             .keywordMatchedInCommunityName(
                 SearchUtils.findMatchedKeywords(
@@ -797,7 +794,6 @@ object ViewDataConverter {
         }
     }
 
-    // todo: community
     private fun convertSearchConversation(
         searchConversation: SearchConversation,
         followStatus: Boolean,
@@ -805,7 +801,6 @@ object ViewDataConverter {
     ): SearchConversationViewData {
         return SearchConversationViewData.Builder()
             .chatroom(convertChatroom(searchConversation.chatroom))
-//            .community(convertCommunityForSearch(searchConversation.community))
             .chatroomAnswer(convertConversationForSearch(searchConversation))
             .chatroomName(searchConversation.chatroom.header)
             .senderName(searchConversation.member.name)
