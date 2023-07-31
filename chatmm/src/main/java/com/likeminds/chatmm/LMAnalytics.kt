@@ -86,7 +86,7 @@ object LMAnalytics {
         const val COMMUNITY_NAME = "community_name"
         const val MESSAGE_ID = "message_id"
         const val COMMUNITY_ID = "community_id"
-        const val USER_ID = "user_id"
+        const val UUID = "uuid"
         const val SOURCE = "source"
     }
 

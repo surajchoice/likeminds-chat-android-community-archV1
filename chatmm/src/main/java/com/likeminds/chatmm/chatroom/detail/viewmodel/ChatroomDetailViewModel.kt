@@ -119,6 +119,8 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _deleteConversationsResponse by lazy { MutableLiveData<Int>() }
     val deleteConversationsResponse: LiveData<Int> = _deleteConversationsResponse
 
+    private var sendLinkPreview = true
+
     sealed class ConversationEvent {
         data class NewConversation(val conversations: List<ConversationViewData>) :
             ConversationEvent()
@@ -1098,7 +1100,23 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun getContentDownloadSettings(communityId: String) {
-        // todo:
+        viewModelScope.launchIO {
+            val response = lmChatClient.getContentDownloadSettings()
+            if (response.success) {
+                val data = response.data ?: return@launchIO
+                val settings = data.settings
+                val optionsDownloadable = settings.filter { it.enabled }
+                val contentTypes = optionsDownloadable.map {
+                    it.downloadSettingType
+                }
+                _contentDownloadSettingsLiveData.postValue(contentTypes)
+            } else {
+                Log.e(
+                    SDKApplication.LOG_TAG,
+                    "content download setting failed: ${response.errorMessage}"
+                )
+            }
+        }
     }
 
     fun setLastSeenTrueAndSaveDraftResponse(
@@ -1412,14 +1430,14 @@ class ChatroomDetailViewModel @Inject constructor(
                     }
 
                     _linkOgTags.value?.url == shareLink &&
-                            isValidLinkViewData(_linkOgTags.value) -> {
+                            isValidLinkViewData(_linkOgTags.value) && sendLinkPreview -> {
                         postConversationRequestBuilder = postConversationRequestBuilder
                             .ogTags(
                                 ViewDataConverter.convertLinkOGTags(_linkOgTags.value)
                             ).shareLink(shareLink)
                     }
 
-                    isURLReachable(shareLink) -> {
+                    isURLReachable(shareLink) && sendLinkPreview -> {
                         postConversationRequestBuilder =
                             postConversationRequestBuilder.shareLink(shareLink)
                     }
@@ -1437,6 +1455,7 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val response = lmChatClient.postConversation(postConversationRequest)
             if (response.success) {
+                sendLinkPreview = true
                 val data = response.data
                 onConversationPosted(
                     context,
@@ -2066,7 +2085,7 @@ class ChatroomDetailViewModel @Inject constructor(
     ---------------------------------------------------------------*/
 
     fun linkPreview(text: String) {
-        if (text.isEmpty()) {
+        if (text.isEmpty() || !sendLinkPreview) {
             clearLinkPreview()
             return
         }
@@ -2089,13 +2108,20 @@ class ChatroomDetailViewModel @Inject constructor(
         }
     }
 
+    fun removeLinkPreview() {
+        sendLinkPreview = false
+        previewLinkJob?.cancel()
+        previewLink = null
+        _linkOgTags.postValue(null)
+    }
+
     fun clearLinkPreview() {
         previewLinkJob?.cancel()
         previewLink = null
         _linkOgTags.postValue(null)
     }
 
-    fun decodeUrl(url: String) {
+    private fun decodeUrl(url: String) {
         viewModelScope.launchIO {
             val decodeUrlRequest = DecodeUrlRequest.Builder()
                 .url(url)
@@ -2339,7 +2365,7 @@ class ChatroomDetailViewModel @Inject constructor(
                 mapOf(
                     LMAnalytics.Keys.CHATROOM_ID to chatroom.id,
                     LMAnalytics.Keys.COMMUNITY_ID to chatroom.communityId,
-                    LMAnalytics.Keys.USER_ID to userPreferences.getUUID(),
+                    LMAnalytics.Keys.UUID to userPreferences.getUUID(),
                     LMAnalytics.Keys.MESSAGE_ID to messageId,
                     "url" to url,
                     "type" to "link",

@@ -105,7 +105,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             LMAnalytics.Events.MEMBER_PROFILE_REPORT,
             mapOf(
                 LMAnalytics.Keys.COMMUNITY_ID to communityId,
-                "uuid" to uuid
+                LMAnalytics.Keys.UUID to uuid
             )
         )
     }
@@ -135,7 +135,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
                 LMAnalytics.Keys.COMMUNITY_ID to communityId,
                 LMAnalytics.Keys.CHATROOM_ID to chatroomId,
                 LMAnalytics.Keys.CHATROOM_NAME to chatroomName,
-                "uuid" to uuid,
+                LMAnalytics.Keys.UUID to uuid,
                 "type" to conversationType,
                 "issue" to issue
             )
@@ -156,7 +156,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             LMAnalytics.Events.MEMBER_PROFILE_REPORT_CONFIRMED,
             mapOf(
                 LMAnalytics.Keys.COMMUNITY_ID to communityId,
-                "uuid" to uuid,
+                LMAnalytics.Keys.UUID to uuid,
                 "issue" to issue
             )
         )

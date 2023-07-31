@@ -2926,7 +2926,7 @@ class ChatroomDetailFragment :
                     viewLink.tvLinkUrl.text = linkOgTags.url
 
                     viewLink.ivCross.setOnClickListener {
-                        viewModel.clearLinkPreview()
+                        viewModel.removeLinkPreview()
                         viewLink.clLink.visibility = View.GONE
                         setChatInputBoxViewType(CHAT_BOX_NORMAL)
                     }
