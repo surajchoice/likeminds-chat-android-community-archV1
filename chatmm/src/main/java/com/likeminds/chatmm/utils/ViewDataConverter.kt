@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils
 
 import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.*
+import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.media.model.SingleUriData
@@ -66,7 +67,7 @@ object ViewDataConverter {
             .memberViewData(convertMember(chatroom.member))
             .createdAt(chatroom.createdAt ?: 0)
             .title(chatroom.title)
-            .answerText(chatroom.answerText)
+            .answerText(ChatroomUtil.removeTemporaryText(chatroom.answerText))
             .state(chatroom.state)
             .shareUrl(chatroom.shareUrl)
             .type(chatroom.type)
@@ -133,7 +134,7 @@ object ViewDataConverter {
             .memberState(chatroom.member?.state)
             .createdAt(chatroom.createdAt ?: 0)
             .title(chatroom.title)
-            .answerText(chatroom.answerText)
+            .answerText(ChatroomUtil.removeTemporaryText(chatroom.answerText))
             .state(chatroom.state)
             .type(chatroom.type)
             .header(chatroom.header)
@@ -195,12 +196,13 @@ object ViewDataConverter {
         if (conversation == null) {
             return null
         }
+        val updatedAnswer = ChatroomUtil.removeTemporaryText(conversation.answer)
         return ConversationViewData.Builder()
             .id(conversation.id ?: "")
             .memberViewData(memberViewData ?: convertMember(conversation.member))
             .createdAt(conversation.createdAt.toString())
             .createdEpoch(conversation.createdEpoch ?: 0L)
-            .answer(conversation.answer)
+            .answer(updatedAnswer)
             .state(conversation.state)
             .attachments(
                 conversation.attachments?.mapNotNull { attachment ->
@@ -227,7 +229,7 @@ object ViewDataConverter {
             .attachmentsUploaded(conversation.attachmentUploaded)
             .uploadWorkerUUID(conversation.uploadWorkerUUID)
             .temporaryId(conversation.temporaryId)
-            .shortAnswer(ViewMoreUtil.getShortAnswer(conversation.answer, 1000))
+            .shortAnswer(ViewMoreUtil.getShortAnswer(updatedAnswer, 1000))
             .pollInfoData(convertPollInfoData(conversation))
             .lastSeen(conversation.lastSeen)
             .reactions(convertConversationReactions(conversation.reactions, conversation.id))
@@ -766,7 +768,7 @@ object ViewDataConverter {
             .dynamicViewType(0)
             .createdAt(searchChatroom.chatroom.createdAt ?: 0L)
             .title(searchChatroom.chatroom.title)
-            .answerText(searchChatroom.chatroom.answerText)
+            .answerText(ChatroomUtil.removeTemporaryText(searchChatroom.chatroom.answerText))
             .state(searchChatroom.state)
             .type(searchChatroom.chatroom.type)
             .header(searchChatroom.chatroom.header)
@@ -799,13 +801,14 @@ object ViewDataConverter {
         followStatus: Boolean,
         keyword: String
     ): SearchConversationViewData {
+        val updatedAnswer = ChatroomUtil.removeTemporaryText(searchConversation.answer)
         return SearchConversationViewData.Builder()
             .chatroom(convertChatroom(searchConversation.chatroom))
             .chatroomAnswer(convertConversationForSearch(searchConversation))
             .chatroomName(searchConversation.chatroom.header)
             .senderName(searchConversation.member.name)
             .chatroomAnswerId(searchConversation.id.toString())
-            .answer(searchConversation.answer)
+            .answer(updatedAnswer)
             .time(TimeUtil.getLastConversationTime(searchConversation.lastUpdated))
             .followStatus(followStatus)
             .keywordMatchedInCommunityName(
@@ -823,7 +826,7 @@ object ViewDataConverter {
             .keywordMatchedInMessageText(
                 SearchUtils.findMatchedKeywords(
                     keyword,
-                    searchConversation.answer,
+                    updatedAnswer,
                     isMessage = true
                 )
             )
@@ -848,7 +851,7 @@ object ViewDataConverter {
             .communityId(searchConversation.community.id)
             .memberViewData(member)
             .createdAt(searchConversation.chatroom.createdAt.toString())
-            .answer(searchConversation.answer)
+            .answer(ChatroomUtil.removeTemporaryText(searchConversation.answer))
             .date(searchConversation.chatroom.date)
             .deletedBy(searchConversation.chatroom.deletedBy)
             .deletedByMember(convertMember(searchConversation.chatroom.deletedByMember))

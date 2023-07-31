@@ -385,6 +385,16 @@ object ChatroomUtil {
         }
     }
 
+    fun removeTemporaryText(answer: String?): String {
+        if (answer.isNullOrEmpty()) {
+            return ""
+        }
+        val videoText = "\n * This is a video message. Please update your app *"
+        val gifText = "\n * This is a gif message. Please update your app *"
+        val audioText = "\n * This is an audio message. Please update your app *"
+        return answer.replace(videoText, "").replace(gifText, "").replace(audioText, "")
+    }
+
     fun setStatusBarColor(activity: Activity, context: Context, isFullScreen: Boolean) {
         val window = activity.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
