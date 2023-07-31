@@ -226,9 +226,8 @@ object ChatroomUtil {
     ): String {
         val uuid = conversation.memberViewData.sdkClientInfo.uuid
         return if (uuid == currentMemberId) {
-            val deletedBy = conversation.deletedBy
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
-            if ((deletedBy == currentMemberId) || (deletedByUUID == currentMemberId)) {
+            if (deletedByUUID == currentMemberId) {
                 context.getString(R.string.you_deleted_this_message)
             } else {
                 context.getString(R.string.your_message_was_deleted_by_cm)
