@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="attachment"
+            type="com.likeminds.chatmm.conversation.model.AttachmentViewData" />
+
+        <variable
+            name="position"
+            type="int" />
+
+        <variable
+            name="parentConversation"
+            type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
+
+        <variable
+            name="parentChatRoom"
+            type="com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData" />
+
+        <variable
+            name="parentViewItemPosition"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@drawable/background_item_document">
+
+        <ImageView
+            android:id="@+id/iv_document_icon"
+            android:layout_width="28dp"
+            android:layout_height="37dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginStart="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pdf"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_document_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toTopOf="@+id/tv_meta_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_document_icon"
+            app:layout_constraintTop_toTopOf="@+id/iv_document_icon"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Getting started.png" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_meta_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_document_icon"
+            app:layout_constraintStart_toEndOf="@+id/iv_document_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_document_name"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="2 Pages" />
+
+        <View
+            android:id="@+id/view_meta_dot_1"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/background_circle_dot_custom_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_meta_1"
+            app:layout_constraintStart_toEndOf="@+id/tv_meta_1"
+            app:layout_constraintTop_toTopOf="@+id/tv_meta_1" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_meta_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/view_meta_dot_1"
+            app:layout_constraintStart_toEndOf="@+id/view_meta_dot_1"
+            app:layout_constraintTop_toTopOf="@+id/view_meta_dot_1"
+            tools:text="23.5 MB" />
+
+        <View
+            android:id="@+id/view_meta_dot_2"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/background_circle_dot_custom_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_meta_2"
+            app:layout_constraintStart_toEndOf="@+id/tv_meta_2"
+            app:layout_constraintTop_toTopOf="@+id/tv_meta_2" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_meta_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textAllCaps="true"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/view_meta_dot_2"
+            app:layout_constraintStart_toEndOf="@+id/view_meta_dot_2"
+            app:layout_constraintTop_toTopOf="@+id/view_meta_dot_2"
+            tools:text="@string/pdf" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

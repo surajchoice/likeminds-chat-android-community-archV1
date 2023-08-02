@@ -1,6 +1,7 @@
 package com.likeminds.chatmm
 
 import org.junit.Test
+
 import org.junit.Assert.*
 
 /**

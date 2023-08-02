@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black_4"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_youtube_link"
+                android:layout_width="0dp"
+                android:layout_height="134dp"
+                android:scaleType="center"
+                android:src="@color/black"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_playing_this_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_youtube_link"
+                app:layout_constraintEnd_toEndOf="@+id/iv_youtube_link"
+                app:layout_constraintStart_toStartOf="@+id/iv_youtube_link"
+                app:layout_constraintTop_toTopOf="@+id/iv_youtube_link"
+                tools:text="Playing this video…" />
+
+            <ImageView
+                android:id="@+id/iv_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_play"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_youtube_link"
+                app:layout_constraintEnd_toEndOf="@+id/iv_youtube_link"
+                app:layout_constraintStart_toStartOf="@+id/iv_youtube_link"
+                app:layout_constraintTop_toTopOf="@+id/iv_youtube_link"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_youtube_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/you_tube_logo_2017"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_youtube_link"
+                app:layout_constraintEnd_toEndOf="@+id/iv_youtube_link"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_link"
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_link_primary_40dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_youtube_link"
+                tools:ignore="ContentDescription" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_link_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="4sp"
+                android:maxLines="2"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:fontType="medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_link"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="Twitter ns" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_link_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="2sp"
+                android:maxLines="2"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tv_link_title"
+                app:layout_constraintStart_toStartOf="@+id/tv_link_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_link_title"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="The new feasd fmnsd fnms fssdf mnds fndnmf sndmf " />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_link_url"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tv_link_title"
+                app:layout_constraintStart_toStartOf="@+id/tv_link_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_link_description"
+                tools:text="www.livemint.com" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

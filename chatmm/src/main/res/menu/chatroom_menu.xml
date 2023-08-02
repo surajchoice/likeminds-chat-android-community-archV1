@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/view_participants"
+        android:title="@string/view_participants"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/invite"
+        android:title="@string/invite_small"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/add_all_member"
+        android:title="@string/add_all_member"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/join_leave_chatroom"
+        android:title="@string/join_chatroom"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/view_profile"
+        android:title="@string/view_profile"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/view_community"
+        android:title="@string/view_community"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/mute_unmute_notifications"
+        android:title="@string/mute_notifications"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/leave_chatroom"
+        android:title="@string/leave_chatroom"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/report_chatroom"
+        android:title="@string/report"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/chatroom_settings"
+        android:title="@string/settings"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/share_chatroom_icon"
+        android:icon="@drawable/ic_share_white"
+        android:title="@string/share_chatroom"
+        android:visible="false"
+        app:showAsAction="always" />
+</menu>

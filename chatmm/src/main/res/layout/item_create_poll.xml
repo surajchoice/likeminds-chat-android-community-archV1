@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="createPollViewData"
+            type="com.likeminds.chatmm.polls.model.CreatePollViewData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_poll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+            android:id="@+id/et_poll"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@null"
+            android:ellipsize="end"
+            android:hint="@string/option"
+            android:inputType="textCapSentences"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black_20"
+            android:textSize="16sp"
+            app:font_style="regular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_sub_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_poll_sub_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/brown_grey"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:fontType="regular"
+            app:layout_constraintLeft_toLeftOf="@+id/et_poll"
+            app:layout_constraintRight_toLeftOf="@+id/iv_sub_text"
+            app:layout_constraintTop_toBottomOf="@+id/et_poll"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_sub_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/et_poll"
+            app:layout_constraintRight_toLeftOf="@+id/iv_poll_gallery"
+            app:layout_constraintTop_toTopOf="@+id/et_poll"
+            app:srcCompat="@drawable/ic_paragraph"
+            app:tint="@color/turquoise"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_poll_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/et_poll"
+            app:layout_constraintRight_toLeftOf="@+id/iv_cross"
+            app:layout_constraintTop_toTopOf="@+id/et_poll"
+            app:srcCompat="@drawable/ic_gallery_1"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_cross"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/et_poll"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/et_poll"
+            app:srcCompat="@drawable/ic_cross_small"
+            app:tint="@color/grey"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey_v2"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

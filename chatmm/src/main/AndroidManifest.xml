@@ -1,4 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.likeminds.chatmm">
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <activity
+            android:name=".chatroom.explore.view.ChatroomExploreActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".media.view.MediaPickerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".media.view.MediaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".chatroom.detail.view.ChatroomDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".polls.view.PollResultsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".chatroom.detail.view.ViewParticipantsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".search.view.SearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <activity
+            android:name=".report.view.ReportActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LMAppTheme.NoActionBar" />
+
+        <service android:name=".utils.chrometabs.CustomTabService" />
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <service
+            android:name=".media.util.MediaAudioForegroundService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <provider
+            android:name="com.likeminds.chatmm.utils.file.util.LMFileProvider"
+            android:authorities="${applicationId}.likeminds.chatmm.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/groupchat_filepaths" />
+        </provider>
+
+
+        <receiver
+            android:name=".pushnotification.util.NotificationActionBroadcastReceiver"
+            android:exported="false"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_FOLLOW" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_REPLY" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_CHATROOM_REPLY" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_CHATROOM_MARK_AS_READ" />
+                <action android:name="com.likeminds.chatmm.pushnotification.util.ACTION_NEW_CHATROOM_VOTE" />
+            </intent-filter>
+        </receiver>
+    </application>
 
 </manifest>

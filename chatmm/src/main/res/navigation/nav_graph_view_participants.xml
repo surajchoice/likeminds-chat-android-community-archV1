@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_view_participants"
+    app:startDestination="@id/view_participants">
+
+    <fragment
+        android:id="@+id/view_participants"
+        android:name="com.likeminds.chatmm.chatroom.detail.view.ViewParticipantsFragment"
+        android:label="fragment_view_participants"
+        tools:layout="@layout/fragment_view_participants" />
+
+</navigation>

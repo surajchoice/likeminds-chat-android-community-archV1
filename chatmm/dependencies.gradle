@@ -1,0 +1,109 @@
+dependencies {
+    //core
+    implementation deps.android_core.core
+    implementation deps.android_core.appcompat
+    implementation deps.ktx.fragment
+
+    //Kotlin
+    implementation deps.kotlin.jdk
+    implementation deps.kotlin.reflect
+
+    //ui
+    api deps.material_design.main
+    implementation deps.constraint_layout.main
+    implementation deps.recycler_view.main
+    implementation deps.viewPager2.main
+    implementation deps.flexbox.main
+
+    //dagger
+    implementation deps.dagger.main
+    kapt deps.dagger.compiler
+
+    //firebase
+    implementation platform(deps.firebase.bom)
+    implementation deps.firebase.messaging
+
+    //rx
+    implementation deps.rxJava.main
+
+    implementation deps.rxJava.android
+
+    //lifecycle - viewModel & liveData
+    implementation deps.lifecycle.viewmodel
+    implementation deps.lifecycle.livedata
+    kapt deps.lifecycle.annotation
+
+    //chrometabs
+    implementation deps.chrometab.main
+
+    //navigation
+    implementation deps.navigation.main
+    implementation deps.navigation.ui
+
+    //circleimageview
+    implementation deps.circleimageview.main
+
+    //glide
+    implementation deps.glide.core
+    kapt deps.glide.compiler
+
+    //keyboardutil
+    implementation deps.keyboardutil.main
+
+    //google play core
+    implementation deps.playCore.main
+    implementation deps.playCore.ktx
+
+    //mp4parser
+    implementation deps.mp4parser.main
+
+    //exoPlayer
+    implementation deps.exo_player.main
+
+    //aws
+    implementation deps.aws.s3
+    implementation(deps.aws.mobile_client) { transitive = true }
+
+    //workmanager
+    implementation deps.workmanager.main
+
+    //relate to branch
+    implementation deps.branch.main
+    implementation deps.googlePlayServicesAppIdentifier.main
+
+    //shimmer
+    implementation deps.facebook.shimmer
+
+    //Stream
+    implementation deps.stream.main
+
+    //emoticon keyboard
+    implementation deps.emoticonKeyboard.main
+
+    //Giphy
+    implementation deps.giphy.main
+
+    //Youtube Player
+    implementation deps.youtube_player.main
+
+    //Balloons: Tooltips
+    implementation deps.balloons.main
+
+    //photoview
+    implementation deps.photoview.main
+
+    //3rd Party Libraries included as jar or module
+    implementation deps.cropper.main
+    implementation deps.dotsindicator.main
+    implementation deps.imageCompressor.main
+    implementation deps.audioWave.main
+    implementation deps.drawableToolbox.main
+
+    //testing
+    testImplementation deps.junit.main
+    androidTestImplementation deps.android_test.android
+    androidTestImplementation deps.android_test.espresso
+
+    // chat-sdk
+    implementation 'io.github.NateshR:likemindschat:2.0.0'
+}
