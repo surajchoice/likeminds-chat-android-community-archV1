@@ -69,7 +69,6 @@ dependencies {
 
     //relate to branch
     implementation deps.branch.main
-    implementation deps.googlePlayServicesAppIdentifier.main
 
     //shimmer
     implementation deps.facebook.shimmer
@@ -86,9 +85,6 @@ dependencies {
     //Youtube Player
     implementation deps.youtube_player.main
 
-    //Balloons: Tooltips
-    implementation deps.balloons.main
-
     //photoview
     implementation deps.photoview.main
 
@@ -97,7 +93,6 @@ dependencies {
     implementation deps.dotsindicator.main
     implementation deps.imageCompressor.main
     implementation deps.audioWave.main
-    implementation deps.drawableToolbox.main
 
     //testing
     testImplementation deps.junit.main

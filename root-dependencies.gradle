@@ -12,11 +12,7 @@ versions.appcompat = '1.4.2'
 versions.kotlin = '1.6.21'
 versions.rxJava = '2.2.5'
 versions.rxAndroid = '2.1.1'
-versions.autoValue = '1.9'
 versions.chucker = '3.5.2'
-versions.crashReporter = '1.1.0'
-versions.auto_value_gson = '1.3.1'
-versions.auto_value_parcel = '0.2.9'
 versions.material_design = '1.6.1'
 versions.circleimageview = '3.1.0'
 versions.photoview = '2.3.0'
@@ -27,22 +23,13 @@ versions.junit = '4.13.2'
 versions.android_junit = '1.1.3'
 versions.espresso = '3.4.0'
 versions.mockk = '1.12.3'
-versions.realm = '10.11.0'
 versions.dagger = '2.42'
-versions.retrofit = '2.9.0'
-versions.okhttp = '4.9.3'
 versions.gson = '2.8.6'
 versions.cropper = '4.2.1'
 versions.glide = '4.12.0'
-versions.wootric = '2.21.1'
 versions.fragment_ktx = '1.4.1'
 versions.lifecycle = '2.4.1'
 versions.google_play_service = '4.3.14'
-versions.google_play_service_location = '19.0.1'
-versions.google_play_service_auth = '20.2.0'
-versions.google_play_service_auth_api_phone = '18.0.1'
-versions.installReferrer = '2.2'
-versions.places = '2.6.0'
 versions.firebaseBOM = '30.1.0'
 versions.image_compressor = '3.0.1'
 versions.drawable_toolbox = '1.0.7'
@@ -64,14 +51,11 @@ versions.mp4parser = '1.1.22'
 versions.exo_player = '2.17.1'
 versions.aws_s3 = '2.47.0'
 versions.branch = '5.1.5'
-versions.google_play_services_ads_identifier = '18.0.1'
 versions.emoticons_keyboard = '0.7.0'
-versions.leakcanary = '2.7'
 versions.lottie = '5.2.0'
 versions.youtube_player = '11.0.1'
 versions.stream = '1.2.1'
 versions.giphy = '2.1.18'
-versions.balloons = '1.4.5'
 versions.color_picker = '2.3'
 ext.versions = versions
 
@@ -93,27 +77,10 @@ kotlin.jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
 deps.kotlin = kotlin
 
-
 def rxJava = [:]
 rxJava.main = "io.reactivex.rxjava2:rxjava:$versions.rxJava"
 rxJava.android = "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid"
 deps.rxJava = rxJava
-
-def autoValue = [:]
-autoValue.main = "com.google.auto.value:auto-value-annotations:$versions.autoValue"
-autoValue.annotation = "com.google.auto.value:auto-value:$versions.autoValue"
-deps.autoValue = autoValue
-
-def autoValue_gson = [:]
-autoValue_gson.annotation = "com.ryanharter.auto.value:auto-value-gson:$versions.auto_value_gson"
-autoValue_gson.factory = "com.ryanharter.auto.value:auto-value-gson-factory:$versions.auto_value_gson"
-autoValue_gson.extension = "com.ryanharter.auto.value:auto-value-gson-extension:$versions.auto_value_gson"
-autoValue_gson.runtime = "com.ryanharter.auto.value:auto-value-gson-runtime:$versions.auto_value_gson"
-deps.autoValue_gson = autoValue_gson
-
-def autoValueParcel = [:]
-autoValueParcel.annotation = "com.ryanharter.auto.value:auto-value-parcel:$versions.auto_value_parcel"
-deps.autoValueParcel = autoValueParcel
 
 def recycler_view = [:]
 recycler_view.main = "androidx.recyclerview:recyclerview:$versions.recycler_view"
@@ -122,10 +89,6 @@ deps.recycler_view = recycler_view
 def constraint_layout = [:]
 constraint_layout.main = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
 deps.constraint_layout = constraint_layout
-
-def realm = [:]
-realm.main = "io.realm:realm-gradle-plugin:$versions.realm"
-deps.realm = realm
 
 def dagger = [:]
 dagger.main = "com.google.dagger:dagger:$versions.dagger"
@@ -143,17 +106,6 @@ glide.core = "com.github.bumptech.glide:glide:$versions.glide"
 glide.compiler = "com.github.bumptech.glide:compiler:$versions.glide"
 deps.glide = glide
 
-def retrofit = [:]
-retrofit.main = "com.squareup.retrofit2:retrofit:$versions.retrofit"
-retrofit.rxJava = "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
-retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
-deps.retrofit = retrofit
-
-def okhttp = [:]
-okhttp.main = "com.squareup.okhttp3:okhttp:$versions.okhttp"
-okhttp.http_interceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
-deps.okhttp = okhttp
-
 def gson = [:]
 gson.main = "com.google.code.gson:gson:$versions.gson"
 deps.gson = gson
@@ -166,22 +118,6 @@ def googlePlayServices = [:]
 googlePlayServices.main = "com.google.gms:google-services:$versions.google_play_service"
 deps.googlePlayServices = googlePlayServices
 
-def googlePlayServiceLocation = [:]
-googlePlayServiceLocation.main = "com.google.android.gms:play-services-location:$versions.google_play_service_location"
-deps.googlePlayServiceLocation = googlePlayServiceLocation
-
-def googlePlayServiceAuth = [:]
-googlePlayServiceAuth.main = "com.google.android.gms:play-services-auth:$versions.google_play_service_auth"
-deps.googlePlayServiceAuth = googlePlayServiceAuth
-
-def googlePlayServiceAuthApiPhone = [:]
-googlePlayServiceAuthApiPhone.main = "com.google.android.gms:play-services-auth-api-phone:$versions.google_play_service_auth_api_phone"
-deps.googlePlayServiceAuthApiPhone = googlePlayServiceAuthApiPhone
-
-def places = [:]
-places.main = "com.google.android.libraries.places:places:$versions.places"
-deps.places = places
-
 def junit = [:]
 junit.main = "junit:junit:$versions.junit"
 deps.junit = junit
@@ -193,10 +129,6 @@ android_test.core = "androidx.test:core:$versions.android_test"
 android_test.runner = "androidx.test:runner:$versions.android_test"
 deps.android_test = android_test
 
-def installReferrer = [:]
-installReferrer.main = "com.android.installreferrer:installreferrer:$versions.installReferrer"
-deps.installReferrer = installReferrer
-
 def viewPager2 = [:]
 viewPager2.main = "androidx.viewpager2:viewpager2:$versions.viewpager2"
 deps.viewPager2 = viewPager2
@@ -205,10 +137,6 @@ def chucker = [:]
 chucker.main = "com.github.chuckerteam.chucker:library:$versions.chucker"
 chucker.no_op = "com.github.chuckerteam.chucker:library-no-op:$versions.chucker"
 deps.chucker = chucker
-
-def crashReporter = [:]
-crashReporter.main = "com.balsikandar.android:crashreporter:$versions.crashReporter"
-deps.crashReporter = crashReporter
 
 def flexbox = [:]
 flexbox.main = "com.google.android.flexbox:flexbox:$versions.flexbox"
@@ -273,14 +201,6 @@ def circleimageview = [:]
 circleimageview.main = "de.hdodenhof:circleimageview:$versions.circleimageview"
 deps.circleimageview = circleimageview
 
-def wootric = [:]
-wootric.main = "com.wootric:wootric-sdk-android:$versions.wootric"
-deps.wootric = wootric
-
-def googlePlayServicesAppIdentifier = [:]
-googlePlayServicesAppIdentifier.main = "com.google.android.gms:play-services-ads-identifier:$versions.google_play_services_ads_identifier"
-deps.googlePlayServicesAppIdentifier = googlePlayServicesAppIdentifier
-
 def emoticonKeyboard = [:]
 emoticonKeyboard.main = "com.vanniktech:emoji-google:$versions.emoticons_keyboard"
 deps.emoticonKeyboard = emoticonKeyboard
@@ -300,10 +220,6 @@ deps.stream = stream
 def giphy = [:]
 giphy.main = "com.giphy.sdk:ui:$versions.giphy"
 deps.giphy = giphy
-
-def balloons = [:]
-balloons.main = "com.github.skydoves:balloon:$versions.balloons"
-deps.balloons = balloons
 
 def photoview = [:]
 photoview.main = "com.github.chrisbanes:PhotoView:$versions.photoview"
@@ -328,10 +244,6 @@ deps.cropper = cropper
 def audioWave = [:]
 audioWave.main = "com.github.alxrm:audiowave-progressbar:$versions.audioWave"
 deps.audioWave = audioWave
-
-def drawableToolbox = [:]
-drawableToolbox.main = "com.github.duanhong169:drawabletoolbox:$versions.drawable_toolbox"
-deps.drawableToolbox = drawableToolbox
 
 def dotsindicator = [:]
 dotsindicator.main = "com.tbuonomo:dotsindicator:$versions.dotsindicator"
