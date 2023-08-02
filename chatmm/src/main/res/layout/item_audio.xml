@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="attachment"
+            type="com.likeminds.chatmm.conversation.model.AttachmentViewData" />
+
+        <variable
+            name="position"
+            type="int" />
+
+        <variable
+            name="parentConversation"
+            type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
+
+        <variable
+            name="parentChatRoom"
+            type="com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData" />
+
+        <variable
+            name="parentViewItemPosition"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/background_item_document">
+
+        <ImageView
+            android:id="@+id/iv_audio_cover"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/view_corner_radius_audio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/view_mask"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/view_corner_radius_audio_mask"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar_buffer"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_audio_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_audio_cover" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/wave_anim"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:translationY="-5dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_audio_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_audio_cover"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/audio_wave_animation" />
+
+        <ImageView
+            android:id="@+id/iv_audio_logo"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_audio_header"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_audio_cover"
+            app:layout_constraintTop_toTopOf="@id/iv_audio_cover"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@id/iv_audio_cover"
+            app:layout_constraintEnd_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintStart_toStartOf="@id/iv_audio_cover"
+            tools:text="0:34" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:layout_width="20dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_play_grey"
+            app:layout_constraintStart_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@null"
+            android:indeterminate="false"
+            android:max="@{attachment.meta.duration}"
+            android:paddingVertical="5dp"
+            android:progress="@{attachment.progress}"
+            android:progressTint="@color/orange_yellow"
+            android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_play_pause"
+            app:layout_constraintTop_toTopOf="@id/iv_play_pause" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_audio_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:alpha="0.3"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{attachment.name}"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="@id/iv_play_pause"
+            app:layout_constraintTop_toBottomOf="@id/iv_play_pause" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/play_pause_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="tv_audio_name,iv_play_pause,seek_bar" />
+
+        <ImageView
+            android:id="@+id/iv_upload_wave"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="3dp"
+            android:src="@drawable/ic_audio_wave"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_audio_cover"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

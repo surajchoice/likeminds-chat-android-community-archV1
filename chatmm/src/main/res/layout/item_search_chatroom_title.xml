@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="searchChatroomTitleViewData"
+            type="com.likeminds.chatmm.search.model.SearchChatroomTitleViewData" />
+
+        <variable
+            name="hideBottomLine"
+            type="Boolean" />
+
+        <variable
+            name="hideNotFollowed"
+            type="Boolean" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="20:20PM" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_chatroom_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="3"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            app:fontType="medium"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/tv_timestamp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Weekly Web Seminar" />
+
+        <ImageView
+            android:id="@+id/iv_chatroom_type"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_chatroom_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_name"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_announcement_room" />
+
+        <ImageView
+            android:id="@+id/iv_chatroom_secret"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_secret_lock"
+            android:visibility="@{searchChatroomTitleViewData.chatroom.isSecret() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
+            app:layout_constraintStart_toEndOf="@+id/iv_chatroom_type"
+            app:layout_constraintTop_toTopOf="@+id/tv_chatroom_name"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_conversation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:lineSpacingExtra="4sp"
+            android:singleLine="true"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="@id/tv_timestamp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/tv_chatroom_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_not_followed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineHeight="16sp"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/chatroom_not_joined_yet"
+            android:textColor="@color/brown_grey"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:visibility="@{hideNotFollowed ? View.INVISIBLE : View.VISIBLE}"
+            app:fontType="regular"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="@id/tv_timestamp"
+            app:layout_constraintStart_toStartOf="@id/tv_chatroom_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_conversation"
+            tools:ignore="UnusedAttribute" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_conversation"
+            app:layout_constraintStart_toStartOf="@id/tv_chatroom_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="left"
+            app:constraint_referenced_ids="tv_timestamp"
+            tools:layout_editor_absoluteX="411dp" />
+
+        <View
+            android:id="@+id/bottom_line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/background_v1_50"
+            android:visibility="@{hideBottomLine ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_chatroom_name"
+            app:layout_constraintRight_toRightOf="@+id/tv_timestamp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_not_followed"
+            app:layout_goneMarginTop="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

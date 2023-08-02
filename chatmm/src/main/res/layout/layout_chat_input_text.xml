@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_chat_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_white_24_black10_1">
+
+        <include
+            android:id="@+id/view_link"
+            layout="@layout/layout_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cv_chat_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <include
+            android:id="@+id/view_reply"
+            layout="@layout/layout_chat_reply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cv_chat_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cv_chat_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_gifs,et_answer,iv_attachment"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_bin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="iv_bin,iv_bin_cover" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_gifs"
+                style="@style/ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/background_input_gifs"
+                android:paddingStart="2dp"
+                android:paddingTop="1dp"
+                android:paddingEnd="2dp"
+                android:paddingBottom="1dp"
+                android:text="@string/gifs"
+                android:textColor="@color/white"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/et_answer"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.15" />
+
+            <ImageView
+                android:id="@+id/iv_bin_cover"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/ic_voice_note_bin_top"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_bin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="0.5dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_voice_note_bin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/iv_bin_cover"
+                app:layout_constraintStart_toStartOf="@id/iv_bin_cover"
+                app:layout_constraintTop_toBottomOf="@id/iv_bin_cover"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_play_recording"
+                style="@style/ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:padding="15dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_voice_play"
+                tools:ignore="ContentDescription"
+                tools:visibility="visible" />
+
+            <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+                android:id="@+id/et_answer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                android:layout_marginStart="12dp"
+                android:background="@null"
+                android:hint="@string/type_your_response"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lineSpacingExtra="2sp"
+                android:maxHeight="100dp"
+                android:minHeight="32dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black_30"
+                android:textSize="16sp"
+                app:font_style="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/guideline"
+                app:layout_constraintRight_toLeftOf="@+id/iv_attachment"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                android:id="@+id/tv_voice_note_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4sp"
+                android:minHeight="32dp"
+                android:textColor="@color/brown_grey"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:fontType="regular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="15:00" />
+
+            <ImageView
+                android:id="@+id/iv_attachment"
+                style="@style/ClickableImageView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:srcCompat="@drawable/ic_attachment"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_cancel_voice"
+                style="@style/ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="18dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_cancel_voice_note"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/iv_stop_voice"
+                style="@style/ClickableImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="12dp"
+                android:src="@drawable/ic_stop_voice_note"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_cancel_voice"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

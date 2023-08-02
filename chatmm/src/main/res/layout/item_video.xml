@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="attachmentViewData"
+            type="com.likeminds.chatmm.conversation.model.AttachmentViewData" />
+
+        <variable
+            name="position"
+            type="int" />
+
+        <variable
+            name="parentConversation"
+            type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
+
+        <variable
+            name="parentChatroom"
+            type="com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData" />
+
+        <variable
+            name="parentViewItemPosition"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="119dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="3dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_placeholder"
+                tools:ignore="ContentDescription" />
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/iv_play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_image"
+            app:layout_constraintEnd_toEndOf="@+id/cv_image"
+            app:layout_constraintStart_toStartOf="@+id/cv_image"
+            app:layout_constraintTop_toTopOf="@+id/cv_image"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_image"
+            app:layout_constraintLeft_toLeftOf="@+id/cv_image"
+            app:layout_constraintRight_toRightOf="@+id/cv_image"
+            app:layout_constraintTop_toTopOf="@+id/cv_image"
+            tools:ignore="ContentDescription" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:visibility="gone"
+            app:fontType="regular"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_image"
+            app:layout_constraintLeft_toLeftOf="@+id/cv_image"
+            app:layout_constraintRight_toRightOf="@+id/cv_image"
+            app:layout_constraintTop_toTopOf="@+id/cv_image"
+            tools:text="+ 2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

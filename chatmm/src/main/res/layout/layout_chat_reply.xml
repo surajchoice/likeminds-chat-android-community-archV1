@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="replySourceType"
+            type="Integer" />
+
+        <variable
+            name="conversationViewData"
+            type="com.likeminds.chatmm.conversation.model.ConversationViewData" />
+
+        <variable
+            name="chatRoomViewData"
+            type="com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData" />
+
+        <variable
+            name="chatReplyData"
+            type="com.likeminds.chatmm.chatroom.detail.model.ChatReplyViewData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:cardBackgroundColor="@color/cloudy_blue_50"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <View
+                    android:id="@+id/view_vertical_line"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/preview_line_turquoise"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_conversation_member_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:letterSpacing="-0.02"
+                    android:text="@{chatReplyData.isEditMessage ? `Edit message` : chatReplyData.memberName}"
+                    android:textColor="#11c5b2"
+                    android:textSize="13sp"
+                    app:fontType="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_conversation"
+                    app:layout_constraintStart_toEndOf="@+id/view_vertical_line"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Nipun"
+                    tools:visibility="visible" />
+                <!-- TODO: removed some attributes due to error -->
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_conversation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:ellipsize="end"
+                    android:letterSpacing="-0.02"
+                    android:lineSpacingExtra="2sp"
+                    android:maxLines="2"
+                    android:textColor="@{chatReplyData.isMessageDeleted ? @color/brown_grey : @color/grey}"
+                    android:textSize="13sp"
+                    app:fontType="regular"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_reply_attachment"
+                    app:layout_constraintStart_toStartOf="@+id/tv_conversation_member_name"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_conversation_member_name"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:maxLines="1"
+                    tools:text="That’s awesome. I would be interested in attending this event. I was always looking forward to such events. I was always looking forward to such events." />
+
+                <ImageView
+                    android:id="@+id/iv_reply_attachment"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image_placeholder"
+                    android:visibility="@{chatReplyData.imageUrl.length() > 0 ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/iv_reply_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_cross_reply"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

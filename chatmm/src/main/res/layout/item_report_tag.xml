@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="buttonColor"
+            type="int" />
+
+        <variable
+            name="reportTagViewData"
+            type="com.likeminds.chatmm.report.model.ReportTagViewData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_report_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/background_report_tags"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="17dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="17dp"
+            android:paddingBottom="9dp"
+            android:text="@{reportTagViewData.name}"
+            android:textColor="@{reportTagViewData.isSelected ? buttonColor : @color/grey}"
+            android:textSize="15sp"
+            app:fontType="regular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Inappropriate Language" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

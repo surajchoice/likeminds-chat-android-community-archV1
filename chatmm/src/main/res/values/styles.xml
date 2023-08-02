@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="LMAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:itemTextAppearance">@style/iconMenuTextAppearance</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">@color/dark_turquoise</item>
+        <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+
+    <style name="BottomNavigationTextActive" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/teal</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BottomNavigationTextInActive" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/brown_grey</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:dropDownHorizontalOffset">-16dp</item>
+        <item name="android:dropDownVerticalOffset">16dp</item>
+    </style>
+
+    <style name="TabLayout" parent="TextAppearance.Design.Tab">
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="android:layout_margin">@null</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="ClickableImageView">
+        <item name="android:foreground">?attr/actionBarItemBackground</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ClickableView">
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="LMAppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TutorialStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="iconMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="MainActivity.MenuTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Menu">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="RoundCheckBoxStyle" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/round_checkbox_selector</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+    <style name="LMAppTheme.Black">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextColor">@color/white</item>
+        <item name="subtitleTextAppearance">@android:style/TextAppearance.DeviceDefault.Medium
+        </item>
+        <item name="titleTextAppearance">@android:style/TextAppearance.DeviceDefault.WindowTitle
+        </item>
+    </style>
+
+    <style name="AppTheme.TabLayout.TextAppearance" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabBackground">@color/white</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabTextAppearance">@style/AppTheme.TabLayout.TextAppearance</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+    <!-- This style inflates overflow menu color -> background as white and text as black -->
+    <!-- irrespective of device is in Dark mode or not -->
+    <style name="OverFlowMenu" parent="Theme.MaterialComponents.Light">
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>
