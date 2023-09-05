@@ -66,9 +66,11 @@ abstract class MediaUploadWorker(
                 WORKER_SUCCESS -> {
                     Result.success()
                 }
+
                 WORKER_RETRY -> {
                     Result.retry()
                 }
+
                 else -> {
                     getFailureResult(failedIndex.toIntArray())
                 }
@@ -173,7 +175,8 @@ abstract class MediaUploadWorker(
                     .build()
             )
             .build()
-        runBlocking {
+        // we can't use runBlocking as it blocks the current thread and gives ANR
+        CoroutineScope(Dispatchers.IO).launch {
             val response = lmChatClient.putMultimedia(putMultimediaRequest)
             if (response.success) {
                 uploadUrlCompletes(

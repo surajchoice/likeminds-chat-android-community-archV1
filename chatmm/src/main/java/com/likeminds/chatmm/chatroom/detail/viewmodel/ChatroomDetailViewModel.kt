@@ -369,7 +369,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
+    fun getInitialData(chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
                 GetChatroomRequest.Builder().chatroomId(chatroomDetailExtras.chatroomId).build()
@@ -516,7 +516,7 @@ class ChatroomDetailViewModel @Inject constructor(
             fetchChatroomFromNetwork()
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
-            observeConversations(context, chatroomDetailExtras.chatroomId)
+            observeConversations(chatroomDetailExtras.chatroomId)
         }
     }
 
@@ -685,7 +685,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * Observe current chatroom conversations
      * @param chatroomId
      */
-    private fun observeConversations(context: Context, chatroomId: String) {
+    private fun observeConversations(chatroomId: String) {
         viewModelScope.launchMain {
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {
