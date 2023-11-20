@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   lint_and_test:
-
+    name: Run Lint and Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -36,15 +36,14 @@ jobs:
       if: failure()
       with:
         name: lint-intermediate-report
-        path: /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/likemindschat/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
+        path: |
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
     
     - uses: actions/upload-artifact@v3
       if: always()
       with:
         name: lint-results-html
         path: |
-          /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/fileutil/build/reports/lint-results-debug.html
-          /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/membertagging/build/reports/lint-results-debug.html
-          /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/internalsdk/build/reports/lint-results-debug.html
-          /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/app/build/reports/lint-results-debug.html
-          /home/runner/work/LikeMinds-Android-SDK/LikeMinds-Android-SDK/likemindschat/build/reports/lint-results-debug.html
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/reports/lint-results-debug.html
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/reports/lint-results-debug.html
