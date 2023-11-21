@@ -267,4 +267,17 @@
     <string name="send_dm_request">Send DM request?</string>
     <string name="send_dm_request_info">A direct messaging request would be sent to this member. You would be able to send further messages only once your request is approved.</string>
     <string name="link_continue">Continue</string>
+    <string name="dm_request_message">The sender has sent you a direct messaging request. Approve or respond with a message to get connected. Rejecting this request will not notify the sender.</string>
+    <string name="reject">Reject</string>
+    <string name="approve_dm_request">Approve DM request?</string>
+    <string name="approve_dm_request_message">Member will be able to send you messages and get notified of the same.</string>
+    <string name="dm_request_pending_message">DM request pending. Messaging would be enabled once your request is approved.</string>
+    <string name="reject_dm_request">Reject DM request?</string>
+    <string name="reject_dm_request_message">Member would be blocked from sending you further messages. The sender will not be notified of this.</string>
+    <string name="report_and_reject">Report and reject</string>
+    <string name="messaging_would_be_enabled_once_your_request_is_approved.">Messaging would be enabled once your request is approved.</string>
+    <string name="member_blocked">Member blocked</string>
+    <string name="member_unblocked">Member unblocked</string>
+    <string name="s_tap_to_undo">%s Tap to undo.</string>
+    <string name="approve">Approve</string>
 </resources>
