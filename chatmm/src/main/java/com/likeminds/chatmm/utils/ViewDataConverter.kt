@@ -106,6 +106,13 @@ object ViewDataConverter {
             .unreadConversationCount(chatroom.unreadConversationCount)
             .autoFollowDone(chatroom.autoFollowDone)
             .deletedByMember(convertMember(chatroom.deletedByMember))
+            .chatRequestState(chatroom.chatRequestState)
+            .chatRequestedById(chatroom.chatRequestedById)
+            .chatRequestedBy(convertMember(chatroom.chatRequestedBy))
+            .chatRequestCreatedAt(chatroom.chatRequestCreatedAt)
+            .isPrivateMember(chatroom.isPrivateMember)
+            .chatroomWithUser(convertMember(chatroom.chatroomWithUser))
+            .chatroomWithUserId(chatroom.chatroomWithUserId)
             .build()
     }
 

@@ -262,4 +262,9 @@
     <string name="request_limit_exceeded">Request limit exceeded</string>
     <string name="you_can_send_only_s_requests">You can send only %s DM requests per %s.</string>
     <string name="try_again_in_s">Try again in %s.</string>
+    <string name="send_a_dm_request_to_s">Send a DM request to %s by sending your 1st message</string>
+    <string name="direct_messaging_among_members_has_been_disabled_by_the_community_manager"> Direct messaging among members has been disabled by the community manager.</string>
+    <string name="send_dm_request">Send DM request?</string>
+    <string name="send_dm_request_info">A direct messaging request would be sent to this member. You would be able to send further messages only once your request is approved.</string>
+    <string name="link_continue">Continue</string>
 </resources>
