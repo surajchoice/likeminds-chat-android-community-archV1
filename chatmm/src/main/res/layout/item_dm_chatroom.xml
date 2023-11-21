@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="homeFeedItemViewData"
+            type="com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData" />
+
+        <variable
+            name="showUnseenCount"
+            type="Boolean" />
+
+        <variable
+            name="hideBottomLine"
+            type="Boolean" />
+
+        <variable
+            name="chatRoomDisabled"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/iv_member_image"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="16dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/background_transparent_turquoise_2"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_community_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:text="@{homeFeedItemViewData.chatroom.communityName}"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/tv_timestamp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_member_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Community of community builder" />
+
+        <TextView
+            android:id="@+id/tv_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:text="@{homeFeedItemViewData.lastConversationTime}"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_community_name"
+            app:layout_goneMarginTop="24dp"
+            tools:text="20:20PM" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_member_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:drawablePadding="8dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="6sp"
+            android:maxLines="1"
+            android:textColor="#020202"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toStartOf="@+id/tv_cm_tag"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/tv_community_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_community_name"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_goneMarginStart="14dp"
+            app:layout_goneMarginTop="24dp"
+            tools:text="Announcement Rooms" />
+
+        <View
+            android:id="@+id/iv_custom_title_dot"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/background_circle_dot_custom_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_cm_tag"
+            app:layout_constraintEnd_toStartOf="@+id/tv_cm_tag"
+            app:layout_constraintStart_toEndOf="@+id/tv_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_cm_tag" />
+
+        <TextView
+            android:id="@+id/tv_cm_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.01"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/community_manager"
+            android:textColor="@color/turquoise"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@id/tv_member_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_timestamp"
+            app:layout_constraintStart_toEndOf="@+id/tv_member_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_member_name" />
+
+        <TextView
+            android:id="@+id/tv_last_conversation_person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:paddingEnd="4dp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/tv_member_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_member_name"
+            tools:ignore="RtlSymmetry"
+            tools:text="Person Name :"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/text_view_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintStart_toEndOf="@+id/tv_last_conversation_person_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_member_name" />
+
+        <TextView
+            android:id="@+id/tv_last_conversation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="6dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="4sp"
+            android:singleLine="true"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/iv_mute"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/text_view_attachment"
+            app:layout_constraintTop_toBottomOf="@+id/tv_member_name"
+            tools:text="This community is for all the members of society" />
+
+
+        <ImageView
+            android:id="@+id/iv_mute"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="12dp"
+            android:paddingStart="2dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="3dp"
+            android:paddingBottom="3dp"
+            android:visibility="@{homeFeedItemViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintEnd_toStartOf="@+id/tv_unseen_message_count"
+            app:srcCompat="@drawable/ic_mute"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_unseen_message_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/background_pending_circular"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@{Integer.toString(homeFeedItemViewData.unseenConversationCount)}"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="@{showUnseenCount ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="SmallSp"
+            tools:text="10" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/background_v1_50"
+            android:visibility="@{hideBottomLine ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_timestamp"
+            app:layout_constraintStart_toStartOf="@+id/tv_community_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_last_conversation"
+            app:layout_goneMarginStart="14dp"
+            app:layout_goneMarginTop="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

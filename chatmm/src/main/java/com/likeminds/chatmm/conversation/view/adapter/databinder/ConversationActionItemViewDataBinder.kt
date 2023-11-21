@@ -71,11 +71,11 @@ class ConversationActionItemViewDataBinder constructor(
             val loggedInMemberId = userPreferences.getMemberId()
 
             spans.reversed().forEach { span ->
-                if (conversation.state != DM_MEMBER_REMOVED_OR_LEFT ||
-                    conversation.state != DM_CM_BECOMES_MEMBER_DISABLE ||
-                    conversation.state != DM_MEMBER_BECOMES_CM ||
-                    conversation.state != DM_CM_BECOMES_MEMBER_ENABLE ||
-                    conversation.state != DM_MEMBER_BECOMES_CM_ENABLE
+                if (conversation.state != STATE_DM_MEMBER_REMOVED_OR_LEFT ||
+                    conversation.state != STATE_DM_CM_BECOMES_MEMBER_DISABLE ||
+                    conversation.state != STATE_DM_MEMBER_BECOMES_CM ||
+                    conversation.state != STATE_DM_CM_BECOMES_MEMBER_ENABLE ||
+                    conversation.state != STATE_DM_MEMBER_BECOMES_CM_ENABLE
                 ) {
                     if ((span.getMemberUUID() == loggedInMemberUUID) || (span.getMemberUUID() == loggedInMemberId)) {
                         val startIndex = editable.getSpanStart(span)

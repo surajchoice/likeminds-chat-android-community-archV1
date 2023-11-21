@@ -248,4 +248,18 @@
     <string name="please_enter_a_reason">Please enter a reason.</string>
     <string name="s_is_reported_for_review">%s is reported for review</string>
     <string name="our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s">Our team will look into your feedback and will take appropriate action on this %s</string>
+    <string name="new_direct_message">New DM</string>
+    <string name="direct_message_is_disabled">Direct Message is disabled!</string>
+    <string name="direct_message_your_community_manager">Direct message your community manager.</string>
+    <string name="start_a_conversation_with">Start a conversation with</string>
+    <string name="send_dm_to">Send DM to…</string>
+    <string name="search">Search</string>
+    <plurals name="number_of_member">
+        <item quantity="zero">%d member</item>
+        <item quantity="one">%d%s member</item>
+        <item quantity="other">%d%s members</item>
+    </plurals>
+    <string name="request_limit_exceeded">Request limit exceeded</string>
+    <string name="you_can_send_only_s_requests">You can send only %s DM requests per %s.</string>
+    <string name="try_again_in_s">Try again in %s.</string>
 </resources>

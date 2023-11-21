@@ -1301,14 +1301,14 @@ class ChatroomDetailFragment :
                     getString(R.string.secret_chatroom_restricted_message)
                 return
             }
-            if (lastConversationState == DM_CM_BECOMES_MEMBER_DISABLE) {
+            if (lastConversationState == STATE_DM_CM_BECOMES_MEMBER_DISABLE) {
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
                     getString(R.string.direct_messages_community_manager_removed)
                 return
             }
-            if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
+            if (lastConversationState == STATE_DM_MEMBER_REMOVED_OR_LEFT) {
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text = getString(R.string.direct_messaging_member_left)
@@ -2820,11 +2820,11 @@ class ChatroomDetailFragment :
         val lastConversationState = viewModel.getLastConversationFromAdapter(
             chatroomDetailAdapter.items()
         )?.state
-        if (lastConversationState == DM_CM_BECOMES_MEMBER_DISABLE) {
-            setChatInputBoxViewType(null, DM_CM_BECOMES_MEMBER_DISABLE)
+        if (lastConversationState == STATE_DM_CM_BECOMES_MEMBER_DISABLE) {
+            setChatInputBoxViewType(null, STATE_DM_CM_BECOMES_MEMBER_DISABLE)
         }
-        if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
-            setChatInputBoxViewType(null, DM_MEMBER_REMOVED_OR_LEFT)
+        if (lastConversationState == STATE_DM_MEMBER_REMOVED_OR_LEFT) {
+            setChatInputBoxViewType(null, STATE_DM_MEMBER_REMOVED_OR_LEFT)
         }
     }
 

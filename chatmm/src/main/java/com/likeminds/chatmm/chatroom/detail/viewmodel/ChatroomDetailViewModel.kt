@@ -15,6 +15,7 @@ import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.conversation.model.*
+import com.likeminds.chatmm.dm.model.DMRequestFrom
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.*
@@ -36,6 +37,7 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
+import com.likeminds.likemindschat.dm.model.CheckDMStatusRequest
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
@@ -123,6 +125,9 @@ class ChatroomDetailViewModel @Inject constructor(
 
     private val _deleteConversationsResponse by lazy { MutableLiveData<Int>() }
     val deleteConversationsResponse: LiveData<Int> = _deleteConversationsResponse
+
+    private val _showDM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showDM: LiveData<Boolean> by lazy { _showDM }
 
     private var sendLinkPreview = true
 
@@ -2143,6 +2148,24 @@ class ChatroomDetailViewModel @Inject constructor(
     private fun decodeUrl(decodeUrlResponse: DecodeUrlResponse?) {
         val ogTags = decodeUrlResponse?.ogTags ?: return
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
+    }
+
+    // calls api to check the status of the DM
+    fun checkDMStatus(chatroomId: String) {
+        viewModelScope.launchIO {
+            val request = CheckDMStatusRequest.Builder()
+                .requestFrom(DMRequestFrom.CHATROOM.value)
+                .chatroomId(chatroomId)
+                .build()
+
+            val response = lmChatClient.checkDMStatus(request)
+            if (response.success) {
+                val showDM = response.data?.showDM ?: false
+                _showDM.postValue(showDM)
+            } else {
+                _showDM.postValue(true)
+            }
+        }
     }
 
     override fun onCleared() {
