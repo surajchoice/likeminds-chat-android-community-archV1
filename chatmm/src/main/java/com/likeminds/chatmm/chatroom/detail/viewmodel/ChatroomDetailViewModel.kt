@@ -37,8 +37,7 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
-import com.likeminds.likemindschat.dm.model.CheckDMStatusRequest
-import com.likeminds.likemindschat.dm.model.SendDMRequest
+import com.likeminds.likemindschat.dm.model.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
@@ -138,6 +137,9 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _dmInitiatedForCM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val dmInitiatedForCM: LiveData<Boolean> by lazy { _dmInitiatedForCM }
 
+    private val _memberBlocked: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val memberBlocked: LiveData<Boolean> by lazy { _memberBlocked }
+
     private var sendLinkPreview = true
 
     sealed class ConversationEvent {
@@ -179,6 +181,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
         data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
         data class SendDMRequest(val errorMessage: String?) : ErrorMessageEvent()
+        data class BlockMember(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -279,16 +282,17 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun getOtherDmMember(): MemberViewData? {
-        return null
-        // todo:
-//        return if (
-//            userPreferences.getMemberId() == getChatroom()?.chatroomWithUser?.id
-//        ) {
-//            getChatroom()?.memberViewData
-//        }
-//        else {
-//            getChatroom()?.chatroomWithUser
-//        }
+        return if (
+            userPreferences.getUUID() == getChatroom()?.chatroomWithUser?.sdkClientInfo?.uuid
+        ) {
+            getChatroom()?.memberViewData
+        } else {
+            getChatroom()?.chatroomWithUser
+        }
+    }
+
+    fun getLoggedInMemberId(): String {
+        return userPreferences.getMemberId()
     }
 
     //get first normal or poll conversation for list
@@ -2199,7 +2203,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 if (isM2CM) {
                     _dmInitiatedForCM.postValue(true)
                 }
-
                 updateChatRequestStateLocally(chatRequestState)
             } else {
                 errorEventChannel.send(ErrorMessageEvent.SendDMRequest(response.errorMessage))
@@ -2222,6 +2225,28 @@ class ChatroomDetailViewModel @Inject constructor(
         previewLinkJob?.cancel()
         compositeDisposable.dispose()
         super.onCleared()
+    }
+
+    // calls api to block/unblock member
+    fun blockMember(chatroomId: String, status: Int) {
+        viewModelScope.launchIO {
+            val request = BlockMemberRequest.Builder()
+                .chatroomId(chatroomId)
+                .status(status)
+                .build()
+
+            val response = lmChatClient.blockMember(request)
+
+            if (response.success) {
+                if (status == MemberBlockState.MEMBER_BLOCKED.value) {
+                    _memberBlocked.postValue(true)
+                } else {
+                    _memberBlocked.postValue(false)
+                }
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.BlockMember(response.errorMessage))
+            }
+        }
     }
 
     /**------------------------------------------------------------

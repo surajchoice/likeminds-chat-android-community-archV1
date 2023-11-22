@@ -19,6 +19,7 @@
     <declare-styleable name="LikeMindsTextView">
         <attr name="fontType" format="string" />
         <attr name="textType" format="string" />
+        <attr name="drawableType" format="string" />
     </declare-styleable>
 
     <declare-styleable name="LikeMindsEditText">

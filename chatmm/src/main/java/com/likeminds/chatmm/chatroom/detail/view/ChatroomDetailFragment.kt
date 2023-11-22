@@ -51,7 +51,7 @@ import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
-import com.likeminds.chatmm.dm.view.SendDMRequestDialogFragment
+import com.likeminds.chatmm.dm.view.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
@@ -133,7 +133,9 @@ class ChatroomDetailFragment :
     VoiceNoteInterface,
     LeaveSecretChatroomDialogListener,
     DeleteMessageListener,
-    SendDMRequestDialogFragment.SendDMRequestDialogListener{
+    SendDMRequestDialogFragment.SendDMRequestDialogListener,
+    ApproveDMRequestDialogFragment.ApproveDMRequestDialogListener,
+    RejectDMRequestDialogFragment.RejectDMRequestDialogListener {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -219,6 +221,7 @@ class ChatroomDetailFragment :
     private var isDeletingVoiceNote = false
     private var isVoiceNoteRecording = false
     private var isAudioComplete = false
+    private var isDMRequestSent = false
 
     private val progressReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -412,6 +415,8 @@ class ChatroomDetailFragment :
         const val SOURCE_CHAT_ROOM_OVERFLOW_MENU = "chatroom_overflow_menu"
 
         const val REQUEST_GIFS = 3004
+
+        private const val DM_SEND_REQUEST_TEXT_LIMIT = 300
     }
 
     override fun getViewModelClass(): Class<ChatroomDetailViewModel> {
@@ -493,6 +498,7 @@ class ChatroomDetailFragment :
         initAttachmentsView()
         disableAnswerPosting()
         initReplyView()
+        initDMRequestClickListeners()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             syncChatroom()
         }
@@ -903,6 +909,18 @@ class ChatroomDetailFragment :
         }
     }
 
+    private fun initDMRequestClickListeners() {
+        binding.apply {
+            tvApproveDmRequest.setOnClickListener {
+                ApproveDMRequestDialogFragment.showDialog(childFragmentManager)
+            }
+
+            tvRejectDmRequest.setOnClickListener {
+                RejectDMRequestDialogFragment.showDialog(childFragmentManager)
+            }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     private fun syncChatroom() {
         val pair = viewModel.syncChatroom(requireContext(), chatroomId)
@@ -1275,11 +1293,16 @@ class ChatroomDetailFragment :
      */
     private fun setChatInputBoxViewType(
         @ChatBoxType type: Int? = null,
-        showDM: Boolean? = null
+        showDM: Boolean? = null,
+        isBlocked: Boolean? = null
     ) {
         binding.apply {
             if (viewModel.isDmChatroom()) {
-                setChatInputBoxViewTypeForDM(type, (showDM ?: true))
+                setChatInputBoxViewTypeForDM(
+                    type,
+                    (showDM ?: true),
+                    isBlocked
+                )
             } else {
                 setChatInputBoxViewTypeForGroupChat()
             }
@@ -1292,7 +1315,8 @@ class ChatroomDetailFragment :
     // sets the chat input box for DM chat
     private fun setChatInputBoxViewTypeForDM(
         @ChatBoxType type: Int? = null,
-        showDM: Boolean
+        showDM: Boolean,
+        isBlocked: Boolean? = null
     ) {
         binding.apply {
             if (showDM) {
@@ -1301,28 +1325,96 @@ class ChatroomDetailFragment :
                     tvSendDmRequestToMember.hide()
                     return
                 }
+                if (isBlocked == true) {
+                    hideAllChatBoxViews()
+                    tvRestrictedMessage.visibility = View.VISIBLE
+                    tvRestrictedMessage.text =
+                        getString(R.string.you_cannot_send_message_to_rejected_connection)
+                    tvRestrictedMessage.gravity = Gravity.CENTER
+                    return
+                } else if (isBlocked == false) {
+                    setupCommonChatInputBox(type)
+                    return
+                }
                 when (viewModel.getChatroomViewData()?.chatRequestState) {
                     ChatRequestState.NOTHING.value -> {
                         // dm is not initiated and request is not send, showing message to send DM request
-                        val header = viewModel.getChatroomViewData()?.header
                         tvSendDmRequestToMember.show()
+                        cvDmRequest.hide()
                         tvSendDmRequestToMember.text =
-                            getString(R.string.send_a_dm_request_to_s, header)
+                            getString(
+                                R.string.send_a_dm_request_to_s,
+                                viewModel.getOtherDmMember()?.name
+                            )
+                        isDMRequestSent = true
+                        inputBox.ivAttachment.visibility = View.INVISIBLE
+                        return
                     }
 
                     ChatRequestState.INITIATED.value -> {
                         // chatroom request is sent, i.e., chatroom is initiated
-                        // todo:
+                        tvSendDmRequestToMember.hide()
+                        if (viewModel.getLoggedInMemberId() !=
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            // logged in member is the request receiver, so showing DM request view
+                            cvDmRequest.show()
+                        } else {
+                            // logged in member is the request sender, so hiding DM request view
+                            cvDmRequest.hide()
+                        }
+                        // hides the input box and shows DM request pending message
+                        hideAllChatBoxViews()
+                        tvRestrictedMessage.visibility = View.VISIBLE
+                        tvRestrictedMessage.text = getString(R.string.dm_request_pending_message)
+                        tvRestrictedMessage.gravity = Gravity.CENTER
+                        return
                     }
 
                     ChatRequestState.ACCEPTED.value -> {
                         // DM is accepted so hiding the DM request view
-                        // todo:
+                        cvDmRequest.hide()
+                        tvSendDmRequestToMember.hide()
                     }
 
                     ChatRequestState.REJECTED.value -> {
                         // DM is rejected
-                        // todo:
+                        tvSendDmRequestToMember.hide()
+                        cvDmRequest.hide()
+                        if (viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            // logged in user has rejected the request
+                            val conversationIndex =
+                                chatroomDetailAdapter.items()
+                                    .indexOfLast { chatroomItem ->
+                                        (chatroomItem is ConversationViewData && chatroomItem.state == STATE_DM_REJECTED)
+                                    }
+
+                            val conversationViewData =
+                                chatroomDetailAdapter[conversationIndex] as? ConversationViewData
+                                    ?: return
+
+                            handleTapToUndo(
+                                conversationIndex,
+                                conversationViewData,
+                                true
+                            )
+
+                            // hides the input box and shows rejected connection message
+                            hideAllChatBoxViews()
+                            tvRestrictedMessage.visibility = View.VISIBLE
+                            tvRestrictedMessage.text =
+                                getString(R.string.you_cannot_send_message_to_rejected_connection)
+                            tvRestrictedMessage.gravity = Gravity.CENTER
+                        } else {
+                            hideAllChatBoxViews()
+                            tvRestrictedMessage.visibility = View.VISIBLE
+                            tvRestrictedMessage.text =
+                                getString(R.string.dm_request_pending_message)
+                            tvRestrictedMessage.gravity = Gravity.CENTER
+                        }
+                        return
                     }
                 }
             } else {
@@ -1426,6 +1518,37 @@ class ChatroomDetailFragment :
                 }
             }
         }
+    }
+
+    // handles tap to undo view in the adapter
+    private fun handleTapToUndo(
+        index: Int,
+        conversationViewData: ConversationViewData,
+        toShowTapToUndo: Boolean
+    ) {
+        val updatedConversation = conversationViewData.toBuilder()
+            .showTapToUndo(toShowTapToUndo)
+            .build()
+
+        chatroomDetailAdapter.update(index, updatedConversation)
+    }
+
+    // removes tap to undo view from the adapter
+    private fun removeTapToUndo() {
+        val conversationIndex =
+            chatroomDetailAdapter.items()
+                .indexOfLast { chatroomItem ->
+                    (chatroomItem is ConversationViewData && chatroomItem.state == STATE_DM_REJECTED)
+                }
+
+        val conversationViewData =
+            chatroomDetailAdapter[conversationIndex] as ConversationViewData
+
+        handleTapToUndo(
+            conversationIndex,
+            conversationViewData,
+            false
+        )
     }
 
     private fun hideAllChatBoxViews() {
@@ -1665,11 +1788,26 @@ class ChatroomDetailFragment :
                         && viewModel.getChatroomViewData()?.chatRequestState == null
                     ) {
                         viewModel.dmRequestText = inputText
+                        if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
+                            ViewUtils.showShortToast(
+                                requireContext(),
+                                getString(
+                                    R.string.request_cant_be_more_than_s_characters,
+                                    DM_SEND_REQUEST_TEXT_LIMIT.toString()
+                                )
+                            )
+                            return@setOnClickListener
+                        }
                         // if the DM is M2M then show dialog otherwise send dm request directly
                         if (viewModel.getChatroomViewData()?.isPrivateMember == true) {
                             SendDMRequestDialogFragment.showDialog(childFragmentManager)
                         } else {
-                            viewModel.sendDMRequest(viewModel.getChatroomViewData()?.id.toString(), 1)
+                            viewModel.sendDMRequest(
+                                viewModel.getChatroomViewData()?.id.toString(),
+                                ChatRequestState.ACCEPTED.value,
+                                true
+                            )
+                            clearEditTextAnswer()
                         }
                         return@setOnClickListener
                     }
@@ -2435,6 +2573,8 @@ class ChatroomDetailFragment :
         observeTopic()
         observeContentDownloadSettings()
         observeMemberState()
+        observeMemberBlocked()
+        observeErrorMessage()
         observeDMStatus()
         observeErrors()
     }
@@ -2691,10 +2831,19 @@ class ChatroomDetailFragment :
                     //Observe for new posted conversation by the user. This is a temporary conversation
                     if (!isConversationAlreadyPresent(response.conversation.id)) {
                         val indexToAdd = getIndexOfAnyGraphicItem()
+                        var index = indexToAdd
                         if (indexToAdd.isValidIndex()) {
                             chatroomDetailAdapter.add(indexToAdd, response.conversation)
                         } else {
                             chatroomDetailAdapter.add(response.conversation)
+                            index = chatroomDetailAdapter.itemCount - 1
+                        }
+                        if (response.conversation.state == STATE_DM_REJECTED) {
+                            handleTapToUndo(
+                                index,
+                                response.conversation,
+                                true
+                            )
                         }
                         scrollToPosition(SCROLL_DOWN)
                     }
@@ -3122,6 +3271,38 @@ class ChatroomDetailFragment :
         }
     }
 
+    // observes memberBlocked live data
+    private fun observeMemberBlocked() {
+        viewModel.memberBlocked.observe(viewLifecycleOwner) { memberBlocked ->
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                viewModel.showDM.value,
+                memberBlocked
+            )
+            val message = if (memberBlocked) {
+                getString(R.string.member_blocked)
+            } else {
+                getString(R.string.member_unblocked)
+            }
+            ViewUtils.showShortToast(requireContext(), message)
+        }
+    }
+
+    // observes error messages
+    private fun observeErrorMessage() {
+        viewModel.errorMessageFlow.onEach { response ->
+            when (response) {
+                is ChatroomDetailViewModel.ErrorMessageEvent.SendDMRequest -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.BlockMember -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+            }
+        }.observeInLifecycle(viewLifecycleOwner)
+    }
+
     // observes the showDM LiveData
     private fun observeDMStatus() {
         viewModel.showDM.observe(viewLifecycleOwner) { showDM ->
@@ -3163,18 +3344,21 @@ class ChatroomDetailFragment :
                 is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
+
                 is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
                     ViewUtils.showShortToast(
                         context,
                         context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
+
                 is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
                     ViewUtils.showShortToast(
                         context,
                         context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
+
                 is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
                     ViewUtils.showLongSnack(binding.root, response.errorMessage)
                 }
@@ -3244,6 +3428,7 @@ class ChatroomDetailFragment :
                         }
                     }
                 }
+
                 MEDIA_RESULT_PICKED -> {
                     onMediaPicked(result)
                 }
@@ -3538,6 +3723,7 @@ class ChatroomDetailFragment :
                                 //todo
 //                                editAnnouncementMessageClicked(it)
                             }
+
                             else -> {
                                 setChatInputBoxViewType(CHAT_BOX_REPLY)
                                 setEditMessageViewChatRoomData(it)
@@ -5296,6 +5482,38 @@ class ChatroomDetailFragment :
     override fun sendDMRequest() {
         viewModel.sendDMRequest(chatroomId, ChatRequestState.INITIATED.value)
         clearEditTextAnswer()
+    }
+
+    // approves dm request when the user accepts DM request
+    override fun approveDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.ACCEPTED.value)
+    }
+
+    // rejects dm request when the user rejects DM request
+    override fun rejectDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED.value)
+    }
+
+    // rejects dm request and reports the user when the user rejects DM request
+    override fun reportAndRejectDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED.value)
+        performReportAbuse()
+    }
+
+    override fun blockMember(index: Int, state: Int) {
+        val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
+        val updatedConversationViewData = conversationViewData.toBuilder()
+            .showTapToUndo(false)
+            .build()
+        chatroomDetailAdapter.update(index, updatedConversationViewData)
+        invalidateActionsMenu()
+        viewModel.blockMember(
+            chatroomId,
+            state
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

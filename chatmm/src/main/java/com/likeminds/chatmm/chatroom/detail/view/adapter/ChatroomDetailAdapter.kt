@@ -234,4 +234,6 @@ interface ChatroomDetailAdapterListener {
         reaction: String?,
         position: Int,
     )
+
+    fun blockMember(index: Int, state: Int) {}
 }

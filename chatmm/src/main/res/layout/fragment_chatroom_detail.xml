@@ -158,8 +158,68 @@
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
-            tools:visibility="visible"
-            tools:text="@string/send_a_dm_request_to_s" />
+            tools:text="@string/send_a_dm_request_to_s"
+            tools:visibility="visible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_dm_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp">
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_dm_request_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:lineHeight="20sp"
+                    android:text="@string/dm_request_message"
+                    android:textColor="#990F1E3D"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_approve_dm_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:drawablePadding="28dp"
+                    android:foreground="?selectableItemBackground"
+                    android:lineHeight="20sp"
+                    android:paddingVertical="16dp"
+                    android:text="@string/approve"
+                    android:textSize="14sp"
+                    app:drawableLeftCompat="@drawable/ic_thumbs_up"
+                    app:drawableType="special"
+                    app:layout_constraintTop_toBottomOf="@id/tv_dm_request_message"
+                    app:textType="special" />
+
+                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    android:id="@+id/tv_reject_dm_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:drawablePadding="28dp"
+                    android:foreground="?selectableItemBackground"
+                    android:lineHeight="20sp"
+                    android:paddingVertical="16dp"
+                    android:text="@string/reject"
+                    android:textSize="14sp"
+                    app:drawableLeftCompat="@drawable/ic_block"
+                    app:drawableType="special"
+                    app:layout_constraintTop_toBottomOf="@id/tv_approve_dm_request"
+                    app:textType="special" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
         <com.likeminds.chatmm.branding.customview.LikeMindsFAB
             android:id="@+id/fab_scroll_bottom"
@@ -235,10 +295,10 @@
             android:textColor="@color/turquoise"
             android:textSize="13sp"
             android:visibility="gone"
-            app:textType="special"
             app:fontType="regular"
             app:layout_constraintLeft_toRightOf="@+id/member_image"
             app:layout_constraintTop_toTopOf="@id/view_top_background"
+            app:textType="special"
             tools:text="Abhishek"
             tools:visibility="visible" />
 
