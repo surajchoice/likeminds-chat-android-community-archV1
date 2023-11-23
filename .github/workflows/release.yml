@@ -27,9 +27,9 @@ jobs:
 
           # Get the current version from root-dependencies.gradle
           export current_version=$(
-            grep 'versions.sdk_version_major' root-dependencies.gradle | awk -F "'" '{print $2}' | tr -d '\n'; \
-            grep 'versions.sdk_version_minor' root-dependencies.gradle | awk -F "'" '{print "."$2}' | tr -d '\n'; \
-            grep 'versions.sdk_version_patch' root-dependencies.gradle | awk -F "'" '{print "."$2}')
+            grep 'versions.app_version_major' root-dependencies.gradle | awk -F "'" '{print $2}' | tr -d '\n'; \
+            grep 'versions.app_version_minor' root-dependencies.gradle | awk -F "'" '{print "."$2}' | tr -d '\n'; \
+            grep 'versions.app_version_patch' root-dependencies.gradle | awk -F "'" '{print "."$2}')
 
           if [[ "$previous_version" != "v$current_version" ]]; then
             echo "Version has changed from $previous_version to v$current_version."
@@ -46,9 +46,9 @@ jobs:
 
           # Push a Git tag with the new version
           export current_version=$(
-            grep 'versions.sdk_version_major' root-dependencies.gradle | awk -F "'" '{print $2}' | tr -d '\n'; \
-            grep 'versions.sdk_version_minor' root-dependencies.gradle | awk -F "'" '{print "."$2}' | tr -d '\n'; \
-            grep 'versions.sdk_version_patch' root-dependencies.gradle | awk -F "'" '{print "."$2}')
+            grep 'versions.app_version_major' root-dependencies.gradle | awk -F "'" '{print $2}' | tr -d '\n'; \
+            grep 'versions.app_version_minor' root-dependencies.gradle | awk -F "'" '{print "."$2}' | tr -d '\n'; \
+            grep 'versions.app_version_patch' root-dependencies.gradle | awk -F "'" '{print "."$2}')
           git tag -a "v$current_version" -m "Version $current_version"
           git push origin "v$current_version"
         env:
