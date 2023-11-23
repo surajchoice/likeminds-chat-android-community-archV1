@@ -41,6 +41,7 @@ jobs:
       if: failure()
       with:
         name: lint-intermediate-report
+        retention-days: 90
         path: |
           /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
           /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
@@ -49,6 +50,7 @@ jobs:
       if: always()
       with:
         name: lint-results-html
+        retention-days: 90
         path: |
           /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/reports/lint-results-debug.html
           /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/reports/lint-results-debug.html
