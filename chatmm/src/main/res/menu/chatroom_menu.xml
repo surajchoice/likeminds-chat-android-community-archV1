@@ -58,4 +58,9 @@
         android:title="@string/share_chatroom"
         android:visible="false"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/block_unblock"
+        android:title="@string/block"
+        android:visible="false" />
 </menu>

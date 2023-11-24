@@ -90,7 +90,6 @@
                     android:layout_height="42dp"
                     android:layout_marginTop="16dp"
                     android:background="?android:attr/selectableItemBackground"
-                    android:enabled="false"
                     android:fontFamily="@font/roboto_medium"
                     android:letterSpacing="0.04"
                     android:paddingVertical="12dp"

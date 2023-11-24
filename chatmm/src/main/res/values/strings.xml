@@ -283,4 +283,6 @@
     <string name="request_cant_be_more_than_s_characters">Request can\'t be more than %s characters</string>
     <string name="you_cannot_send_message_to_rejected_connection">You cannot send message to rejected connection. Approve to send a message.</string>
     <string name="tap_to_undo">Tap to undo.</string>
+    <string name="block">Block</string>
+    <string name="this_chatroom_doesnt_exist">This chatroom doesn\'t exist</string>
 </resources>

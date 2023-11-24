@@ -58,7 +58,9 @@ class ConversationViewData private constructor(
             STATE_DM_CM_BECOMES_MEMBER_DISABLE,
             STATE_DM_MEMBER_BECOMES_CM,
             STATE_DM_CM_BECOMES_MEMBER_ENABLE,
-            STATE_DM_MEMBER_BECOMES_CM_ENABLE -> {
+            STATE_DM_MEMBER_BECOMES_CM_ENABLE,
+            STATE_DM_ACCEPTED,
+            STATE_DM_REJECTED -> {
                 ITEM_CONVERSATION_ACTION
             }
 
