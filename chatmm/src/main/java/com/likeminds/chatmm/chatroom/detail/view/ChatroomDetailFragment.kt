@@ -111,6 +111,8 @@ import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
+import com.likeminds.likemindschat.chatroom.model.ChatRequestState
+import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -1337,7 +1339,7 @@ class ChatroomDetailFragment :
                     return
                 }
                 when (viewModel.getChatroomViewData()?.chatRequestState) {
-                    ChatRequestState.NOTHING.value -> {
+                    ChatRequestState.NOTHING -> {
                         // dm is not initiated and request is not send, showing message to send DM request
                         tvSendDmRequestToMember.show()
                         cvDmRequest.hide()
@@ -1351,7 +1353,7 @@ class ChatroomDetailFragment :
                         return
                     }
 
-                    ChatRequestState.INITIATED.value -> {
+                    ChatRequestState.INITIATED -> {
                         // chatroom request is sent, i.e., chatroom is initiated
                         tvSendDmRequestToMember.hide()
                         if (viewModel.getLoggedInMemberId() !=
@@ -1371,13 +1373,13 @@ class ChatroomDetailFragment :
                         return
                     }
 
-                    ChatRequestState.ACCEPTED.value -> {
+                    ChatRequestState.ACCEPTED -> {
                         // DM is accepted so hiding the DM request view
                         cvDmRequest.hide()
                         tvSendDmRequestToMember.hide()
                     }
 
-                    ChatRequestState.REJECTED.value -> {
+                    ChatRequestState.REJECTED -> {
                         // DM is rejected
                         tvSendDmRequestToMember.hide()
                         cvDmRequest.hide()
@@ -1414,6 +1416,10 @@ class ChatroomDetailFragment :
                                 getString(R.string.dm_request_pending_message)
                             tvRestrictedMessage.gravity = Gravity.CENTER
                         }
+                        return
+                    }
+
+                    else -> {
                         return
                     }
                 }
@@ -1804,7 +1810,7 @@ class ChatroomDetailFragment :
                         } else {
                             viewModel.sendDMRequest(
                                 viewModel.getChatroomViewData()?.id.toString(),
-                                ChatRequestState.ACCEPTED.value,
+                                ChatRequestState.ACCEPTED,
                                 true
                             )
                             clearEditTextAnswer()
@@ -2577,6 +2583,8 @@ class ChatroomDetailFragment :
         observeErrorMessage()
         observeDMStatus()
         observeErrors()
+        observeChatRequestState()
+        observeDMInitiatedForCM()
     }
 
     /**
@@ -3364,6 +3372,25 @@ class ChatroomDetailFragment :
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    // observes updatedChatRequestState live data
+    private fun observeChatRequestState() {
+        viewModel.updatedChatRequestState.observe(viewLifecycleOwner) {
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                viewModel.showDM.value
+            )
+        }
+    }
+
+    // observes dmInitiatedForCM live data
+    private fun observeDMInitiatedForCM() {
+        viewModel.dmInitiatedForCM.observe(viewLifecycleOwner) { dmInitiatedForCM ->
+            if (dmInitiatedForCM) {
+                syncChatroom()
+            }
+        }
     }
 
     /**--------------------------------
@@ -5480,30 +5507,30 @@ class ChatroomDetailFragment :
 
     // sends dm request when the user clicks on confirm
     override fun sendDMRequest() {
-        viewModel.sendDMRequest(chatroomId, ChatRequestState.INITIATED.value)
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.INITIATED)
         clearEditTextAnswer()
     }
 
     // approves dm request when the user accepts DM request
     override fun approveDMRequest() {
         binding.cvDmRequest.hide()
-        viewModel.sendDMRequest(chatroomId, ChatRequestState.ACCEPTED.value)
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.ACCEPTED)
     }
 
     // rejects dm request when the user rejects DM request
     override fun rejectDMRequest() {
         binding.cvDmRequest.hide()
-        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED.value)
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED)
     }
 
     // rejects dm request and reports the user when the user rejects DM request
     override fun reportAndRejectDMRequest() {
         binding.cvDmRequest.hide()
-        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED.value)
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED)
         performReportAbuse()
     }
 
-    override fun blockMember(index: Int, state: Int) {
+    override fun blockMember(index: Int, state: MemberBlockState) {
         val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
         val updatedConversationViewData = conversationViewData.toBuilder()
             .showTapToUndo(false)

@@ -13,6 +13,7 @@ import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.community.model.*
 import com.likeminds.likemindschat.dm.model.CheckDMLimitRequest
 import com.likeminds.likemindschat.dm.model.CreateDMChatroomRequest
+import com.likeminds.likemindschat.user.model.MemberRole
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
@@ -23,7 +24,6 @@ class DMAllMemberViewModel @Inject constructor(
 
     companion object {
         const val PAGE_SIZE = 20
-        const val SEARCH_TYPE_NAME = "name"
     }
 
     private val lmChatClient = LMChatClient.getInstance()
@@ -57,8 +57,8 @@ class DMAllMemberViewModel @Inject constructor(
                 DMAllMemberShowList.ALL_MEMBERS.value -> {
                     requestBuilder.filterMemberRoles(
                         listOf(
-                            MemberRoles.ADMIN.value,
-                            MemberRoles.MEMBER.value
+                            MemberRole.ADMIN,
+                            MemberRole.MEMBER
                         )
                     ).build()
                 }
@@ -66,7 +66,7 @@ class DMAllMemberViewModel @Inject constructor(
                 DMAllMemberShowList.ONLY_CMS.value -> {
                     requestBuilder.filterMemberRoles(
                         listOf(
-                            MemberRoles.ADMIN.value
+                            MemberRole.ADMIN
                         )
                     ).build()
                 }
@@ -74,8 +74,8 @@ class DMAllMemberViewModel @Inject constructor(
                 else -> {
                     requestBuilder.filterMemberRoles(
                         listOf(
-                            MemberRoles.ADMIN.value,
-                            MemberRoles.MEMBER.value
+                            MemberRole.ADMIN,
+                            MemberRole.MEMBER
                         )
                     ).build()
                 }
@@ -120,7 +120,7 @@ class DMAllMemberViewModel @Inject constructor(
                 .page(page)
                 .pageSize(PAGE_SIZE)
                 .search(searchKeyword)
-                .searchType(SEARCH_TYPE_NAME)
+                .searchType(MemberSearchType.NAME)
 
             val request = when (showList) {
                 DMAllMemberShowList.ALL_MEMBERS.value -> {
@@ -202,7 +202,7 @@ class DMAllMemberViewModel @Inject constructor(
                 val data = response.data
 
                 data?.let {
-                    val chatroomLocal = it.chatroomLocal
+                    val chatroomLocal = it.chatroom
 
                     _dmChatroomId.postValue(chatroomLocal.id)
                 }

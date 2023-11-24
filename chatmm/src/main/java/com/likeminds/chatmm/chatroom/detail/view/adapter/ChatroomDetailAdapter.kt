@@ -13,6 +13,7 @@ import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
 import com.likeminds.chatmm.utils.customview.*
 import com.likeminds.chatmm.utils.model.*
+import com.likeminds.likemindschat.user.model.MemberBlockState
 import java.util.*
 
 class ChatroomDetailAdapter constructor(
@@ -235,5 +236,5 @@ interface ChatroomDetailAdapterListener {
         position: Int,
     )
 
-    fun blockMember(index: Int, state: Int) {}
+    fun blockMember(index: Int, state: MemberBlockState) {}
 }

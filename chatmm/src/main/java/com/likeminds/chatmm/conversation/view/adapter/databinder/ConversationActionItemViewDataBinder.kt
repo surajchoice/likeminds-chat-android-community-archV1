@@ -15,13 +15,13 @@ import com.likeminds.chatmm.chatroom.detail.model.TYPE_DIRECT_MESSAGE
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.databinding.ItemConversationActionBinding
-import com.likeminds.chatmm.member.model.MemberBlockState
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingClickableSpan
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_ACTION
+import com.likeminds.likemindschat.user.model.MemberBlockState
 
 class ConversationActionItemViewDataBinder constructor(
     private val userPreferences: UserPreferences,
@@ -107,7 +107,7 @@ class ConversationActionItemViewDataBinder constructor(
                         override fun onClick(widget: View) {
                             chatroomDetailAdapterListener?.blockMember(
                                 position,
-                                MemberBlockState.MEMBER_UNBLOCKED.value
+                                MemberBlockState.MEMBER_UNBLOCKED
                             )
                         }
                     }

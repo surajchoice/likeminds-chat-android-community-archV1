@@ -13,6 +13,7 @@ import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentDmFeedBinding
+import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.dm.view.adapter.DMAdapter
 import com.likeminds.chatmm.dm.view.adapter.DMAdapterListener
 import com.likeminds.chatmm.dm.viewmodel.DMFeedViewModel
@@ -54,7 +55,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
         const val TAG = "DMFeedFragment"
         const val QUERY_SHOW_LIST = "show_list"
 
-        fun getInstance(dmMeta: CheckDMTabResponse?): DMFeedFragment {
+        fun getInstance(dmMeta: CheckDMTabViewData): DMFeedFragment {
             val fragment = DMFeedFragment()
             val bundle = Bundle()
             bundle.putParcelable(DM_META_EXTRAS, dmMeta)
