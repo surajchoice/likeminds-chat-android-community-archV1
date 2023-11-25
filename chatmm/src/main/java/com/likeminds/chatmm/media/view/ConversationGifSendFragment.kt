@@ -16,9 +16,7 @@ import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListen
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.databinding.FragmentConversationGifSendBinding
-import com.likeminds.chatmm.media.model.GIF
-import com.likeminds.chatmm.media.model.MediaExtras
-import com.likeminds.chatmm.media.model.SingleUriData
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ProgressHelper
@@ -172,8 +170,8 @@ class ConversationGifSendFragment :
                     override fun onLoadFailed(
                         e: GlideException?,
                         model: Any?,
-                        target: Target<GifDrawable>?,
-                        isFirstResource: Boolean,
+                        target: Target<GifDrawable>,
+                        isFirstResource: Boolean
                     ): Boolean {
                         initSendClick()
                         return true
@@ -181,10 +179,10 @@ class ConversationGifSendFragment :
 
                     override fun onResourceReady(
                         resource: GifDrawable,
-                        model: Any?,
+                        model: Any,
                         target: Target<GifDrawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
                     ): Boolean {
                         val thumbnailUri = FileUtil.getUriFromBitmapWithRandomName(
                             requireContext(), resource.firstFrame, isPNGFormat = true

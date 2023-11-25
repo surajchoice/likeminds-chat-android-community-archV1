@@ -228,7 +228,7 @@ class VoiceNoteUtils(
                 .setDuration(500)
                 .setInterpolator(DecelerateInterpolator())
                 .setListener(object : AnimationListener() {
-                    override fun onAnimationStart(animation: Animator?) {
+                    override fun onAnimationStart(animation: Animator) {
                         val displacement = -dp * 40
 
                         inputBox.ivBin.translationX = displacement
@@ -249,20 +249,20 @@ class VoiceNoteUtils(
                             .setDuration(350)
                             .setInterpolator(DecelerateInterpolator())
                             .setListener(object : AnimationListener() {
-                                override fun onAnimationStart(animation: Animator?) {
+                                override fun onAnimationStart(animation: Animator) {
                                     inputBox.groupBin.show()
                                 }
                             }).start()
                     }
 
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         ivMicRecording.animate()
                             .translationY(0f)
                             .scaleX(1f)
                             .scaleY(1f)
                             .setDuration(350)
                             .setListener(object : AnimationListener() {
-                                override fun onAnimationEnd(animation: Animator?) {
+                                override fun onAnimationEnd(animation: Animator) {
                                     ivMicRecording.apply {
                                         rotation = 0f
                                         hide()
@@ -293,7 +293,7 @@ class VoiceNoteUtils(
                                         .setStartDelay(250)
                                         .setInterpolator(DecelerateInterpolator())
                                         .setListener(object : AnimationListener() {
-                                            override fun onAnimationEnd(animation: Animator?) {
+                                            override fun onAnimationEnd(animation: Animator) {
                                                 Handler(Looper.getMainLooper()).postDelayed({
                                                     inputBox.groupEditText.show()
                                                 }, 400)

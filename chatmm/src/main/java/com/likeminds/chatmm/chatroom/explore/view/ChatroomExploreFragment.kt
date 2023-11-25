@@ -58,10 +58,11 @@ class ChatroomExploreFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.extras?.let { bundle ->
-                    val chatroomDetailResultExtras =
-                        bundle.getParcelable<ChatroomDetailResultExtras>(
-                            ARG_CHATROOM_DETAIL_RESULT_EXTRAS
-                        )
+                    val chatroomDetailResultExtras = ExtrasUtil.getParcelable(
+                        bundle,
+                        ARG_CHATROOM_DETAIL_RESULT_EXTRAS,
+                        ChatroomDetailResultExtras::class.java
+                    )
                     if (chatroomDetailResultExtras != null) {
                         if (chatroomDetailResultExtras.isChatroomDeleted == true) {
                             deleteChatroom(chatroomDetailResultExtras.chatroomId)

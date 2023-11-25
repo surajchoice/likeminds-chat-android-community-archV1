@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils.currentFragment
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -63,7 +64,11 @@ class MediaActivity : BaseAppCompatActivity() {
         if (intent != null) {
             val bundle = intent.extras
             if (bundle != null) {
-                val mediaExtras = bundle.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
+                val mediaExtras = ExtrasUtil.getParcelable(
+                    bundle,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 if (mediaExtras != null) {
                     when (mediaExtras.mediaScreenType) {
                         MEDIA_VERTICAL_LIST_SCREEN -> {

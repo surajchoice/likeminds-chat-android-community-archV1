@@ -11,7 +11,6 @@ import com.likeminds.chatmm.media.customviews.interfaces.CanvasListener
 import com.likeminds.chatmm.media.customviews.interfaces.OnRotationGestureListener
 import com.likeminds.chatmm.utils.ViewUtils
 import java.util.*
-import kotlin.math.floor
 
 internal class CanvasView : View, OnRotationGestureListener {
 
@@ -272,19 +271,19 @@ internal class CanvasView : View, OnRotationGestureListener {
         val textX = this.textX
         val textY = this.textY
 
-        val paintForMeasureText = Paint()
+//        val paintForMeasureText = Paint()
 
         // Line break automatically
-        val textLength = paintForMeasureText.measureText(text)
-        val lengthOfChar = textLength / text.length.toFloat()
-        val restWidth = canvas.width - textX // text-align : right
-        val numChars =
-            if (lengthOfChar <= 0) 1 else floor((restWidth / lengthOfChar).toDouble())
-                .toInt() // The number of characters at 1 line
-        val modNumChars = if (numChars < 1) 1 else numChars
-        var y = textY
-        var i = 0
-        val len = text.length
+//        val textLength = paintForMeasureText.measureText(text)
+//        val lengthOfChar = textLength / text.length.toFloat()
+//        val restWidth = canvas.width - textX // text-align : right
+//        val numChars =
+//            if (lengthOfChar <= 0) 1 else floor((restWidth / lengthOfChar).toDouble())
+//                .toInt() // The number of characters at 1 line
+//        val modNumChars = if (numChars < 1) 1 else numChars
+//        var y = textY
+//        var i = 0
+//        val len = text.length
         //canvas.translate(textX, textY)
         textPaint.style = Paint.Style.FILL
 
@@ -336,6 +335,7 @@ internal class CanvasView : View, OnRotationGestureListener {
 //                    Log.e("onActionDown", "false")
 //                }
 //            }
+            else -> {}
         }
     }
 
@@ -361,15 +361,15 @@ internal class CanvasView : View, OnRotationGestureListener {
                     startY = y
                 }
             }
+
+            else -> {}
         }
     }
 
     /**
      * This method defines processes on MotionEvent.ACTION_DOWN
-     *
-     * @param event This is argument of onTouchEvent method
      */
-    private fun onActionUp(event: MotionEvent) {
+    private fun onActionUp() {
         if (isDown) {
             startX = 0f
             startY = 0f
@@ -419,7 +419,7 @@ internal class CanvasView : View, OnRotationGestureListener {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> onActionDown(event)
             MotionEvent.ACTION_MOVE -> onActionMove(event)
-            MotionEvent.ACTION_UP -> onActionUp(event)
+            MotionEvent.ACTION_UP -> onActionUp()
         }
 
         this.invalidate()

@@ -192,7 +192,7 @@ object ViewUtils {
                         .setDuration(400)
                         .alpha(0.0f)
                         .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator?) {
+                            override fun onAnimationEnd(animation: Animator) {
                                 super.onAnimationEnd(animation)
                                 hide()
                             }
@@ -327,7 +327,7 @@ object ViewUtils {
         anim.interpolator = AccelerateDecelerateInterpolator()
         anim.duration = 300L
         anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 cb()
                 targetView.visibility = View.GONE

@@ -57,8 +57,11 @@ class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMembe
     override fun receiveExtras() {
         super.receiveExtras()
         val bundle = requireActivity().intent?.getBundleExtra("bundle")
-        extras = bundle?.getParcelable(DM_ALL_MEMBERS_EXTRAS)
-            ?: throw ErrorUtil.emptyExtrasException(TAG)
+        extras = ExtrasUtil.getParcelable(
+            bundle,
+            DM_ALL_MEMBERS_EXTRAS,
+            DMAllMemberExtras::class.java
+        ) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {
@@ -155,7 +158,7 @@ class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMembe
         val fragmentActivity = activity as AppCompatActivity?
         fragmentActivity?.setSupportActionBar(binding.toolbar)
 
-        val menuHost: MenuHost = requireActivity() as MenuHost
+        val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

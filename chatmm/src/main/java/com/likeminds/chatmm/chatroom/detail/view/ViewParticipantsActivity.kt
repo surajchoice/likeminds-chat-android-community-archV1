@@ -9,6 +9,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ViewParticipantsExtras
 import com.likeminds.chatmm.databinding.ActivityViewParticipantsBinding
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -57,7 +58,11 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
         val bundle = intent.getBundleExtra("bundle")
 
         if (bundle != null) {
-            viewParticipantsExtras = bundle.getParcelable(VIEW_PARTICIPANTS_EXTRAS)
+            viewParticipantsExtras = ExtrasUtil.getParcelable(
+                bundle,
+                VIEW_PARTICIPANTS_EXTRAS,
+                ViewParticipantsExtras::class.java
+            )
             val args = Bundle().apply {
                 putParcelable(VIEW_PARTICIPANTS_EXTRAS, viewParticipantsExtras)
             }

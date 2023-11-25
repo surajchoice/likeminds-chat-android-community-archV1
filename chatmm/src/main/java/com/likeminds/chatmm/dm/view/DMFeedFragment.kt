@@ -41,8 +41,11 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     private val dmAllMemberLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val resultExtras = result.data?.extras?.getParcelable<DMAllMemberResultExtras>(
+                val extras = result.data?.extras
+                val resultExtras = ExtrasUtil.getParcelable(
+                    extras,
                     DM_ALL_MEMBER_RESULT,
+                    DMAllMemberResultExtras::class.java
                 ) ?: return@registerForActivityResult
 
                 openDMChatroom(resultExtras.chatroomId)
@@ -68,6 +71,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun receiveExtras() {
         super.receiveExtras()
+
         dmMetaExtras =
             arguments?.getParcelable(DM_META_EXTRAS) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }

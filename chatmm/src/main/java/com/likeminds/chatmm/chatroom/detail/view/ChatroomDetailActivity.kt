@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -66,7 +67,11 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         val bundle = intent.getBundleExtra("bundle")
 
         if (bundle != null) {
-            chatroomDetailExtras = bundle.getParcelable(CHATROOM_DETAIL_EXTRAS)
+            chatroomDetailExtras = ExtrasUtil.getParcelable(
+                bundle,
+                CHATROOM_DETAIL_EXTRAS,
+                ChatroomDetailExtras::class.java
+            )
             val args = Bundle().apply {
                 putParcelable(CHATROOM_DETAIL_EXTRAS, chatroomDetailExtras)
             }

@@ -11,6 +11,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.databinding.DialogAddPollOptionBinding
 import com.likeminds.chatmm.polls.model.AddPollOptionExtras
 import com.likeminds.chatmm.polls.util.AddPollOptionListener
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils.fetchColor
 import com.likeminds.chatmm.utils.customview.BaseBottomSheetFragment
 
@@ -59,9 +60,11 @@ class AddPollOptionDialog :
 
     override fun receiveExtras() {
         super.receiveExtras()
-        val addPollOptionExtras =
-            arguments?.getParcelable(ARG_ADD_POLL_OPTION_EXTRAS) as? AddPollOptionExtras
-                ?: throw IllegalArgumentException("Calling activity must pass arguments")
+        val addPollOptionExtras = ExtrasUtil.getParcelable(
+            arguments,
+            ARG_ADD_POLL_OPTION_EXTRAS,
+            AddPollOptionExtras::class.java
+        ) ?: throw IllegalArgumentException("Calling activity must pass arguments")
         this.addPollOptionExtras = addPollOptionExtras
     }
 

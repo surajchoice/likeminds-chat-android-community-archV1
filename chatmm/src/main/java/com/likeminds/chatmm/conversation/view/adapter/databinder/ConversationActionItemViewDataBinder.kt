@@ -65,7 +65,7 @@ class ConversationActionItemViewDataBinder constructor(
                     tvAction.context,
                     R.color.white
                 )
-            ) { tag ->
+            ) { _ ->
                 // todo: onMemberClick()
             }
 
@@ -125,7 +125,9 @@ class ConversationActionItemViewDataBinder constructor(
                 }
             }
 
-            LinkifyCompat.addLinks(tvAction, Linkify.ALL)
+            val linkifyLinks =
+                (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+            LinkifyCompat.addLinks(tvAction, linkifyLinks)
             tvAction.setLinkTextColor(
                 ContextCompat.getColor(
                     tvAction.context,

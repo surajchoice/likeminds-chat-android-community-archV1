@@ -89,10 +89,16 @@ class CreateConversationPollDialog :
 
     override fun receiveExtras() {
         super.receiveExtras()
-        chatroom = arguments?.getParcelable(ARG_CHATROOM) as? ChatroomViewData
-            ?: throw emptyExtrasException(TAG)
-        chatroomExtras =
-            requireArguments().getParcelable(ARG_CHATROOM_EXTRAS) ?: throw emptyExtrasException(TAG)
+        chatroom = ExtrasUtil.getParcelable(
+            arguments,
+            ARG_CHATROOM,
+            ChatroomViewData::class.java
+        ) ?: throw emptyExtrasException(TAG)
+        chatroomExtras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            ARG_CHATROOM_EXTRAS,
+            ChatroomDetailExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {

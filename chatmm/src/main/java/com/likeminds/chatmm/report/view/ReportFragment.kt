@@ -12,9 +12,8 @@ import com.likeminds.chatmm.report.model.*
 import com.likeminds.chatmm.report.view.adapter.ReportAdapter
 import com.likeminds.chatmm.report.view.adapter.ReportAdapterListener
 import com.likeminds.chatmm.report.viewmodel.ReportViewModel
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.SDKPreferences
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -40,18 +39,20 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
 
     companion object {
         const val TAG = "ReportFragment"
-        const val REPORT_RESULT = "REPORT_RESULT"
     }
 
-    private lateinit var extras: ReportExtras
+    private lateinit var reportExtras: ReportExtras
     private lateinit var mAdapter: ReportAdapter
     private var tagSelected: ReportTagViewData? = null
 
     override fun receiveExtras() {
         super.receiveExtras()
-        extras = requireActivity().intent?.getBundleExtra("bundle")
-            ?.getParcelable(ReportActivity.REPORT_EXTRAS)
-            ?: throw emptyExtrasException(TAG)
+        val extras = requireActivity().intent.getBundleExtra("bundle")
+        reportExtras = ExtrasUtil.getParcelable(
+            extras,
+            ReportActivity.REPORT_EXTRAS,
+            ReportExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {
@@ -92,15 +93,16 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
         binding.apply {
             Log.d(SDKApplication.LOG_TAG, "Push Reports opened")
             //set headers and sub header as per report type
-            when (extras.type) {
+            when (reportExtras.type) {
                 REPORT_TYPE_MEMBER -> {
                     tvReportTitle.text = getString(R.string.report_s, "Member")
                     tvReportSubHeader.text = getString(R.string.report_sub_header, "member")
                     viewModel.sendMemberProfileReport(
-                        extras.uuid,
-                        extras.communityId
+                        reportExtras.uuid,
+                        reportExtras.communityId
                     )
                 }
+
                 REPORT_TYPE_CONVERSATION -> {
                     tvReportTitle.text = getString(R.string.report_s, "Message")
                     tvReportSubHeader.text = getString(R.string.report_sub_header, "message")
@@ -147,8 +149,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
                 //call post api
                 viewModel.postReport(
                     tagSelected?.id,
-                    extras.uuid,
-                    extras.conversationId,
+                    reportExtras.uuid,
+                    reportExtras.conversationId,
                     reason
                 )
             }
@@ -157,7 +159,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
 
     //get tags
     private fun getReportTags() {
-        viewModel.getReportTags(extras.type)
+        viewModel.getReportTags(reportExtras.type)
     }
 
     // observes live data
@@ -199,6 +201,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
                     requireActivity().setResult(Activity.RESULT_CANCELED)
                     requireActivity().finish()
                 }
+
                 is ReportViewModel.ErrorMessageEvent.PostReport -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                     requireActivity().setResult(Activity.RESULT_CANCELED)
@@ -210,22 +213,23 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
 
     //send report success event depending upon which type of the report is created
     private fun sendReportSuccessEvent() {
-        when (extras.type) {
+        when (reportExtras.type) {
             REPORT_TYPE_MEMBER -> {
                 viewModel.sendMemberProfileReportConfirmed(
-                    extras.communityId,
-                    extras.uuid,
+                    reportExtras.communityId,
+                    reportExtras.uuid,
                     tagSelected?.name
                 )
             }
+
             REPORT_TYPE_CONVERSATION -> {
                 viewModel.sendMessageReportedEvent(
-                    extras.conversationId,
+                    reportExtras.conversationId,
                     tagSelected?.name,
-                    extras.chatroomId,
-                    extras.communityId,
-                    extras.chatroomName,
-                    extras.conversationType
+                    reportExtras.chatroomId,
+                    reportExtras.communityId,
+                    reportExtras.chatroomName,
+                    reportExtras.conversationType
                 )
             }
         }

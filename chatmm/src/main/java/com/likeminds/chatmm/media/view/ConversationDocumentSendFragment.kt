@@ -25,9 +25,7 @@ import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -193,9 +191,12 @@ class ConversationDocumentSendFragment :
     //result callback for new document pick from custom gallery
     private val pickerLauncher = registerForActivityResult(StartActivityForResult()) { result ->
         if (result?.resultCode == Activity.RESULT_OK && result.data != null) {
-            val mediaPickerResult =
-                result.data?.extras?.getParcelable<MediaPickerResult>(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT)
-                    ?: return@registerForActivityResult
+            val extras = result.data?.extras
+            val mediaPickerResult = ExtrasUtil.getParcelable(
+                extras,
+                MediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                MediaPickerResult::class.java
+            ) ?: return@registerForActivityResult
             when (mediaPickerResult.mediaPickerResultType) {
                 MEDIA_RESULT_BROWSE -> {
                     val intent = AndroidUtils.getExternalDocumentPickerIntent(
@@ -203,6 +204,7 @@ class ConversationDocumentSendFragment :
                     )
                     browsePickerLauncher.launch(intent)
                 }
+
                 MEDIA_RESULT_PICKED -> {
                     val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
                         requireContext(), mediaPickerResult.medias

@@ -146,7 +146,9 @@ class DMChatroomViewDataBinder @Inject constructor(
                     true,
                     taggingColor
                 )
-                LinkifyCompat.addLinks(tvLastConversation, Linkify.ALL)
+                val linkifyLinks =
+                    (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+                LinkifyCompat.addLinks(tvLastConversation, linkifyLinks)
                 tvLastConversation.setLinkTextColor(LMBranding.getTextLinkColor())
                 tvLastConversation.movementMethod = LinkMovementMethod.getInstance()
                 return

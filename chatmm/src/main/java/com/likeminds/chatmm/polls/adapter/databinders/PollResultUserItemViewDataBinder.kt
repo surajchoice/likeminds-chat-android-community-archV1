@@ -108,7 +108,7 @@ internal class PollResultUserItemViewDataBinder constructor(
             val memberViewData =
                 binding.memberViewData ?: return@setOnClickListener
             if (memberViewData.customClickText != null) {
-                DialogUtil.showProfileNotExist(it.context, memberViewData.customClickText!!)
+                DialogUtil.showProfileNotExist(it.context, memberViewData.customClickText)
             } else {
                 adapterListener.showMemberProfile(
                     memberViewData,

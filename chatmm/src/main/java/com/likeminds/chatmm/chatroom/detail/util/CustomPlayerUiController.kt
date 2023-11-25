@@ -39,7 +39,7 @@ class CustomPlayerUiController(
         horizontalProgress = playerUi.findViewById(R.id.horizontal_progress)
 
         playPauseButton = playerUi.findViewById(R.id.iv_play_pause)
-        playPauseButton?.setOnClickListener { view ->
+        playPauseButton?.setOnClickListener { _ ->
             if (playerTracker.state == PlayerState.PLAYING) {
                 pauseVideo()
             } else {

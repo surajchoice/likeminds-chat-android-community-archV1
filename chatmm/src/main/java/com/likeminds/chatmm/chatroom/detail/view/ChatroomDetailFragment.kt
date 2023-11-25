@@ -33,7 +33,6 @@ import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
-import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
@@ -333,8 +332,12 @@ class ChatroomDetailFragment :
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val bundle = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    bundle,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -343,8 +346,12 @@ class ChatroomDetailFragment :
     private val documentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -353,8 +360,12 @@ class ChatroomDetailFragment :
     private val audioLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -446,7 +457,11 @@ class ChatroomDetailFragment :
             requireActivity().supportFragmentManager.popBackStack()
             return
         }
-        chatroomDetailExtras = requireArguments().getParcelable(CHATROOM_DETAIL_EXTRAS)!!
+        chatroomDetailExtras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            CHATROOM_DETAIL_EXTRAS,
+            ChatroomDetailExtras::class.java
+        ) ?: return
         isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
@@ -664,7 +679,7 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
+        val settings = GPHSettings(GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
@@ -2152,7 +2167,7 @@ class ChatroomDetailFragment :
 
     private fun fadeOutAnimatorListener(view: View): Animator.AnimatorListener {
         return object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 view.visibility = View.GONE
             }
@@ -3323,6 +3338,46 @@ class ChatroomDetailFragment :
                 is ChatroomDetailViewModel.ErrorMessageEvent.BlockMember -> {
                     ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.EditConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.FollowChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.LeaveSecretChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.PostConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.SetChatroomTopic -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
             }
         }.observeInLifecycle(viewLifecycleOwner)
     }
@@ -3385,6 +3440,9 @@ class ChatroomDetailFragment :
                 is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
                     ViewUtils.showLongSnack(binding.root, response.errorMessage)
                 }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.BlockMember -> TODO()
+                is ChatroomDetailViewModel.ErrorMessageEvent.SendDMRequest -> TODO()
             }
         }.observeInLifecycle(viewLifecycleOwner)
     }
@@ -3501,8 +3559,12 @@ class ChatroomDetailFragment :
     private var documentSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()
@@ -3552,8 +3614,12 @@ class ChatroomDetailFragment :
     private val audioSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()
@@ -3609,8 +3675,12 @@ class ChatroomDetailFragment :
     private var imageVideoSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()

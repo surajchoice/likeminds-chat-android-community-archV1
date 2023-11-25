@@ -334,7 +334,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             trimmedText,
             true,
             LMBranding.getTextLinkColor()
-        ) { tag ->
+        ) { _ ->
             // todo: onMemberClicked()
         }
 
@@ -416,7 +416,9 @@ object ChatroomConversationItemViewDataBinderUtil {
                 conversation?.isDeleted()
             )
         )
-        LinkifyCompat.addLinks(tvConversation, Linkify.ALL)
+        val linkifyLinks =
+            (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+        LinkifyCompat.addLinks(tvConversation, linkifyLinks)
         tvConversation.movementMethod = LMLinkMovementMethod { url ->
             if ((conversation != null || chatRoom != null) && adapterListener != null
                 && adapterListener.isSelectionEnabled()
@@ -1365,7 +1367,6 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun multipleItemSelectPollExactly(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,
@@ -1416,7 +1417,6 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun multipleItemSelectPollAtMax(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,
@@ -1463,7 +1463,6 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun multipleItemSelectPollAtLeast(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,

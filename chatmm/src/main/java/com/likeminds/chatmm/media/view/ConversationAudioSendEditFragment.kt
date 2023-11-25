@@ -4,9 +4,7 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,17 +20,13 @@ import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.databinding.FragmentConversationAudioEditSendBinding
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.media.util.LMMediaPlayer
+import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.handler
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.isDataSourceSet
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
-import com.likeminds.chatmm.media.util.MediaPlayerListener
-import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.DateUtil
-import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
@@ -240,6 +234,7 @@ class ConversationAudioSendEditFragment :
                     binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
                     inflateWave(selectedUri!!.uri, selectedUri!!.duration?.toLong() ?: 0L)
                 }
+
                 mediaPlayer?.isPlaying() == true -> {
                     mediaPlayer?.pause()
                     binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
@@ -247,6 +242,7 @@ class ConversationAudioSendEditFragment :
                         progressAnim.pause()
                     }
                 }
+
                 mediaPlayer?.isPlaying() == false -> {
                     mediaPlayer?.start()
                     binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
@@ -264,9 +260,12 @@ class ConversationAudioSendEditFragment :
     private val pickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result?.resultCode == Activity.RESULT_OK && result.data != null) {
-                val mediaPickerResult =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT)
-                        ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val mediaPickerResult = ExtrasUtil.getParcelable(
+                    extras,
+                    MediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                ) ?: return@registerForActivityResult
                 when (mediaPickerResult.mediaPickerResultType) {
                     MEDIA_RESULT_PICKED -> {
                         val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(

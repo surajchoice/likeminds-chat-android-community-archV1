@@ -9,6 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils.currentFragment
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.permissions.*
@@ -55,7 +56,11 @@ class MediaPickerActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_media_picker)
-        val extras = intent.extras?.getParcelable<MediaPickerExtras>(ARG_MEDIA_PICKER_EXTRAS)
+        val extras = ExtrasUtil.getParcelable(
+            intent.extras,
+            ARG_MEDIA_PICKER_EXTRAS,
+            MediaPickerExtras::class.java
+        )
         if (extras == null) {
             throw IllegalArgumentException("Arguments are missing")
         } else {

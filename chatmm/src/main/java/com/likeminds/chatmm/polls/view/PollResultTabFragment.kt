@@ -10,6 +10,7 @@ import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.adapter.PollResultTabFragmentAdapter
 import com.likeminds.chatmm.polls.adapter.PollResultTabFragmentInterface
 import com.likeminds.chatmm.polls.viewmodel.PollResultViewModel
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -47,7 +48,11 @@ class PollResultTabFragment :
             return
         }
 
-        extra = requireArguments().getParcelable(POLL_RESULT_TAB_EXTRA)!!
+        extra = ExtrasUtil.getParcelable(
+            requireArguments(),
+            POLL_RESULT_TAB_EXTRA,
+            PollResultTabExtra::class.java
+        ) ?: return
     }
 
     override fun setUpViews() {

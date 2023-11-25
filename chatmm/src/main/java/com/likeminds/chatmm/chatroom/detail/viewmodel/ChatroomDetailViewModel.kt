@@ -535,7 +535,7 @@ class ChatroomDetailViewModel @Inject constructor(
             fetchChatroomFromNetwork()
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
-            observeConversations(context, chatroomDetailExtras.chatroomId)
+            observeConversations(chatroomDetailExtras.chatroomId)
         }
     }
 
@@ -704,7 +704,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * Observe current chatroom conversations
      * @param chatroomId
      */
-    private fun observeConversations(context: Context, chatroomId: String) {
+    private fun observeConversations(chatroomId: String) {
         viewModelScope.launchMain {
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {

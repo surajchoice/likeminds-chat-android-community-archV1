@@ -320,13 +320,16 @@ class LMChatNotificationHandler {
                 if (unreadNewChatroomData != null) {
                     initChatroomGroupNotification(
                         mApplication, unreadNewChatroomData,
-                        title ?: "", subTitle ?: "", category, subcategory
+                        title,
+                        subTitle,
+                        category,
+                        subcategory
                     )
                 }
             }
             //chatroom notification -> for messages only
             Route.ROUTE_CHATROOM == routeHost -> {
-                getCommunityId(route)?.let { communityId ->
+                getCommunityId(route)?.let { _ ->
                     lmNotificationViewModel.fetchUnreadConversations() {
                         if (it != null) {
                             val conversations = it.filter { notificationData ->

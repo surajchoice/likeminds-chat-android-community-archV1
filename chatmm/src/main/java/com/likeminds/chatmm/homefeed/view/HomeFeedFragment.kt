@@ -31,14 +31,13 @@ import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
 import com.likeminds.chatmm.search.view.SearchActivity
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.observeInLifecycle
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
@@ -110,8 +109,12 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun receiveExtras() {
         super.receiveExtras()
-        extras = requireArguments().getParcelable(BUNDLE_HOME_FRAGMENT)
-            ?: throw emptyExtrasException(TAG)
+        extras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            BUNDLE_HOME_FRAGMENT,
+            HomeFeedExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
+
         isGuestUser = extras.isGuest ?: false
     }
 
@@ -182,6 +185,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 is HomeFeedViewModel.ErrorMessageEvent.GetChatroom -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
+
                 is HomeFeedViewModel.ErrorMessageEvent.GetExploreTabCount -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
