@@ -1,0 +1,220 @@
+package com.likeminds.chatmm.member.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.*
+import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
+import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
+import com.likeminds.chatmm.member.model.*
+import com.likeminds.chatmm.member.util.UserPreferences
+import com.likeminds.chatmm.utils.ViewDataConverter
+import com.likeminds.chatmm.utils.coroutine.launchIO
+import com.likeminds.chatmm.utils.model.ITEM_COMMUNITY_MEMBER
+import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.community.model.*
+import com.likeminds.likemindschat.dm.model.CheckDMLimitRequest
+import com.likeminds.likemindschat.dm.model.CreateDMChatroomRequest
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
+
+class CommunityMembersViewModel @Inject constructor(
+    private val userPreferences: UserPreferences
+) : ViewModel() {
+
+    companion object {
+        const val PAGE_SIZE = 20
+        const val SEARCH_TYPE_NAME = "name"
+    }
+
+    private val lmChatClient = LMChatClient.getInstance()
+
+    private val _membersResponse by lazy { MutableLiveData<Pair<List<MemberViewData>, Int>>() }
+    val membersResponse: LiveData<Pair<List<MemberViewData>, Int>> by lazy { _membersResponse }
+
+    private val _checkDMLimitResponse by lazy { MutableLiveData<Pair<CheckDMLimitViewData, String>>() }
+    val checkDMLimitResponse: LiveData<Pair<CheckDMLimitViewData, String>> by lazy { _checkDMLimitResponse }
+
+    private val _dmChatroomId by lazy { MutableLiveData<String>() }
+    val dmChatroomId: LiveData<String> by lazy { _dmChatroomId }
+
+    sealed class ErrorMessageEvent {
+        data class GetAllMembers(val errorMessage: String?) : ErrorMessageEvent()
+        data class SearchMembers(val errorMessage: String?) : ErrorMessageEvent()
+        data class CheckDMLimit(val errorMessage: String?) : ErrorMessageEvent()
+        data class CreateDMChatroom(val errorMessage: String?) : ErrorMessageEvent()
+    }
+
+    private val errorEventChannel by lazy { Channel<ErrorMessageEvent>(Channel.BUFFERED) }
+    val errorEventFlow by lazy { errorEventChannel.receiveAsFlow() }
+
+    //gets list of all community members
+    fun getAllMembers(showList: Int, page: Int) {
+        viewModelScope.launchIO {
+            val requestBuilder = GetAllMemberRequest.Builder()
+                .page(page)
+
+            val request = when (showList) {
+                CommunityMembersFilter.ALL_MEMBERS.value -> {
+                    requestBuilder.filterMemberRoles(
+                        listOf(
+                            MemberRoles.ADMIN.value,
+                            MemberRoles.MEMBER.value
+                        )
+                    ).build()
+                }
+
+                CommunityMembersFilter.ONLY_CMS.value -> {
+                    requestBuilder.filterMemberRoles(
+                        listOf(
+                            MemberRoles.ADMIN.value
+                        )
+                    ).build()
+                }
+
+                else -> {
+                    requestBuilder.filterMemberRoles(
+                        listOf(
+                            MemberRoles.ADMIN.value,
+                            MemberRoles.MEMBER.value
+                        )
+                    ).build()
+                }
+            }
+
+            val response = lmChatClient.getAllMember(request)
+
+            if (response.success) {
+                onCommunityMemberResponse(response.data)
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(LOG_TAG, "community/member error: $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.GetAllMembers(errorMessage))
+            }
+        }
+    }
+
+    //process response of getAllMembers
+    private fun onCommunityMemberResponse(data: GetAllMemberResponse?) {
+        if (data == null) return
+        val members = data.members
+        val totalOnlyMembers = data.totalOnlyMembers ?: 0
+        val loggedInMemberUUID = userPreferences.getUUID()
+
+        val filteredMembers = members.filterNot { member ->
+            member.sdkClientInfo?.uuid == loggedInMemberUUID
+        }
+
+        val membersViewData = filteredMembers.map {
+            ViewDataConverter.convertMember(it).toBuilder()
+                .dynamicViewType(ITEM_COMMUNITY_MEMBER)
+                .build()
+        }
+
+        _membersResponse.postValue(Pair(membersViewData, totalOnlyMembers))
+    }
+
+    //search member from community members
+    fun searchMembers(showList: Int, page: Int, searchKeyword: String) {
+        viewModelScope.launchIO {
+            val requestBuilder = SearchMembersRequest.Builder()
+                .page(page)
+                .pageSize(PAGE_SIZE)
+                .search(searchKeyword)
+                .searchType(SEARCH_TYPE_NAME)
+
+            val request = when (showList) {
+                CommunityMembersFilter.ALL_MEMBERS.value -> {
+                    requestBuilder.memberStates(listOf(STATE_ADMIN, STATE_MEMBER))
+                        .build()
+                }
+
+                CommunityMembersFilter.ONLY_CMS.value -> {
+                    requestBuilder.memberStates(listOf(STATE_ADMIN))
+                        .build()
+                }
+
+                else -> {
+                    requestBuilder.memberStates(listOf(STATE_ADMIN, STATE_MEMBER))
+                        .build()
+                }
+            }
+
+            val response = lmChatClient.searchMember(request)
+
+            if (response.success) {
+                onMemberSearched(response.data)
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(LOG_TAG, "community/member/search error: $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.SearchMembers(errorMessage))
+            }
+        }
+    }
+
+    //process response of searchMembers
+    private fun onMemberSearched(data: SearchMembersResponse?) {
+        if (data == null) return
+        val members = data.members
+        val totalOnlyMembers = data.members.size
+
+        val membersViewData = members.map {
+            ViewDataConverter.convertMember(it).toBuilder()
+                .dynamicViewType(ITEM_COMMUNITY_MEMBER)
+                .build()
+        }
+
+        _membersResponse.postValue(Pair(membersViewData, totalOnlyMembers))
+    }
+
+    //checks dm limit
+    fun checkDMLimit(uuid: String) {
+        viewModelScope.launchIO {
+            val request = CheckDMLimitRequest.Builder()
+                .uuid(uuid)
+                .build()
+
+            val response = lmChatClient.checkDMLimit(request)
+
+            if (response.success) {
+                val data = response.data
+                data?.let {
+                    val checkDMViewData = ViewDataConverter.convertCheckDMLimit(it)
+                    _checkDMLimitResponse.postValue(Pair(checkDMViewData, uuid))
+                }
+            } else {
+                val errorMessage = response.errorMessage
+                Log.e(LOG_TAG, "check/dm/limit failed -> $errorMessage")
+                errorEventChannel.send(ErrorMessageEvent.CheckDMLimit(errorMessage))
+            }
+        }
+    }
+
+    // creates a DM chatroom with the user
+    fun createDMChatroom(uuid: String) {
+        viewModelScope.launchIO {
+            val request = CreateDMChatroomRequest.Builder()
+                .uuid(uuid)
+                .build()
+
+            val response = lmChatClient.createDMChatroom(request)
+
+            if (response.success) {
+                val data = response.data
+
+                data?.let {
+                    val chatroomLocal = it.chatroomLocal
+
+                    _dmChatroomId.postValue(chatroomLocal.id)
+                }
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.CreateDMChatroom(response.errorMessage))
+            }
+        }
+    }
+
+    fun createDMAllMemberResult(chatroomId: String): CommunityMembersResultExtras {
+        return CommunityMembersResultExtras.Builder()
+            .chatroomId(chatroomId)
+            .build()
+    }
+}

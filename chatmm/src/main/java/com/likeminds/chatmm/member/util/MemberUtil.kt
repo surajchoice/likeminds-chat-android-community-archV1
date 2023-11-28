@@ -4,6 +4,7 @@ import com.likeminds.chatmm.member.model.MemberViewData
 
 object MemberUtil {
 
+    // gets the first name of the member to show
     fun getFirstNameToShow(
         userPreferences: UserPreferences,
         memberViewData: MemberViewData?
@@ -18,6 +19,7 @@ object MemberUtil {
         }
     }
 
+    // gets the name of the member to be displayed
     fun getMemberNameForDisplay(
         member: MemberViewData,
         currentMemberId: String

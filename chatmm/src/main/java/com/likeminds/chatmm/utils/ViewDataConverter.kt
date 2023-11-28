@@ -5,6 +5,7 @@ import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
+import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.MemberImageUtil
@@ -20,6 +21,7 @@ import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
+import com.likeminds.likemindschat.dm.model.CheckDMLimitResponse
 import com.likeminds.likemindschat.helper.model.GroupTag
 import com.likeminds.likemindschat.moderation.model.ReportTag
 import com.likeminds.likemindschat.notification.model.ChatroomNotificationData
@@ -923,5 +925,16 @@ object ViewDataConverter {
                 .isSelected(false)
                 .build()
         }
+    }
+
+    // converts dm limit response to view data model
+    fun convertCheckDMLimit(checkDMLimitResponse: CheckDMLimitResponse): CheckDMLimitViewData {
+        return CheckDMLimitViewData.Builder()
+            .isRequestDMLimitExceeded(checkDMLimitResponse.isRequestDMLimitExceeded)
+            .newRequestDMTimestamp(checkDMLimitResponse.newRequestDMTimestamp)
+            .numberInDuration(checkDMLimitResponse.userDMLimit?.numberInDuration)
+            .duration(checkDMLimitResponse.userDMLimit?.duration)
+            .chatroomId(checkDMLimitResponse.chatroomId)
+            .build()
     }
 }

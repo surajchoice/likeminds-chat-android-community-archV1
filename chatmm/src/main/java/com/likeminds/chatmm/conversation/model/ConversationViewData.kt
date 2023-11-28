@@ -53,11 +53,11 @@ class ConversationViewData private constructor(
             STATE_REMOVED_FROM_CHATROOM,
             STATE_ADD_MEMBERS,
             STATE_TOPIC,
-            DM_MEMBER_REMOVED_OR_LEFT,
-            DM_CM_BECOMES_MEMBER_DISABLE,
-            DM_MEMBER_BECOMES_CM,
-            DM_CM_BECOMES_MEMBER_ENABLE,
-            DM_MEMBER_BECOMES_CM_ENABLE -> {
+            STATE_DM_MEMBER_REMOVED_OR_LEFT,
+            STATE_DM_CM_BECOMES_MEMBER_DISABLE,
+            STATE_DM_MEMBER_BECOMES_CM,
+            STATE_DM_CM_BECOMES_MEMBER_ENABLE,
+            STATE_DM_MEMBER_BECOMES_CM_ENABLE -> {
                 ITEM_CONVERSATION_ACTION
             }
             STATE_POLL -> {

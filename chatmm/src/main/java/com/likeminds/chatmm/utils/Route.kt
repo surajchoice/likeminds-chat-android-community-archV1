@@ -21,6 +21,7 @@ object Route {
     const val ROUTE_COMMUNITY_FEED = "community_feed"
     const val ROUTE_POLL_CHATROOM = "poll_chatroom"
     const val ROUTE_SYNC = "sync"
+    private const val ROUTE_DIRECT_MESSAGE = "direct_messages"
 
     private const val DEEP_LINK_CHATROOM = "collabcard"
     private const val DEEP_LINK_SCHEME = "likeminds"
@@ -306,5 +307,16 @@ object Route {
         val chatroomId = routeUri.getQueryParameter("chatroom_id")
         val pollEnd = routeUri.getBooleanQueryParameter("poll_end", false)
         return Pair(chatroomId, pollEnd)
+    }
+
+    // create route for direct messages
+    // route://direct_messages?chatroom_id=<>&community_id=<>
+    fun createDirectMessageRoute(chatroomId: String): String {
+        return Uri.Builder()
+            .scheme(ROUTE_SCHEME)
+            .authority(ROUTE_DIRECT_MESSAGE)
+            .appendQueryParameter("chatroom_id", chatroomId)
+            .build()
+            .toString()
     }
 }

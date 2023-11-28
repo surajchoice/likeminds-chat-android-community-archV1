@@ -4,12 +4,16 @@ import android.app.Application
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponentModule
+import com.likeminds.chatmm.di.dm.DMComponent
+import com.likeminds.chatmm.di.dm.DMComponentModule
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.explore.ExploreComponentModule
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponentModule
 import com.likeminds.chatmm.di.media.MediaComponent
 import com.likeminds.chatmm.di.media.MediaComponentModule
+import com.likeminds.chatmm.di.member.MemberComponent
+import com.likeminds.chatmm.di.member.MemberComponentModule
 import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.polls.PollsComponentModule
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
@@ -33,7 +37,9 @@ import javax.inject.Singleton
         MediaComponentModule::class,
         PollsComponentModule::class,
         ReactionsComponentModule::class,
-        ReportComponentModule::class
+        ReportComponentModule::class,
+        DMComponentModule::class,
+        MemberComponentModule::class
     ]
 )
 interface LikeMindsChatComponent {
@@ -48,6 +54,8 @@ interface LikeMindsChatComponent {
     fun searchComponent(): SearchComponent.Factory
     fun reactionsComponent(): ReactionsComponent.Factory
     fun reportComponent(): ReportComponent.Factory
+    fun dmComponent(): DMComponent.Factory
+    fun memberComponent(): MemberComponent.Factory
 
     @Component.Builder
     interface Builder {
