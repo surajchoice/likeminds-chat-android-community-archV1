@@ -16,11 +16,11 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.utils.permissions.LMChatPermissionManager.Companion.REQUEST_CODE_SETTINGS_PERMISSION
 import com.likeminds.chatmm.utils.permissions.model.LMChatPermissionExtras
 
 class LMChatPermissionDialog(
     private val activity: BaseAppCompatActivity,
-    private val settingsPermissionLauncher: ActivityResultLauncher<Intent>,
     private val task: LMChatPermissionTask,
     private val permission: LMChatPermission?,
     private val mode: Mode,
@@ -140,7 +140,7 @@ class LMChatPermissionDialog(
                     Uri.fromParts("package", activity.packageName, null)
                 )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                settingsPermissionLauncher.launch(intent)
+                activity.startActivityForResult(intent, REQUEST_CODE_SETTINGS_PERMISSION)
             }
         }
         dismiss()
@@ -178,7 +178,7 @@ class LMChatPermissionDialog(
                             Uri.fromParts("package", activity.packageName, null)
                         )
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        settingsPermissionLauncher.launch(intent)
+                        activity.startActivityForResult(intent, REQUEST_CODE_SETTINGS_PERMISSION)
                     }
                 }
                 dismiss()

@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/mediaPickerFolderFragment"
-        android:name="com.likeminds.chatmm.media.view.MediaPickerFolderFragment"
+        android:name="com.likeminds.chatmm.media.view.LMChatMediaPickerFolderFragment"
         android:label="MediaPickerFolderFragment"
-        tools:layout="@layout/fragment_media_picker_folder">
+        tools:layout="@layout/lm_chat_fragment_media_picker_folder">
         <action
             android:id="@+id/action_folder_to_items"
             app:destination="@id/mediaPickerItemFragment" />
@@ -19,18 +19,18 @@
     </fragment>
     <fragment
         android:id="@+id/mediaPickerItemFragment"
-        android:name="com.likeminds.chatmm.media.view.MediaPickerItemFragment"
+        android:name="com.likeminds.chatmm.media.view.LMChatMediaPickerItemFragment"
         android:label="MediaPickerItemFragment"
-        tools:layout="@layout/fragment_media_picker_item">
+        tools:layout="@layout/lm_chat_fragment_media_picker_item">
         <argument
             android:name="mediaPickerItemExtras"
             app:argType="com.likeminds.chatmm.media.model.MediaPickerItemExtras" />
     </fragment>
     <fragment
         android:id="@+id/mediaPickerDocumentFragment"
-        android:name="com.likeminds.chatmm.media.view.MediaPickerDocumentFragment"
+        android:name="com.likeminds.chatmm.media.view.LMChatMediaPickerDocumentFragment"
         android:label="MediaPickerDocumentFragment"
-        tools:layout="@layout/fragment_media_picker_document">
+        tools:layout="@layout/lm_chat_fragment_media_picker_document">
         <argument
             android:name="mediaPickerExtras"
             app:argType="com.likeminds.chatmm.media.model.LMChatMediaPickerExtras" />

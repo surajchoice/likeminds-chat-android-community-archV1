@@ -2,6 +2,7 @@ package com.likeminds.chatmm.homefeed.view
 
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -37,7 +38,9 @@ import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
+import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
@@ -120,12 +123,40 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun setUpViews() {
         super.setUpViews()
+        checkForNotificationPermission()
         setBranding()
         setupReceivers()
         initiateUser()
         initRecyclerView()
         initToolbar()
         fetchData()
+    }
+
+    //check permission for Post Notifications
+    private fun checkForNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val extras = LMChatPermission.getNotificationPermissionData(requireContext())
+            LMChatPermissionManager.performTaskWithPermissionExtras(
+                requireActivity() as BaseAppCompatActivity,
+                {
+                    Log.d(LOG_TAG, "notification permission approved")
+                },
+                extras,
+                showInitialPopup = true,
+                showDeniedPopup = true,
+                lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                    override fun onDeny() {
+                        Log.d(LOG_TAG, "notification permission denied")
+                    }
+
+                    override fun onCancel() {
+                        Log.d(LOG_TAG, "notification permission cancelled")
+                    }
+                }
+            )
+        } else {
+            return
+        }
     }
 
     //register receivers to the activity

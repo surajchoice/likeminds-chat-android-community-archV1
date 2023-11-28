@@ -1,30 +1,34 @@
 package com.likeminds.chatmm.media.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
 import com.likeminds.chatmm.databinding.FragmentMediaPickerItemBinding
+import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
 import com.likeminds.chatmm.utils.actionmode.ActionModeListener
-import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.model.ITEM_MEDIA_PICKER_HEADER
 import com.likeminds.chatmm.utils.permissions.*
 
 
-class MediaPickerItemFragment :
-    BaseFragment<FragmentMediaPickerItemBinding, MediaViewModel>(),
+class LMChatMediaPickerItemFragment :
+    BaseFragment<LmChatFragmentMediaPickerItemBinding, MediaViewModel>(),
     MediaPickerAdapterListener,
     ActionModeListener<ChatroomDetailActionModeData> {
 
@@ -40,8 +44,8 @@ class MediaPickerItemFragment :
         const val TAG = "MediaPickerItem"
 
         @JvmStatic
-        fun getInstance(extras: MediaPickerItemExtras): MediaPickerItemFragment {
-            val fragment = MediaPickerItemFragment()
+        fun getInstance(extras: MediaPickerItemExtras): LMChatMediaPickerItemFragment {
+            val fragment = LMChatMediaPickerItemFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_MEDIA_PICKER_ITEM, extras)
             fragment.arguments = bundle
@@ -53,8 +57,8 @@ class MediaPickerItemFragment :
         return MediaViewModel::class.java
     }
 
-    override fun getViewBinding(): FragmentMediaPickerItemBinding {
-        return FragmentMediaPickerItemBinding.inflate(layoutInflater)
+    override fun getViewBinding(): LmChatFragmentMediaPickerItemBinding {
+        return LmChatFragmentMediaPickerItemBinding.inflate(layoutInflater)
     }
 
     override fun attachDagger() {
@@ -71,11 +75,10 @@ class MediaPickerItemFragment :
     override fun setUpViews() {
         super.setUpViews()
         if (mediaPickerItemExtras.allowMultipleSelect) {
-            setHasOptionsMenu(true)
+            setupMenu()
         }
         initializeUI()
         initializeListeners()
-        checkStoragePermission()
 
         viewModel.fetchMediaInBucket(
             requireContext(),
@@ -83,40 +86,6 @@ class MediaPickerItemFragment :
             mediaPickerItemExtras.mediaTypes as MutableList<String>
         ).observe(viewLifecycleOwner) {
             mediaPickerAdapter.replace(it)
-        }
-    }
-
-    private fun checkStoragePermission() {
-        LMChatPermissionManager.performTaskWithPermission(
-            activity as BaseAppCompatActivity,
-            { },
-            LMChatPermission.getStoragePermissionData(),
-            showInitialPopup = true,
-            showDeniedPopup = true,
-            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
-                override fun onDeny() {
-                    requireActivity().supportFragmentManager.popBackStack()
-                }
-
-                override fun onCancel() {
-                    requireActivity().supportFragmentManager.popBackStack()
-                }
-            }
-        )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.media_picker_item_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.select_multiple -> {
-                startActionMode()
-                true
-            }
-            else -> false
         }
     }
 
@@ -146,6 +115,35 @@ class MediaPickerItemFragment :
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    // sets up the menu item
+    private fun setupMenu() {
+        // The usage of an interface lets you inject your own implementation
+        val menuHost: MenuHost = requireActivity()
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.media_picker_item_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.select_multiple -> {
+                        startActionMode()
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun startActionMode() {
@@ -178,6 +176,7 @@ class MediaPickerItemFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onActionModeDestroyed() {
         selectedMedias.clear()
         mediaPickerAdapter.notifyDataSetChanged()

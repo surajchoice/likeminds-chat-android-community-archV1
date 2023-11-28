@@ -67,26 +67,55 @@ class LMChatMediaPickerActivity : BaseAppCompatActivity() {
             mediaPickerExtras = extras
         }
 
-        checkStoragePermission()
+        checkMediaPermission()
     }
 
-    private fun checkStoragePermission() {
-        LMChatPermissionManager.performTaskWithPermission(
-            this,
-            { startMediaPickerFragment() },
-            LMChatPermission.getStoragePermissionData(),
-            showInitialPopup = true,
-            showDeniedPopup = true,
-            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
-                override fun onDeny() {
-                    onBackPressed()
-                }
-
-                override fun onCancel() {
-                    onBackPressed()
-                }
+    private fun checkMediaPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val mediaTypes = mediaPickerExtras.mediaTypes
+            if (mediaTypes.contains(PDF) || mediaTypes.contains(GIF)) {
+                startMediaPickerFragment()
+                return
             }
-        )
+            val permissionExtras = LMChatPermission.getMediaPermissionExtras(
+                this,
+                mediaTypes
+            )
+
+            LMChatPermissionManager.performTaskWithPermissionExtras(
+                this,
+                { startMediaPickerFragment() },
+                permissionExtras,
+                showInitialPopup = true,
+                showDeniedPopup = true,
+                lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                    override fun onDeny() {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+
+                    override fun onCancel() {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            )
+        } else {
+            LMChatPermissionManager.performTaskWithPermission(
+                this,
+                { startMediaPickerFragment() },
+                LMChatPermission.getStoragePermissionData(),
+                showInitialPopup = true,
+                showDeniedPopup = true,
+                lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                    override fun onDeny() {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+
+                    override fun onCancel() {
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            )
+        }
     }
 
     private fun startMediaPickerFragment() {
@@ -145,19 +174,19 @@ class LMChatMediaPickerActivity : BaseAppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LMChatPermissionManager.REQUEST_CODE_SETTINGS_PERMISSION) {
-            checkStoragePermission()
+            checkMediaPermission()
         }
     }
 
     override fun onBackPressed() {
         when (val fragment = supportFragmentManager.currentFragment(R.id.nav_host)) {
-            is MediaPickerFolderFragment -> {
+            is LMChatMediaPickerFolderFragment -> {
                 super.onBackPressed()
             }
-            is MediaPickerItemFragment -> {
+            is LMChatMediaPickerItemFragment -> {
                 fragment.onBackPressedFromFragment()
             }
-            is MediaPickerDocumentFragment -> {
+            is LMChatMediaPickerDocumentFragment -> {
                 if (fragment.onBackPressedFromFragment()) super.onBackPressed()
             }
             is MediaPickerAudioFragment -> {

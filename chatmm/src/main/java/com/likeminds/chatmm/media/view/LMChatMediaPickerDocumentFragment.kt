@@ -1,17 +1,19 @@
 package com.likeminds.chatmm.media.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.core.view.*
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.databinding.FragmentMediaPickerDocumentBinding
+import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerDocumentBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
@@ -19,8 +21,8 @@ import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.search.util.CustomSearchBar
 import com.likeminds.chatmm.utils.customview.BaseFragment
 
-class MediaPickerDocumentFragment :
-    BaseFragment<FragmentMediaPickerDocumentBinding, MediaViewModel>(),
+class LMChatMediaPickerDocumentFragment :
+    BaseFragment<LmChatFragmentMediaPickerDocumentBinding, MediaViewModel>(),
     MediaPickerAdapterListener {
 
     private lateinit var mediaPickerAdapter: MediaPickerAdapter
@@ -37,8 +39,8 @@ class MediaPickerDocumentFragment :
         private const val BUNDLE_MEDIA_PICKER_DOC = "bundle of media picker doc"
 
         @JvmStatic
-        fun getInstance(extras: LMChatMediaPickerExtras): MediaPickerDocumentFragment {
-            val fragment = MediaPickerDocumentFragment()
+        fun getInstance(extras: LMChatMediaPickerExtras): LMChatMediaPickerDocumentFragment {
+            val fragment = LMChatMediaPickerDocumentFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_MEDIA_PICKER_DOC, extras)
             fragment.arguments = bundle
@@ -46,12 +48,12 @@ class MediaPickerDocumentFragment :
         }
     }
 
-    override fun getViewModelClass(): Class<MediaViewModel>? {
+    override fun getViewModelClass(): Class<MediaViewModel> {
         return MediaViewModel::class.java
     }
 
-    override fun getViewBinding(): FragmentMediaPickerDocumentBinding {
-        return FragmentMediaPickerDocumentBinding.inflate(layoutInflater)
+    override fun getViewBinding(): LmChatFragmentMediaPickerDocumentBinding {
+        return LmChatFragmentMediaPickerDocumentBinding.inflate(layoutInflater)
     }
 
     override fun attachDagger() {
@@ -67,7 +69,7 @@ class MediaPickerDocumentFragment :
 
     override fun setUpViews() {
         super.setUpViews()
-        setHasOptionsMenu(true)
+        setupMenu()
         setBranding()
         initializeUI()
         initializeListeners()
@@ -76,10 +78,39 @@ class MediaPickerDocumentFragment :
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.media_picker_document_menu, menu)
-        updateMenu(menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    // sets up the menu item
+    private fun setupMenu() {
+        // The usage of an interface lets you inject your own implementation
+        val menuHost: MenuHost = requireActivity()
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.media_picker_document_menu, menu)
+                updateMenu(menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                when (menuItem.itemId) {
+                    R.id.menu_item_search -> {
+                        showSearchToolbar()
+                    }
+
+                    R.id.menu_item_sort -> {
+                        val menuItemView = requireActivity().findViewById<View>(menuItem.itemId)
+                        showSortingPopupMenu(menuItemView)
+                    }
+
+                    else -> return false
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun updateMenu(menu: Menu) {
@@ -90,20 +121,6 @@ class MediaPickerDocumentFragment :
         //update sort icon
         val item2 = menu.findItem(R.id.menu_item_sort)
         item2?.icon?.setTint(LMBranding.getToolbarColor())
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_item_search -> {
-                showSearchToolbar()
-            }
-            R.id.menu_item_sort -> {
-                val menuItemView = requireActivity().findViewById<View>(item.itemId)
-                showSortingPopupMenu(menuItemView)
-            }
-            else -> return false
-        }
-        return true
     }
 
     private fun setBranding() {
@@ -166,6 +183,7 @@ class MediaPickerDocumentFragment :
         binding.fabSend.isVisible = isMediaSelectionEnabled()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun clearSelectedMedias() {
         selectedMedias.clear()
         mediaPickerAdapter.notifyDataSetChanged()
@@ -223,6 +241,7 @@ class MediaPickerDocumentFragment :
         when (currentSort) {
             SORT_BY_NAME ->
                 popup.menu.findItem(R.id.menu_item_sort_name).isChecked = true
+
             SORT_BY_DATE ->
                 popup.menu.findItem(R.id.menu_item_sort_date).isChecked = true
         }
@@ -235,6 +254,7 @@ class MediaPickerDocumentFragment :
                         viewModel.sortDocumentsByName()
                     }
                 }
+
                 R.id.menu_item_sort_date -> {
                     if (currentSort != SORT_BY_DATE) {
                         currentSort = SORT_BY_DATE

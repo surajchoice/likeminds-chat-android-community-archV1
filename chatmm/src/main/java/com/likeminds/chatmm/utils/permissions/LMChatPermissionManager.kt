@@ -1,8 +1,6 @@
 package com.likeminds.chatmm.utils.permissions
 
-import android.content.Intent
 import android.os.Build
-import androidx.activity.result.ActivityResultLauncher
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.permissions.model.LMChatPermissionExtras
 import com.likeminds.chatmm.utils.permissions.view.LMChatPermissionDialog
@@ -10,9 +8,11 @@ import com.likeminds.chatmm.utils.permissions.view.LMChatPermissionDialog
 class LMChatPermissionManager {
 
     companion object {
+
+        const val REQUEST_CODE_SETTINGS_PERMISSION = 100
+
         fun performTaskWithPermissionExtras(
             activity: BaseAppCompatActivity,
-            settingsPermissionLauncher: ActivityResultLauncher<Intent>,
             task: LMChatPermissionTask,
             permissionExtras: LMChatPermissionExtras,
             showInitialPopup: Boolean,
@@ -30,7 +30,6 @@ class LMChatPermissionManager {
                         if (showInitialPopup) {
                             val lmChatPermissionDialog = LMChatPermissionDialog(
                                 activity,
-                                settingsPermissionLauncher,
                                 task,
                                 null,
                                 LMChatPermissionDialog.Mode.INIT,
@@ -53,7 +52,6 @@ class LMChatPermissionManager {
                                         if (showDeniedPopup) {
                                             val lmChatPermissionDialog = LMChatPermissionDialog(
                                                 activity,
-                                                settingsPermissionLauncher,
                                                 task,
                                                 null,
                                                 LMChatPermissionDialog.Mode.DENIED,
@@ -77,7 +75,6 @@ class LMChatPermissionManager {
                         if (showDeniedPopup) {
                             val lmChatPermissionDialog = LMChatPermissionDialog(
                                 activity,
-                                settingsPermissionLauncher,
                                 task,
                                 null,
                                 LMChatPermissionDialog.Mode.DENIED,
@@ -99,7 +96,6 @@ class LMChatPermissionManager {
 
         fun performTaskWithPermission(
             activity: BaseAppCompatActivity,
-            settingsPermissionLauncher: ActivityResultLauncher<Intent>,
             task: LMChatPermissionTask,
             lmChatPermission: LMChatPermission,
             showInitialPopup: Boolean,
@@ -116,7 +112,6 @@ class LMChatPermissionManager {
                         if (showInitialPopup) {
                             val lmChatPermissionDialog = LMChatPermissionDialog(
                                 activity,
-                                settingsPermissionLauncher,
                                 task,
                                 lmChatPermission,
                                 LMChatPermissionDialog.Mode.INIT,
@@ -137,7 +132,6 @@ class LMChatPermissionManager {
                                     override fun onDeny() {
                                         showDeniedDialog(
                                             activity,
-                                            settingsPermissionLauncher,
                                             showDeniedPopup,
                                             task,
                                             lmChatPermission,
@@ -150,7 +144,6 @@ class LMChatPermissionManager {
                     } else {
                         showDeniedDialog(
                             activity,
-                            settingsPermissionLauncher,
                             showDeniedPopup,
                             task,
                             lmChatPermission,
@@ -164,7 +157,6 @@ class LMChatPermissionManager {
 
         private fun showDeniedDialog(
             activity: BaseAppCompatActivity,
-            settingsPermissionLauncher: ActivityResultLauncher<Intent>,
             showDeniedPopup: Boolean,
             task: LMChatPermissionTask,
             lmChatPermission: LMChatPermission,
@@ -174,7 +166,6 @@ class LMChatPermissionManager {
             if (showDeniedPopup) {
                 val lmChatPermissionDialog = LMChatPermissionDialog(
                     activity,
-                    settingsPermissionLauncher,
                     task,
                     lmChatPermission,
                     LMChatPermissionDialog.Mode.DENIED,

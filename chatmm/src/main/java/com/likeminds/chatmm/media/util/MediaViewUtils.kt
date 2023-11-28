@@ -19,7 +19,6 @@ import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.downloader.DownloadUtil
 import com.likeminds.chatmm.utils.permissions.LMChatPermission
 import com.likeminds.chatmm.utils.permissions.LMChatPermissionManager
-import com.likeminds.chatmm.utils.permissions.LMChatPermissionTask
 
 object MediaViewUtils {
 
@@ -50,53 +49,82 @@ object MediaViewUtils {
         if (activity !is BaseAppCompatActivity) {
             return
         }
-        LMChatPermissionManager.performTaskWithPermission(
-            activity,
-            LMChatPermissionTask {
-                val downloadObserver = DownloadUtil.startDownload(
-                    activity,
-                    uri.toString(),
-                    notificationIcon
-                )
-                if (downloadObserver == null) {
-                    ViewUtils.showShortToast(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            startDownloadTask(
+                lifecycleOwner,
+                activity,
+                uri,
+                notificationIcon
+            )
+        } else {
+            if (activity !is BaseAppCompatActivity) {
+                return
+            }
+            LMChatPermissionManager.performTaskWithPermission(
+                activity,
+                {
+                    startDownloadTask(
+                        lifecycleOwner,
                         activity,
-                        activity.getString(R.string.media_is_downloading)
+                        uri,
+                        notificationIcon
                     )
-                    return@LMChatPermissionTask
-                }
-                val type = uri.getMediaType(activity)
-                downloadObserver.observe(lifecycleOwner) { state ->
-                    when (state) {
-                        WorkInfo.State.ENQUEUED -> {
-                            if (type == VIDEO && lifecycleOwner.lifecycle.currentState.isAtLeast(
-                                    Lifecycle.State.RESUMED
-                                )
-                            ) {
-                                ViewUtils.showShortToast(
-                                    activity,
-                                    activity.getString(R.string.downloading_video)
-                                )
-                            }
-                        }
-                        WorkInfo.State.SUCCEEDED -> {
-                            if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                                val toastMessage = DownloadUtil.getToastMessage(
-                                    activity,
-                                    type
-                                )
-                                ViewUtils.showShortToast(activity, toastMessage)
-                            }
-                        }
-                        else -> {
-                            Log.i("saveToGallery", "Worker State : $state")
-                        }
+                },
+                LMChatPermission.getStoragePermissionData(),
+                showInitialPopup = true,
+                showDeniedPopup = true
+            )
+        }
+    }
+
+    private fun startDownloadTask(
+        lifecycleOwner: LifecycleOwner,
+        activity: Activity,
+        uri: Uri,
+        notificationIcon: Int
+    ) {
+        val type = uri.getMediaType(activity)
+
+        val downloadObserver = DownloadUtil.startDownload(
+            activity,
+            uri.toString(),
+            notificationIcon
+        )
+        if (downloadObserver == null) {
+            ViewUtils.showShortToast(
+                activity,
+                activity.getString(R.string.media_is_downloading)
+            )
+            return
+        }
+        downloadObserver.observe(lifecycleOwner) { state ->
+            when (state) {
+                WorkInfo.State.ENQUEUED -> {
+                    if (type == VIDEO && lifecycleOwner.lifecycle.currentState.isAtLeast(
+                            Lifecycle.State.RESUMED
+                        )
+                    ) {
+                        ViewUtils.showShortToast(
+                            activity,
+                            activity.getString(R.string.downloading_video)
+                        )
                     }
                 }
-            },
-            LMChatPermission.getStoragePermissionData(),
-            showInitialPopup = true,
-            showDeniedPopup = true
-        )
+
+                WorkInfo.State.SUCCEEDED -> {
+                    if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                        val toastMessage = DownloadUtil.getToastMessage(
+                            activity,
+                            type
+                        )
+                        ViewUtils.showShortToast(activity, toastMessage)
+                    }
+                }
+
+                else -> {
+                    Log.i("saveToGallery", "Worker State : $state")
+                }
+            }
+        }
     }
 }

@@ -762,19 +762,7 @@ class ChatroomDetailFragment :
             }
 
             ivCamera.setOnClickListener {
-                LMChatPermissionManager.performTaskWithPermission(
-                    activity as BaseAppCompatActivity,
-
-                    { initCameraAttachment() },
-                    LMChatPermission.getCameraPermissionData(),
-                    showInitialPopup = true,
-                    showDeniedPopup = true,
-                    permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
-                        override fun onDeny() {}
-
-                        override fun onCancel() {}
-                    }
-                )
+                initCameraAttachment()
             }
 
             ivPoll.isVisible = viewModel.isMicroPollsEnabled()
@@ -1024,12 +1012,12 @@ class ChatroomDetailFragment :
 
     private fun registerAudioCompleteBroadcast() {
         val filter = IntentFilter(BROADCAST_COMPLETE)
-        activity?.registerReceiver(audioCompleteReceiver, filter)
+        requireActivity().registerReceiver(audioCompleteReceiver, filter)
     }
 
     private fun registerProgressBroadcast() {
         val filter = IntentFilter(BROADCAST_PROGRESS)
-        activity?.registerReceiver(progressReceiver, filter)
+        requireActivity()?.registerReceiver(progressReceiver, filter)
     }
 
     /**------------------------------------------------------------
@@ -1126,7 +1114,7 @@ class ChatroomDetailFragment :
                             LMChatPermission.getRecordAudioPermissionData(),
                             showInitialPopup = true,
                             showDeniedPopup = true,
-                            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                            lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
                                 override fun onDeny() {}
 
                                 override fun onCancel() {}
