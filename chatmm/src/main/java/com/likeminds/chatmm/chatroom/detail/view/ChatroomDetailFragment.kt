@@ -481,7 +481,7 @@ class ChatroomDetailFragment :
      */
     @RequiresApi(Build.VERSION_CODES.N)
     private fun fetchInitialData() {
-        viewModel.getInitialData(requireContext(), chatroomDetailExtras)
+        viewModel.getInitialData(chatroomDetailExtras)
     }
 
     private fun getChatroomViewData(): ChatroomViewData? {

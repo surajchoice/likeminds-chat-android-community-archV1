@@ -72,8 +72,8 @@ const val ITEM_POLL_RESULT_USER = 65
 const val ITEM_HOME_FEED = 66
 const val ITEM_EXPLORE = 67
 const val ITEM_DM_FEED_EMPTY_DATA = 68
-const val ITEM_DM = 69
-const val ITEM_DM_ALL_MEMBER = 70
+const val ITEM_DIRECT_MESSAGE = 69
+const val ITEM_COMMUNITY_MEMBER = 70
 
 @IntDef(
     ITEM_NONE,
@@ -145,8 +145,8 @@ const val ITEM_DM_ALL_MEMBER = 70
     ITEM_VIEW_PARTICIPANTS,
     ITEM_EXPLORE,
     ITEM_DM_FEED_EMPTY_DATA,
-    ITEM_DM,
-    ITEM_DM_ALL_MEMBER
+    ITEM_DIRECT_MESSAGE,
+    ITEM_COMMUNITY_MEMBER
 )
 @Retention(AnnotationRetention.SOURCE)
 internal annotation class ViewType
