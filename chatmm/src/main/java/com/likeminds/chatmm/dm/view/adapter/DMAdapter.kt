@@ -9,9 +9,8 @@ import com.likeminds.chatmm.search.view.adapter.databinder.SingleShimmerViewData
 import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
-import javax.inject.Inject
 
-class DMAdapter @Inject constructor(
+class DMAdapter constructor(
     private val dmAdapterListener: DMAdapterListener,
     private val userPreferences: UserPreferences
 ) : BaseRecyclerAdapter<BaseViewType>() {

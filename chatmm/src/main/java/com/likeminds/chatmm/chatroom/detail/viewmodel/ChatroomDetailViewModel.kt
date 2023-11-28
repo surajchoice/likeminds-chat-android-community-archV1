@@ -388,7 +388,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
+    fun getInitialData(chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
                 GetChatroomRequest.Builder().chatroomId(chatroomDetailExtras.chatroomId).build()

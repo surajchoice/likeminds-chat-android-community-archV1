@@ -7,18 +7,18 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.databinding.ItemDmAllMembersBinding
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.*
-import com.likeminds.chatmm.member.view.adapter.DMAllMemberAdapterListener
+import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapterListener
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.ITEM_DM_ALL_MEMBER
+import com.likeminds.chatmm.utils.model.ITEM_COMMUNITY_MEMBER
 import javax.inject.Inject
 
-class DMAllMembersViewDataBinder @Inject constructor(
-    private val listener: DMAllMemberAdapterListener,
+class CommunityMembersViewDataBinder @Inject constructor(
+    private val listener: CommunityMembersAdapterListener,
     private val userPreferences: UserPreferences
 ) : ViewDataBinder<ItemDmAllMembersBinding, MemberViewData>() {
 
     override val viewType: Int
-        get() = ITEM_DM_ALL_MEMBER
+        get() = ITEM_COMMUNITY_MEMBER
 
     override fun createBinder(parent: ViewGroup): ItemDmAllMembersBinding {
         val binding = ItemDmAllMembersBinding.inflate(
@@ -39,8 +39,7 @@ class DMAllMembersViewDataBinder @Inject constructor(
 
             tvMemberName.text = MemberUtil.getMemberNameForDisplay(data, userPreferences.getUUID())
 
-            // todo:
-//            val subtitle = MemberUtil.createSubtitle(data)
+            // todo: change this once question answers are added in [MemberViewData]
             val subtitle = ""
 
             tvSubtitle.apply {

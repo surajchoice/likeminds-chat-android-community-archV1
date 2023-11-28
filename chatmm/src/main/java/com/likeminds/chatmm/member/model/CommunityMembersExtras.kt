@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class DMAllMemberExtras private constructor(
+class CommunityMembersExtras private constructor(
     val showList: Int
 ) : Parcelable {
 
@@ -14,7 +14,7 @@ class DMAllMemberExtras private constructor(
 
         fun showList(showList: Int) = apply { this.showList = showList }
 
-        fun build() = DMAllMemberExtras(showList)
+        fun build() = CommunityMembersExtras(showList)
     }
 
     fun toBuilder(): Builder {
