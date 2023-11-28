@@ -14,11 +14,13 @@ const val STATE_REMOVED_FROM_CHATROOM = 9
 const val STATE_POLL = 10
 const val STATE_ADD_MEMBERS = 11
 const val STATE_TOPIC = 12
-const val DM_MEMBER_REMOVED_OR_LEFT = 13
-const val DM_CM_BECOMES_MEMBER_DISABLE = 14
-const val DM_MEMBER_BECOMES_CM = 15
-const val DM_CM_BECOMES_MEMBER_ENABLE = 16
-const val DM_MEMBER_BECOMES_CM_ENABLE = 17
+const val STATE_DM_MEMBER_REMOVED_OR_LEFT = 13
+const val STATE_DM_CM_BECOMES_MEMBER_DISABLE = 14
+const val STATE_DM_MEMBER_BECOMES_CM = 15
+const val STATE_DM_CM_BECOMES_MEMBER_ENABLE = 16
+const val STATE_DM_MEMBER_BECOMES_CM_ENABLE = 17
+const val STATE_DM_REJECTED = 19
+const val STATE_DM_ACCEPTED = 20
 
 @IntDef(
     STATE_NORMAL,
@@ -33,11 +35,13 @@ const val DM_MEMBER_BECOMES_CM_ENABLE = 17
     STATE_POLL,
     STATE_ADD_MEMBERS,
     STATE_TOPIC,
-    DM_MEMBER_REMOVED_OR_LEFT,
-    DM_CM_BECOMES_MEMBER_DISABLE,
-    DM_MEMBER_BECOMES_CM,
-    DM_CM_BECOMES_MEMBER_ENABLE,
-    DM_MEMBER_BECOMES_CM_ENABLE
+    STATE_DM_MEMBER_REMOVED_OR_LEFT,
+    STATE_DM_CM_BECOMES_MEMBER_DISABLE,
+    STATE_DM_MEMBER_BECOMES_CM,
+    STATE_DM_CM_BECOMES_MEMBER_ENABLE,
+    STATE_DM_MEMBER_BECOMES_CM_ENABLE,
+    STATE_DM_REJECTED,
+    STATE_DM_ACCEPTED
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class ConversationState {
@@ -56,11 +60,13 @@ annotation class ConversationState {
                     state == STATE_POLL ||
                     state == STATE_ADD_MEMBERS ||
                     state == STATE_TOPIC ||
-                    state == DM_MEMBER_REMOVED_OR_LEFT ||
-                    state == DM_CM_BECOMES_MEMBER_DISABLE ||
-                    state == DM_MEMBER_BECOMES_CM ||
-                    state == DM_CM_BECOMES_MEMBER_ENABLE ||
-                    state == DM_MEMBER_BECOMES_CM_ENABLE
+                    state == STATE_DM_MEMBER_REMOVED_OR_LEFT ||
+                    state == STATE_DM_CM_BECOMES_MEMBER_DISABLE ||
+                    state == STATE_DM_MEMBER_BECOMES_CM ||
+                    state == STATE_DM_CM_BECOMES_MEMBER_ENABLE ||
+                    state == STATE_DM_MEMBER_BECOMES_CM_ENABLE ||
+                    state == STATE_DM_REJECTED ||
+                    state == STATE_DM_ACCEPTED
         }
 
         fun isPoll(state: Int): Boolean {

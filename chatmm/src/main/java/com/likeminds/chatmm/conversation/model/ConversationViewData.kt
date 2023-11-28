@@ -39,7 +39,8 @@ class ConversationViewData private constructor(
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
     val isExpanded: Boolean,
-    val deletedByMember: MemberViewData?
+    val deletedByMember: MemberViewData?,
+    val showTapToUndo: Boolean
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -53,16 +54,20 @@ class ConversationViewData private constructor(
             STATE_REMOVED_FROM_CHATROOM,
             STATE_ADD_MEMBERS,
             STATE_TOPIC,
-            DM_MEMBER_REMOVED_OR_LEFT,
-            DM_CM_BECOMES_MEMBER_DISABLE,
-            DM_MEMBER_BECOMES_CM,
-            DM_CM_BECOMES_MEMBER_ENABLE,
-            DM_MEMBER_BECOMES_CM_ENABLE -> {
+            STATE_DM_MEMBER_REMOVED_OR_LEFT,
+            STATE_DM_CM_BECOMES_MEMBER_DISABLE,
+            STATE_DM_MEMBER_BECOMES_CM,
+            STATE_DM_CM_BECOMES_MEMBER_ENABLE,
+            STATE_DM_MEMBER_BECOMES_CM_ENABLE,
+            STATE_DM_ACCEPTED,
+            STATE_DM_REJECTED -> {
                 ITEM_CONVERSATION_ACTION
             }
+
             STATE_POLL -> {
                 ITEM_CONVERSATION_POLL
             }
+
             else -> {
                 val imageCount: Int = ChatroomUtil.getMediaCount(IMAGE, attachments)
                 val gifCount: Int = ChatroomUtil.getMediaCount(GIF, attachments)
@@ -200,6 +205,7 @@ class ConversationViewData private constructor(
         private var pollInfoData: PollInfoData? = null
         private var isExpanded: Boolean = false
         private var deletedByMember: MemberViewData? = null
+        private var showTapToUndo: Boolean = false
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -252,6 +258,8 @@ class ConversationViewData private constructor(
         fun deletedByMember(deletedByMember: MemberViewData?) =
             apply { this.deletedByMember = deletedByMember }
 
+        fun showTapToUndo(showTapToUndo: Boolean) = apply { this.showTapToUndo = showTapToUndo }
+
         fun build() = ConversationViewData(
             id,
             memberViewData,
@@ -281,7 +289,8 @@ class ConversationViewData private constructor(
             isLastItem,
             pollInfoData,
             isExpanded,
-            deletedByMember
+            deletedByMember,
+            showTapToUndo
         )
     }
 
@@ -315,5 +324,6 @@ class ConversationViewData private constructor(
             .pollInfoData(pollInfoData)
             .isExpanded(isExpanded)
             .deletedByMember(deletedByMember)
+            .showTapToUndo(showTapToUndo)
     }
 }

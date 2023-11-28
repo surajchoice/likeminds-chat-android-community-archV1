@@ -6,6 +6,8 @@ import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
+import com.likeminds.likemindschat.chatroom.model.ChatRequestState
+import com.likeminds.likemindschat.community.model.Member
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -54,7 +56,14 @@ class ChatroomViewData private constructor(
     val unreadConversationCount: Int?,
     val autoFollowDone: Boolean?,
     val dynamicViewType: Int?,
-    val deletedByMember: MemberViewData?
+    val deletedByMember: MemberViewData?,
+    val chatRequestState: ChatRequestState,
+    val isPrivateMember: Boolean?,
+    val chatRequestedById: String?,
+    val chatRequestCreatedAt: Long?,
+    val chatRequestedBy: MemberViewData?,
+    val chatroomWithUser: MemberViewData?,
+    val chatroomWithUserId: String?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = dynamicViewType ?: ITEM_HOME_CHAT_ROOM
@@ -113,6 +122,13 @@ class ChatroomViewData private constructor(
         private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
         private var deletedByMember: MemberViewData? = null
+        private var chatRequestState: ChatRequestState = ChatRequestState.NOTHING
+        private var isPrivateMember: Boolean? = null
+        private var chatRequestedById: String? = null
+        private var chatRequestCreatedAt: Long? = null
+        private var chatRequestedBy: MemberViewData? = null
+        private var chatroomWithUser: MemberViewData? = null
+        private var chatroomWithUserId: String? = null
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -195,6 +211,27 @@ class ChatroomViewData private constructor(
         fun deletedByMember(deletedByMember: MemberViewData?) =
             apply { this.deletedByMember = deletedByMember }
 
+        fun chatRequestState(chatRequestState: ChatRequestState) =
+            apply { this.chatRequestState = chatRequestState }
+
+        fun isPrivateMember(isPrivateMember: Boolean?) =
+            apply { this.isPrivateMember = isPrivateMember }
+
+        fun chatRequestedById(chatRequestedById: String?) =
+            apply { this.chatRequestedById = chatRequestedById }
+
+        fun chatRequestCreatedAt(chatRequestCreatedAt: Long?) =
+            apply { this.chatRequestCreatedAt = chatRequestCreatedAt }
+
+        fun chatRequestedBy(chatRequestedBy: MemberViewData?) =
+            apply { this.chatRequestedBy = chatRequestedBy }
+
+        fun chatroomWithUser(chatroomWithUser: MemberViewData?) =
+            apply { this.chatroomWithUser = chatroomWithUser }
+
+        fun chatroomWithUserId(chatroomWithUserId: String?) =
+            apply { this.chatroomWithUserId = chatroomWithUserId }
+
         fun build() = ChatroomViewData(
             id,
             memberViewData,
@@ -240,7 +277,14 @@ class ChatroomViewData private constructor(
             unreadConversationCount,
             autoFollowDone,
             dynamicViewType,
-            deletedByMember
+            deletedByMember,
+            chatRequestState,
+            isPrivateMember,
+            chatRequestedById,
+            chatRequestCreatedAt,
+            chatRequestedBy,
+            chatroomWithUser,
+            chatroomWithUserId
         )
     }
 
@@ -290,5 +334,12 @@ class ChatroomViewData private constructor(
             .autoFollowDone(autoFollowDone)
             .dynamicViewType(dynamicViewType)
             .deletedByMember(deletedByMember)
+            .chatRequestState(chatRequestState)
+            .isPrivateMember(isPrivateMember)
+            .chatRequestedById(chatRequestedById)
+            .chatRequestCreatedAt(chatRequestCreatedAt)
+            .chatRequestedBy(chatRequestedBy)
+            .chatroomWithUser(chatroomWithUser)
+            .chatroomWithUserId(chatroomWithUserId)
     }
 }
