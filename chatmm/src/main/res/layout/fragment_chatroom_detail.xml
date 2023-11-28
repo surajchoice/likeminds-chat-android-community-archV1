@@ -146,6 +146,21 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:listitem="@layout/item_chatroom" />
 
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_send_dm_request_to_member"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="8dp"
+            android:lineHeight="12sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
+            tools:visibility="visible"
+            tools:text="@string/send_a_dm_request_to_s" />
+
         <com.likeminds.chatmm.branding.customview.LikeMindsFAB
             android:id="@+id/fab_scroll_bottom"
             android:layout_width="wrap_content"

@@ -51,6 +51,7 @@ import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
+import com.likeminds.chatmm.dm.view.SendDMRequestDialogFragment
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
@@ -131,7 +132,8 @@ class ChatroomDetailFragment :
     YouTubeVideoPlayerPopup.VideoPlayerListener,
     VoiceNoteInterface,
     LeaveSecretChatroomDialogListener,
-    DeleteMessageListener {
+    DeleteMessageListener,
+    SendDMRequestDialogFragment.SendDMRequestDialogListener{
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -882,9 +884,14 @@ class ChatroomDetailFragment :
     private fun handleDmChatrooms() {
         if (viewModel.isDmChatroom()) {
             memberTagging.taggingEnabled = false
+            checkDMStatus()
             disableAllGraphicViewTypes()
             removeChatroomItem()
         }
+    }
+
+    private fun checkDMStatus() {
+        viewModel.checkDMStatus(chatroomId)
     }
 
     private fun initReplyView() {
@@ -1268,7 +1275,71 @@ class ChatroomDetailFragment :
      */
     private fun setChatInputBoxViewType(
         @ChatBoxType type: Int? = null,
-        lastConversationState: Int? = null,
+        showDM: Boolean? = null
+    ) {
+        binding.apply {
+            if (viewModel.isDmChatroom()) {
+                setChatInputBoxViewTypeForDM(type, (showDM ?: true))
+            } else {
+                setChatInputBoxViewTypeForGroupChat()
+            }
+            if (type == null) {
+                return
+            }
+        }
+    }
+
+    // sets the chat input box for DM chat
+    private fun setChatInputBoxViewTypeForDM(
+        @ChatBoxType type: Int? = null,
+        showDM: Boolean
+    ) {
+        binding.apply {
+            if (showDM) {
+                val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
+                if (isPrivateMember == false) {
+                    tvSendDmRequestToMember.hide()
+                    return
+                }
+                when (viewModel.getChatroomViewData()?.chatRequestState) {
+                    ChatRequestState.NOTHING.value -> {
+                        // dm is not initiated and request is not send, showing message to send DM request
+                        val header = viewModel.getChatroomViewData()?.header
+                        tvSendDmRequestToMember.show()
+                        tvSendDmRequestToMember.text =
+                            getString(R.string.send_a_dm_request_to_s, header)
+                    }
+
+                    ChatRequestState.INITIATED.value -> {
+                        // chatroom request is sent, i.e., chatroom is initiated
+                        // todo:
+                    }
+
+                    ChatRequestState.ACCEPTED.value -> {
+                        // DM is accepted so hiding the DM request view
+                        // todo:
+                    }
+
+                    ChatRequestState.REJECTED.value -> {
+                        // DM is rejected
+                        // todo:
+                    }
+                }
+            } else {
+                hideAllChatBoxViews()
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text = getString(
+                    R.string.direct_messaging_among_members_has_been_disabled_by_the_community_manager
+                )
+                return
+            }
+            setupCommonChatInputBox(type)
+        }
+    }
+
+    // sets the chat input box for group chat
+    private fun setChatInputBoxViewTypeForGroupChat(
+        @ChatBoxType type: Int? = null
     ) {
         binding.apply {
             if (!viewModel.hasMemberRespondRight()) {
@@ -1301,22 +1372,14 @@ class ChatroomDetailFragment :
                     getString(R.string.secret_chatroom_restricted_message)
                 return
             }
-            if (lastConversationState == STATE_DM_CM_BECOMES_MEMBER_DISABLE) {
-                hideAllChatBoxViews()
-                tvRestrictedMessage.visibility = View.VISIBLE
-                tvRestrictedMessage.text =
-                    getString(R.string.direct_messages_community_manager_removed)
-                return
-            }
-            if (lastConversationState == STATE_DM_MEMBER_REMOVED_OR_LEFT) {
-                hideAllChatBoxViews()
-                tvRestrictedMessage.visibility = View.VISIBLE
-                tvRestrictedMessage.text = getString(R.string.direct_messaging_member_left)
-                return
-            }
-            if (type == null) {
-                return
-            }
+            setupCommonChatInputBox(type)
+        }
+    }
+
+    private fun setupCommonChatInputBox(
+        @ChatBoxType type: Int? = null
+    ) {
+        binding.apply {
             inputBox.clChatContainer.visibility = View.VISIBLE
             tvRestrictedMessage.visibility = View.GONE
             when (type) {
@@ -1594,6 +1657,21 @@ class ChatroomDetailFragment :
                     if (viewModel.isVoiceNoteSupportEnabled()) {
                         isVoiceNotePlaying = false
                         voiceNoteUtils.stopVoiceNote(this, RECORDING_SEND)
+                    }
+
+                    // show dialog to send dm request if the chatroom is of type DM & chatRequestState is null
+                    if (
+                        viewModel.isDmChatroom()
+                        && viewModel.getChatroomViewData()?.chatRequestState == null
+                    ) {
+                        viewModel.dmRequestText = inputText
+                        // if the DM is M2M then show dialog otherwise send dm request directly
+                        if (viewModel.getChatroomViewData()?.isPrivateMember == true) {
+                            SendDMRequestDialogFragment.showDialog(childFragmentManager)
+                        } else {
+                            viewModel.sendDMRequest(viewModel.getChatroomViewData()?.id.toString(), 1)
+                        }
+                        return@setOnClickListener
                     }
 
                     postConversation(
@@ -2357,6 +2435,7 @@ class ChatroomDetailFragment :
         observeTopic()
         observeContentDownloadSettings()
         observeMemberState()
+        observeDMStatus()
         observeErrors()
     }
 
@@ -2778,7 +2857,6 @@ class ChatroomDetailFragment :
             }
             invalidateActionsMenu()
             updateChatroom(chatroomDetail.chatroom)
-            checkForLastDmConversationState()
         }
     }
 
@@ -2813,19 +2891,6 @@ class ChatroomDetailFragment :
     private fun updateChatroom(chatroom: ChatroomViewData?) {
         val chatroomPosition = getIndexOfChatroom() ?: return
         chatroomDetailAdapter.update(chatroomPosition, chatroom)
-    }
-
-    // checks the state of last dm conversation and sets input box accordingly
-    private fun checkForLastDmConversationState() {
-        val lastConversationState = viewModel.getLastConversationFromAdapter(
-            chatroomDetailAdapter.items()
-        )?.state
-        if (lastConversationState == STATE_DM_CM_BECOMES_MEMBER_DISABLE) {
-            setChatInputBoxViewType(null, STATE_DM_CM_BECOMES_MEMBER_DISABLE)
-        }
-        if (lastConversationState == STATE_DM_MEMBER_REMOVED_OR_LEFT) {
-            setChatInputBoxViewType(null, STATE_DM_MEMBER_REMOVED_OR_LEFT)
-        }
     }
 
     /**
@@ -3054,6 +3119,17 @@ class ChatroomDetailFragment :
         }
         viewModel.canMemberCreatePoll.observe(viewLifecycleOwner) {
             initAttachmentsView()
+        }
+    }
+
+    // observes the showDM LiveData
+    private fun observeDMStatus() {
+        viewModel.showDM.observe(viewLifecycleOwner) { showDM ->
+            if (showDM) {
+                setChatInputBoxViewType(CHAT_BOX_NORMAL)
+            } else {
+                setChatInputBoxViewType(CHAT_BOX_NORMAL)
+            }
         }
     }
 
@@ -5214,6 +5290,12 @@ class ChatroomDetailFragment :
             isFullScreen
         )
         ChatroomUtil.setStatusBarColor(requireActivity(), requireContext(), isFullScreen)
+    }
+
+    // sends dm request when the user clicks on confirm
+    override fun sendDMRequest() {
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.INITIATED.value)
+        clearEditTextAnswer()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

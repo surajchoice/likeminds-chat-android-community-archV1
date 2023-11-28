@@ -38,6 +38,7 @@ import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
 import com.likeminds.likemindschat.dm.model.CheckDMStatusRequest
+import com.likeminds.likemindschat.dm.model.SendDMRequest
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
 import com.likeminds.likemindschat.user.model.MemberStateResponse
@@ -129,6 +130,14 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _showDM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val showDM: LiveData<Boolean> by lazy { _showDM }
 
+    var dmRequestText: String = ""
+
+    private val _updatedChatRequestState: MutableLiveData<Int> by lazy { MutableLiveData() }
+    val updatedChatRequestState: LiveData<Int> by lazy { _updatedChatRequestState }
+
+    private val _dmInitiatedForCM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val dmInitiatedForCM: LiveData<Boolean> by lazy { _dmInitiatedForCM }
+
     private var sendLinkPreview = true
 
     sealed class ConversationEvent {
@@ -169,6 +178,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
         data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
+        data class SendDMRequest(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -2160,12 +2170,52 @@ class ChatroomDetailViewModel @Inject constructor(
 
             val response = lmChatClient.checkDMStatus(request)
             if (response.success) {
-                val showDM = response.data?.showDM ?: false
+                val showDM = response.data?.showDM ?: true
                 _showDM.postValue(showDM)
             } else {
                 _showDM.postValue(true)
             }
         }
+    }
+
+    // calls api to send dm request
+    fun sendDMRequest(
+        chatroomId: String,
+        chatRequestState: Int?,
+        isM2CM: Boolean = false
+    ) {
+        if (chatRequestState == null) {
+            return
+        }
+        viewModelScope.launchIO {
+            val request = SendDMRequest.Builder()
+                .chatroomId(chatroomId)
+                .text(dmRequestText)
+                .chatRequestState(chatRequestState)
+                .build()
+
+            val response = lmChatClient.sendDMRequest(request)
+            if (response.success) {
+                if (isM2CM) {
+                    _dmInitiatedForCM.postValue(true)
+                }
+
+                updateChatRequestStateLocally(chatRequestState)
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.SendDMRequest(response.errorMessage))
+            }
+        }
+    }
+
+    // updates the chatroom view data locally
+    private fun updateChatRequestStateLocally(chatRequestState: Int) {
+        val updatedChatroom = getChatroom()
+            ?.toBuilder()
+            ?.chatRequestState(chatRequestState)
+            ?.chatRequestedById(userPreferences.getMemberId())
+            ?.build()
+        chatroomDetail = chatroomDetail.toBuilder().chatroom(updatedChatroom).build()
+        _updatedChatRequestState.postValue(chatRequestState)
     }
 
     override fun onCleared() {
