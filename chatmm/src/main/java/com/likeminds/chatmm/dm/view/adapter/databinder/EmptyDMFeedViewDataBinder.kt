@@ -7,9 +7,8 @@ import com.likeminds.chatmm.databinding.LayoutEmptyDmFeedBinding
 import com.likeminds.chatmm.dm.model.DMFeedEmptyViewData
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_DM_FEED_EMPTY_DATA
-import javax.inject.Inject
 
-class EmptyDMFeedViewDataBinder @Inject constructor() :
+class EmptyDMFeedViewDataBinder :
     ViewDataBinder<LayoutEmptyDmFeedBinding, DMFeedEmptyViewData>() {
 
     override val viewType: Int

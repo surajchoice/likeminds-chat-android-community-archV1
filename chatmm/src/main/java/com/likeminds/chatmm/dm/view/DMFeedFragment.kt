@@ -19,7 +19,7 @@ import com.likeminds.chatmm.dm.viewmodel.DMFeedViewModel
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.DMAllMemberActivity
+import com.likeminds.chatmm.member.view.CommunityMembersActivity
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -32,7 +32,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     DMAdapterListener {
 
     private lateinit var dmMetaExtras: CheckDMTabResponse
-    private var showList: Int = DMAllMemberShowList.ALL_MEMBERS.value
+    private var showList: Int = CommunityMembersFilter.ALL_MEMBERS.value
 
     @Inject
     lateinit var userPreferences: UserPreferences
@@ -40,7 +40,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     private val dmAllMemberLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val resultExtras = result.data?.extras?.getParcelable<DMAllMemberResultExtras>(
+                val resultExtras = result.data?.extras?.getParcelable<CommunityMembersResultExtras>(
                     DM_ALL_MEMBER_RESULT,
                 ) ?: return@registerForActivityResult
 
@@ -179,11 +179,11 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     // initializes click listener on new DM fab
     private fun initFABListener() {
         binding.fabNewDm.setOnClickListener {
-            val extras = DMAllMemberExtras.Builder()
+            val extras = CommunityMembersExtras.Builder()
                 .showList(showList)
                 .build()
 
-            val intent = DMAllMemberActivity.getIntent(requireContext(), extras)
+            val intent = CommunityMembersActivity.getIntent(requireContext(), extras)
             dmAllMemberLauncher.launch(intent)
         }
     }
@@ -202,7 +202,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     private fun handleCTA(cta: String) {
         val route = Uri.parse(cta)
         showList = route.getQueryParameter(QUERY_SHOW_LIST)?.toInt()
-            ?: DMAllMemberShowList.ALL_MEMBERS.value
+            ?: CommunityMembersFilter.ALL_MEMBERS.value
     }
 
     //opens dm chatroom by creating route
