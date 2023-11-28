@@ -188,6 +188,8 @@ class ChatroomDetailFragment :
     private lateinit var chatroomScrollListener: ChatroomScrollListener
     private var updatedMuteActionTitle: String? = null
     private var updatedFollowActionTitle: String? = null
+    private var updatedBlockActionTitle: String? = null
+
     private var blockedAccessPopUp: AlertDialog? = null
 
     private var cameraPath: String? = null
@@ -413,6 +415,9 @@ class ChatroomDetailFragment :
 
         const val FOLLOW_ACTION_TITLE = "Join chatroom"
         const val UNFOLLOW_ACTION_TITLE = "Leave chatroom"
+
+        const val BLOCK_ACTION_TITLE = "Block"
+        const val UNBLOCK_ACTION_TITLE = "Unblock"
 
         const val SOURCE_CHAT_ROOM_OVERFLOW_MENU = "chatroom_overflow_menu"
 
@@ -1307,7 +1312,7 @@ class ChatroomDetailFragment :
                     isBlocked
                 )
             } else {
-                setChatInputBoxViewTypeForGroupChat()
+                setChatInputBoxViewTypeForGroupChat(type)
             }
             if (type == null) {
                 return
@@ -1486,12 +1491,20 @@ class ChatroomDetailFragment :
                     if (!memberTagging.isShowing) {
                         inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_black10_1)
                     }
-                    if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
+                    if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
-
+                    if (inputBox.etAnswer.text?.trim()
+                            .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
+                    ) {
+                        fabSend.hide()
+                        fabMic.show()
+                    } else {
+                        fabSend.show()
+                        fabMic.hide()
+                    }
                 }
 
                 CHAT_BOX_REPLY -> {
@@ -2595,7 +2608,7 @@ class ChatroomDetailFragment :
         viewModel.initialData.observe(viewLifecycleOwner) { initialData ->
             //chatroom is invalid or chatroom is deleted
             if (initialData == null) {
-                ViewUtils.showShortToast(context, "This chatroom doesn't exist")
+                ViewUtils.showShortToast(context, getString(R.string.this_chatroom_doesnt_exist))
                 requireActivity().finish()
                 return@observe
             }
@@ -2603,7 +2616,10 @@ class ChatroomDetailFragment :
             if (initialData.chatRoom == null) {
                 if (chatroomDetailExtras.loadingAfterSync) {
                     //chatroom id is invalid or user don't have access to it
-                    ViewUtils.showShortToast(context, "This chatroom doesn't exist")
+                    ViewUtils.showShortToast(
+                        context,
+                        getString(R.string.this_chatroom_doesnt_exist)
+                    )
                     requireActivity().finish()
                     return@observe
                 }
@@ -3315,11 +3331,10 @@ class ChatroomDetailFragment :
     // observes the showDM LiveData
     private fun observeDMStatus() {
         viewModel.showDM.observe(viewLifecycleOwner) { showDM ->
-            if (showDM) {
-                setChatInputBoxViewType(CHAT_BOX_NORMAL)
-            } else {
-                setChatInputBoxViewType(CHAT_BOX_NORMAL)
-            }
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                showDM
+            )
         }
     }
 
@@ -3388,7 +3403,7 @@ class ChatroomDetailFragment :
     // observes dmInitiatedForCM live data
     private fun observeDMInitiatedForCM() {
         viewModel.dmInitiatedForCM.observe(viewLifecycleOwner) { dmInitiatedForCM ->
-            if (dmInitiatedForCM) {
+            if (dmInitiatedForCM && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
                 syncChatroom()
             }
         }
@@ -5538,6 +5553,7 @@ class ChatroomDetailFragment :
             .showTapToUndo(false)
             .build()
         chatroomDetailAdapter.update(index, updatedConversationViewData)
+        updatedBlockActionTitle = BLOCK_ACTION_TITLE
         invalidateActionsMenu()
         viewModel.blockMember(
             chatroomId,
@@ -5637,6 +5653,16 @@ class ChatroomDetailFragment :
                     item?.isVisible = true
                     item?.title = chatroomActionViewData.title
                 }
+
+                "27", "28" -> {
+                    val item = actionsMenu?.findItem(R.id.block_unblock)
+                    item?.isVisible = true
+                    if (updatedBlockActionTitle != null) {
+                        item?.title = updatedBlockActionTitle
+                    } else {
+                        item?.title = chatroomActionViewData.title
+                    }
+                }
             }
         }
     }
@@ -5678,6 +5704,32 @@ class ChatroomDetailFragment :
 
             R.id.leave_chatroom -> {
                 showLeaveChatroomConfirmationPopup()
+            }
+
+            R.id.block_unblock -> {
+                val value: MemberBlockState
+                if (item.title.toString() == BLOCK_ACTION_TITLE
+                ) {
+                    updatedBlockActionTitle = UNBLOCK_ACTION_TITLE
+                    value = MemberBlockState.MEMBER_BLOCKED
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.member_blocked)
+                    )
+                } else {
+                    updatedBlockActionTitle = BLOCK_ACTION_TITLE
+                    value = MemberBlockState.MEMBER_UNBLOCKED
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.member_unblocked)
+                    )
+                    removeTapToUndo()
+                }
+                invalidateActionsMenu()
+                viewModel.blockMember(
+                    chatroomId,
+                    value
+                )
             }
 
             // todo: profile
