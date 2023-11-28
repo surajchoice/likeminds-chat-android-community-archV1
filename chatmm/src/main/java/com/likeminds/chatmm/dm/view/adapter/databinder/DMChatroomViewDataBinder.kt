@@ -23,10 +23,9 @@ import com.likeminds.chatmm.utils.ViewUtils.fetchColor
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_DM
-import javax.inject.Inject
+import com.likeminds.chatmm.utils.model.ITEM_DIRECT_MESSAGE
 
-class DMChatroomViewDataBinder @Inject constructor(
+class DMChatroomViewDataBinder constructor(
     private val dmAdapterListener: DMAdapterListener,
     private val userPreferences: UserPreferences
 ) : ViewDataBinder<ItemDmChatroomBinding, BaseViewType>() {
@@ -36,7 +35,7 @@ class DMChatroomViewDataBinder @Inject constructor(
     }
 
     override val viewType: Int
-        get() = ITEM_DM
+        get() = ITEM_DIRECT_MESSAGE
 
     override fun createBinder(parent: ViewGroup): ItemDmChatroomBinding {
         val itemChatBinding = ItemDmChatroomBinding.inflate(

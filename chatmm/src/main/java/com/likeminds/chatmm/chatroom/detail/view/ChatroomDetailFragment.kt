@@ -486,7 +486,7 @@ class ChatroomDetailFragment :
      */
     @RequiresApi(Build.VERSION_CODES.N)
     private fun fetchInitialData() {
-        viewModel.getInitialData(requireContext(), chatroomDetailExtras)
+        viewModel.getInitialData(chatroomDetailExtras)
     }
 
     private fun getChatroomViewData(): ChatroomViewData? {
@@ -916,6 +916,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    // initializes click listeners on dm request approve reject buttons
     private fun initDMRequestClickListeners() {
         binding.apply {
             tvApproveDmRequest.setOnClickListener {
@@ -5545,6 +5546,7 @@ class ChatroomDetailFragment :
         performReportAbuse()
     }
 
+    // unblocks the member and updates the tap to undo
     override fun blockMember(index: Int, state: MemberBlockState) {
         val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
         val updatedConversationViewData = conversationViewData.toBuilder()

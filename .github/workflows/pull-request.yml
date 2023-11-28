@@ -1,0 +1,56 @@
+name: Lint and Test
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  lint_and_test:
+    name: Run Lint and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
+
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "google-services.json"
+        json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        dir: 'app/'
+
+    - name: Run tests
+      run: ./gradlew test
+
+    - name: Run lint
+      if: always()
+      run: ./gradlew lint
+    
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: lint-intermediate-report
+        retention-days: 90
+        path: |
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/intermediates/lint_intermediate_text_report/debug/lint-results-debug.txt
+    
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lint-results-html
+        retention-days: 90
+        path: |
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/app/build/reports/lint-results-debug.html
+          /home/runner/work/LikeMinds-Android-Chat-MM/LikeMinds-Android-Chat-MM/chatmm/build/reports/lint-results-debug.html
