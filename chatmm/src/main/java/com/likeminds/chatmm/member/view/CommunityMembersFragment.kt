@@ -15,13 +15,13 @@ import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
 import com.likeminds.chatmm.dm.model.DMLimitExceededDialogExtras
 import com.likeminds.chatmm.dm.view.DMFeedFragment.Companion.DM_ALL_MEMBER_RESULT
 import com.likeminds.chatmm.dm.view.DMLimitExceededDialogFragment
-import com.likeminds.chatmm.member.model.DMAllMemberExtras
+import com.likeminds.chatmm.member.model.CommunityMembersExtras
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.DMAllMemberActivity.Companion.DM_ALL_MEMBERS_EXTRAS
-import com.likeminds.chatmm.member.view.adapter.DMAllMemberAdapter
-import com.likeminds.chatmm.member.view.adapter.DMAllMemberAdapterListener
-import com.likeminds.chatmm.member.viewmodel.DMAllMemberViewModel
+import com.likeminds.chatmm.member.view.CommunityMembersActivity.Companion.DM_ALL_MEMBERS_EXTRAS
+import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapter
+import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapterListener
+import com.likeminds.chatmm.member.viewmodel.CommunityMembersViewModel
 import com.likeminds.chatmm.search.util.CustomSearchBar
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
@@ -30,14 +30,14 @@ import com.likeminds.chatmm.utils.customview.BaseFragment
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMemberViewModel>(),
-    DMAllMemberAdapterListener {
+class CommunityMembersFragment : BaseFragment<FragmentDmAllMembersBinding, CommunityMembersViewModel>(),
+    CommunityMembersAdapterListener {
 
     @Inject
     lateinit var userPreferences: UserPreferences
 
-    override fun getViewModelClass(): Class<DMAllMemberViewModel> {
-        return DMAllMemberViewModel::class.java
+    override fun getViewModelClass(): Class<CommunityMembersViewModel> {
+        return CommunityMembersViewModel::class.java
     }
 
     override fun getViewBinding(): FragmentDmAllMembersBinding {
@@ -48,10 +48,10 @@ class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMembe
         const val TAG = "DMAllMemberFragment"
     }
 
-    private lateinit var mAdapter: DMAllMemberAdapter
+    private lateinit var mAdapter: CommunityMembersAdapter
 
     private lateinit var scrollListener: EndlessRecyclerScrollListener
-    private lateinit var extras: DMAllMemberExtras
+    private lateinit var extras: CommunityMembersExtras
     private var searchKeyword: String? = null
 
     override fun receiveExtras() {
@@ -91,22 +91,22 @@ class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMembe
 
         viewModel.errorEventFlow.onEach { response ->
             when (response) {
-                is DMAllMemberViewModel.ErrorMessageEvent.CheckDMLimit -> {
+                is CommunityMembersViewModel.ErrorMessageEvent.CheckDMLimit -> {
                     val errorMessage = response.errorMessage
                     ViewUtils.showErrorMessageToast(requireContext(), errorMessage)
                 }
 
-                is DMAllMemberViewModel.ErrorMessageEvent.CreateDMChatroom -> {
+                is CommunityMembersViewModel.ErrorMessageEvent.CreateDMChatroom -> {
                     val errorMessage = response.errorMessage
                     ViewUtils.showErrorMessageToast(requireContext(), errorMessage)
                 }
 
-                is DMAllMemberViewModel.ErrorMessageEvent.GetAllMembers -> {
+                is CommunityMembersViewModel.ErrorMessageEvent.GetAllMembers -> {
                     val errorMessage = response.errorMessage
                     ViewUtils.showErrorMessageToast(requireContext(), errorMessage)
                 }
 
-                is DMAllMemberViewModel.ErrorMessageEvent.SearchMembers -> {
+                is CommunityMembersViewModel.ErrorMessageEvent.SearchMembers -> {
                     val errorMessage = response.errorMessage
                     ViewUtils.showErrorMessageToast(requireContext(), errorMessage)
                 }
@@ -144,7 +144,7 @@ class DMAllMemberFragment : BaseFragment<FragmentDmAllMembersBinding, DMAllMembe
 
         //attach it to recycler view
         binding.rvMembers.apply {
-            mAdapter = DMAllMemberAdapter(this@DMAllMemberFragment, userPreferences)
+            mAdapter = CommunityMembersAdapter(this@CommunityMembersFragment, userPreferences)
             adapter = mAdapter
             layoutManager = linearLayoutManager
             addOnScrollListener(scrollListener)

@@ -8,7 +8,7 @@ import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
-import com.likeminds.chatmm.utils.model.ITEM_DM_ALL_MEMBER
+import com.likeminds.chatmm.utils.model.ITEM_COMMUNITY_MEMBER
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.community.model.*
 import com.likeminds.likemindschat.dm.model.CheckDMLimitRequest
@@ -17,7 +17,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
-class DMAllMemberViewModel @Inject constructor(
+class CommunityMembersViewModel @Inject constructor(
     private val userPreferences: UserPreferences
 ) : ViewModel() {
 
@@ -54,7 +54,7 @@ class DMAllMemberViewModel @Inject constructor(
                 .page(page)
 
             val request = when (showList) {
-                DMAllMemberShowList.ALL_MEMBERS.value -> {
+                CommunityMembersFilter.ALL_MEMBERS.value -> {
                     requestBuilder.filterMemberRoles(
                         listOf(
                             MemberRoles.ADMIN.value,
@@ -63,7 +63,7 @@ class DMAllMemberViewModel @Inject constructor(
                     ).build()
                 }
 
-                DMAllMemberShowList.ONLY_CMS.value -> {
+                CommunityMembersFilter.ONLY_CMS.value -> {
                     requestBuilder.filterMemberRoles(
                         listOf(
                             MemberRoles.ADMIN.value
@@ -106,7 +106,7 @@ class DMAllMemberViewModel @Inject constructor(
 
         val membersViewData = filteredMembers.map {
             ViewDataConverter.convertMember(it).toBuilder()
-                .dynamicViewType(ITEM_DM_ALL_MEMBER)
+                .dynamicViewType(ITEM_COMMUNITY_MEMBER)
                 .build()
         }
 
@@ -123,12 +123,12 @@ class DMAllMemberViewModel @Inject constructor(
                 .searchType(SEARCH_TYPE_NAME)
 
             val request = when (showList) {
-                DMAllMemberShowList.ALL_MEMBERS.value -> {
+                CommunityMembersFilter.ALL_MEMBERS.value -> {
                     requestBuilder.memberStates(listOf(STATE_ADMIN, STATE_MEMBER))
                         .build()
                 }
 
-                DMAllMemberShowList.ONLY_CMS.value -> {
+                CommunityMembersFilter.ONLY_CMS.value -> {
                     requestBuilder.memberStates(listOf(STATE_ADMIN))
                         .build()
                 }
@@ -159,7 +159,7 @@ class DMAllMemberViewModel @Inject constructor(
 
         val membersViewData = members.map {
             ViewDataConverter.convertMember(it).toBuilder()
-                .dynamicViewType(ITEM_DM_ALL_MEMBER)
+                .dynamicViewType(ITEM_COMMUNITY_MEMBER)
                 .build()
         }
 
@@ -212,8 +212,8 @@ class DMAllMemberViewModel @Inject constructor(
         }
     }
 
-    fun createDMAllMemberResult(chatroomId: String): DMAllMemberResultExtras {
-        return DMAllMemberResultExtras.Builder()
+    fun createDMAllMemberResult(chatroomId: String): CommunityMembersResultExtras {
+        return CommunityMembersResultExtras.Builder()
             .chatroomId(chatroomId)
             .build()
     }

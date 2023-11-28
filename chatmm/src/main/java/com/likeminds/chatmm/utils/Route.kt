@@ -309,7 +309,6 @@ object Route {
         return Pair(chatroomId, pollEnd)
     }
 
-    // todo: ask about community_id
     // create route for direct messages
     // route://direct_messages?chatroom_id=<>&community_id=<>
     fun createDirectMessageRoute(chatroomId: String): String {
@@ -317,7 +316,6 @@ object Route {
             .scheme(ROUTE_SCHEME)
             .authority(ROUTE_DIRECT_MESSAGE)
             .appendQueryParameter("chatroom_id", chatroomId)
-//            .appendQueryParameter("community_id", communityId)
             .build()
             .toString()
     }

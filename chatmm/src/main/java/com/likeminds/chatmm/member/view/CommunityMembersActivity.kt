@@ -8,13 +8,12 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.ActivityDmAllMembersBinding
-import com.likeminds.chatmm.member.model.DMAllMemberExtras
+import com.likeminds.chatmm.member.model.CommunityMembersExtras
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
-class DMAllMemberActivity : BaseAppCompatActivity() {
+class CommunityMembersActivity : BaseAppCompatActivity() {
 
     private lateinit var binding: ActivityDmAllMembersBinding
 
@@ -27,16 +26,16 @@ class DMAllMemberActivity : BaseAppCompatActivity() {
     companion object {
         const val DM_ALL_MEMBERS_EXTRAS = "DM_ALL_MEMBERS_EXTRAS"
 
-        fun start(context: Context, extras: DMAllMemberExtras) {
-            val intent = Intent(context, DMAllMemberActivity::class.java)
+        fun start(context: Context, extras: CommunityMembersExtras) {
+            val intent = Intent(context, CommunityMembersActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(DM_ALL_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
             context.startActivity(intent)
         }
 
-        fun getIntent(context: Context, extras: DMAllMemberExtras): Intent {
-            val intent = Intent(context, DMAllMemberActivity::class.java)
+        fun getIntent(context: Context, extras: CommunityMembersExtras): Intent {
+            val intent = Intent(context, CommunityMembersActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(DM_ALL_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
