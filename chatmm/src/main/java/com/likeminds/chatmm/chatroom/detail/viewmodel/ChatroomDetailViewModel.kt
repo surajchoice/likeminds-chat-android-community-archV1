@@ -15,7 +15,6 @@ import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
 import com.likeminds.chatmm.conversation.model.*
-import com.likeminds.chatmm.dm.model.DMRequestFrom
 import com.likeminds.chatmm.media.MediaRepository
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.*
@@ -37,10 +36,10 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
-import com.likeminds.likemindschat.dm.model.CheckDMStatusRequest
-import com.likeminds.likemindschat.dm.model.SendDMRequest
+import com.likeminds.likemindschat.dm.model.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
+import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.likeminds.likemindschat.user.model.MemberStateResponse
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
@@ -132,11 +131,14 @@ class ChatroomDetailViewModel @Inject constructor(
 
     var dmRequestText: String = ""
 
-    private val _updatedChatRequestState: MutableLiveData<Int> by lazy { MutableLiveData() }
-    val updatedChatRequestState: LiveData<Int> by lazy { _updatedChatRequestState }
+    private val _updatedChatRequestState: MutableLiveData<ChatRequestState> by lazy { MutableLiveData() }
+    val updatedChatRequestState: LiveData<ChatRequestState> by lazy { _updatedChatRequestState }
 
     private val _dmInitiatedForCM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val dmInitiatedForCM: LiveData<Boolean> by lazy { _dmInitiatedForCM }
+
+    private val _memberBlocked: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val memberBlocked: LiveData<Boolean> by lazy { _memberBlocked }
 
     private var sendLinkPreview = true
 
@@ -179,6 +181,7 @@ class ChatroomDetailViewModel @Inject constructor(
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
         data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
         data class SendDMRequest(val errorMessage: String?) : ErrorMessageEvent()
+        data class BlockMember(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -279,16 +282,17 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun getOtherDmMember(): MemberViewData? {
-        return null
-        // todo:
-//        return if (
-//            userPreferences.getMemberId() == getChatroom()?.chatroomWithUser?.id
-//        ) {
-//            getChatroom()?.memberViewData
-//        }
-//        else {
-//            getChatroom()?.chatroomWithUser
-//        }
+        return if (
+            userPreferences.getUUID() == getChatroom()?.chatroomWithUser?.sdkClientInfo?.uuid
+        ) {
+            getChatroom()?.memberViewData
+        } else {
+            getChatroom()?.chatroomWithUser
+        }
+    }
+
+    fun getLoggedInMemberId(): String {
+        return userPreferences.getMemberId()
     }
 
     //get first normal or poll conversation for list
@@ -2164,7 +2168,7 @@ class ChatroomDetailViewModel @Inject constructor(
     fun checkDMStatus(chatroomId: String) {
         viewModelScope.launchIO {
             val request = CheckDMStatusRequest.Builder()
-                .requestFrom(DMRequestFrom.CHATROOM.value)
+                .requestFrom(DMRequestFrom.CHATROOM)
                 .chatroomId(chatroomId)
                 .build()
 
@@ -2181,12 +2185,9 @@ class ChatroomDetailViewModel @Inject constructor(
     // calls api to send dm request
     fun sendDMRequest(
         chatroomId: String,
-        chatRequestState: Int?,
+        chatRequestState: ChatRequestState,
         isM2CM: Boolean = false
     ) {
-        if (chatRequestState == null) {
-            return
-        }
         viewModelScope.launchIO {
             val request = SendDMRequest.Builder()
                 .chatroomId(chatroomId)
@@ -2199,7 +2200,6 @@ class ChatroomDetailViewModel @Inject constructor(
                 if (isM2CM) {
                     _dmInitiatedForCM.postValue(true)
                 }
-
                 updateChatRequestStateLocally(chatRequestState)
             } else {
                 errorEventChannel.send(ErrorMessageEvent.SendDMRequest(response.errorMessage))
@@ -2208,7 +2208,7 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     // updates the chatroom view data locally
-    private fun updateChatRequestStateLocally(chatRequestState: Int) {
+    private fun updateChatRequestStateLocally(chatRequestState: ChatRequestState) {
         val updatedChatroom = getChatroom()
             ?.toBuilder()
             ?.chatRequestState(chatRequestState)
@@ -2222,6 +2222,28 @@ class ChatroomDetailViewModel @Inject constructor(
         previewLinkJob?.cancel()
         compositeDisposable.dispose()
         super.onCleared()
+    }
+
+    // calls api to block/unblock member
+    fun blockMember(chatroomId: String, status: MemberBlockState) {
+        viewModelScope.launchIO {
+            val request = BlockMemberRequest.Builder()
+                .chatroomId(chatroomId)
+                .status(status)
+                .build()
+
+            val response = lmChatClient.blockMember(request)
+
+            if (response.success) {
+                if (status == MemberBlockState.MEMBER_BLOCKED) {
+                    _memberBlocked.postValue(true)
+                } else {
+                    _memberBlocked.postValue(false)
+                }
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.BlockMember(response.errorMessage))
+            }
+        }
     }
 
     /**------------------------------------------------------------

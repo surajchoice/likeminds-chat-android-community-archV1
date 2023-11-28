@@ -3,7 +3,6 @@ package com.likeminds.chatmm.dm.viewmodel
 import android.util.Log
 import androidx.lifecycle.*
 import com.likeminds.chatmm.dm.model.DMFeedEmptyViewData
-import com.likeminds.chatmm.dm.model.DMRequestFrom
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -11,8 +10,7 @@ import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
-import com.likeminds.likemindschat.dm.model.CheckDMStatusRequest
-import com.likeminds.likemindschat.dm.model.CheckDMStatusResponse
+import com.likeminds.likemindschat.dm.model.*
 import com.likeminds.likemindschat.homefeed.util.HomeChatroomListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -151,7 +149,7 @@ class DMFeedViewModel @Inject constructor(
         viewModelScope.launchIO {
 
             val request = CheckDMStatusRequest.Builder()
-                .requestFrom(DMRequestFrom.DM_FEED.value)
+                .requestFrom(DMRequestFrom.DM_FEED)
                 .build()
 
             val response = lmChatClient.checkDMStatus(request)

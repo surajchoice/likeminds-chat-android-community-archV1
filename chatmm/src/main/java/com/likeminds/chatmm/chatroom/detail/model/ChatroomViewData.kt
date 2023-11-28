@@ -6,6 +6,7 @@ import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_HOME_CHAT_ROOM
+import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.community.model.Member
 import kotlinx.parcelize.Parcelize
 
@@ -56,7 +57,7 @@ class ChatroomViewData private constructor(
     val autoFollowDone: Boolean?,
     val dynamicViewType: Int?,
     val deletedByMember: MemberViewData?,
-    val chatRequestState: Int?,
+    val chatRequestState: ChatRequestState,
     val isPrivateMember: Boolean?,
     val chatRequestedById: String?,
     val chatRequestCreatedAt: Long?,
@@ -121,7 +122,7 @@ class ChatroomViewData private constructor(
         private var autoFollowDone: Boolean? = null
         private var dynamicViewType: Int? = null
         private var deletedByMember: MemberViewData? = null
-        private var chatRequestState: Int? = null
+        private var chatRequestState: ChatRequestState = ChatRequestState.NOTHING
         private var isPrivateMember: Boolean? = null
         private var chatRequestedById: String? = null
         private var chatRequestCreatedAt: Long? = null
@@ -210,7 +211,7 @@ class ChatroomViewData private constructor(
         fun deletedByMember(deletedByMember: MemberViewData?) =
             apply { this.deletedByMember = deletedByMember }
 
-        fun chatRequestState(chatRequestState: Int?) =
+        fun chatRequestState(chatRequestState: ChatRequestState) =
             apply { this.chatRequestState = chatRequestState }
 
         fun isPrivateMember(isPrivateMember: Boolean?) =

@@ -19,6 +19,8 @@ const val STATE_DM_CM_BECOMES_MEMBER_DISABLE = 14
 const val STATE_DM_MEMBER_BECOMES_CM = 15
 const val STATE_DM_CM_BECOMES_MEMBER_ENABLE = 16
 const val STATE_DM_MEMBER_BECOMES_CM_ENABLE = 17
+const val STATE_DM_REJECTED = 19
+const val STATE_DM_ACCEPTED = 20
 
 @IntDef(
     STATE_NORMAL,
@@ -37,7 +39,9 @@ const val STATE_DM_MEMBER_BECOMES_CM_ENABLE = 17
     STATE_DM_CM_BECOMES_MEMBER_DISABLE,
     STATE_DM_MEMBER_BECOMES_CM,
     STATE_DM_CM_BECOMES_MEMBER_ENABLE,
-    STATE_DM_MEMBER_BECOMES_CM_ENABLE
+    STATE_DM_MEMBER_BECOMES_CM_ENABLE,
+    STATE_DM_REJECTED,
+    STATE_DM_ACCEPTED
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class ConversationState {
@@ -60,7 +64,9 @@ annotation class ConversationState {
                     state == STATE_DM_CM_BECOMES_MEMBER_DISABLE ||
                     state == STATE_DM_MEMBER_BECOMES_CM ||
                     state == STATE_DM_CM_BECOMES_MEMBER_ENABLE ||
-                    state == STATE_DM_MEMBER_BECOMES_CM_ENABLE
+                    state == STATE_DM_MEMBER_BECOMES_CM_ENABLE ||
+                    state == STATE_DM_REJECTED ||
+                    state == STATE_DM_ACCEPTED
         }
 
         fun isPoll(state: Int): Boolean {

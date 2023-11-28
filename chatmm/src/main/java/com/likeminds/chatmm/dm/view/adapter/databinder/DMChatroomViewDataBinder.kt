@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.*
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.R
@@ -124,7 +125,9 @@ class DMChatroomViewDataBinder constructor(
                 lastConversation.state == STATE_DM_CM_BECOMES_MEMBER_DISABLE ||
                 lastConversation.state == STATE_DM_MEMBER_BECOMES_CM ||
                 lastConversation.state == STATE_DM_CM_BECOMES_MEMBER_ENABLE ||
-                lastConversation.state == STATE_DM_MEMBER_BECOMES_CM_ENABLE
+                lastConversation.state == STATE_DM_MEMBER_BECOMES_CM_ENABLE ||
+                lastConversation.state == STATE_DM_ACCEPTED ||
+                lastConversation.state == STATE_DM_REJECTED
             ) {
                 tvLastConversationPersonName.visibility = View.GONE
                 tvLastConversation.visibility = View.VISIBLE
@@ -178,6 +181,12 @@ class DMChatroomViewDataBinder constructor(
                         lastConversationAnswer
                     }
                 }
+                MemberTaggingDecoder.decode(
+                    tvLastConversation,
+                    tvLastConversation.text.toString(),
+                    false,
+                    LMBranding.getTextLinkColor()
+                )
             } else {
                 //Last conversation was deleted
                 tvLastConversationPersonName.visibility = View.GONE
