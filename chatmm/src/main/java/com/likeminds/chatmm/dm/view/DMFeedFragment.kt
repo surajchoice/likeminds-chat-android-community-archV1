@@ -44,7 +44,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
                 val extras = result.data?.extras
                 val resultExtras = ExtrasUtil.getParcelable(
                     extras,
-                    DM_ALL_MEMBER_RESULT,
+                    COMMUNITY_MEMBERS_RESULT,
                     CommunityMembersResultExtras::class.java
                 ) ?: return@registerForActivityResult
 
@@ -54,7 +54,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     companion object {
         const val DM_META_EXTRAS = "DM_META_EXTRAS"
-        const val DM_ALL_MEMBER_RESULT = "DM_ALL_MEMBER_RESULT"
+        const val COMMUNITY_MEMBERS_RESULT = "COMMUNITY_MEMBERS_RESULT"
         const val TAG = "DMFeedFragment"
         const val QUERY_SHOW_LIST = "show_list"
 
@@ -71,7 +71,6 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun receiveExtras() {
         super.receiveExtras()
-
         dmMetaExtras =
             arguments?.getParcelable(DM_META_EXTRAS) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }

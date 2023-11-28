@@ -13,12 +13,12 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.databinding.FragmentDmAllMembersBinding
 import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
 import com.likeminds.chatmm.dm.model.DMLimitExceededDialogExtras
-import com.likeminds.chatmm.dm.view.DMFeedFragment.Companion.DM_ALL_MEMBER_RESULT
+import com.likeminds.chatmm.dm.view.DMFeedFragment.Companion.COMMUNITY_MEMBERS_RESULT
 import com.likeminds.chatmm.dm.view.DMLimitExceededDialogFragment
 import com.likeminds.chatmm.member.model.CommunityMembersExtras
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.CommunityMembersActivity.Companion.DM_ALL_MEMBERS_EXTRAS
+import com.likeminds.chatmm.member.view.CommunityMembersActivity.Companion.COMMUNITY_MEMBERS_EXTRAS
 import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapter
 import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapterListener
 import com.likeminds.chatmm.member.viewmodel.CommunityMembersViewModel
@@ -30,7 +30,8 @@ import com.likeminds.chatmm.utils.customview.BaseFragment
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class CommunityMembersFragment : BaseFragment<FragmentDmAllMembersBinding, CommunityMembersViewModel>(),
+class CommunityMembersFragment :
+    BaseFragment<FragmentDmAllMembersBinding, CommunityMembersViewModel>(),
     CommunityMembersAdapterListener {
 
     @Inject
@@ -45,7 +46,7 @@ class CommunityMembersFragment : BaseFragment<FragmentDmAllMembersBinding, Commu
     }
 
     companion object {
-        const val TAG = "DMAllMemberFragment"
+        const val TAG = "CommunityMembersFragment"
     }
 
     private lateinit var mAdapter: CommunityMembersAdapter
@@ -59,8 +60,8 @@ class CommunityMembersFragment : BaseFragment<FragmentDmAllMembersBinding, Commu
         val bundle = requireActivity().intent?.getBundleExtra("bundle")
         extras = ExtrasUtil.getParcelable(
             bundle,
-            DM_ALL_MEMBERS_EXTRAS,
-            DMAllMemberExtras::class.java
+            COMMUNITY_MEMBERS_EXTRAS,
+            CommunityMembersExtras::class.java
         ) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }
 
@@ -223,7 +224,7 @@ class CommunityMembersFragment : BaseFragment<FragmentDmAllMembersBinding, Commu
     private fun createActivityResultAndFinish(chatroomId: String) {
         val result = viewModel.createDMAllMemberResult(chatroomId)
         val intent = Intent().apply {
-            putExtra(DM_ALL_MEMBER_RESULT, result)
+            putExtra(COMMUNITY_MEMBERS_RESULT, result)
         }
         requireActivity().setResult(Activity.RESULT_OK, intent)
         requireActivity().finish()

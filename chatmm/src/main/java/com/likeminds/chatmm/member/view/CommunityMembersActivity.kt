@@ -25,12 +25,12 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
     private lateinit var navController: NavController
 
     companion object {
-        const val DM_ALL_MEMBERS_EXTRAS = "DM_ALL_MEMBERS_EXTRAS"
+        const val COMMUNITY_MEMBERS_EXTRAS = "COMMUNITY_MEMBERS_EXTRAS"
 
         fun start(context: Context, extras: CommunityMembersExtras) {
             val intent = Intent(context, CommunityMembersActivity::class.java)
             val bundle = Bundle()
-            bundle.putParcelable(DM_ALL_MEMBERS_EXTRAS, extras)
+            bundle.putParcelable(COMMUNITY_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
             context.startActivity(intent)
         }
@@ -38,7 +38,7 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
         fun getIntent(context: Context, extras: CommunityMembersExtras): Intent {
             val intent = Intent(context, CommunityMembersActivity::class.java)
             val bundle = Bundle()
-            bundle.putParcelable(DM_ALL_MEMBERS_EXTRAS, extras)
+            bundle.putParcelable(COMMUNITY_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
             return intent
         }
@@ -60,11 +60,11 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
         if (bundle != null) {
             chatroomDetailExtras = ExtrasUtil.getParcelable(
                 bundle,
-                DM_ALL_MEMBERS_EXTRAS,
+                COMMUNITY_MEMBERS_EXTRAS,
                 ChatroomDetailExtras::class.java
             )
             val args = Bundle().apply {
-                putParcelable(DM_ALL_MEMBERS_EXTRAS, chatroomDetailExtras)
+                putParcelable(COMMUNITY_MEMBERS_EXTRAS, chatroomDetailExtras)
             }
 
             //Navigation

@@ -764,6 +764,7 @@ class ChatroomDetailFragment :
             ivCamera.setOnClickListener {
                 LMChatPermissionManager.performTaskWithPermission(
                     activity as BaseAppCompatActivity,
+
                     { initCameraAttachment() },
                     LMChatPermission.getCameraPermissionData(),
                     showInitialPopup = true,
