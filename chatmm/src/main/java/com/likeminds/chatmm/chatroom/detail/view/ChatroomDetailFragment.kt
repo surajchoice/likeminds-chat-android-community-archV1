@@ -29,7 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
@@ -62,8 +62,8 @@ import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BRO
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
-import com.likeminds.chatmm.media.view.MediaPickerActivity
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -730,45 +730,45 @@ class ChatroomDetailFragment :
             ivGallery.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extras = MediaPickerExtras.Builder()
+                val extras = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(IMAGE, VIDEO))
                     .build()
 
-                val intent = MediaPickerActivity.getIntent(requireContext(), extras)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
                 galleryLauncher.launch(intent)
             }
 
             ivDocument.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extra = MediaPickerExtras.Builder()
+                val extra = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(PDF))
                     .build()
-                val intent = MediaPickerActivity.getIntent(requireContext(), extra)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
                 documentLauncher.launch(intent)
             }
 
             ivAudio.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extra = MediaPickerExtras.Builder()
+                val extra = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(AUDIO))
                     .build()
-                val intent = MediaPickerActivity.getIntent(requireContext(), extra)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
                 audioLauncher.launch(intent)
             }
 
             ivCamera.setOnClickListener {
-                PermissionManager.performTaskWithPermission(
+                LMChatPermissionManager.performTaskWithPermission(
                     activity as BaseAppCompatActivity,
                     { initCameraAttachment() },
-                    Permission.getCameraPermissionData(),
+                    LMChatPermission.getCameraPermissionData(),
                     showInitialPopup = true,
                     showDeniedPopup = true,
-                    permissionDeniedCallback = object : PermissionDeniedCallback {
+                    permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
                         override fun onDeny() {}
 
                         override fun onCancel() {}
@@ -1118,13 +1118,13 @@ class ChatroomDetailFragment :
                     } else {
                         showTapAndHoldToast = true
                         motionDownHandler = Handler(Looper.getMainLooper())
-                        PermissionManager.performTaskWithPermission(
+                        LMChatPermissionManager.performTaskWithPermission(
                             activity as BaseAppCompatActivity,
                             { },
-                            Permission.getRecordAudioPermissionData(),
+                            LMChatPermission.getRecordAudioPermissionData(),
                             showInitialPopup = true,
                             showDeniedPopup = true,
-                            permissionDeniedCallback = object : PermissionDeniedCallback {
+                            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
                                 override fun onDeny() {}
 
                                 override fun onCancel() {}
@@ -1133,7 +1133,7 @@ class ChatroomDetailFragment :
                         motionDownHandler?.postDelayed({
                             showTapAndHoldToast = false
                             stopTrackingVoiceNoteAction = false
-                            if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                            if ((activity as BaseAppCompatActivity).hasPermission(LMChatPermission.getRecordAudioPermissionData())) {
                                 startVoiceNote()
                             }
                         }, 400)
@@ -1146,7 +1146,7 @@ class ChatroomDetailFragment :
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                    if ((activity as BaseAppCompatActivity).hasPermission(LMChatPermission.getRecordAudioPermissionData())) {
                         if (showTapAndHoldToast) {
                             ViewUtils.showAnchoredToast(binding.voiceNoteTapHoldToast.layoutToast)
 

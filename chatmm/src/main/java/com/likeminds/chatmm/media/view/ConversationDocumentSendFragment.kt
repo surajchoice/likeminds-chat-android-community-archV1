@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -125,12 +125,12 @@ class ConversationDocumentSendFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extras = MediaPickerExtras.Builder()
+            val extras = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(PDF))
                 .build()
 
-            val intent = MediaPickerActivity.getIntent(requireContext(), extras)
+            val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
             pickerLauncher.launch(intent)
         }
 
@@ -194,7 +194,7 @@ class ConversationDocumentSendFragment :
             val extras = result.data?.extras
             val mediaPickerResult = ExtrasUtil.getParcelable(
                 extras,
-                MediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
                 MediaPickerResult::class.java
             ) ?: return@registerForActivityResult
             when (mediaPickerResult.mediaPickerResultType) {

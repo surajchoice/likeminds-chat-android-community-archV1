@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-class MediaPickerExtras private constructor(
+class LMChatMediaPickerExtras private constructor(
     val senderName: String?,
     @InternalMediaType val mediaTypes: List<String>,
     val allowMultipleSelect: Boolean
@@ -26,7 +26,7 @@ class MediaPickerExtras private constructor(
         fun allowMultipleSelect(allowMultipleSelect: Boolean) =
             apply { this.allowMultipleSelect = allowMultipleSelect }
 
-        fun build() = MediaPickerExtras(senderName, mediaTypes, allowMultipleSelect)
+        fun build() = LMChatMediaPickerExtras(senderName, mediaTypes, allowMultipleSelect)
     }
 
     fun toBuilder(): Builder {

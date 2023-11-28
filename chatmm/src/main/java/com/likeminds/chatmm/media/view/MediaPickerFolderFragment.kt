@@ -14,7 +14,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.databinding.FragmentMediaPickerFolderBinding
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
@@ -29,7 +29,7 @@ class MediaPickerFolderFragment :
 
     private lateinit var mediaPickerAdapter: MediaPickerAdapter
 
-    private lateinit var mediaPickerExtras: MediaPickerExtras
+    private lateinit var mediaPickerExtras: LMChatMediaPickerExtras
     private val appsList by lazy { ArrayList<LocalAppData>() }
 
     companion object {
@@ -39,7 +39,7 @@ class MediaPickerFolderFragment :
         const val TAG = "MediaPickerFolder"
 
         @JvmStatic
-        fun getInstance(extras: MediaPickerExtras): MediaPickerFolderFragment {
+        fun getInstance(extras: LMChatMediaPickerExtras): MediaPickerFolderFragment {
             val fragment = MediaPickerFolderFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_MEDIA_PICKER_FOLDER, extras)

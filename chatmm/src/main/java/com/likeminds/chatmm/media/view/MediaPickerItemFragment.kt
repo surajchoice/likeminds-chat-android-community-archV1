@@ -87,13 +87,13 @@ class MediaPickerItemFragment :
     }
 
     private fun checkStoragePermission() {
-        PermissionManager.performTaskWithPermission(
+        LMChatPermissionManager.performTaskWithPermission(
             activity as BaseAppCompatActivity,
             { },
-            Permission.getStoragePermissionData(),
+            LMChatPermission.getStoragePermissionData(),
             showInitialPopup = true,
             showDeniedPopup = true,
-            permissionDeniedCallback = object : PermissionDeniedCallback {
+            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
                 override fun onDeny() {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
@@ -232,7 +232,7 @@ class MediaPickerItemFragment :
         val intent = Intent().apply {
             putExtras(Bundle().apply {
                 putParcelable(
-                    MediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
+                    LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
                 )
             })
         }

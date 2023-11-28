@@ -21,6 +21,6 @@ interface MediaComponent {
     fun inject(mediaPickerItemFragment: MediaPickerItemFragment)
     fun inject(mediaVerticalListFragment: MediaVerticalListFragment)
     fun inject(playVideoFragment: PlayVideoFragment)
-    fun inject(mediaPickerActivity: MediaPickerActivity)
+    fun inject(mediaPickerActivity: LMChatMediaPickerActivity)
     fun inject(mediaActivity: MediaActivity)
 }

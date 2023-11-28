@@ -32,7 +32,8 @@
             app:fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_blocked" />
+            app:layout_constraintTop_toBottomOf="@id/iv_blocked"
+            tools:ignore="UnusedAttribute" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_description"
@@ -48,7 +49,8 @@
             app:fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_heading" />
+            app:layout_constraintTop_toBottomOf="@id/tv_heading"
+            tools:ignore="UnusedAttribute" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

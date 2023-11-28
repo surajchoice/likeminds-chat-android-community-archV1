@@ -28,7 +28,7 @@ class MediaPickerDocumentFragment :
     private val fragmentActivity by lazy { activity as AppCompatActivity? }
 
     private val selectedMedias by lazy { HashMap<String, MediaViewData>() }
-    private lateinit var mediaPickerExtras: MediaPickerExtras
+    private lateinit var mediaPickerExtras: LMChatMediaPickerExtras
 
     private var currentSort = SORT_BY_NAME
 
@@ -37,7 +37,7 @@ class MediaPickerDocumentFragment :
         private const val BUNDLE_MEDIA_PICKER_DOC = "bundle of media picker doc"
 
         @JvmStatic
-        fun getInstance(extras: MediaPickerExtras): MediaPickerDocumentFragment {
+        fun getInstance(extras: LMChatMediaPickerExtras): MediaPickerDocumentFragment {
             val fragment = MediaPickerDocumentFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_MEDIA_PICKER_DOC, extras)
@@ -148,7 +148,7 @@ class MediaPickerDocumentFragment :
         val intent = Intent().apply {
             putExtras(Bundle().apply {
                 putParcelable(
-                    MediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
+                    LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
                 )
             })
         }
@@ -205,7 +205,7 @@ class MediaPickerDocumentFragment :
         val intent = Intent().apply {
             putExtras(Bundle().apply {
                 putParcelable(
-                    MediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
+                    LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extra
                 )
             })
         }

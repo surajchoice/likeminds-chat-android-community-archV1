@@ -10,7 +10,7 @@ import android.view.animation.LinearInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -203,11 +203,11 @@ class ConversationAudioSendEditFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extras = MediaPickerExtras.Builder()
+            val extras = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(AUDIO))
                 .build()
-            val intent = MediaPickerActivity.getIntent(
+            val intent = LMChatMediaPickerActivity.getIntent(
                 requireContext(),
                 extras
             )
@@ -263,7 +263,7 @@ class ConversationAudioSendEditFragment :
                 val extras = result.data?.extras
                 val mediaPickerResult = ExtrasUtil.getParcelable(
                     extras,
-                    MediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                    LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
                     MediaPickerResult::class.java
                 ) ?: return@registerForActivityResult
                 when (mediaPickerResult.mediaPickerResultType) {

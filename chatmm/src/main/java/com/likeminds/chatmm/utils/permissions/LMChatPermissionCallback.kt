@@ -1,6 +1,6 @@
 package com.likeminds.chatmm.utils.permissions
 
-interface PermissionCallback {
+interface LMChatPermissionCallback {
     fun onGrant()
     fun onDeny()
 }

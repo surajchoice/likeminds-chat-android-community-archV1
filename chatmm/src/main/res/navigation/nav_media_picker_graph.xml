@@ -15,7 +15,7 @@
             app:destination="@id/mediaPickerItemFragment" />
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.LMChatMediaPickerExtras" />
     </fragment>
     <fragment
         android:id="@+id/mediaPickerItemFragment"
@@ -33,7 +33,7 @@
         tools:layout="@layout/fragment_media_picker_document">
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.LMChatMediaPickerExtras" />
     </fragment>
 
     <fragment
@@ -43,7 +43,7 @@
         tools:layout="@layout/fragment_media_picker_audio">
         <argument
             android:name="mediaPickerExtras"
-            app:argType="com.likeminds.chatmm.media.model.MediaPickerExtras" />
+            app:argType="com.likeminds.chatmm.media.model.LMChatMediaPickerExtras" />
     </fragment>
 
 </navigation>

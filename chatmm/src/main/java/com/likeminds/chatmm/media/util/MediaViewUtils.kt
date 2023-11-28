@@ -17,9 +17,9 @@ import com.likeminds.chatmm.utils.ValueUtils.getMediaType
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.downloader.DownloadUtil
-import com.likeminds.chatmm.utils.permissions.Permission
-import com.likeminds.chatmm.utils.permissions.PermissionManager
-import com.likeminds.chatmm.utils.permissions.PermissionTask
+import com.likeminds.chatmm.utils.permissions.LMChatPermission
+import com.likeminds.chatmm.utils.permissions.LMChatPermissionManager
+import com.likeminds.chatmm.utils.permissions.LMChatPermissionTask
 
 object MediaViewUtils {
 
@@ -50,9 +50,9 @@ object MediaViewUtils {
         if (activity !is BaseAppCompatActivity) {
             return
         }
-        PermissionManager.performTaskWithPermission(
+        LMChatPermissionManager.performTaskWithPermission(
             activity,
-            PermissionTask {
+            LMChatPermissionTask {
                 val downloadObserver = DownloadUtil.startDownload(
                     activity,
                     uri.toString(),
@@ -63,7 +63,7 @@ object MediaViewUtils {
                         activity,
                         activity.getString(R.string.media_is_downloading)
                     )
-                    return@PermissionTask
+                    return@LMChatPermissionTask
                 }
                 val type = uri.getMediaType(activity)
                 downloadObserver.observe(lifecycleOwner) { state ->
@@ -94,7 +94,7 @@ object MediaViewUtils {
                     }
                 }
             },
-            Permission.getStoragePermissionData(),
+            LMChatPermission.getStoragePermissionData(),
             showInitialPopup = true,
             showDeniedPopup = true
         )

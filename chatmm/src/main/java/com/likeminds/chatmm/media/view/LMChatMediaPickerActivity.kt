@@ -14,9 +14,9 @@ import com.likeminds.chatmm.utils.ViewUtils.currentFragment
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.permissions.*
 
-class MediaPickerActivity : BaseAppCompatActivity() {
+class LMChatMediaPickerActivity : BaseAppCompatActivity() {
 
-    private lateinit var mediaPickerExtras: MediaPickerExtras
+    private lateinit var mediaPickerExtras: LMChatMediaPickerExtras
 
     companion object {
         const val PICK_MEDIA = 5001
@@ -28,8 +28,8 @@ class MediaPickerActivity : BaseAppCompatActivity() {
         private const val ARG_MEDIA_PICKER_EXTRAS = "mediaPickerExtras"
         const val ARG_MEDIA_PICKER_RESULT = "mediaPickerResult"
 
-        fun start(context: Context, extras: MediaPickerExtras) {
-            val intent = Intent(context, MediaPickerActivity::class.java)
+        fun start(context: Context, extras: LMChatMediaPickerExtras) {
+            val intent = Intent(context, LMChatMediaPickerActivity::class.java)
             intent.apply {
                 putExtras(Bundle().apply {
                     putParcelable(ARG_MEDIA_PICKER_EXTRAS, extras)
@@ -38,8 +38,8 @@ class MediaPickerActivity : BaseAppCompatActivity() {
             context.startActivity(intent)
         }
 
-        fun getIntent(context: Context, extras: MediaPickerExtras): Intent {
-            return Intent(context, MediaPickerActivity::class.java).apply {
+        fun getIntent(context: Context, extras: LMChatMediaPickerExtras): Intent {
+            return Intent(context, LMChatMediaPickerActivity::class.java).apply {
                 putExtras(Bundle().apply {
                     putParcelable(ARG_MEDIA_PICKER_EXTRAS, extras)
                 })
@@ -55,11 +55,11 @@ class MediaPickerActivity : BaseAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_media_picker)
+        setContentView(R.layout.lm_chat_activity_media_picker)
         val extras = ExtrasUtil.getParcelable(
             intent.extras,
             ARG_MEDIA_PICKER_EXTRAS,
-            MediaPickerExtras::class.java
+            LMChatMediaPickerExtras::class.java
         )
         if (extras == null) {
             throw IllegalArgumentException("Arguments are missing")
@@ -71,13 +71,13 @@ class MediaPickerActivity : BaseAppCompatActivity() {
     }
 
     private fun checkStoragePermission() {
-        PermissionManager.performTaskWithPermission(
+        LMChatPermissionManager.performTaskWithPermission(
             this,
             { startMediaPickerFragment() },
-            Permission.getStoragePermissionData(),
+            LMChatPermission.getStoragePermissionData(),
             showInitialPopup = true,
             showDeniedPopup = true,
-            permissionDeniedCallback = object : PermissionDeniedCallback {
+            permissionDeniedCallback = object : LMChatPermissionDeniedCallback {
                 override fun onDeny() {
                     onBackPressed()
                 }
@@ -144,7 +144,7 @@ class MediaPickerActivity : BaseAppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PermissionManager.REQUEST_CODE_SETTINGS_PERMISSION) {
+        if (requestCode == LMChatPermissionManager.REQUEST_CODE_SETTINGS_PERMISSION) {
             checkStoragePermission()
         }
     }

@@ -285,4 +285,10 @@
     <string name="tap_to_undo">Tap to undo.</string>
     <string name="block">Block</string>
     <string name="this_chatroom_doesnt_exist">This chatroom doesn\'t exist</string>
+    <string name="pre_gallery_media_permission_dialog_message">To easily receive and send photos, videos, allow us access to your device’s photos, and videos.</string>
+    <string name="denied_gallery_media_permission_dialog_message">To send media, allow us access to your device’s photos, and videos. Tap on Settings > Permission, and turn Photos and videos on.</string>
+    <string name="pre_audio_media_permission_dialog_message">To easily receive and send audios, allow CommunityHood access to your device’s audios.</string>
+    <string name="denied_audio_media_permission_dialog_message">To send audio files, allow CommunityHood access to your device’s audios. Tap on Settings > Permission, and turn Music and audio on.</string>
+    <string name="pre_notification_dialog_message">Allow Community Hood to send you notifications?</string>
+    <string name="denied_notification_dialog_message">Allow Community Hood to send you notifications?.. Tap Settings > Permissions, and turn Notifications on.</string>
 </resources>

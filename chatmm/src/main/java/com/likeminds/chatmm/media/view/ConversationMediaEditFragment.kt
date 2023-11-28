@@ -15,7 +15,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -167,11 +167,11 @@ class ConversationMediaEditFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extra = MediaPickerExtras.Builder()
+            val extra = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(IMAGE, VIDEO))
                 .build()
-            val intent = MediaPickerActivity.getIntent(
+            val intent = LMChatMediaPickerActivity.getIntent(
                 requireContext(),
                 extra
             )
@@ -305,7 +305,7 @@ class ConversationMediaEditFragment :
             val extras = result.data?.extras
             val mediaPickerResult = ExtrasUtil.getParcelable(
                 extras,
-                MediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
                 MediaPickerResult::class.java
             ) ?: return@registerForActivityResult
             when (mediaPickerResult.mediaPickerResultType) {

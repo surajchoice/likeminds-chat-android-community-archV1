@@ -159,7 +159,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
             tools:text="@string/send_a_dm_request_to_s"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:ignore="UnusedAttribute" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_dm_request"
@@ -184,7 +185,8 @@
                     android:text="@string/dm_request_message"
                     android:textColor="#990F1E3D"
                     android:textSize="14sp"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UnusedAttribute" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
                     android:id="@+id/tv_approve_dm_request"
@@ -200,7 +202,8 @@
                     app:drawableLeftCompat="@drawable/ic_thumbs_up"
                     app:drawableType="special"
                     app:layout_constraintTop_toBottomOf="@id/tv_dm_request_message"
-                    app:textType="special" />
+                    app:textType="special"
+                    tools:ignore="UnusedAttribute" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
                     android:id="@+id/tv_reject_dm_request"
@@ -216,7 +219,8 @@
                     app:drawableLeftCompat="@drawable/ic_block"
                     app:drawableType="special"
                     app:layout_constraintTop_toBottomOf="@id/tv_approve_dm_request"
-                    app:textType="special" />
+                    app:textType="special"
+                    tools:ignore="UnusedAttribute" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

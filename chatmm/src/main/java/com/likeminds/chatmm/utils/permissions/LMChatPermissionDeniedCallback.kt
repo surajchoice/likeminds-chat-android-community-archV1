@@ -1,6 +1,6 @@
 package com.likeminds.chatmm.utils.permissions
 
-interface PermissionDeniedCallback {
+interface LMChatPermissionDeniedCallback {
     fun onDeny()
     fun onCancel()
 }

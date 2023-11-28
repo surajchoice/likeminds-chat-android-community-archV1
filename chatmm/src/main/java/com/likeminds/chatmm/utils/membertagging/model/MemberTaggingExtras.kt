@@ -1,4 +1,4 @@
-package com.collabmates.membertagging.model
+package com.likeminds.chatmm.utils.membertagging.model
 
 import android.widget.EditText
 import androidx.annotation.FloatRange
