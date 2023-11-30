@@ -27,10 +27,11 @@ object HomeFeedUtil {
 
     fun getChatRoomViewData(
         chatroom: Chatroom,
-        userPreferences: UserPreferences
+        userPreferences: UserPreferences,
+        dynamicViewType: Int = ITEM_HOME_CHAT_ROOM
     ): HomeFeedItemViewData {
         val chatroomViewData =
-            ViewDataConverter.convertChatroomForHome(chatroom, ITEM_HOME_CHAT_ROOM)
+            ViewDataConverter.convertChatroomForHome(chatroom, dynamicViewType)
         val lastConversation =
             ViewDataConverter.convertConversation(chatroom.lastConversation)
 
@@ -54,6 +55,7 @@ object HomeFeedUtil {
             .lastConversationMemberName(lastConversationMemberName)
             .isLastItem(true)
             .chatroomImageUrl(chatroomViewData.chatroomImageUrl)
+            .dynamicViewType(dynamicViewType)
             .build()
     }
 }

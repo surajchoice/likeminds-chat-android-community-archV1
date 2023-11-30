@@ -7,18 +7,17 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
-import com.likeminds.chatmm.databinding.ActivityDmAllMembersBinding
+import com.likeminds.chatmm.databinding.LmChatActivityCommunityMembersBinding
 import com.likeminds.chatmm.member.model.CommunityMembersExtras
 import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
-class CommunityMembersActivity : BaseAppCompatActivity() {
+class LMChatCommunityMembersActivity : BaseAppCompatActivity() {
 
-    private lateinit var binding: ActivityDmAllMembersBinding
+    private lateinit var binding: LmChatActivityCommunityMembersBinding
 
-    private var chatroomDetailExtras: ChatroomDetailExtras? = null
+    private var communityMembersExtra: CommunityMembersExtras? = null
 
     //Navigation
     private lateinit var navHostFragment: NavHostFragment
@@ -28,7 +27,7 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
         const val COMMUNITY_MEMBERS_EXTRAS = "COMMUNITY_MEMBERS_EXTRAS"
 
         fun start(context: Context, extras: CommunityMembersExtras) {
-            val intent = Intent(context, CommunityMembersActivity::class.java)
+            val intent = Intent(context, LMChatCommunityMembersActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(COMMUNITY_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
@@ -36,7 +35,7 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
         }
 
         fun getIntent(context: Context, extras: CommunityMembersExtras): Intent {
-            val intent = Intent(context, CommunityMembersActivity::class.java)
+            val intent = Intent(context, LMChatCommunityMembersActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(COMMUNITY_MEMBERS_EXTRAS, extras)
             intent.putExtra("bundle", bundle)
@@ -52,26 +51,26 @@ class CommunityMembersActivity : BaseAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityDmAllMembersBinding.inflate(layoutInflater)
+        binding = LmChatActivityCommunityMembersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val bundle = intent.getBundleExtra("bundle")
 
         if (bundle != null) {
-            chatroomDetailExtras = ExtrasUtil.getParcelable(
+            communityMembersExtra = ExtrasUtil.getParcelable(
                 bundle,
                 COMMUNITY_MEMBERS_EXTRAS,
-                ChatroomDetailExtras::class.java
+                CommunityMembersExtras::class.java
             )
             val args = Bundle().apply {
-                putParcelable(COMMUNITY_MEMBERS_EXTRAS, chatroomDetailExtras)
+                putParcelable(COMMUNITY_MEMBERS_EXTRAS, communityMembersExtra)
             }
 
             //Navigation
             navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             navController = navHostFragment.navController
-            navController.setGraph(R.navigation.nav_graph_chatroom_detail, args)
+            navController.setGraph(R.navigation.nav_graph_community_members, args)
         } else {
             redirectActivity(true)
         }

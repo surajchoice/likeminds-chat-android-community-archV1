@@ -2,6 +2,7 @@ package com.likeminds.chatmm.member.view
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
@@ -10,7 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.databinding.FragmentDmAllMembersBinding
+import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.databinding.LmChatFragmentCommunityMembersBinding
 import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
 import com.likeminds.chatmm.dm.model.DMLimitExceededDialogExtras
 import com.likeminds.chatmm.dm.view.DMFeedFragment.Companion.COMMUNITY_MEMBERS_RESULT
@@ -18,7 +20,7 @@ import com.likeminds.chatmm.dm.view.DMLimitExceededDialogFragment
 import com.likeminds.chatmm.member.model.CommunityMembersExtras
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.CommunityMembersActivity.Companion.COMMUNITY_MEMBERS_EXTRAS
+import com.likeminds.chatmm.member.view.LMChatCommunityMembersActivity.Companion.COMMUNITY_MEMBERS_EXTRAS
 import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapter
 import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapterListener
 import com.likeminds.chatmm.member.viewmodel.CommunityMembersViewModel
@@ -30,8 +32,8 @@ import com.likeminds.chatmm.utils.customview.BaseFragment
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class CommunityMembersFragment :
-    BaseFragment<FragmentDmAllMembersBinding, CommunityMembersViewModel>(),
+class LMChatCommunityMembersFragment :
+    BaseFragment<LmChatFragmentCommunityMembersBinding, CommunityMembersViewModel>(),
     CommunityMembersAdapterListener {
 
     @Inject
@@ -41,8 +43,13 @@ class CommunityMembersFragment :
         return CommunityMembersViewModel::class.java
     }
 
-    override fun getViewBinding(): FragmentDmAllMembersBinding {
-        return FragmentDmAllMembersBinding.inflate(layoutInflater)
+    override fun getViewBinding(): LmChatFragmentCommunityMembersBinding {
+        return LmChatFragmentCommunityMembersBinding.inflate(layoutInflater)
+    }
+
+    override fun attachDagger() {
+        super.attachDagger()
+        SDKApplication.getInstance().memberComponent()?.inject(this)
     }
 
     companion object {
@@ -148,7 +155,7 @@ class CommunityMembersFragment :
 
         //attach it to recycler view
         binding.rvMembers.apply {
-            mAdapter = CommunityMembersAdapter(this@CommunityMembersFragment, userPreferences)
+            mAdapter = CommunityMembersAdapter(this@LMChatCommunityMembersFragment, userPreferences)
             adapter = mAdapter
             layoutManager = linearLayoutManager
             addOnScrollListener(scrollListener)
@@ -197,6 +204,10 @@ class CommunityMembersFragment :
     }
 
     private fun onDMLimitReceived(dmLimitData: CheckDMLimitViewData?, uuidSelected: String) {
+        Log.d("PUI", """
+            chatroomId: ${dmLimitData?.chatroomId}
+            isRequestDMLimitExceeded: ${dmLimitData?.isRequestDMLimitExceeded}
+        """.trimIndent())
         if (dmLimitData == null) return
         when {
             (dmLimitData.chatroomId != null) -> {

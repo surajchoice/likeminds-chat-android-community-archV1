@@ -20,25 +20,24 @@ import com.likeminds.chatmm.dm.viewmodel.DMFeedViewModel
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.CommunityMembersActivity
+import com.likeminds.chatmm.member.view.LMChatCommunityMembersActivity
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.likemindschat.dm.model.CheckDMTabResponse
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     DMAdapterListener {
 
-    private lateinit var dmMetaExtras: CheckDMTabResponse
+    private lateinit var dmMetaExtras: CheckDMTabViewData
     private var showList: Int = CommunityMembersFilter.ALL_MEMBERS.value
 
     @Inject
     lateinit var userPreferences: UserPreferences
 
-    private val dmAllMemberLauncher =
+    private val communityMembersLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val extras = result.data?.extras
@@ -58,7 +57,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
         const val TAG = "DMFeedFragment"
         const val QUERY_SHOW_LIST = "show_list"
 
-        fun getInstance(dmMeta: CheckDMTabViewData): DMFeedFragment {
+        fun getInstance(dmMeta: CheckDMTabViewData?): DMFeedFragment {
             val fragment = DMFeedFragment()
             val bundle = Bundle()
             bundle.putParcelable(DM_META_EXTRAS, dmMeta)
@@ -71,8 +70,11 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun receiveExtras() {
         super.receiveExtras()
-        dmMetaExtras =
-            arguments?.getParcelable(DM_META_EXTRAS) ?: throw ErrorUtil.emptyExtrasException(TAG)
+        dmMetaExtras = ExtrasUtil.getParcelable(
+            arguments,
+            DM_META_EXTRAS,
+            CheckDMTabViewData::class.java
+        ) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }
 
     override fun attachDagger() {
@@ -187,8 +189,8 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
                 .showList(showList)
                 .build()
 
-            val intent = CommunityMembersActivity.getIntent(requireContext(), extras)
-            dmAllMemberLauncher.launch(intent)
+            val intent = LMChatCommunityMembersActivity.getIntent(requireContext(), extras)
+            communityMembersLauncher.launch(intent)
         }
     }
 

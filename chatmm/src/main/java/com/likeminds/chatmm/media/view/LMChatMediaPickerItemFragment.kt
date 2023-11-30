@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
-import com.likeminds.chatmm.databinding.FragmentMediaPickerItemBinding
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
@@ -69,7 +68,7 @@ class LMChatMediaPickerItemFragment :
     override fun receiveExtras() {
         super.receiveExtras()
         mediaPickerItemExtras =
-            MediaPickerItemFragmentArgs.fromBundle(requireArguments()).mediaPickerItemExtras
+            LMChatMediaPickerItemFragmentArgs.fromBundle(requireArguments()).mediaPickerItemExtras
     }
 
     override fun setUpViews() {

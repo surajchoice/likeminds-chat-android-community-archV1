@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/fragment_dm_all_members"
-        android:name="com.likeminds.chatmm.member.view.CommunityMembersFragment"
+        android:name="com.likeminds.chatmm.member.view.LMChatCommunityMembersFragment"
         android:label="DMAllMemberFragment"
-        tools:layout="@layout/fragment_dm_all_members" />
+        tools:layout="@layout/lm_chat_fragment_community_members" />
 
 </navigation>

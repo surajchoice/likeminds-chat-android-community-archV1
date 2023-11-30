@@ -15,13 +15,14 @@ import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chat.model.LMChatExtras
+import com.likeminds.chatmm.chat.model.SDKInitiateSource
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
-import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
@@ -51,7 +52,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     HomeFeedAdapterListener,
     ConnectivityReceiverListener {
 
-    private lateinit var extras: HomeFeedExtras
+    private lateinit var extras: LMChatExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
@@ -87,7 +88,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
          **/
         @JvmStatic
         fun getInstance(
-            extras: HomeFeedExtras
+            extras: LMChatExtras
         ): HomeFeedFragment {
             val fragment = HomeFeedFragment()
             val bundle = Bundle()
@@ -115,7 +116,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         extras = ExtrasUtil.getParcelable(
             requireArguments(),
             BUNDLE_HOME_FRAGMENT,
-            HomeFeedExtras::class.java
+            LMChatExtras::class.java
         ) ?: throw emptyExtrasException(TAG)
 
         isGuestUser = extras.isGuest ?: false
@@ -125,8 +126,12 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         super.setUpViews()
         checkForNotificationPermission()
         setBranding()
-        setupReceivers()
-        initiateUser()
+        if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
+            setupReceivers()
+            initiateUser()
+        } else {
+            initData()
+        }
         initRecyclerView()
         initToolbar()
         fetchData()
@@ -175,7 +180,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         observeErrors()
 
         initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) { user ->
-            observeInitiateUserResponse(user)
+            if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
+                observeInitiateUserResponse(user)
+            }
         }
 
         viewModel.userData.observe(viewLifecycleOwner) { user ->
@@ -227,6 +234,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     //observe user data
     private fun observeUserData(user: MemberViewData?) {
         if (user != null) {
+            communityId = user.communityId ?: ""
+            communityName = user.communityName ?: ""
+
             MemberImageUtil.setImage(
                 user.imageUrl,
                 user.name,
@@ -242,12 +252,17 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private fun observeInitiateUserResponse(user: MemberViewData?) {
         communityId = user?.communityId ?: ""
         communityName = user?.communityName ?: ""
+        initData()
+        initiateViewModel.getConfig()
+    }
+
+    // initializes home feed data
+    private fun initData() {
         initToolbar()
         fetchData()
         startSync()
 
         viewModel.observeLiveHomeFeed(requireContext())
-        viewModel.getConfig()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)

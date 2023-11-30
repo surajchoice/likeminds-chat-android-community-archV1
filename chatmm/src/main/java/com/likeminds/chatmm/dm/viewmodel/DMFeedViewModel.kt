@@ -8,6 +8,7 @@ import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_DIRECT_MESSAGE
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.dm.model.*
@@ -76,7 +77,11 @@ class DMFeedViewModel @Inject constructor(
     private fun showInitialChatrooms(chatrooms: List<Chatroom>) {
         viewModelScope.launch {
             val chatViewDataList = chatrooms.map { chatroom ->
-                HomeFeedUtil.getChatRoomViewData(chatroom, userPreferences)
+                HomeFeedUtil.getChatRoomViewData(
+                    chatroom,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
             }
             allChatRoomsData.clear()
             allChatRoomsData.addAll(chatViewDataList)
@@ -94,10 +99,22 @@ class DMFeedViewModel @Inject constructor(
             allChatRoomsData.removeAt(index)
         }
         val insertedChatViewDataList = inserted.map { pair ->
-            Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
+            Pair(
+                pair.first, HomeFeedUtil.getChatRoomViewData(
+                    pair.second,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
+            )
         }
         val changedChatViewDataList = changed.map { pair ->
-            Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
+            Pair(
+                pair.first, HomeFeedUtil.getChatRoomViewData(
+                    pair.second,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
+            )
         }
 
         insertedChatViewDataList.forEach { pair ->

@@ -64,7 +64,7 @@ class LMChatMediaPickerDocumentFragment :
     override fun receiveExtras() {
         super.receiveExtras()
         mediaPickerExtras =
-            MediaPickerDocumentFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
+            LMChatMediaPickerDocumentFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
     }
 
     override fun setUpViews() {

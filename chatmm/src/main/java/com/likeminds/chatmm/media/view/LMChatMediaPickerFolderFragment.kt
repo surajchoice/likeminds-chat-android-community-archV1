@@ -65,7 +65,7 @@ class LMChatMediaPickerFolderFragment :
     override fun receiveExtras() {
         super.receiveExtras()
         mediaPickerExtras =
-            MediaPickerFolderFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
+            LMChatMediaPickerFolderFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
         getExternalAppList()
     }
 
@@ -191,7 +191,7 @@ class LMChatMediaPickerFolderFragment :
             .build()
 
         findNavController().navigate(
-            MediaPickerFolderFragmentDirections.actionFolderToItems(extras)
+            LMChatMediaPickerFolderFragmentDirections.actionFolderToItems(extras)
         )
     }
 }

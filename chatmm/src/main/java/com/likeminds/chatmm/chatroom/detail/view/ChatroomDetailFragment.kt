@@ -1350,6 +1350,7 @@ class ChatroomDetailFragment :
                 }
                 when (viewModel.getChatroomViewData()?.chatRequestState) {
                     ChatRequestState.NOTHING -> {
+                        Log.d("PUI", "setChatInputBoxViewTypeForDM getOtherDmMember: ${viewModel.getOtherDmMember()}")
                         // dm is not initiated and request is not send, showing message to send DM request
                         tvSendDmRequestToMember.show()
                         cvDmRequest.hide()
@@ -2631,6 +2632,7 @@ class ChatroomDetailFragment :
                 return@observe
             }
 
+            Log.d("PUI", "observeInitialData: calling updateHeader")
             updateHeader(
                 initialData.chatRoom.header ?: "Chatroom",
                 initialData.chatRoom.isSecret ?: false
@@ -2971,6 +2973,8 @@ class ChatroomDetailFragment :
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
             if (viewModel.isDmChatroom()) {
+                Log.d("PUI", "updateHeader: isDmChatroom")
+                tvToolbarSubTitle.hide()
                 val member = viewModel.getOtherDmMember() ?: return
                 tvToolbarTitle.text = member.name
                 ivMemberImage.show()
@@ -2981,8 +2985,8 @@ class ChatroomDetailFragment :
                     imageView = ivMemberImage,
                     showRoundImage = true
                 )
-                tvToolbarSubTitle.hide()
             } else {
+                Log.d("PUI", "updateHeader: isNotDmChatroom")
                 tvToolbarTitle.text = header
                 ivMemberImage.hide()
                 tvToolbarSubTitle.show()
@@ -3055,13 +3059,15 @@ class ChatroomDetailFragment :
 
     // updates participants count as per the count
     private fun updateParticipantsCount(count: Int) {
-        binding.tvToolbarSubTitle.apply {
-            show()
-            text = resources.getQuantityString(
-                R.plurals.participants_s,
-                count,
-                count
-            )
+        if (!viewModel.isDmChatroom()) {
+            binding.tvToolbarSubTitle.apply {
+                show()
+                text = resources.getQuantityString(
+                    R.plurals.participants_s,
+                    count,
+                    count
+                )
+            }
         }
     }
 
