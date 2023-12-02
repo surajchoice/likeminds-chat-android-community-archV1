@@ -162,6 +162,13 @@ object ViewDataConverter {
             .unseenCount(chatroom.unseenCount)
             .isEdited(chatroom.isEdited)
             .chatroomImageUrl(chatroom.chatroomImageUrl)
+            .chatRequestState(chatroom.chatRequestState)
+            .chatRequestedById(chatroom.chatRequestedById)
+            .chatRequestedBy(convertMember(chatroom.chatRequestedBy))
+            .chatRequestCreatedAt(chatroom.chatRequestCreatedAt)
+            .isPrivateMember(chatroom.isPrivateMember)
+            .chatroomWithUser(convertMember(chatroom.chatroomWithUser))
+            .chatroomWithUserId(chatroom.chatroomWithUserId)
             .build()
     }
 

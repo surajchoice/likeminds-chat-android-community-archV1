@@ -1,12 +1,17 @@
 package com.likeminds.chatmm.homefeed.view
 
+import android.Manifest
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -79,9 +84,16 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         ConnectivityBroadcastReceiver()
     }
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {}
+
     companion object {
         const val TAG = "HomeFeedFragment"
         private const val BUNDLE_HOME_FRAGMENT = "bundle of home fragment"
+
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
 
         /**
          * creates a instance of fragment
@@ -142,27 +154,11 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     //check permission for Post Notifications
     private fun checkForNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val extras = LMChatPermission.getNotificationPermissionData(requireContext())
-            LMChatPermissionManager.performTaskWithPermissionExtras(
-                requireActivity() as BaseAppCompatActivity,
-                {
-                    Log.d(LOG_TAG, "notification permission approved")
-                },
-                extras,
-                showInitialPopup = true,
-                showDeniedPopup = true,
-                lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
-                    override fun onDeny() {
-                        Log.d(LOG_TAG, "notification permission denied")
-                    }
-
-                    override fun onCancel() {
-                        Log.d(LOG_TAG, "notification permission cancelled")
-                    }
+            if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                if (activity?.checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
                 }
-            )
-        } else {
-            return
+            }
         }
     }
 

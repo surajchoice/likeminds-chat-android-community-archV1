@@ -1,12 +1,17 @@
 package com.likeminds.chatmm.chat.view
 
+import android.Manifest
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +23,7 @@ import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
+import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.search.view.SearchActivity
@@ -41,6 +47,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         ConnectivityBroadcastReceiver()
     }
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {}
+
     @Inject
     lateinit var snackBar: CustomSnackBar
 
@@ -52,6 +62,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     companion object {
         const val CHAT_EXTRAS = "chat_extras"
         const val TAG = "ChatFragment"
+
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
 
         fun getInstance(lmChatExtras: LMChatExtras): LMChatFragment {
             val fragment = LMChatFragment()
@@ -127,27 +140,11 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     //check permission for Post Notifications
     private fun checkForNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val extras = LMChatPermission.getNotificationPermissionData(requireContext())
-            LMChatPermissionManager.performTaskWithPermissionExtras(
-                requireActivity() as BaseAppCompatActivity,
-                {
-                    Log.d(SDKApplication.LOG_TAG, "notification permission approved")
-                },
-                extras,
-                showInitialPopup = true,
-                showDeniedPopup = true,
-                lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
-                    override fun onDeny() {
-                        Log.d(SDKApplication.LOG_TAG, "notification permission denied")
-                    }
-
-                    override fun onCancel() {
-                        Log.d(SDKApplication.LOG_TAG, "notification permission cancelled")
-                    }
+            if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                if (activity?.checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
                 }
-            )
-        } else {
-            return
+            }
         }
     }
 

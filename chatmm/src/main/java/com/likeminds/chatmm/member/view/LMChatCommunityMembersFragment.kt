@@ -93,22 +93,10 @@ class LMChatCommunityMembersFragment :
         viewModel.checkDMLimitResponse.observe(viewLifecycleOwner) { response ->
             val checkDMLimitViewData = response.first
             val uuidSelected = response.second
-            Log.d(
-                "PUI", """
-                checkDMLimitResponse
-                chatroomId: $uuidSelected
-            """.trimIndent()
-            )
             onDMLimitReceived(checkDMLimitViewData, uuidSelected)
         }
 
         viewModel.dmChatroomId.observe(viewLifecycleOwner) { chatroomId ->
-            Log.d(
-                "PUI", """
-                dmChatroomId
-                chatroomId: $chatroomId
-            """.trimIndent()
-            )
             createActivityResultAndFinish(chatroomId)
         }
 
@@ -216,12 +204,6 @@ class LMChatCommunityMembersFragment :
     }
 
     private fun onDMLimitReceived(dmLimitData: CheckDMLimitViewData?, uuidSelected: String) {
-        Log.d(
-            "PUI", """
-            chatroomId: ${dmLimitData?.chatroomId}
-            isRequestDMLimitExceeded: ${dmLimitData?.isRequestDMLimitExceeded}
-        """.trimIndent()
-        )
         if (dmLimitData == null) return
         when {
             (dmLimitData.chatroomId != null) -> {

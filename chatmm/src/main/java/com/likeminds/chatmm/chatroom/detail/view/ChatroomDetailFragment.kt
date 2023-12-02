@@ -29,7 +29,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
@@ -60,10 +59,10 @@ import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BRO
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PROGRESS
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
-import com.likeminds.chatmm.media.view.MediaActivity
-import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity
 import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
+import com.likeminds.chatmm.media.view.MediaActivity
+import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -102,6 +101,7 @@ import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
@@ -1114,7 +1114,8 @@ class ChatroomDetailFragment :
                             LMChatPermission.getRecordAudioPermissionData(),
                             showInitialPopup = true,
                             showDeniedPopup = true,
-                            lmChatPermissionDeniedCallback = object : LMChatPermissionDeniedCallback {
+                            lmChatPermissionDeniedCallback = object :
+                                LMChatPermissionDeniedCallback {
                                 override fun onDeny() {}
 
                                 override fun onCancel() {}
@@ -1350,7 +1351,10 @@ class ChatroomDetailFragment :
                 }
                 when (viewModel.getChatroomViewData()?.chatRequestState) {
                     ChatRequestState.NOTHING -> {
-                        Log.d("PUI", "setChatInputBoxViewTypeForDM getOtherDmMember: ${viewModel.getOtherDmMember()}")
+                        Log.d(
+                            "PUI",
+                            "setChatInputBoxViewTypeForDM getOtherDmMember: ${viewModel.getOtherDmMember()}"
+                        )
                         // dm is not initiated and request is not send, showing message to send DM request
                         tvSendDmRequestToMember.show()
                         cvDmRequest.hide()
@@ -1807,10 +1811,16 @@ class ChatroomDetailFragment :
                         voiceNoteUtils.stopVoiceNote(this, RECORDING_SEND)
                     }
 
+                    Log.d(
+                        "PUI", """
+                        isDmChatroom: ${viewModel.isDmChatroom()}
+                        chatRequestState: ${viewModel.getChatroomViewData()?.chatRequestState}
+                    """.trimIndent()
+                    )
                     // show dialog to send dm request if the chatroom is of type DM & chatRequestState is null
                     if (
                         viewModel.isDmChatroom()
-                        && viewModel.getChatroomViewData()?.chatRequestState == null
+                        && viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING
                     ) {
                         viewModel.dmRequestText = inputText
                         if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
@@ -1824,6 +1834,10 @@ class ChatroomDetailFragment :
                             return@setOnClickListener
                         }
                         // if the DM is M2M then show dialog otherwise send dm request directly
+                        Log.d(
+                            "PUI",
+                            "initEnterClick: ${viewModel.getChatroomViewData()?.isPrivateMember}"
+                        )
                         if (viewModel.getChatroomViewData()?.isPrivateMember == true) {
                             SendDMRequestDialogFragment.showDialog(childFragmentManager)
                         } else {
@@ -2632,7 +2646,6 @@ class ChatroomDetailFragment :
                 return@observe
             }
 
-            Log.d("PUI", "observeInitialData: calling updateHeader")
             updateHeader(
                 initialData.chatRoom.header ?: "Chatroom",
                 initialData.chatRoom.isSecret ?: false
@@ -2973,7 +2986,6 @@ class ChatroomDetailFragment :
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
             if (viewModel.isDmChatroom()) {
-                Log.d("PUI", "updateHeader: isDmChatroom")
                 tvToolbarSubTitle.hide()
                 val member = viewModel.getOtherDmMember() ?: return
                 tvToolbarTitle.text = member.name
@@ -2986,7 +2998,6 @@ class ChatroomDetailFragment :
                     showRoundImage = true
                 )
             } else {
-                Log.d("PUI", "updateHeader: isNotDmChatroom")
                 tvToolbarTitle.text = header
                 ivMemberImage.hide()
                 tvToolbarSubTitle.show()
