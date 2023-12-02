@@ -6,17 +6,22 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.likeminds.chatmm.*
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
-import com.likeminds.chatmm.utils.ErrorUtil
-import com.likeminds.chatmm.utils.ExtrasUtil
+import com.likeminds.chatmm.member.model.MemberViewData
+import com.likeminds.chatmm.member.util.MemberImageUtil
+import com.likeminds.chatmm.search.view.SearchActivity
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
@@ -75,9 +80,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     override fun setUpViews() {
         super.setUpViews()
         checkForNotificationPermission()
+        setBranding()
         setupReceivers()
         initiateUser()
-        initPagerAdapter()
+        initToolbar()
     }
 
     override fun receiveExtras() {
@@ -92,10 +98,21 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     override fun observeData() {
         super.observeData()
 
+        // observes [initiateErrorMessage]
+        initiateViewModel.initiateErrorMessage.observe(viewLifecycleOwner) {
+            ViewUtils.showErrorMessageToast(requireContext(), it)
+        }
+
         // observes [initiateUserResponse] live data and calls API to get configuration
         initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) {
+            initPagerAdapter()
             initData()
             initiateViewModel.getConfig()
+        }
+
+        // observes [userData] ;ive data
+        viewModel.userData.observe(viewLifecycleOwner) { user ->
+            observeUserData(user)
         }
 
         // observes [checkDMTabResponse] live data
@@ -134,6 +151,12 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         }
     }
 
+    private fun setBranding() {
+        binding.apply {
+            toolbarColor = LMBranding.getToolbarColor()
+        }
+    }
+
     //register receivers to the activity
     private fun setupReceivers() {
         connectivityBroadcastReceiver.setListener(this)
@@ -153,8 +176,26 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         )
     }
 
+    private fun initToolbar() {
+        binding.apply {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
+            //if user is guest user hide, profile icon from toolbar
+            memberImage.isVisible = !isGuestUser
+
+            //get user from local db
+            viewModel.getUserFromLocalDb()
+
+            ivSearch.setOnClickListener {
+                SearchActivity.start(requireContext())
+                Log.d(SDKApplication.LOG_TAG, "search started")
+            }
+        }
+    }
+
     // calls api to initiate data
     private fun initData() {
+        initToolbar()
         viewModel.checkDMTab()
     }
 
@@ -201,6 +242,20 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     private fun setDMMeta(checkDMTabViewData: CheckDMTabViewData) {
         dmMeta = checkDMTabViewData
+    }
+
+    //observe user data
+    private fun observeUserData(user: MemberViewData?) {
+        if (user != null) {
+            MemberImageUtil.setImage(
+                user.imageUrl,
+                user.name,
+                user.sdkClientInfo.uuid,
+                binding.memberImage,
+                showRoundImage = true,
+                objectKey = user.updatedAt
+            )
+        }
     }
 
     //update the unread count on dm tab

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
+import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
@@ -15,6 +16,9 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     val checkDMTabResponse: LiveData<CheckDMTabViewData?> = _checkDMTabResponse
 
     private val lmChatClient = LMChatClient.getInstance()
+
+    private val _userData = MutableLiveData<MemberViewData?>()
+    val userData: LiveData<MemberViewData?> = _userData
 
     //api to check whether dm is enabled or not
     fun checkDMTab() {
@@ -30,5 +34,10 @@ class ChatViewModel @Inject constructor() : ViewModel() {
                 _checkDMTabResponse.postValue(null)
             }
         }
+    }
+
+    fun getUserFromLocalDb() {
+        val userResponse = lmChatClient.getUser()
+        _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 }

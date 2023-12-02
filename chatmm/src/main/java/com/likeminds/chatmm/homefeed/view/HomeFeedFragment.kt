@@ -127,9 +127,11 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         checkForNotificationPermission()
         setBranding()
         if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
+            binding.toolbar.show()
             setupReceivers()
             initiateUser()
         } else {
+            binding.toolbar.hide()
             initData()
         }
         initRecyclerView()

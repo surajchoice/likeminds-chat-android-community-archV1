@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences,
     private val userPreferences: UserPreferences,
     private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
