@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -206,7 +205,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
         binding.fabNewDm.isVisible = showDM
     }
 
-    private fun handleCTA(cta: String) {
+    private fun handleCTA(cta: String?) {
         val route = Uri.parse(cta)
         showList = route.getQueryParameter(QUERY_SHOW_LIST)?.toInt()
             ?: CommunityMembersFilter.ALL_MEMBERS.value
