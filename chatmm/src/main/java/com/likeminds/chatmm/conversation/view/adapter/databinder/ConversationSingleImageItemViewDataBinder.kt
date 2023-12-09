@@ -67,7 +67,8 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 clImage.visibility = View.VISIBLE

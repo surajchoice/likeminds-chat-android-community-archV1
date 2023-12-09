@@ -78,7 +78,8 @@ internal class ConversationVoiceNoteItemViewDataBinder constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 voiceNoteView.clLayout.show()

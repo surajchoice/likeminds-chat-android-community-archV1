@@ -1,8 +1,10 @@
 package com.likeminds.chatsampleapp.auth.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class LoginExtras(
     var isGuest: Boolean = false,

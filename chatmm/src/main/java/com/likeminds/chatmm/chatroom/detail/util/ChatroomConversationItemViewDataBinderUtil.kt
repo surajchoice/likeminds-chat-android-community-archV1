@@ -264,9 +264,11 @@ object ChatroomConversationItemViewDataBinderUtil {
         tvDeleteMessage: TextView,
         currentMemberId: String,
         conversationViewData: ConversationViewData,
+        viewReply: LayoutReplyBinding? = null
     ) {
         tvConversation.visibility = View.GONE
         tvDeleteMessage.visibility = View.VISIBLE
+        viewReply?.root?.hide()
 
         val sb = StringBuilder()
         sb.append(

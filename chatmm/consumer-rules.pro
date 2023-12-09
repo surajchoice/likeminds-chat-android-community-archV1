@@ -9,13 +9,15 @@
 -keep class com.likeminds.chatmm.member.model.** { *; }
 -keep class com.likeminds.chatmm.overflowmenu.model.** { *; }
 -keep class com.likeminds.chatmm.polls.model.** { *; }
--keep class com.likeminds.chatmm.polls.model.** { *; }
 -keep class com.likeminds.chatmm.pushnotification.** { *; }
 -keep class com.likeminds.chatmm.reactions.model.** { *; }
+-keep class com.likeminds.chatmm.report.model.** { *; }
+-keep class com.likeminds.chatmm.search.model.** { *; }
 -keep class com.likeminds.chatmm.utils.file.model.** { *; }
--keep class com.likeminds.feedsx.utils.mediauploader.model.** { *; }
--keep class com.likeminds.feedsx.utils.membertagging.model.** { *; }
--keep class com.likeminds.feedsx.utils.model.** { *; }
+-keep class com.likeminds.chatmm.utils.mediauploader.model.** { *; }
+-keep class com.likeminds.chatmm.utils.membertagging.model.** { *; }
+-keep class com.likeminds.chatmm.utils.model.** { *; }
+-keep class com.likeminds.chatmm.utils.model.** { *; }
 -keep class androidx.databinding.DataBindingComponent {*;}
 
 # for parcelable classes
@@ -40,6 +42,13 @@
 # The SDK has several references of Apache HTTP client
 -dontwarn com.amazonaws.http.**
 -dontwarn com.amazonaws.metrics.**
+
+-dontwarn com.amazonaws.mobile.**
+-dontwarn com.amazonaws.mobileconnectors.cognitoauth.**
+
+-dontwarn android.content.pm.**
+
+-dontwarn com.google.firebase.messaging.**
 
 # Kotlin
 -keep class kotlin.coroutines.Continuation

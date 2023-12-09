@@ -86,6 +86,16 @@ internal class ConversationItemViewDataBinder constructor(
                     tvDeleteMessage = tvDeleteMessage
                 )
 
+                ChatroomConversationItemViewDataBinderUtil.initReplyView(
+                    viewReply,
+                    userPreferences.getUUID(),
+                    data.replyConversation,
+                    data.replyChatroomId,
+                    adapterListener,
+                    itemPosition = position,
+                    conversation = data
+                )
+
                 val uuid = data.memberViewData.sdkClientInfo.uuid
                 if (uuid == userPreferences.getUUID()) {
                     ivAddReaction.hide()
@@ -104,16 +114,6 @@ internal class ConversationItemViewDataBinder constructor(
                 userPreferences.getUUID(),
                 data.createdAt,
                 imageViewStatus = ivConversationStatus,
-                conversation = data
-            )
-
-            ChatroomConversationItemViewDataBinderUtil.initReplyView(
-                viewReply,
-                userPreferences.getUUID(),
-                data.replyConversation,
-                data.replyChatroomId,
-                adapterListener,
-                itemPosition = position,
                 conversation = data
             )
 

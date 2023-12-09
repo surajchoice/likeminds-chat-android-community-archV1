@@ -76,8 +76,7 @@ import com.likeminds.chatmm.reactions.model.ReactionsListExtras
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.reactions.view.*
 import com.likeminds.chatmm.reactions.viewmodel.ReactionsViewModel
-import com.likeminds.chatmm.report.model.REPORT_TYPE_CONVERSATION
-import com.likeminds.chatmm.report.model.ReportExtras
+import com.likeminds.chatmm.report.model.*
 import com.likeminds.chatmm.report.view.ReportActivity
 import com.likeminds.chatmm.report.view.ReportSuccessDialog
 import com.likeminds.chatmm.utils.*
@@ -350,8 +349,8 @@ class ChatroomDetailFragment :
             }
         }
 
-    // launcher for conversation reporting
-    private val reportConversationLauncher =
+    // launcher for reporting conversation/chatroom
+    private val reportLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 Log.d(SDKApplication.LOG_TAG, "report done")
@@ -4948,7 +4947,7 @@ class ChatroomDetailFragment :
         val intent = ReportActivity.getIntent(requireContext(), reportExtras)
 
         //start [ReportActivity] and check for result
-        reportConversationLauncher.launch(intent)
+        reportLauncher.launch(intent)
     }
 
     private fun setChatroomTopic() {
@@ -5446,7 +5445,20 @@ class ChatroomDetailFragment :
             return
         }
         onScreenChanged()
-        //todo figure it out
+
+        //create extras for [ReportActivity]
+        val reportExtras = ReportExtras.Builder()
+            .type(REPORT_TYPE_CHATROOM)
+            .chatroomId(getChatroomViewData()?.id)
+            .chatroomName(getChatroomViewData()?.header)
+            .communityId(getChatroomViewData()?.communityId)
+            .build()
+
+        //get Intent for [ReportActivity]
+        val intent = ReportActivity.getIntent(requireContext(), reportExtras)
+
+        //start [ReportActivity] and check for result
+        reportLauncher.launch(intent)
     }
 
     private fun shareChatroom() {
