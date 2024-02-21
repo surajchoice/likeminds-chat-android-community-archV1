@@ -33,6 +33,9 @@ render.experimental.xml
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
+# release json deta
+output-metadata.json
+
 # Android Profiling
 *.hprof
 
@@ -312,3 +315,5 @@ obj/
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,kotlin,intellij,java,firebase
+
+out

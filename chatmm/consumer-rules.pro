@@ -1,7 +1,8 @@
 # Keeping all models
 
 -keep class com.likeminds.chatmm.branding.model.** { *; }
--keep class com.likeminds.chatmm.detail.model.** { *; }
+-keep class com.likeminds.chatmm.chatroom.detail.model.** { *; }
+-keep class com.likeminds.chatmm.chatroom.explore.model.** { *; }
 -keep class com.likeminds.chatmm.explore.model.** { *; }
 -keep class com.likeminds.chatmm.conversation.model.** { *; }
 -keep class com.likeminds.chatmm.homefeed.model.** { *; }
