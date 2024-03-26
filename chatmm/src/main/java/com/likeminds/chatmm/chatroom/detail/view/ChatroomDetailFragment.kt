@@ -4963,7 +4963,7 @@ class ChatroomDetailFragment :
             actionModeCallback?.startActionMode(
                 this,
                 requireActivity() as AppCompatActivity,
-                R.menu.message_actions_menu
+                R.menu.lm_chat_message_actions_menu
             )
         }
         val selectedSize = (if (selectedChatRoom != null) 1 else 0) + selectedConversations.size
@@ -5095,7 +5095,7 @@ class ChatroomDetailFragment :
             }
             return@setOnMenuItemClickListener true
         }
-        popUpMenu.menuInflater.inflate(R.menu.conversation_menu, popUpMenu.menu)
+        popUpMenu.menuInflater.inflate(R.menu.lm_chat_conversation_menu, popUpMenu.menu)
         popUpMenu.show()
     }
 
@@ -5638,7 +5638,7 @@ class ChatroomDetailFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chatroom_menu, menu)
+        inflater.inflate(R.menu.lm_chat_chatroom_menu, menu)
         updateChatroomActionMenu(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

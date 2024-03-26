@@ -16,7 +16,7 @@ class LMChatPermissionExtras private constructor(
         private var requestCode: Int = 0
         private var preDialogMessage: String = ""
         private var deniedDialogMessage: String = ""
-        private var dialogImage: Int = R.drawable.ic_folder
+        private var dialogImage: Int = R.drawable.lm_chat_ic_folder
 
         fun permissions(permissions: Array<String>) = apply { this.permissions = permissions }
         fun requestCode(requestCode: Int) = apply { this.requestCode = requestCode }

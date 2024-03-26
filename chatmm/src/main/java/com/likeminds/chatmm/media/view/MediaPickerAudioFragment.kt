@@ -131,7 +131,7 @@ class MediaPickerAudioFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.media_picker_audio_menu, menu)
+        inflater.inflate(R.menu.lm_chat_media_picker_audio_menu, menu)
         updateMenu(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }

@@ -90,7 +90,7 @@ class LMChatMediaPickerDocumentFragment :
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Add menu items here
-                menuInflater.inflate(R.menu.media_picker_document_menu, menu)
+                menuInflater.inflate(R.menu.lm_chat_media_picker_document_menu, menu)
                 updateMenu(menu)
             }
 
@@ -237,7 +237,7 @@ class LMChatMediaPickerDocumentFragment :
 
     private fun showSortingPopupMenu(view: View) {
         val popup = PopupMenu(view.context, view)
-        popup.menuInflater.inflate(R.menu.document_sort_menu, popup.menu)
+        popup.menuInflater.inflate(R.menu.lm_chat_document_sort_menu, popup.menu)
         when (currentSort) {
             SORT_BY_NAME ->
                 popup.menu.findItem(R.id.menu_item_sort_name).isChecked = true

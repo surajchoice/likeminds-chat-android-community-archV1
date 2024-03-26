@@ -34,7 +34,7 @@ object MediaViewUtils {
         }
         popupMenu.setOnMenuItemClickListener(listener)
         popupMenu.menuInflater.inflate(
-            R.menu.media_horizontal_screen_menu,
+            R.menu.lm_chat_media_horizontal_screen_menu,
             popupMenu.menu
         )
         return popupMenu

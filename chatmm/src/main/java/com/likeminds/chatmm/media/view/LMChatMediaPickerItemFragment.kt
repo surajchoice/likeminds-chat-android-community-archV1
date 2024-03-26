@@ -128,7 +128,7 @@ class LMChatMediaPickerItemFragment :
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Add menu items here
-                menuInflater.inflate(R.menu.media_picker_item_menu, menu)
+                menuInflater.inflate(R.menu.lm_chat_media_picker_item_menu, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -153,7 +153,7 @@ class LMChatMediaPickerItemFragment :
             actionModeCallback?.startActionMode(
                 this,
                 requireActivity() as AppCompatActivity,
-                R.menu.media_picker_actions_menu
+                R.menu.lm_chat_media_picker_actions_menu
             )
         }
         updateActionTitle()

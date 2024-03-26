@@ -110,7 +110,7 @@
             android:layout_height="4dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:background="@drawable/background_circle_dot_custom_title"
+            android:background="@drawable/lm_chat_background_circle_dot_custom_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_cm_tag"
             app:layout_constraintEnd_toStartOf="@+id/tv_cm_tag"
             app:layout_constraintStart_toEndOf="@+id/tv_member_name"
@@ -195,7 +195,7 @@
             android:visibility="@{homeFeedItemViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
             app:layout_constraintEnd_toStartOf="@+id/tv_unseen_message_count"
-            app:srcCompat="@drawable/ic_mute"
+            app:srcCompat="@drawable/lm_chat_ic_mute"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -204,7 +204,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:background="@drawable/background_pending_circular"
+            android:background="@drawable/lm_chat_background_pending_circular"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:includeFontPadding="false"

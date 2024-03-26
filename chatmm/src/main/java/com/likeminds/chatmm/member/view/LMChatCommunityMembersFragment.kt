@@ -2,7 +2,6 @@ package com.likeminds.chatmm.member.view
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
@@ -170,7 +169,7 @@ class LMChatCommunityMembersFragment :
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.dm_all_member_menu, menu)
+                menuInflater.inflate(R.menu.lm_chat_dm_all_member_menu, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

@@ -46,7 +46,7 @@ class LMChatPermission private constructor(
                 REQUEST_STORAGE,
                 "To easily receive and send photos, videos and other files, allow CommunityHood access to your device’s photos, media and files.",
                 "To send media, allow CommunityHood access to your device’s photos, media and files. Tap on Settings > Permission, and turn Storage on.",
-                R.drawable.ic_folder
+                R.drawable.lm_chat_ic_folder
             )
         }
 
@@ -56,7 +56,7 @@ class LMChatPermission private constructor(
                 REQUEST_RECORD_AUDIO,
                 "To record a Voice Message, allow CommunityHood access to your microphone.",
                 "To record a Voice Message, allow CommunityHood access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
-                R.drawable.ic_mic
+                R.drawable.lm_chat_ic_mic
             )
         }
 
@@ -107,7 +107,7 @@ class LMChatPermission private constructor(
                 .requestCode(REQUEST_GALLERY)
                 .preDialogMessage(context.getString(R.string.pre_gallery_media_permission_dialog_message))
                 .deniedDialogMessage(context.getString(R.string.denied_gallery_media_permission_dialog_message))
-                .dialogImage(R.drawable.ic_folder)
+                .dialogImage(R.drawable.lm_chat_ic_folder)
                 .build()
         }
 
@@ -123,7 +123,7 @@ class LMChatPermission private constructor(
                 .requestCode(REQUEST_AUDIO)
                 .preDialogMessage(context.getString(R.string.pre_audio_media_permission_dialog_message))
                 .deniedDialogMessage(context.getString(R.string.denied_audio_media_permission_dialog_message))
-                .dialogImage(R.drawable.ic_audio_header)
+                .dialogImage(R.drawable.lm_chat_ic_audio_header)
                 .build()
         }
 
