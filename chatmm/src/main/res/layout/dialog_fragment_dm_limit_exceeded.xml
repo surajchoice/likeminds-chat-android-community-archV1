@@ -35,7 +35,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/lm_chat_roboto_bold"
                     android:lineSpacingExtra="8sp"
-                    android:text="@string/request_limit_exceeded"
+                    android:text="@string/lm_chat_request_limit_exceeded"
                     android:textColor="#0F1E3D"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -57,7 +57,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                    tools:text="@string/you_can_send_only_s_requests" />
+                    tools:text="@string/lm_chat_you_can_send_only_s_requests" />
 
                 <TextView
                     android:id="@+id/tv_try_again"
@@ -73,7 +73,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_limit_info"
-                    tools:text="@string/try_again_in_s" />
+                    tools:text="@string/lm_chat_try_again_in_s" />
 
                 <TextView
                     android:id="@+id/tv_ok"
@@ -84,7 +84,7 @@
                     android:fontFamily="@font/lm_chat_roboto_medium"
                     android:letterSpacing="0.04"
                     android:paddingVertical="12dp"
-                    android:text="@string/ok"
+                    android:text="@string/lm_chat_ok"
                     android:textAllCaps="true"
                     android:textColor="@color/lm_chat_colorPrimary"
                     android:textSize="13sp"

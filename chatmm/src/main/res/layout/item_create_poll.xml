@@ -25,7 +25,7 @@
             android:layout_marginBottom="16dp"
             android:background="@null"
             android:ellipsize="end"
-            android:hint="@string/option"
+            android:hint="@string/lm_chat_option"
             android:inputType="textCapSentences"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"

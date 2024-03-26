@@ -93,7 +93,7 @@ object MediaViewUtils {
         if (downloadObserver == null) {
             ViewUtils.showShortToast(
                 activity,
-                activity.getString(R.string.media_is_downloading)
+                activity.getString(R.string.lm_chat_media_is_downloading)
             )
             return
         }
@@ -106,7 +106,7 @@ object MediaViewUtils {
                     ) {
                         ViewUtils.showShortToast(
                             activity,
-                            activity.getString(R.string.downloading_video)
+                            activity.getString(R.string.lm_chat_downloading_video)
                         )
                     }
                 }

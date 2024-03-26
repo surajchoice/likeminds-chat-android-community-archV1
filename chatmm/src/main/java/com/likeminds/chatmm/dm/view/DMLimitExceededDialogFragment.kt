@@ -58,12 +58,12 @@ class DMLimitExceededDialogFragment :
                 )
 
             tvLimitInfo.text = getString(
-                R.string.you_can_send_only_s_requests,
+                R.string.lm_chat_you_can_send_only_s_requests,
                 dmLimitExceededDialogExtras.numberInDuration.toString(),
                 dmLimitExceededDialogExtras.duration,
             )
 
-            tvTryAgain.text = getString(R.string.try_again_in_s, newRequestDMString)
+            tvTryAgain.text = getString(R.string.lm_chat_try_again_in_s, newRequestDMString)
         }
     }
 }

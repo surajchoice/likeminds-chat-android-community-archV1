@@ -124,7 +124,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/view_meta_dot_2"
             app:layout_constraintStart_toEndOf="@+id/view_meta_dot_2"
             app:layout_constraintTop_toTopOf="@+id/view_meta_dot_2"
-            tools:text="@string/pdf" />
+            tools:text="@string/lm_chat_pdf" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

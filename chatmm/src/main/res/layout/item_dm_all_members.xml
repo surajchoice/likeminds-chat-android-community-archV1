@@ -82,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_dot"
             app:layout_constraintTop_toTopOf="@id/tv_member_name"
-            tools:text="@string/community_manager"
+            tools:text="@string/lm_chat_community_manager"
             tools:visibility="visible" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

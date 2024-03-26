@@ -65,7 +65,7 @@ class ItemPollViewDataBinder constructor(
                     if (data.pollInfoData.hasPollEnded()) {
                         ViewUtils.showShortToast(
                             context,
-                            context.getString(R.string.poll_ended_message_for_option_selection)
+                            context.getString(R.string.lm_chat_poll_ended_message_for_option_selection)
                         )
                         return@setOnClickListener
                     }
@@ -141,12 +141,12 @@ class ItemPollViewDataBinder constructor(
             val context = binding.root.context
             tvNoVotes.text = if (noVotes > 0)
                 context.resources.getQuantityString(
-                    R.plurals.votes,
+                    R.plurals.lm_chat_votes,
                     noVotes,
                     noVotes
                 )
             else {
-                context.getString(R.string.zero_vote)
+                context.getString(R.string.lm_chat_zero_vote)
             }
             tvNoVotes.visibility = View.VISIBLE
             if (data.isSelected == true) {

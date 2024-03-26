@@ -105,8 +105,8 @@ class LMChatPermission private constructor(
                     )
                 )
                 .requestCode(REQUEST_GALLERY)
-                .preDialogMessage(context.getString(R.string.pre_gallery_media_permission_dialog_message))
-                .deniedDialogMessage(context.getString(R.string.denied_gallery_media_permission_dialog_message))
+                .preDialogMessage(context.getString(R.string.lm_chat_pre_gallery_media_permission_dialog_message))
+                .deniedDialogMessage(context.getString(R.string.lm_chat_denied_gallery_media_permission_dialog_message))
                 .dialogImage(R.drawable.lm_chat_ic_folder)
                 .build()
         }
@@ -121,8 +121,8 @@ class LMChatPermission private constructor(
                     )
                 )
                 .requestCode(REQUEST_AUDIO)
-                .preDialogMessage(context.getString(R.string.pre_audio_media_permission_dialog_message))
-                .deniedDialogMessage(context.getString(R.string.denied_audio_media_permission_dialog_message))
+                .preDialogMessage(context.getString(R.string.lm_chat_pre_audio_media_permission_dialog_message))
+                .deniedDialogMessage(context.getString(R.string.lm_chat_denied_audio_media_permission_dialog_message))
                 .dialogImage(R.drawable.lm_chat_ic_audio_header)
                 .build()
         }
@@ -134,8 +134,8 @@ class LMChatPermission private constructor(
                     arrayOf(POST_NOTIFICATIONS)
                 )
                 .requestCode(REQUEST_NOTIFICATIONS)
-                .preDialogMessage(context.getString(R.string.pre_notification_dialog_message))
-                .deniedDialogMessage(context.getString(R.string.denied_notification_dialog_message))
+                .preDialogMessage(context.getString(R.string.lm_chat_pre_notification_dialog_message))
+                .deniedDialogMessage(context.getString(R.string.lm_chat_denied_notification_dialog_message))
                 .dialogImage(R.drawable.lm_chat_ic_bell)
                 .build()
         }

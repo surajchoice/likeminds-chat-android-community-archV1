@@ -44,9 +44,7 @@ import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
-import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
@@ -206,7 +204,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private fun observeLogoutResponse() {
         initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
-            ViewUtils.showShortToast(requireContext(), getString(R.string.invalid_app_access))
+            ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_invalid_app_access))
         }
     }
 
@@ -400,7 +398,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
-                        getString(R.string.internet_connection_restored),
+                        getString(R.string.lm_chat_internet_connection_restored),
                         true
                     )
                 }

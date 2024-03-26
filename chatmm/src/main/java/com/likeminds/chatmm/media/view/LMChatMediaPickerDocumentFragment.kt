@@ -178,7 +178,7 @@ class LMChatMediaPickerDocumentFragment :
             binding.tvSelectedCount.text =
                 String.format("%s selected", selectedMedias.size)
         } else {
-            binding.tvSelectedCount.text = getString(R.string.tap_to_select)
+            binding.tvSelectedCount.text = getString(R.string.lm_chat_tap_to_select)
         }
         binding.fabSend.isVisible = isMediaSelectionEnabled()
     }

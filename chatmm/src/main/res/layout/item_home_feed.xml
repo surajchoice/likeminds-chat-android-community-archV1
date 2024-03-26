@@ -43,7 +43,7 @@
             android:layout_marginVertical="24dp"
             android:layout_marginStart="24dp"
             android:lineSpacingExtra="4sp"
-            android:text="@string/explore"
+            android:text="@string/lm_chat_explore"
             android:textColor="@color/lm_chat_dark_grey"
             android:textSize="16sp"
             app:fontType="medium"

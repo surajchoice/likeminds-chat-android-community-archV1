@@ -38,7 +38,7 @@ class InitiateViewModel @Inject constructor(
     ) {
         viewModelScope.launchIO {
             if (apiKey.isEmpty()) {
-                _initiateErrorMessage.postValue(context.getString(R.string.empty_api_key))
+                _initiateErrorMessage.postValue(context.getString(R.string.lm_chat_empty_api_key))
                 return@launchIO
             }
 

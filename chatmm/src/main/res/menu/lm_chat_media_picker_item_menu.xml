@@ -4,6 +4,6 @@
     <item
         android:id="@+id/select_multiple"
         android:icon="@drawable/lm_chat_ic_done_checked"
-        android:title="@string/select_multiple"
+        android:title="@string/lm_chat_select_multiple"
         app:showAsAction="always" />
 </menu>

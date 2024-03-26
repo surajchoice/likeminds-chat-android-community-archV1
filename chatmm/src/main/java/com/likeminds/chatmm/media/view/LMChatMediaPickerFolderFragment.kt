@@ -156,7 +156,7 @@ class LMChatMediaPickerFolderFragment :
             ) {
                 String.format("Send to %s", mediaPickerExtras.senderName)
             } else {
-                getString(R.string.gallery)
+                getString(R.string.lm_chat_gallery)
             }
     }
 

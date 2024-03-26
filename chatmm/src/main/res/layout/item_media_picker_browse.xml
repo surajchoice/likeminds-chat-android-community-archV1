@@ -26,7 +26,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
-            android:text="@string/browse_other_docs"
+            android:text="@string/lm_chat_browse_other_docs"
             android:textColor="@color/lm_chat_black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_browse"

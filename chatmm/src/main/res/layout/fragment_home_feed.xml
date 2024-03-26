@@ -46,14 +46,14 @@
                     android:ellipsize="end"
                     android:maxEms="15"
                     android:maxLines="1"
-                    android:text="@string/community"
+                    android:text="@string/lm_chat_community"
                     android:textColor="@{toolbarColor}"
                     android:textSize="22sp"
                     app:fontType="medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/community" />
+                    tools:text="@string/lm_chat_community" />
 
                 <ImageView
                     android:id="@+id/iv_search"

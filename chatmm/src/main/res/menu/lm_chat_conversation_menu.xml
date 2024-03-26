@@ -3,10 +3,10 @@
 
     <item
         android:id="@+id/menu_resend"
-        android:title="@string/send_again" />
+        android:title="@string/lm_chat_send_again" />
 
     <item
         android:id="@+id/menu_delete"
-        android:title="@string/delete" />
+        android:title="@string/lm_chat_delete" />
 
 </menu>

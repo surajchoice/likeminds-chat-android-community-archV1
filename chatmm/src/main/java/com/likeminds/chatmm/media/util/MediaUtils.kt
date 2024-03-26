@@ -165,7 +165,7 @@ object MediaUtils {
 
         if (largeFileSelected) {
             ViewUtils.showShortToast(
-                context, context.getString(R.string.large_file_select_error_message)
+                context, context.getString(R.string.lm_chat_large_file_select_error_message)
             )
         }
         return mediaUris

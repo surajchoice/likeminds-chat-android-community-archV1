@@ -97,7 +97,7 @@ class ConversationActionItemViewDataBinder constructor(
                 }
             }
 
-            val tapToUndoString = tvAction.context.getString(R.string.tap_to_undo)
+            val tapToUndoString = tvAction.context.getString(R.string.lm_chat_tap_to_undo)
 
             if (conversation.showTapToUndo) {
                 if (!editable.contains(tapToUndoString)) {

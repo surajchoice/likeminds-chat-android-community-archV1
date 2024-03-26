@@ -125,7 +125,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
             this,
             CHANNEL_ID
         ).apply {
-            setContentTitle(getString(R.string.audio_is_played))
+            setContentTitle(getString(R.string.lm_chat_audio_is_played))
             setSmallIcon(R.drawable.lm_chat_ic_notification)
             setAutoCancel(false)
             setSilent(true)

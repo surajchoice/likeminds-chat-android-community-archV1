@@ -125,7 +125,7 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="0.01"
             android:lineSpacingExtra="6sp"
-            android:text="@string/community_manager"
+            android:text="@string/lm_chat_community_manager"
             android:textColor="@color/lm_chat_turquoise"
             android:textSize="12sp"
             android:textStyle="normal"

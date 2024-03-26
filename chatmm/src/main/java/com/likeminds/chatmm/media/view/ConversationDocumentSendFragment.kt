@@ -242,7 +242,7 @@ class ConversationDocumentSendFragment :
                 binding.tvDocumentPageCount.show()
                 binding.viewDotPageCount.show()
                 binding.tvDocumentPageCount.text =
-                    getString(R.string.placeholder_pages, pageCount)
+                    getString(R.string.lm_chat_placeholder_pages, pageCount)
             } else {
                 binding.tvDocumentPageCount.hide()
                 binding.viewDotPageCount.hide()

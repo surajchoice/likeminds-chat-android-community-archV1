@@ -14,7 +14,7 @@ import com.likeminds.likemindschat.chatroom.model.Chatroom
 object HomeFeedUtil {
     fun getEmptyChatView(context: Context): EmptyScreenViewData {
         return EmptyScreenViewData.Builder()
-            .title(context.getString(R.string.empty_chat_room_title))
+            .title(context.getString(R.string.lm_chat_empty_chat_room_title))
             .subTitle("")
             .build()
     }

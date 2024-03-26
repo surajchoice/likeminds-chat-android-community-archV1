@@ -5,9 +5,9 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/menu_item_sort_name"
-            android:title="@string/sort_by_name" />
+            android:title="@string/lm_chat_sort_by_name" />
         <item
             android:id="@+id/menu_item_sort_date"
-            android:title="@string/sort_by_date" />
+            android:title="@string/lm_chat_sort_by_date" />
     </group>
 </menu>

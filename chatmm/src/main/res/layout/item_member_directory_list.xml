@@ -84,7 +84,7 @@
             app:layout_constraintStart_toEndOf="@+id/view_dot"
             app:layout_constraintTop_toTopOf="@+id/tv_member_name"
             app:textType="special"
-            tools:text="@string/community_manager" />
+            tools:text="@string/lm_chat_community_manager" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_subtitle"
@@ -115,7 +115,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="@string/verification_pending"
+            android:text="@string/lm_chat_verification_pending"
             android:textColor="@color/lm_chat_turquoise"
             android:textSize="14sp"
             app:fontType="regular"

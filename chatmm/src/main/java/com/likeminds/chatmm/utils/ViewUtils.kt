@@ -147,12 +147,12 @@ object ViewUtils {
 
     // shows short toast with "Something went wrong!" message
     fun showSomethingWentWrongToast(context: Context) {
-        showShortToast(context, context.getString(R.string.something_went_wrong))
+        showShortToast(context, context.getString(R.string.lm_chat_something_went_wrong))
     }
 
     // shows short toast with error message
     fun showErrorMessageToast(context: Context, errorMessage: String?) {
-        showShortToast(context, errorMessage ?: context.getString(R.string.something_went_wrong))
+        showShortToast(context, errorMessage ?: context.getString(R.string.lm_chat_something_went_wrong))
     }
 
     // shows short snack bar with message

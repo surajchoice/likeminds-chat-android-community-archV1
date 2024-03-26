@@ -13,7 +13,6 @@ import android.os.Build
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.utils.permissions.LMChatPermissionManager.Companion.REQUEST_CODE_SETTINGS_PERMISSION
@@ -61,12 +60,12 @@ class LMChatPermissionDialog(
                 Mode.INIT -> {
                     textViewMessage.text = permission.preDialogMessage
                     textViewPositiveButton.text =
-                        activity.getString(R.string.permission_continue)
+                        activity.getString(R.string.lm_chat_permission_continue)
                 }
                 Mode.DENIED -> {
                     textViewMessage.text = permission.deniedDialogMessage
                     textViewPositiveButton.text =
-                        activity.getString(R.string.settings)
+                        activity.getString(R.string.lm_chat_settings)
                 }
             }
             textViewPositiveButton.setOnClickListener(this@LMChatPermissionDialog)
@@ -94,12 +93,12 @@ class LMChatPermissionDialog(
                 Mode.INIT -> {
                     textViewMessage.text = permissionExtras.preDialogMessage
                     textViewPositiveButton.text =
-                        activity.getString(R.string.permission_continue)
+                        activity.getString(R.string.lm_chat_permission_continue)
                 }
                 Mode.DENIED -> {
                     textViewMessage.text = permissionExtras.deniedDialogMessage
                     textViewPositiveButton.text =
-                        activity.getString(R.string.settings)
+                        activity.getString(R.string.lm_chat_settings)
                 }
             }
             textViewPositiveButton.setOnClickListener {

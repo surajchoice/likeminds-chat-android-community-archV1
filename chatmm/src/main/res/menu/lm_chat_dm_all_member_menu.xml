@@ -6,7 +6,7 @@
         android:id="@+id/menu_search"
         android:icon="@drawable/lm_chat_ic_material_icons_white_search"
         android:iconTint="#000000"
-        android:title="@string/search"
+        android:title="@string/lm_chat_search"
         app:showAsAction="always"
         tools:ignore="UnusedAttribute" />
 </menu>

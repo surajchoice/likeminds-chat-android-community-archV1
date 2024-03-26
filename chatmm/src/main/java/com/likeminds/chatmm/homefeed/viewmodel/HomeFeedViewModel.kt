@@ -11,7 +11,6 @@ import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -190,7 +189,7 @@ class HomeFeedViewModel @Inject constructor(
         dataList.add(lineBreakViewData)
 
         //Chat rooms
-        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))
+        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
             !wasChatroomsFetched -> {

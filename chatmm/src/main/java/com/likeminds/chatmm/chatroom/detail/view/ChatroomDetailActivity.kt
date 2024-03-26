@@ -135,7 +135,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         if (isError) {
             ViewUtils.showShortToast(
                 this,
-                getString(R.string.the_chatroom_link_is_either_tampered_or_invalid)
+                getString(R.string.lm_chat_the_chatroom_link_is_either_tampered_or_invalid)
             )
         }
         supportFragmentManager.popBackStack()

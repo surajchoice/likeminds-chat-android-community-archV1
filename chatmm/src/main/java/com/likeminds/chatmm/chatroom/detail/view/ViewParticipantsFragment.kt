@@ -213,7 +213,7 @@ class ViewParticipantsFragment :
     //set total participants in header's subtitle
     private fun setTotalParticipantsCount(totalParticipants: Int) {
         binding.tvToolbarSubTitle.text = resources.getQuantityString(
-            R.plurals.participants_s,
+            R.plurals.lm_chat_participants_s,
             totalParticipants,
             totalParticipants
         )

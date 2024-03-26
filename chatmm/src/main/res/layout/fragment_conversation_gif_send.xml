@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:background="@null"
-                android:hint="@string/add_message"
+                android:hint="@string/lm_chat_add_message"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:lineSpacingExtra="4sp"

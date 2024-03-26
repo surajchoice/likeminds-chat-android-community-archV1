@@ -95,8 +95,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
             //set headers and sub header as per report type
             when (reportExtras.type) {
                 REPORT_TYPE_MEMBER -> {
-                    tvReportTitle.text = getString(R.string.report_s, "Member")
-                    tvReportSubHeader.text = getString(R.string.report_sub_header, "member")
+                    tvReportTitle.text = getString(R.string.lm_chat_report_s, "Member")
+                    tvReportSubHeader.text = getString(R.string.lm_chat_report_sub_header, "member")
                     viewModel.sendMemberProfileReport(
                         reportExtras.uuid,
                         reportExtras.communityId
@@ -104,8 +104,8 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
                 }
 
                 REPORT_TYPE_CONVERSATION -> {
-                    tvReportTitle.text = getString(R.string.report_s, "Message")
-                    tvReportSubHeader.text = getString(R.string.report_sub_header, "message")
+                    tvReportTitle.text = getString(R.string.lm_chat_report_s, "Message")
+                    tvReportSubHeader.text = getString(R.string.lm_chat_report_sub_header, "message")
                 }
             }
         }
@@ -132,7 +132,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
                 if (tagSelected == null) {
                     ViewUtils.showShortSnack(
                         root,
-                        getString(R.string.please_select_at_least_one_report_tag)
+                        getString(R.string.lm_chat_please_select_at_least_one_report_tag)
                     )
                     return@setOnClickListener
                 }
@@ -141,7 +141,7 @@ class ReportFragment : BaseFragment<FragmentReportBinding, ReportViewModel>(),
                 if (isOthersSelected == true && reason.isEmpty()) {
                     ViewUtils.showShortSnack(
                         root,
-                        getString(R.string.please_enter_a_reason)
+                        getString(R.string.lm_chat_please_enter_a_reason)
                     )
                     return@setOnClickListener
                 }

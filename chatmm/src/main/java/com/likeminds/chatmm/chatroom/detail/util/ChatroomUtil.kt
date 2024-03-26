@@ -228,17 +228,17 @@ object ChatroomUtil {
         return if (uuid == currentMemberId) {
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
             if (deletedByUUID == currentMemberId) {
-                context.getString(R.string.you_deleted_this_message)
+                context.getString(R.string.lm_chat_you_deleted_this_message)
             } else {
-                context.getString(R.string.your_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_your_message_was_deleted_by_cm)
             }
         } else {
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
             val conversationCreator = conversation.memberViewData.sdkClientInfo.uuid
             if (conversationCreator == deletedByUUID) {
-                context.getString(R.string.this_message_was_deleted)
+                context.getString(R.string.lm_chat_this_message_was_deleted)
             } else {
-                context.getString(R.string.this_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_this_message_was_deleted_by_cm)
             }
         }
     }
@@ -252,17 +252,17 @@ object ChatroomUtil {
         return if (uuid == currentMemberId) {
             val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
             if (deletedByUUID == currentMemberId) {
-                context.getString(R.string.you_deleted_this_message)
+                context.getString(R.string.lm_chat_you_deleted_this_message)
             } else {
-                context.getString(R.string.your_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_your_message_was_deleted_by_cm)
             }
         } else {
             val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
             val creatorUUID = chatroom.memberViewData.sdkClientInfo.uuid
             if (creatorUUID == deletedByUUID) {
-                context.getString(R.string.this_message_was_deleted)
+                context.getString(R.string.lm_chat_this_message_was_deleted)
             } else {
-                context.getString(R.string.this_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_this_message_was_deleted_by_cm)
             }
         }
     }

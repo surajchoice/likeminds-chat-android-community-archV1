@@ -19,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/lm_chat_dm_all_member_menu"
             app:navigationIcon="@drawable/lm_chat_ic_arrow_back_black_24dp"
-            app:title="@string/send_dm_to"
+            app:title="@string/lm_chat_send_dm_to"
             app:titleTextColor="@color/lm_chat_black" />
 
         <com.likeminds.chatmm.search.util.CustomSearchBar

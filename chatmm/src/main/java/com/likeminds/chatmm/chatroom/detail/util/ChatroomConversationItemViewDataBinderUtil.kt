@@ -502,7 +502,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             val current = MediaUtils.getFileSizeText(progress.first)
             val total = MediaUtils.getFileSizeText(progress.second)
             textView.apply {
-                text = context.getString(R.string.uploading_progress_placeholder, current, total)
+                text = context.getString(R.string.lm_chat_uploading_progress_placeholder, current, total)
             }
         }
     }
@@ -983,7 +983,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             tvLinkTitle.text = if (data.title?.isNotBlank() == true) {
                 data.title
             } else {
-                root.context.getString(R.string.link)
+                root.context.getString(R.string.lm_chat_link)
             }
             tvLinkDescription.isVisible = !data.description.isNullOrEmpty()
             tvLinkDescription.text = data.description
@@ -1034,7 +1034,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 if (noOfPage > 0) {
                     tvMeta1.show()
                     tvMeta1.text = root.context.getString(
-                        R.string.placeholder_pages, noOfPage
+                        R.string.lm_chat_placeholder_pages, noOfPage
                     )
                 }
                 if (size > 0) {
@@ -1250,19 +1250,19 @@ object ChatroomConversationItemViewDataBinderUtil {
                     when (pollInfoData.multipleSelectState) {
                         POLL_MULTIPLE_STATE_EXACTLY -> {
                             context.getString(
-                                R.string.select_exact_options_text,
+                                R.string.lm_chat_select_exact_options_text,
                                 multiSelectNum.toString()
                             )
                         }
                         POLL_MULTIPLE_STATE_MAX -> {
                             context.getString(
-                                R.string.select_at_most_text,
+                                R.string.lm_chat_select_at_most_text,
                                 multiSelectNum.toString()
                             )
                         }
                         POLL_MULTIPLE_STATE_LEAST -> {
                             context.getString(
-                                R.string.select_at_least_text,
+                                R.string.lm_chat_select_at_least_text,
                                 multiSelectNum.toString()
                             )
                         }
@@ -1290,8 +1290,8 @@ object ChatroomConversationItemViewDataBinderUtil {
                 visibility = View.VISIBLE
                 text = dayTimeLeft
 
-                if (dayTimeLeft == context.getString(R.string.poll_ended)
-                    || dayTimeLeft == context.getString(R.string.event_ended_regular)
+                if (dayTimeLeft == context.getString(R.string.lm_chat_poll_ended)
+                    || dayTimeLeft == context.getString(R.string.lm_chat_event_ended_regular)
                 ) {
                     background = ContextCompat.getDrawable(
                         context,
@@ -1358,9 +1358,9 @@ object ChatroomConversationItemViewDataBinderUtil {
 
     fun showAnonymousPollDialog(context: Context) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(context.getString(R.string.anonymous_poll))
-            .setMessage(context.getString(R.string.anonymous_poll_message))
-            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+        builder.setTitle(context.getString(R.string.lm_chat_anonymous_poll))
+            .setMessage(context.getString(R.string.lm_chat_anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.lm_chat_okay)) { dialog, _ ->
                 dialog.dismiss()
             }
         builder.create().show()

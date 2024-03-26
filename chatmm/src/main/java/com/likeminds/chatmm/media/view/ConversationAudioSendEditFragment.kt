@@ -177,7 +177,7 @@ class ConversationAudioSendEditFragment :
         if (mediaPlayer != null) {
             isDataSourceSet = false
             handler?.removeCallbacks(runnable ?: Runnable { })
-            binding.tvCurrentDuration.text = getString(R.string.start_duration)
+            binding.tvCurrentDuration.text = getString(R.string.lm_chat_start_duration)
             binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
             progressAnim.cancel()
             binding.wave.setRawData(ByteArray(0))

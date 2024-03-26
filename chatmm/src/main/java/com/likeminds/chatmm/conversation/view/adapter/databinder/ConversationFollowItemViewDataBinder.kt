@@ -38,12 +38,12 @@ internal class ConversationFollowItemViewDataBinder constructor(
             val context = root.context
             if (adapterListener.getChatRoom()?.isSecret == true) {
                 tvFollowConst.text =
-                    context.getString(R.string.join_chatroom_message)
-                btnFollow.text = context.getString(R.string.join)
+                    context.getString(R.string.lm_chat_join_chatroom_message)
+                btnFollow.text = context.getString(R.string.lm_chat_join)
             } else {
                 tvFollowConst.text =
-                    context.getString(R.string.join_chatroom_message)
-                btnFollow.text = context.getString(R.string.join_small)
+                    context.getString(R.string.lm_chat_join_chatroom_message)
+                btnFollow.text = context.getString(R.string.lm_chat_join_small)
             }
         }
     }

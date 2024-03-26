@@ -205,14 +205,14 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
             when (position) {
                 0 -> {
                     tab.apply {
-                        text = getString(R.string.groups)
+                        text = getString(R.string.lm_chat_groups)
                         removeBadge()
                     }
                 }
 
                 1 -> {
                     tab.apply {
-                        text = getString(R.string.dms)
+                        text = getString(R.string.lm_chat_dms)
                         val unreadDMCount = dmMeta?.unreadDMCount ?: 0
                         if (unreadDMCount > 0) {
                             val badge = orCreateBadge
@@ -278,7 +278,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
-                        getString(R.string.internet_connection_restored),
+                        getString(R.string.lm_chat_internet_connection_restored),
                         true
                     )
                 }

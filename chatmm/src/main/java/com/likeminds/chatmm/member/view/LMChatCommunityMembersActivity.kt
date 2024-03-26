@@ -80,7 +80,7 @@ class LMChatCommunityMembersActivity : BaseAppCompatActivity() {
         if (isError) {
             ViewUtils.showShortToast(
                 this,
-                getString(R.string.something_went_wrong)
+                getString(R.string.lm_chat_something_went_wrong)
             )
         }
         supportFragmentManager.popBackStack()

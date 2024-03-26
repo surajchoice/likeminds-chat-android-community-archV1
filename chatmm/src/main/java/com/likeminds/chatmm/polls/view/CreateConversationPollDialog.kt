@@ -212,13 +212,13 @@ class CreateConversationPollDialog :
 
     private fun showConfirmationDialog() {
         AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle(getString(R.string.discard_poll))
-            .setMessage(getString(R.string.discard_poll_message))
-            .setPositiveButton(getString(R.string.discard)) { dialog, _ ->
+            .setTitle(getString(R.string.lm_chat_discard_poll))
+            .setMessage(getString(R.string.lm_chat_discard_poll_message))
+            .setPositiveButton(getString(R.string.lm_chat_discard)) { dialog, _ ->
                 dialog.dismiss()
                 this.dismiss()
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton(getString(R.string.lm_chat_cancel), null)
             .show()
     }
 
@@ -405,7 +405,7 @@ class CreateConversationPollDialog :
     private fun showPastExpiryDateSelectedError() {
         ViewUtils.showShortToast(
             requireContext(),
-            getString(R.string.please_select_future_date_as_poll_expire_time)
+            getString(R.string.lm_chat_please_select_future_date_as_poll_expire_time)
         )
     }
 

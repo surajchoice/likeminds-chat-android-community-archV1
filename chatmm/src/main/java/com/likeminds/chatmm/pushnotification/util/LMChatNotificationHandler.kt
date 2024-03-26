@@ -144,7 +144,7 @@ class LMChatNotificationHandler {
 
             return NotificationCompat.Action.Builder(
                 R.drawable.lm_chat_ic_mark_as_read,
-                context.getString(R.string.mark_as_read),
+                context.getString(R.string.lm_chat_mark_as_read),
                 markAsReadPendingIntent
             ).build()
         }
@@ -157,7 +157,7 @@ class LMChatNotificationHandler {
         ): NotificationCompat.Action {
             val remoteInput =
                 RemoteInput.Builder(NotificationActionBroadcastReceiver.KEY_REPLY).run {
-                    setLabel(context.getString(R.string.reply))
+                    setLabel(context.getString(R.string.lm_chat_reply))
                     build()
                 }
 
@@ -188,7 +188,7 @@ class LMChatNotificationHandler {
 
             return NotificationCompat.Action.Builder(
                 R.drawable.lm_chat_ic_reply,
-                context.getString(R.string.reply),
+                context.getString(R.string.lm_chat_reply),
                 replyPendingIntent
             ).addRemoteInput(remoteInput).build()
         }
@@ -386,8 +386,8 @@ class LMChatNotificationHandler {
 
     private fun createGeneralNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = mApplication.getString(R.string.general_channel_name)
-            val descriptionText = mApplication.getString(R.string.general_channel_description)
+            val name = mApplication.getString(R.string.lm_chat_general_channel_name)
+            val descriptionText = mApplication.getString(R.string.lm_chat_general_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(GENERAL_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -401,8 +401,8 @@ class LMChatNotificationHandler {
 
     private fun createChatroomNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = mApplication.getString(R.string.chatroom_channel_name)
-            val descriptionText = mApplication.getString(R.string.chatroom_channel_description)
+            val name = mApplication.getString(R.string.lm_chat_chatroom_channel_name)
+            val descriptionText = mApplication.getString(R.string.lm_chat_chatroom_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHATROOM_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -589,7 +589,7 @@ class LMChatNotificationHandler {
             NotificationCompat.Builder(mApplication, GENERAL_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
                 .setColor(notificationTextColor)
-                .setContentTitle(mApplication.getString(R.string.app_name))
+                .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setContentText(chatroomName)
         val chatroomPerson = Person.Builder()
             .setKey(chatroomId.toString())
@@ -671,7 +671,7 @@ class LMChatNotificationHandler {
         val lockScreenGroupNotification =
             NotificationCompat.Builder(mApplication, GENERAL_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
-                .setContentTitle(mApplication.getString(R.string.app_name))
+                .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setColor(notificationTextColor)
                 .setContentText("$communityName (New chatrooms)")
         val groupNotification =
@@ -894,7 +894,7 @@ class LMChatNotificationHandler {
         val lockScreenGroupNotification =
             NotificationCompat.Builder(context, GENERAL_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
-                .setContentTitle(mApplication.getString(R.string.app_name))
+                .setContentTitle(mApplication.getString(R.string.lm_chat_app_name))
                 .setColor(notificationTextColor)
                 .setContentText(groupSummaryText)
         //Group summary
@@ -902,7 +902,7 @@ class LMChatNotificationHandler {
             NotificationCompat.Builder(context, CHATROOM_CHANNEL_ID)
                 .setSmallIcon(notificationIcon)
                 .setSubText(groupSummaryText)
-                .setContentTitle(context.getString(R.string.app_name))
+                .setContentTitle(context.getString(R.string.lm_chat_app_name))
                 .setContentText(groupSummaryText)
                 .setGroup(groupRoute)
                 .setGroupSummary(true)
@@ -972,9 +972,9 @@ class LMChatNotificationHandler {
         if (imagesCount > 0) {
             if (imagesCount > 1 || videoCount > 0) {
                 mediaCountText.append(imagesCount).append(" ")
-                    .append(context.getString(R.string.camera_emoji))
+                    .append(context.getString(R.string.lm_chat_camera_emoji))
             } else {
-                mediaCountText.append(context.getString(R.string.camera_emoji))
+                mediaCountText.append(context.getString(R.string.lm_chat_camera_emoji))
             }
         }
 
@@ -982,9 +982,9 @@ class LMChatNotificationHandler {
             if (mediaCountText.isNotEmpty()) mediaCountText.append(" ")
             if (gifsCount > 1) {
                 mediaCountText.append(gifsCount).append(" ")
-                    .append(context.getString(R.string.gif_emoji))
+                    .append(context.getString(R.string.lm_chat_gif_emoji))
             } else {
-                mediaCountText.append(context.getString(R.string.gif_emoji))
+                mediaCountText.append(context.getString(R.string.lm_chat_gif_emoji))
             }
         }
 
@@ -992,9 +992,9 @@ class LMChatNotificationHandler {
             if (mediaCountText.isNotEmpty()) mediaCountText.append(" ")
             if (audioCount > 1) {
                 mediaCountText.append(audioCount).append(" ")
-                    .append(context.getString(R.string.audio_emoji))
+                    .append(context.getString(R.string.lm_chat_audio_emoji))
             } else {
-                mediaCountText.append(context.getString(R.string.audio_emoji))
+                mediaCountText.append(context.getString(R.string.lm_chat_audio_emoji))
             }
         }
 
@@ -1002,9 +1002,9 @@ class LMChatNotificationHandler {
             if (mediaCountText.isNotEmpty()) mediaCountText.append(" ")
             if (voiceNoteCount > 1) {
                 mediaCountText.append(voiceNoteCount).append(" ")
-                    .append(context.getString(R.string.mic_emoji))
+                    .append(context.getString(R.string.lm_chat_mic_emoji))
             } else {
-                mediaCountText.append(context.getString(R.string.mic_emoji))
+                mediaCountText.append(context.getString(R.string.lm_chat_mic_emoji))
             }
         }
 
@@ -1031,16 +1031,16 @@ class LMChatNotificationHandler {
             if (mediaCountText.isNotEmpty()) mediaCountText.append(" ")
             if (pdfCount > 1) {
                 mediaCountText.append(pdfCount).append(" ")
-                    .append(context.getString(R.string.document_emoji))
+                    .append(context.getString(R.string.lm_chat_document_emoji))
             } else {
-                mediaCountText.append(context.getString(R.string.document_emoji))
+                mediaCountText.append(context.getString(R.string.lm_chat_document_emoji))
             }
         }
 
         if (videoCount > 0) {
             if (mediaCountText.isNotEmpty()) mediaCountText.append(" ")
             mediaCountText.append(videoCount).append(" ")
-                .append(context.getString(R.string.video_emoji))
+                .append(context.getString(R.string.lm_chat_video_emoji))
         }
 
         mediaCountText.append(" ").append(updatedContentText)

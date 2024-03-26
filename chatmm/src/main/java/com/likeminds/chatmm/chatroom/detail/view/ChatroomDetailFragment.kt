@@ -257,7 +257,7 @@ class ChatroomDetailFragment :
                                 .progress(audioDurationInt)
                                 .currentDuration(
                                     audioDurationString
-                                        ?: requireContext().getString(R.string.start_duration)
+                                        ?: requireContext().getString(R.string.lm_chat_start_duration)
                                 )
                                 .build()
 
@@ -305,7 +305,7 @@ class ChatroomDetailFragment :
                             if (isAudioComplete) {
                                 attachment = attachment.toBuilder()
                                     .progress(0)
-                                    .currentDuration(requireContext().getString(R.string.start_duration))
+                                    .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                                     .mediaState(MEDIA_ACTION_NONE)
                                     .build()
                             }
@@ -794,7 +794,7 @@ class ChatroomDetailFragment :
             fabSend.isEnabled = state
             inputBox.ivAttachment.isEnabled = state
             inputBox.etAnswer.isEnabled = state
-            inputBox.etAnswer.setHint(R.string.type_your_response)
+            inputBox.etAnswer.setHint(R.string.lm_chat_type_your_response)
         }
     }
 
@@ -804,7 +804,7 @@ class ChatroomDetailFragment :
      */
     private fun checkForExternalSharedContent() {
         val clipData = activity?.intent?.clipData ?: return
-        if (clipData.description.label != context?.getString(R.string.third_party_share)) {
+        if (clipData.description.label != context?.getString(R.string.lm_chat_third_party_share)) {
             return
         }
 
@@ -850,7 +850,7 @@ class ChatroomDetailFragment :
         if (counterForMultipleType > 1) {
             ViewUtils.showShortToast(
                 requireContext(),
-                getString(R.string.warning_multimedia_and_document_share_error)
+                getString(R.string.lm_chat_warning_multimedia_and_document_share_error)
             )
             return
         }
@@ -1057,7 +1057,7 @@ class ChatroomDetailFragment :
 
                         attachment = attachment.toBuilder()
                             .progress(0)
-                            .currentDuration(requireContext().getString(R.string.start_duration))
+                            .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                             .mediaState(MEDIA_ACTION_NONE)
                             .build()
 
@@ -1342,7 +1342,7 @@ class ChatroomDetailFragment :
                     hideAllChatBoxViews()
                     tvRestrictedMessage.visibility = View.VISIBLE
                     tvRestrictedMessage.text =
-                        getString(R.string.you_cannot_send_message_to_rejected_connection)
+                        getString(R.string.lm_chat_you_cannot_send_message_to_rejected_connection)
                     tvRestrictedMessage.gravity = Gravity.CENTER
                     return
                 } else if (isBlocked == false) {
@@ -1360,7 +1360,7 @@ class ChatroomDetailFragment :
                         cvDmRequest.hide()
                         tvSendDmRequestToMember.text =
                             getString(
-                                R.string.send_a_dm_request_to_s,
+                                R.string.lm_chat_send_a_dm_request_to_s,
                                 viewModel.getOtherDmMember()?.name
                             )
                         isDMRequestSent = true
@@ -1383,7 +1383,7 @@ class ChatroomDetailFragment :
                         // hides the input box and shows DM request pending message
                         hideAllChatBoxViews()
                         tvRestrictedMessage.visibility = View.VISIBLE
-                        tvRestrictedMessage.text = getString(R.string.dm_request_pending_message)
+                        tvRestrictedMessage.text = getString(R.string.lm_chat_dm_request_pending_message)
                         tvRestrictedMessage.gravity = Gravity.CENTER
                         return
                     }
@@ -1422,13 +1422,13 @@ class ChatroomDetailFragment :
                             hideAllChatBoxViews()
                             tvRestrictedMessage.visibility = View.VISIBLE
                             tvRestrictedMessage.text =
-                                getString(R.string.you_cannot_send_message_to_rejected_connection)
+                                getString(R.string.lm_chat_you_cannot_send_message_to_rejected_connection)
                             tvRestrictedMessage.gravity = Gravity.CENTER
                         } else {
                             hideAllChatBoxViews()
                             tvRestrictedMessage.visibility = View.VISIBLE
                             tvRestrictedMessage.text =
-                                getString(R.string.dm_request_pending_message)
+                                getString(R.string.lm_chat_dm_request_pending_message)
                             tvRestrictedMessage.gravity = Gravity.CENTER
                         }
                         return
@@ -1442,7 +1442,7 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text = getString(
-                    R.string.direct_messaging_among_members_has_been_disabled_by_the_community_manager
+                    R.string.lm_chat_direct_messaging_among_members_has_been_disabled_by_the_community_manager
                 )
                 return
             }
@@ -1459,14 +1459,14 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.the_community_managers_have_restricted_you_from_responding_here)
+                    getString(R.string.lm_chat_the_community_managers_have_restricted_you_from_responding_here)
                 return
             }
             if (!viewModel.isAdminMember() && viewModel.isAnnouncementChatroom()) {
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.only_community_managers_can_respond)
+                    getString(R.string.lm_chat_only_community_managers_can_respond)
                 tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
@@ -1474,7 +1474,7 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.only_community_managers_can_respond)
+                    getString(R.string.lm_chat_only_community_managers_can_respond)
                 tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
@@ -1482,7 +1482,7 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.secret_chatroom_restricted_message)
+                    getString(R.string.lm_chat_secret_chatroom_restricted_message)
                 return
             }
             setupCommonChatInputBox(type)
@@ -1606,7 +1606,7 @@ class ChatroomDetailFragment :
             } else {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.large_file_select_error_message)
+                    getString(R.string.lm_chat_large_file_select_error_message)
                 )
             }
         }
@@ -1630,7 +1630,7 @@ class ChatroomDetailFragment :
                     null
                 }
                 if (cameraFile == null) {
-                    ViewUtils.showShortToast(requireContext(), getString(R.string.image_not_found))
+                    ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_image_not_found))
                 } else {
                     try {
                         val photoURI = FileProvider.getUriForFile(
@@ -1827,7 +1827,7 @@ class ChatroomDetailFragment :
                             ViewUtils.showShortToast(
                                 requireContext(),
                                 getString(
-                                    R.string.request_cant_be_more_than_s_characters,
+                                    R.string.lm_chat_request_cant_be_more_than_s_characters,
                                     DM_SEND_REQUEST_TEXT_LIMIT.toString()
                                 )
                             )
@@ -1881,7 +1881,7 @@ class ChatroomDetailFragment :
                     updateChatroomFollowStatus(true)
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.added_to_your_joined_chat_rooms)
+                        getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                     )
                 }
 
@@ -1924,7 +1924,7 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
+                ViewUtils.showShortSnack(root, getString(R.string.lm_chat_please_enter_your_response))
             }
         }
     }
@@ -1941,7 +1941,7 @@ class ChatroomDetailFragment :
                         } else {
                             ViewUtils.showShortSnack(
                                 root,
-                                getString(R.string.please_enter_your_response)
+                                getString(R.string.lm_chat_please_enter_your_response)
                             )
                         }
                     }
@@ -1970,7 +1970,7 @@ class ChatroomDetailFragment :
                         } else {
                             ViewUtils.showShortSnack(
                                 root,
-                                getString(R.string.please_enter_your_response)
+                                getString(R.string.lm_chat_please_enter_your_response)
                             )
                         }
                     }
@@ -1981,7 +1981,7 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
+                ViewUtils.showShortSnack(root, getString(R.string.lm_chat_please_enter_your_response))
             }
         }
     }
@@ -2242,7 +2242,7 @@ class ChatroomDetailFragment :
             if (topic == null) {
                 setTopViewToChatroom(chatroomViewData)
             } else {
-                tvChatroomMemberName.text = getString(R.string.current_topic_text)
+                tvChatroomMemberName.text = getString(R.string.lm_chat_current_topic_text)
                 tvChatroomMemberName.setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
                 when {
                     topic.isDeleted() -> {
@@ -2627,7 +2627,7 @@ class ChatroomDetailFragment :
         viewModel.initialData.observe(viewLifecycleOwner) { initialData ->
             //chatroom is invalid or chatroom is deleted
             if (initialData == null) {
-                ViewUtils.showShortToast(context, getString(R.string.this_chatroom_doesnt_exist))
+                ViewUtils.showShortToast(context, getString(R.string.lm_chat_this_chatroom_doesnt_exist))
                 requireActivity().finish()
                 return@observe
             }
@@ -2637,7 +2637,7 @@ class ChatroomDetailFragment :
                     //chatroom id is invalid or user don't have access to it
                     ViewUtils.showShortToast(
                         context,
-                        getString(R.string.this_chatroom_doesnt_exist)
+                        getString(R.string.lm_chat_this_chatroom_doesnt_exist)
                     )
                     requireActivity().finish()
                     return@observe
@@ -3074,7 +3074,7 @@ class ChatroomDetailFragment :
             binding.tvToolbarSubTitle.apply {
                 show()
                 text = resources.getQuantityString(
-                    R.plurals.participants_s,
+                    R.plurals.lm_chat_participants_s,
                     count,
                     count
                 )
@@ -3096,7 +3096,7 @@ class ChatroomDetailFragment :
         viewModel.leaveSecretChatroomResponse.observe(viewLifecycleOwner) {
             ViewUtils.showShortToast(
                 requireContext(),
-                requireContext().getString(R.string.you_have_left_the_chat_room)
+                requireContext().getString(R.string.lm_chat_you_have_left_the_chat_room)
             )
             //send a result back to the user
             if (!viewModel.isAdminMember()) {
@@ -3109,12 +3109,12 @@ class ChatroomDetailFragment :
             if (size > 1) {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.messages_deleted)
+                    requireContext().getString(R.string.lm_chat_messages_deleted)
                 )
             } else {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.message_deleted)
+                    requireContext().getString(R.string.lm_chat_message_deleted)
                 )
             }
         }
@@ -3166,7 +3166,7 @@ class ChatroomDetailFragment :
                     val title = if (!linkOgTags.title.isNullOrEmpty()) {
                         linkOgTags.title
                     } else {
-                        getString(R.string.link)
+                        getString(R.string.lm_chat_link)
                     }
                     viewLink.tvLinkTitle.text = title
 
@@ -3225,16 +3225,16 @@ class ChatroomDetailFragment :
         //remove Follow button if showing
         if (pollInfoData?.pollType == POLL_TYPE_INSTANT) {
             val message = if (removeFollowView()) {
-                getString(R.string.your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms)
+                getString(R.string.lm_chat_your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms)
             } else {
-                getString(R.string.your_vote_submitted_successfully)
+                getString(R.string.lm_chat_your_vote_submitted_successfully)
             }
             ViewUtils.showShortToast(requireContext(), message)
         } else {
             if (removeFollowView()) {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.added_to_your_joined_chat_rooms)
+                    getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                 )
             }
             PollVoteSubmitSuccessDialog.newInstance(
@@ -3257,14 +3257,14 @@ class ChatroomDetailFragment :
             val hasAnswer = !response?.answer.isNullOrEmpty()
             val hasAttachments = response?.attachmentCount!! > 0
             val answer = when {
-                hasAnswer -> "${requireContext().getString(R.string.changed_current_topic_to)} ${response.answer}"
+                hasAnswer -> "${requireContext().getString(R.string.lm_chat_changed_current_topic_to)} ${response.answer}"
                 hasAttachments -> when (response.attachments?.firstOrNull()?.type) {
-                    IMAGE -> requireContext().getString(R.string.set_a_photo_message_to_current_topic)
-                    VIDEO -> requireContext().getString(R.string.set_a_video_message_to_current_topic)
-                    PDF -> requireContext().getString(R.string.set_a_document_message_to_current_topic)
-                    GIF -> requireContext().getString(R.string.set_a_gif_message_to_current_topic)
-                    AUDIO -> requireContext().getString(R.string.set_an_audio_message_to_current_topic)
-                    VOICE_NOTE -> requireContext().getString(R.string.set_a_voice_note_to_current_topic)
+                    IMAGE -> requireContext().getString(R.string.lm_chat_set_a_photo_message_to_current_topic)
+                    VIDEO -> requireContext().getString(R.string.lm_chat_set_a_video_message_to_current_topic)
+                    PDF -> requireContext().getString(R.string.lm_chat_set_a_document_message_to_current_topic)
+                    GIF -> requireContext().getString(R.string.lm_chat_set_a_gif_message_to_current_topic)
+                    AUDIO -> requireContext().getString(R.string.lm_chat_set_an_audio_message_to_current_topic)
+                    VOICE_NOTE -> requireContext().getString(R.string.lm_chat_set_a_voice_note_to_current_topic)
                     else -> ""
                 }
 
@@ -3326,9 +3326,9 @@ class ChatroomDetailFragment :
                 memberBlocked
             )
             val message = if (memberBlocked) {
-                getString(R.string.member_blocked)
+                getString(R.string.lm_chat_member_blocked)
             } else {
-                getString(R.string.member_unblocked)
+                getString(R.string.lm_chat_member_unblocked)
             }
             ViewUtils.showShortToast(requireContext(), message)
         }
@@ -3433,14 +3433,14 @@ class ChatroomDetailFragment :
                 is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
                     ViewUtils.showShortToast(
                         context,
-                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
 
                 is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
                     ViewUtils.showShortToast(
                         context,
-                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
 
@@ -3897,13 +3897,13 @@ class ChatroomDetailFragment :
             if (!isSecretChatRoom()) {
                 ViewUtils.showShortSnack(
                     binding.root,
-                    getString(R.string.added_to_your_joined_chat_rooms)
+                    getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                 )
             }
         } else {
             ViewUtils.showShortSnack(
                 binding.root,
-                getString(R.string.removed_from_your_joined_chat_rooms)
+                getString(R.string.lm_chat_removed_from_your_joined_chat_rooms)
             )
         }
         viewModel.followChatroom(
@@ -4011,7 +4011,7 @@ class ChatroomDetailFragment :
         )
         ViewUtils.showShortSnack(
             binding.root,
-            getString(R.string.you_are_joining_this_chat_room)
+            getString(R.string.lm_chat_you_are_joining_this_chat_room)
         )
     }
 
@@ -4024,7 +4024,7 @@ class ChatroomDetailFragment :
         )
         ViewUtils.showShortSnack(
             binding.root,
-            getString(R.string.removed_from_your_joined_chat_rooms)
+            getString(R.string.lm_chat_removed_from_your_joined_chat_rooms)
         )
     }
 
@@ -4052,7 +4052,7 @@ class ChatroomDetailFragment :
                     updateAudioVoiceNoteBinder(
                         attachment.toBuilder()
                             .progress(0)
-                            .currentDuration(requireContext().getString(R.string.start_duration))
+                            .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                             .mediaState(MEDIA_ACTION_NONE)
                             .build(),
                         localParentConversationId,
@@ -4290,7 +4290,7 @@ class ChatroomDetailFragment :
             attachment = attachment.toBuilder()
                 .progress(0)
                 .mediaState(MEDIA_ACTION_NONE)
-                .currentDuration(requireContext().getString(R.string.start_duration))
+                .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                 .build()
 
             updateAudioVoiceNoteBinder(
@@ -4339,7 +4339,7 @@ class ChatroomDetailFragment :
             else -> {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.poll_ended_result_message)
+                    getString(R.string.lm_chat_poll_ended_result_message)
                 )
             }
         }
@@ -4423,7 +4423,7 @@ class ChatroomDetailFragment :
                 else -> {
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.poll_ended_result_message)
+                        getString(R.string.lm_chat_poll_ended_result_message)
                     )
                 }
             }
@@ -4433,9 +4433,9 @@ class ChatroomDetailFragment :
     // shows alert dialog for anonymous poll
     private fun showAnonymousPollDialog(context: Context) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(context.getString(R.string.anonymous_poll))
-            .setMessage(context.getString(R.string.anonymous_poll_message))
-            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+        builder.setTitle(context.getString(R.string.lm_chat_anonymous_poll))
+            .setMessage(context.getString(R.string.lm_chat_anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.lm_chat_okay)) { dialog, _ ->
                 dialog.dismiss()
             }
         val alertDialog = builder.create()
@@ -5237,9 +5237,9 @@ class ChatroomDetailFragment :
 
     private fun copyConversationText(text: String, isSingleConversation: Boolean) {
         val message = if (isSingleConversation) {
-            requireContext().getString(R.string.message_copied)
+            requireContext().getString(R.string.lm_chat_message_copied)
         } else {
-            requireContext().getString(R.string.messages_copied)
+            requireContext().getString(R.string.lm_chat_messages_copied)
         }
         viewModel.sendMessageCopyEvent(text)
         ViewUtils.copyToClipboard(
@@ -5496,7 +5496,7 @@ class ChatroomDetailFragment :
 
     override fun removedReaction(conversationId: String) {
         childFragmentManager.popBackStack()
-        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_reaction_removed))
         reactionsViewModel.deleteConversationReaction(conversationId)
         updateReactionsGridUI(null, conversationId)
         reactionsViewModel.sendReactionRemovedEvent(
@@ -5508,7 +5508,7 @@ class ChatroomDetailFragment :
 
     override fun removedChatroomReaction() {
         childFragmentManager.popBackStack()
-        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_reaction_removed))
         reactionsViewModel.deleteChatroomReaction(chatroomId)
         updateChatroomReactionGridUI(null)
         reactionsViewModel.sendReactionRemovedEvent(
@@ -5790,14 +5790,14 @@ class ChatroomDetailFragment :
                     value = MemberBlockState.MEMBER_BLOCKED
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.member_blocked)
+                        getString(R.string.lm_chat_member_blocked)
                     )
                 } else {
                     updatedBlockActionTitle = BLOCK_ACTION_TITLE
                     value = MemberBlockState.MEMBER_UNBLOCKED
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.member_unblocked)
+                        getString(R.string.lm_chat_member_unblocked)
                     )
                     removeTapToUndo()
                 }
@@ -5844,14 +5844,14 @@ class ChatroomDetailFragment :
                 value = false
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.notifications_unmuted_for_this_chatroom)
+                    requireContext().getString(R.string.lm_chat_notifications_unmuted_for_this_chatroom)
                 )
             } else {
                 updatedMuteActionTitle = UNMUTE_ACTION_TITLE
                 value = true
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.notifications_muted_for_this_chatroom)
+                    requireContext().getString(R.string.lm_chat_notifications_muted_for_this_chatroom)
                 )
             }
             invalidateActionsMenu()

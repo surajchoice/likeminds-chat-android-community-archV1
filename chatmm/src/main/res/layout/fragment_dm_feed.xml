@@ -40,7 +40,7 @@
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:paddingVertical="13dp"
-            android:text="@string/new_direct_message"
+            android:text="@string/lm_chat_new_direct_message"
             android:textAllCaps="true"
             android:textColor="@color/lm_chat_white"
             android:textSize="13sp"

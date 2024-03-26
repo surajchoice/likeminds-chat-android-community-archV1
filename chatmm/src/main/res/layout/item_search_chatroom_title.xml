@@ -110,7 +110,7 @@
             android:layout_marginTop="4dp"
             android:lineHeight="16sp"
             android:lineSpacingExtra="4sp"
-            android:text="@string/chatroom_not_joined_yet"
+            android:text="@string/lm_chat_chatroom_not_joined_yet"
             android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             android:textStyle="italic"

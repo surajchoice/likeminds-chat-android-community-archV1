@@ -63,7 +63,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:text="@string/participants"
+                    android:text="@string/lm_chat_participants"
                     android:textColor="@color/lm_chat_white"
                     android:textSize="20sp"
                     app:fontType="medium"

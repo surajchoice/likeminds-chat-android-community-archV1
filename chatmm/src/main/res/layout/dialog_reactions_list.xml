@@ -24,7 +24,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:lineSpacingExtra="2sp"
-            android:text="@string/reactions"
+            android:text="@string/lm_chat_reactions"
             android:textColor="@color/lm_chat_black"
             android:textSize="16sp"
             app:fontType="medium"

@@ -31,13 +31,13 @@ object DownloadUtil {
     fun getToastMessage(context: Context, @InternalMediaType type: String?): String {
         return when (type) {
             IMAGE -> {
-                context.getString(R.string.photo_saved_to_gallery)
+                context.getString(R.string.lm_chat_photo_saved_to_gallery)
             }
             VIDEO -> {
-                context.getString(R.string.video_saved_to_gallery)
+                context.getString(R.string.lm_chat_video_saved_to_gallery)
             }
             else -> {
-                context.getString(R.string.saved_to_gallery)
+                context.getString(R.string.lm_chat_saved_to_gallery)
             }
         }
     }
@@ -58,7 +58,7 @@ object DownloadUtil {
             CHANNEL_ID
         ).apply {
             setContentTitle(title)
-            setContentText(context.getString(R.string.download_in_progress))
+            setContentText(context.getString(R.string.lm_chat_download_in_progress))
             setSmallIcon(icon)
             setProgress(100, 0, true)
             setNotificationSilent()

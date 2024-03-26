@@ -4,63 +4,63 @@
 
     <item
         android:id="@+id/view_participants"
-        android:title="@string/view_participants"
+        android:title="@string/lm_chat_view_participants"
         android:visible="false" />
 
     <item
         android:id="@+id/invite"
-        android:title="@string/invite_small"
+        android:title="@string/lm_chat_invite_small"
         android:visible="false" />
 
     <item
         android:id="@+id/add_all_member"
-        android:title="@string/add_all_member"
+        android:title="@string/lm_chat_add_all_member"
         android:visible="false" />
 
     <item
         android:id="@+id/join_leave_chatroom"
-        android:title="@string/join_chatroom"
+        android:title="@string/lm_chat_join_chatroom"
         android:visible="false" />
 
     <item
         android:id="@+id/view_profile"
-        android:title="@string/view_profile"
+        android:title="@string/lm_chat_view_profile"
         android:visible="false" />
 
     <item
         android:id="@+id/view_community"
-        android:title="@string/view_community"
+        android:title="@string/lm_chat_view_community"
         android:visible="false" />
 
     <item
         android:id="@+id/mute_unmute_notifications"
-        android:title="@string/mute_notifications"
+        android:title="@string/lm_chat_mute_notifications"
         android:visible="false" />
 
     <item
         android:id="@+id/leave_chatroom"
-        android:title="@string/leave_chatroom"
+        android:title="@string/lm_chat_leave_chatroom"
         android:visible="false" />
 
     <item
         android:id="@+id/report_chatroom"
-        android:title="@string/report"
+        android:title="@string/lm_chat_report"
         android:visible="false" />
 
     <item
         android:id="@+id/chatroom_settings"
-        android:title="@string/settings"
+        android:title="@string/lm_chat_settings"
         android:visible="false" />
 
     <item
         android:id="@+id/share_chatroom_icon"
         android:icon="@drawable/lm_chat_ic_share_white"
-        android:title="@string/share_chatroom"
+        android:title="@string/lm_chat_share_chatroom"
         android:visible="false"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/block_unblock"
-        android:title="@string/block"
+        android:title="@string/lm_chat_block"
         android:visible="false" />
 </menu>

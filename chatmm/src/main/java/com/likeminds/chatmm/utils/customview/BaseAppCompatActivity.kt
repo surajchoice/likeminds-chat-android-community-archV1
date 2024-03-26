@@ -171,7 +171,7 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
-                        getString(R.string.internet_connection_restored),
+                        getString(R.string.lm_chat_internet_connection_restored),
                         true
                     )
                 }

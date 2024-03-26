@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:paddingHorizontal="8dp"
             android:paddingVertical="12dp"
-            android:text="@string/slide_up_to_record_without_holding"
+            android:text="@string/lm_chat_slide_up_to_record_without_holding"
             android:textColor="@color/lm_chat_white"
             app:fontType="regular" />
 

@@ -52,7 +52,7 @@ class PollVoteSubmitSuccessDialog :
         }
 
         binding.tvVoteDate.text = String.format(
-            getString(R.string.results_will_be_announced_when_voting_ends_on_s),
+            getString(R.string.lm_chat_results_will_be_announced_when_voting_ends_on_s),
             pollExpireTime
         )
     }

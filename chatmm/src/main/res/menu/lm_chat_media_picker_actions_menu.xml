@@ -4,6 +4,6 @@
 
     <item
         android:id="@+id/menu_item_ok"
-        android:title="@string/ok"
+        android:title="@string/lm_chat_ok"
         app:showAsAction="always" />
 </menu>

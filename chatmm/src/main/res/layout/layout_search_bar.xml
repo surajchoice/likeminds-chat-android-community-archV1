@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:background="@color/lm_chat_transparent"
             android:fontFamily="sans-serif"
-            android:hint="@string/search_hint_text"
+            android:hint="@string/lm_chat_search_hint_text"
             android:imeOptions="actionSearch|flagNoExtractUi"
             android:inputType="text"
             android:lineSpacingExtra="6sp"

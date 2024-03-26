@@ -6,37 +6,37 @@
         android:id="@+id/menu_item_reply"
         android:background="?selectableItemBackgroundBorderless"
         android:icon="@drawable/lm_chat_ic_reply"
-        android:title="@string/reply"
+        android:title="@string/lm_chat_reply"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_item_copy"
         android:background="?selectableItemBackgroundBorderless"
         android:icon="@drawable/lm_chat_ic_copy"
-        android:title="@string/copy"
+        android:title="@string/lm_chat_copy"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_item_edit"
         android:background="?selectableItemBackgroundBorderless"
         android:icon="@drawable/lm_chat_ic_edit"
-        android:title="@string/edit"
+        android:title="@string/lm_chat_edit"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_item_delete"
         android:background="?selectableItemBackgroundBorderless"
         android:icon="@drawable/lm_chat_ic_delete_white"
-        android:title="@string/delete"
+        android:title="@string/lm_chat_delete"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_item_set_topic"
-        android:title="@string/set_as_current_topic"
+        android:title="@string/lm_chat_set_as_current_topic"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_item_report"
-        android:title="@string/report_message"
+        android:title="@string/lm_chat_report_message"
         app:showAsAction="never" />
 </menu>

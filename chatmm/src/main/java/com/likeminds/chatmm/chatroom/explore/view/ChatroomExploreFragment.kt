@@ -365,7 +365,7 @@ class ChatroomExploreFragment :
             if (!follow && exploreViewData.isCreator) {
                 ViewUtils.showShortSnack(
                     binding.root,
-                    getString(R.string.creator_cant_leave_message)
+                    getString(R.string.lm_chat_creator_cant_leave_message)
                 )
                 return
             }

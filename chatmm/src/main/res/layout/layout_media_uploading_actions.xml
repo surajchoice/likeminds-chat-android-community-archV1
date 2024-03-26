@@ -21,7 +21,7 @@
             android:background="@drawable/lm_chat_background_black80_50"
             android:drawablePadding="10dp"
             android:padding="16dp"
-            android:text="@string/retry"
+            android:text="@string/lm_chat_retry"
             android:textAllCaps="true"
             android:textColor="@color/lm_chat_white"
             android:textSize="14sp"

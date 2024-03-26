@@ -41,7 +41,7 @@ internal class PollResultUserItemViewDataBinder constructor(
         binding.apply {
             memberViewData = data
             showCustomTitle =
-                !data.customTitle.isNullOrEmpty() && data.customTitle != root.context.getString(R.string.member)
+                !data.customTitle.isNullOrEmpty() && data.customTitle != root.context.getString(R.string.lm_chat_member)
 
             MemberImageUtil.setImage(
                 data.imageUrl,

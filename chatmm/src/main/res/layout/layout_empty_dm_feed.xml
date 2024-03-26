@@ -28,7 +28,7 @@
             android:fontFamily="@font/lm_chat_roboto_medium"
             android:gravity="center_horizontal"
             android:includeFontPadding="false"
-            android:text="@string/empty_chat_room_title"
+            android:text="@string/lm_chat_empty_chat_room_title"
             android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"

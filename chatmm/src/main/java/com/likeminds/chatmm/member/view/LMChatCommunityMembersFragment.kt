@@ -190,7 +190,7 @@ class LMChatCommunityMembersFragment :
         binding.tvMemberCount.apply {
             show()
             text = resources.getQuantityString(
-                R.plurals.number_of_member,
+                R.plurals.lm_chat_number_of_member,
                 totalOnlyMembers,
                 totalOnlyMembers,
                 ""

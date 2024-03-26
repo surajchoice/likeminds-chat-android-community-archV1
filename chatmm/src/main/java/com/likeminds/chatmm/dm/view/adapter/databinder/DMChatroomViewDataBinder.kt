@@ -217,9 +217,9 @@ class DMChatroomViewDataBinder constructor(
             tvLastConversation.visibility = View.VISIBLE
 
             tvLastConversation.text = if (memberToBeShown.state == STATE_ADMIN) {
-                context.getString(R.string.direct_message_your_community_manager)
+                context.getString(R.string.lm_chat_direct_message_your_community_manager)
             } else {
-                "${context.getString(R.string.start_a_conversation_with)} ${memberToBeShown.name}."
+                "${context.getString(R.string.lm_chat_start_a_conversation_with)} ${memberToBeShown.name}."
             }
         }
     }

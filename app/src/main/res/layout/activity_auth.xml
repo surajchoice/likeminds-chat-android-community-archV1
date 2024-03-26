@@ -16,7 +16,7 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/lm_chat_roboto_medium"
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="@string/lm_chat_app_name"
             android:textColor="@color/lm_chat_black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
