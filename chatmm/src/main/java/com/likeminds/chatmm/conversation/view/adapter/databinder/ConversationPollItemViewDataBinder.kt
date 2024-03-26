@@ -286,7 +286,7 @@ internal class ConversationPollItemViewDataBinder constructor(
             if (memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()) {
                 btnAddOption.strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
             } else {
-                btnAddOption.setStrokeColorResource(R.color.cloudy_blue)
+                btnAddOption.setStrokeColorResource(R.color.lm_chat_cloudy_blue)
             }
         }
     }

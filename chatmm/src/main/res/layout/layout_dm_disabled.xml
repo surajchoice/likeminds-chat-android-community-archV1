@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -27,7 +27,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/direct_message_is_disabled"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

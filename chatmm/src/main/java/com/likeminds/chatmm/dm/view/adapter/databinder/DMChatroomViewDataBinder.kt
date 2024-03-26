@@ -6,7 +6,6 @@ import android.text.util.Linkify
 import android.util.Log
 import android.view.*
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.R
@@ -97,14 +96,14 @@ class DMChatroomViewDataBinder constructor(
                 data.lastConversation?.state == STATE_DM_CM_BECOMES_MEMBER_DISABLE
             ) {
                 tvMemberName.alpha = 0.2f
-                tvCommunityName.setTextColor(context.fetchColor(R.color.brown_grey))
-                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.brown_grey))
-                tvLastConversation.setTextColor(context.fetchColor(R.color.brown_grey))
+                tvCommunityName.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
+                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
+                tvLastConversation.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
             } else {
                 tvMemberName.alpha = 1f
-                tvCommunityName.setTextColor(context.fetchColor(R.color.grey))
-                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.grey))
-                tvLastConversation.setTextColor(context.fetchColor(R.color.grey))
+                tvCommunityName.setTextColor(context.fetchColor(R.color.lm_chat_grey))
+                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.lm_chat_grey))
+                tvLastConversation.setTextColor(context.fetchColor(R.color.lm_chat_grey))
             }
         }
     }
@@ -142,9 +141,9 @@ class DMChatroomViewDataBinder constructor(
                     lastConversation.state == STATE_DM_MEMBER_REMOVED_OR_LEFT
                             || lastConversation.state == STATE_DM_CM_BECOMES_MEMBER_DISABLE
                 val taggingColor = if (isDisabled) {
-                    context.fetchColor(R.color.brown_grey)
+                    context.fetchColor(R.color.lm_chat_brown_grey)
                 } else {
-                    context.fetchColor(R.color.grey)
+                    context.fetchColor(R.color.lm_chat_grey)
                 }
                 MemberTaggingDecoder.decode(
                     tvLastConversation,

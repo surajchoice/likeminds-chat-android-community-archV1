@@ -26,7 +26,7 @@
             android:layout_marginBottom="-24dp"
             android:gravity="center_horizontal"
             android:text="@string/no_results_found"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:visibility="visible"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@id/iv_icon" />

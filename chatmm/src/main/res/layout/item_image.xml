@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="24sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/image"

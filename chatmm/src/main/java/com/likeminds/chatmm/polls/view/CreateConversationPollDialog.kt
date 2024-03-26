@@ -126,7 +126,7 @@ class CreateConversationPollDialog :
                 ),
                 intArrayOf(
                     LMBranding.getButtonsColor(),
-                    requireContext().fetchColor(R.color.black_14)
+                    requireContext().fetchColor(R.color.lm_chat_black_14)
                 )
             )
         }

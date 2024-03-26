@@ -342,7 +342,7 @@ class ConversationAudioSendEditFragment :
                 )
             } else {
                 binding.gradientView.visibility = View.GONE
-                binding.ivAlbumCover.setImageResource(R.color.orange_yellow)
+                binding.ivAlbumCover.setImageResource(R.color.lm_chat_orange_yellow)
             }
             progressAnim.cancel()
             binding.wave.setRawData(ByteArray(0))

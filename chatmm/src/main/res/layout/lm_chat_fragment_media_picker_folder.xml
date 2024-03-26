@@ -13,13 +13,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/lm_chat_colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetEnd="0dp"
@@ -57,7 +57,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:textColor="@color/white"
+                    android:textColor="@color/lm_chat_white"
                     android:textSize="20sp"
                     app:fontType="regular"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -77,7 +77,7 @@
             android:paddingVertical="6dp"
             app:animationDuration="400"
             app:gridLayoutManagerColumns="2"
-            app:layoutAnimation="@anim/layout_animation_from_bottom_scale"
+            app:layoutAnimation="@anim/lm_chat_layout_animation_from_bottom_scale"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layoutManagerOrientation="vertical"
             app:layoutManagerReverse="false"

@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -40,7 +40,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btn_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_back"
-            app:tint="@color/white"
+            app:tint="@color/lm_chat_white"
             tools:ignore="ContentDescription" />
 
         <rm.com.audiowave.AudioWaveView
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@color/orange_yellow"
+            android:src="@color/lm_chat_orange_yellow"
             app:layout_constraintBottom_toTopOf="@id/bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
             android:layout_marginStart="10dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="14sp"
             app:fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
@@ -150,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintStart_toEndOf="@id/iv_audio_logo"
@@ -180,14 +180,14 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_view"
             app:layout_constraintEnd_toEndOf="@+id/bottom_view"
             app:layout_constraintTop_toTopOf="@+id/bottom_view"
-            app:tint="@color/white"
+            app:tint="@color/lm_chat_white"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_80"
+            android:background="@color/lm_chat_black_80"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -203,8 +203,8 @@
                 android:inputType="textCapSentences|textMultiLine"
                 android:lineSpacingExtra="4sp"
                 android:maxHeight="135dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white_50"
+                android:textColor="@color/lm_chat_white"
+                android:textColorHint="@color/lm_chat_white_50"
                 android:textSize="16sp"
                 app:font_style="regular"
                 app:layout_constraintBottom_toTopOf="@+id/rv_medias"

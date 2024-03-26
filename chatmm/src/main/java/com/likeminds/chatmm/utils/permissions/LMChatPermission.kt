@@ -136,7 +136,7 @@ class LMChatPermission private constructor(
                 .requestCode(REQUEST_NOTIFICATIONS)
                 .preDialogMessage(context.getString(R.string.pre_notification_dialog_message))
                 .deniedDialogMessage(context.getString(R.string.denied_notification_dialog_message))
-                .dialogImage(R.drawable.ic_bell)
+                .dialogImage(R.drawable.lm_chat_ic_bell)
                 .build()
         }
     }

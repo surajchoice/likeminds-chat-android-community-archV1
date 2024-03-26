@@ -32,7 +32,7 @@
             android:paddingEnd="17dp"
             android:paddingBottom="9dp"
             android:text="@{reportTagViewData.name}"
-            android:textColor="@{reportTagViewData.isSelected ? buttonColor : @color/grey}"
+            android:textColor="@{reportTagViewData.isSelected ? buttonColor : @color/lm_chat_grey}"
             android:textSize="15sp"
             app:fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"

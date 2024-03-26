@@ -338,7 +338,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             // todo: onMemberClicked()
         }
 
-        val readMoreColor = ContextCompat.getColor(tvConversation.context, R.color.caribbean_green)
+        val readMoreColor = ContextCompat.getColor(tvConversation.context, R.color.lm_chat_caribbean_green)
         val readMore = SpannableStringBuilder(" Read More")
         readMore.setSpan(
             ForegroundColorSpan(readMoreColor),
@@ -371,7 +371,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             )
         }
 
-        val viewLessColor = ContextCompat.getColor(tvConversation.context, R.color.caribbean_green)
+        val viewLessColor = ContextCompat.getColor(tvConversation.context, R.color.lm_chat_caribbean_green)
         val viewLess = SpannableStringBuilder(" View Less")
         viewLess.setSpan(
             ForegroundColorSpan(viewLessColor),
@@ -750,7 +750,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             tvTime.background = null
             tvTime.setPadding(0, 0, 0, 0)
             params.setMargins(0, 0, 0, 0)
-            tvTime.setTextColor(ContextCompat.getColor(context, R.color.brown_grey))
+            tvTime.setTextColor(ContextCompat.getColor(context, R.color.lm_chat_brown_grey))
         }
         tvTime.layoutParams = params
 
@@ -768,10 +768,10 @@ object ChatroomConversationItemViewDataBinderUtil {
                 imageViewStatus?.visibility = View.GONE
                 val statusDrawable = when {
                     conversation.isSending() -> {
-                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sending, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sending, 12, R.color.lm_chat_white)
                     }
                     conversation.isSent() -> {
-                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sent, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sent, 12, R.color.lm_chat_white)
                     }
                     else -> return
                 } ?: return
@@ -1348,9 +1348,9 @@ object ChatroomConversationItemViewDataBinderUtil {
         }
         btnSubmitVote.apply {
             val context = context
-            setIconTintResource(R.color.grey)
-            setTextColor(ContextCompat.getColor(context, R.color.grey))
-            setStrokeColorResource(R.color.black_20)
+            setIconTintResource(R.color.lm_chat_grey)
+            setTextColor(ContextCompat.getColor(context, R.color.lm_chat_grey))
+            setStrokeColorResource(R.color.lm_chat_black_20)
             tag = "POLL_CLICK_DISABLED"
             isEnabled = false
         }

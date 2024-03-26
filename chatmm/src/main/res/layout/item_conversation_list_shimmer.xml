@@ -12,7 +12,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/cloudy_blue">
+            android:background="@color/lm_chat_cloudy_blue">
 
             <View
                 android:id="@+id/chat_head"

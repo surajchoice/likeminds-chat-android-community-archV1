@@ -400,10 +400,10 @@ object ChatroomUtil {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         if (isFullScreen) {
-            window.statusBarColor = ContextCompat.getColor(context, R.color.black)
+            window.statusBarColor = ContextCompat.getColor(context, R.color.lm_chat_black)
         } else {
             window.statusBarColor =
-                ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                ContextCompat.getColor(context, R.color.lm_chat_colorPrimaryDark)
         }
     }
 }

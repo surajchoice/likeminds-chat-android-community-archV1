@@ -63,7 +63,7 @@ class ConversationActionItemViewDataBinder constructor(
                 true,
                 ContextCompat.getColor(
                     tvAction.context,
-                    R.color.white
+                    R.color.lm_chat_white
                 )
             ) { _ ->
                 // todo: onMemberClick()
@@ -131,7 +131,7 @@ class ConversationActionItemViewDataBinder constructor(
             tvAction.setLinkTextColor(
                 ContextCompat.getColor(
                     tvAction.context,
-                    R.color.white
+                    R.color.lm_chat_white
                 )
             )
             tvAction.movementMethod = LinkMovementMethod.getInstance()

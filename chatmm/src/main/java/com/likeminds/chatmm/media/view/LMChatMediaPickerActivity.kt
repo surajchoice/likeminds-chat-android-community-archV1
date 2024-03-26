@@ -124,7 +124,7 @@ class LMChatMediaPickerActivity : BaseAppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as? NavHostFragment ?: return
         val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_media_picker_graph)
+        val navGraph = graphInflater.inflate(R.navigation.lm_chat_nav_media_picker_graph)
         val navController = navHostFragment.navController
 
         when {

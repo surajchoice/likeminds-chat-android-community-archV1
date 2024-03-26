@@ -30,9 +30,9 @@
             android:id="@+id/horizontal_progress"
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            app:indicatorColor="@color/white"
+            app:indicatorColor="@color/lm_chat_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:trackColor="@color/transparent" />
+            app:trackColor="@color/lm_chat_transparent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

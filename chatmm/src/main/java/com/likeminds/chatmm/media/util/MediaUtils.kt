@@ -77,10 +77,10 @@ object MediaUtils {
     }
 
     fun getTextTypeFaces(context: Context): Array<Typeface?> {
-        val regular = ResourcesCompat.getFont(context, R.font.roboto_regular)
-        val bold = ResourcesCompat.getFont(context, R.font.roboto_bold)
-        val signature = ResourcesCompat.getFont(context, R.font.signature)
-        val condensed = ResourcesCompat.getFont(context, R.font.roboto_condensed_bold)
+        val regular = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_regular)
+        val bold = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_bold)
+        val signature = ResourcesCompat.getFont(context, R.font.lm_chat_signature)
+        val condensed = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_condensed_bold)
         return arrayOf(regular, bold, signature, condensed)
     }
 

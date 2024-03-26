@@ -164,7 +164,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 val view = tab?.customView?.findViewById<TextView>(R.id.tv_poll_count) ?: return
                 view.apply {
-                    setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.lm_chat_grey))
                     setTypeface(null, Typeface.NORMAL)
                 }
             }

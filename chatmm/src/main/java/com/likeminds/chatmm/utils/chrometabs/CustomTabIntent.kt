@@ -30,7 +30,7 @@ internal object CustomTabIntent {
                     CustomTabColorSchemeParams.Builder()
                         .setToolbarColor(LMBranding.getHeaderColor()).build()
                 )
-                builder.setStartAnimations(context, R.anim.slide_in_right, R.anim.slide_out_left)
+                builder.setStartAnimations(context, R.anim.lm_chat_slide_in_right, R.anim.lm_chat_slide_out_left)
                 builder.setStartAnimations(
                     context,
                     android.R.anim.slide_in_left,
@@ -82,7 +82,7 @@ internal object CustomTabIntent {
                     CustomTabColorSchemeParams.Builder()
                         .setToolbarColor(LMBranding.getHeaderColor()).build()
                 )
-                builder.setStartAnimations(context, R.anim.slide_in_right, R.anim.slide_out_left)
+                builder.setStartAnimations(context, R.anim.lm_chat_slide_in_right, R.anim.lm_chat_slide_out_left)
                 builder.setStartAnimations(
                     context,
                     android.R.anim.slide_in_left,

@@ -54,7 +54,7 @@ class MediaPickerSingleItemViewDataBinder @Inject constructor(
             }
             glideRequestManager = Glide.with(root)
             placeHolderDrawable =
-                ColorDrawable(ContextCompat.getColor(binding.root.context, R.color.bright_grey))
+                ColorDrawable(ContextCompat.getColor(binding.root.context, R.color.lm_chat_bright_grey))
         }
         return binding
     }

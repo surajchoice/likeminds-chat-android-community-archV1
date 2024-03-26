@@ -7,7 +7,7 @@
         android:id="@+id/cl_something_went_wrong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <ImageView
             android:id="@+id/message_icon"
@@ -27,7 +27,7 @@
             android:layout_margin="16dp"
             android:fontFamily="sans-serif"
             android:gravity="start"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="12sp"
             android:textStyle="normal"
             app:fontType="regular"
@@ -45,7 +45,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="end"
             android:letterSpacing="0.01"
-            android:textColor="@color/caribbean_green"
+            android:textColor="@color/lm_chat_caribbean_green"
             android:textSize="14sp"
             android:textStyle="normal"
             android:visibility="gone"

@@ -7,7 +7,7 @@
         android:id="@+id/cl_root"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
-        android:background="@color/transparent"
+        android:background="@color/lm_chat_transparent"
         android:paddingStart="5dp"
         android:paddingEnd="5dp">
 
@@ -28,7 +28,7 @@
                 android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="@string/reaction_crying_laugh"
-                android:textColor="@color/black"
+                android:textColor="@color/lm_chat_black"
                 android:textSize="18sp"
                 app:fontType="regular" />
 
@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/grey"
+                android:textColor="@color/lm_chat_grey"
                 android:textSize="11sp"
                 android:textStyle="normal"
                 app:fontType="regular"
@@ -65,7 +65,7 @@
                 android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="@string/reaction_red_heart"
-                android:textColor="@color/black"
+                android:textColor="@color/lm_chat_black"
                 android:textSize="18sp"
                 app:fontType="regular"
                 app:layout_constraintStart_toStartOf="@id/layout_reaction_2"
@@ -78,7 +78,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/grey"
+                android:textColor="@color/lm_chat_grey"
                 android:textSize="11sp"
                 android:textStyle="normal"
                 app:fontType="regular"

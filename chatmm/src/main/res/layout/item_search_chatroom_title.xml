@@ -24,7 +24,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_timestamp"
@@ -51,7 +51,7 @@
             android:letterSpacing="0.01"
             android:lineSpacingExtra="6sp"
             android:maxLines="3"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             app:fontType="medium"
             app:layout_constrainedWidth="true"
@@ -94,7 +94,7 @@
             android:layout_marginTop="2dp"
             android:lineSpacingExtra="4sp"
             android:singleLine="true"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constrainedWidth="true"
@@ -111,7 +111,7 @@
             android:lineHeight="16sp"
             android:lineSpacingExtra="4sp"
             android:text="@string/chatroom_not_joined_yet"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             android:textStyle="italic"
             android:visibility="@{hideNotFollowed ? View.INVISIBLE : View.VISIBLE}"
@@ -127,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@+id/tv_conversation"
@@ -147,7 +147,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/background_v1_50"
+            android:background="@color/lm_chat_background_v1_50"
             android:visibility="@{hideBottomLine ? View.INVISIBLE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/tv_chatroom_name"

@@ -78,7 +78,7 @@ class CustomPlayerUiController(
         if (state == PlayerState.PLAYING || state == PlayerState.PAUSED ||
             state == PlayerState.VIDEO_CUED || state == PlayerState.BUFFERING
         ) panel?.setBackgroundColor(
-            ContextCompat.getColor(context, R.color.transparent)
+            ContextCompat.getColor(context, R.color.lm_chat_transparent)
         )
     }
 

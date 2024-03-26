@@ -29,9 +29,9 @@ class VoiceNoteUtils(
     private val voiceNoteInterface: VoiceNoteInterface,
 ) {
 
-    private var animBlink = AnimationUtils.loadAnimation(context, R.anim.blink)
-    private var animJump = AnimationUtils.loadAnimation(context, R.anim.jump)
-    private var animJumpFast = AnimationUtils.loadAnimation(context, R.anim.jump_fast)
+    private var animBlink = AnimationUtils.loadAnimation(context, R.anim.lm_chat_blink)
+    private var animJump = AnimationUtils.loadAnimation(context, R.anim.lm_chat_jump)
+    private var animJumpFast = AnimationUtils.loadAnimation(context, R.anim.lm_chat_jump_fast)
     private var handler: Handler? = null
 
     private var audioTotalTime: Long = 0

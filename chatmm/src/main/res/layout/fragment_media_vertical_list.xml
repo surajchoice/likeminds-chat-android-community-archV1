@@ -17,13 +17,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_v1">
+        android:background="@color/lm_chat_background_v1">
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/dark_turquoise"
+            android:background="@color/lm_chat_dark_turquoise"
             android:backgroundTint="@{headerColor}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sub_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
             android:layout_marginTop="11dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             app:textType="title"
             android:textSize="20sp"
             app:fontType="regular"

@@ -20,25 +20,25 @@ object BrandingUtil {
                 if (currentFont != null) {
                     Typeface.createFromAsset(context.assets, currentFont.bold)
                 } else {
-                    ResourcesCompat.getFont(context, R.font.roboto_bold)
+                    ResourcesCompat.getFont(context, R.font.lm_chat_roboto_bold)
                 }
             }
             "medium" -> {
                 if (currentFont != null) {
                     Typeface.createFromAsset(context.assets, currentFont.medium)
                 } else {
-                    ResourcesCompat.getFont(context, R.font.roboto_medium)
+                    ResourcesCompat.getFont(context, R.font.lm_chat_roboto_medium)
                 }
             }
             "regular" -> {
                 if (currentFont != null) {
                     Typeface.createFromAsset(context.assets, currentFont.regular)
                 } else {
-                    ResourcesCompat.getFont(context, R.font.roboto_regular)
+                    ResourcesCompat.getFont(context, R.font.lm_chat_roboto_regular)
                 }
             }
             else -> {
-                ResourcesCompat.getFont(context, R.font.roboto_regular)
+                ResourcesCompat.getFont(context, R.font.lm_chat_roboto_regular)
             }
         }
         return typeface

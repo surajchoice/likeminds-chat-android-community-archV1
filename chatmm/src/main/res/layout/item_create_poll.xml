@@ -14,7 +14,7 @@
         android:id="@+id/cl_poll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
             android:id="@+id/et_poll"
@@ -29,8 +29,8 @@
             android:inputType="textCapSentences"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black_20"
+            android:textColor="@color/lm_chat_black"
+            android:textColorHint="@color/lm_chat_black_20"
             android:textSize="16sp"
             app:font_style="regular"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="13sp"
             android:visibility="gone"
             app:fontType="regular"
@@ -64,7 +64,7 @@
             app:layout_constraintRight_toLeftOf="@+id/iv_poll_gallery"
             app:layout_constraintTop_toTopOf="@+id/et_poll"
             app:srcCompat="@drawable/lm_chat_ic_paragraph"
-            app:tint="@color/turquoise"
+            app:tint="@color/lm_chat_turquoise"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -89,13 +89,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/et_poll"
             app:srcCompat="@drawable/lm_chat_ic_cross_small"
-            app:tint="@color/grey"
+            app:tint="@color/lm_chat_grey"
             tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey_v2"
+            android:background="@color/lm_chat_grey_v2"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

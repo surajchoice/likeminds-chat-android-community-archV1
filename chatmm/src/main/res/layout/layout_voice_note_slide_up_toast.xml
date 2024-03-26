@@ -18,7 +18,7 @@
             android:paddingHorizontal="8dp"
             android:paddingVertical="12dp"
             android:text="@string/slide_up_to_record_without_holding"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             app:fontType="regular" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

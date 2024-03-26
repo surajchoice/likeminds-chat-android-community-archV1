@@ -6,8 +6,8 @@
     android:viewportHeight="24">
 
     <path
-        android:fillColor="@color/white"
+        android:fillColor="@color/lm_chat_white"
         android:pathData="M13.28 20.088L13.28 5.304 16.112 5.304 16.112 3 8 3 8 5.304 10.832 5.304 10.832 20.088z"
         android:strokeWidth="1"
-        android:strokeColor="@color/white" />
+        android:strokeColor="@color/lm_chat_white" />
 </vector>

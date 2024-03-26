@@ -60,7 +60,7 @@
             android:layout_height="30dp"
             android:layout_marginTop="7dp"
             android:indeterminate="true"
-            android:indeterminateTint="@color/white"
+            android:indeterminateTint="@color/lm_chat_white"
             app:layout_constraintEnd_toEndOf="@id/iv_audio_cover"
             app:layout_constraintStart_toStartOf="@id/iv_audio_cover"
             app:layout_constraintTop_toTopOf="@id/iv_audio_cover" />
@@ -76,7 +76,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_audio_cover"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/audio_wave_animation" />
+            app:lottie_rawRes="@raw/lm_chat_audio_wave_animation" />
 
         <ImageView
             android:id="@+id/iv_audio_logo"
@@ -97,7 +97,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="4dp"
             android:gravity="center_horizontal"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@id/iv_audio_cover"
@@ -133,7 +133,7 @@
             android:max="@{attachment.meta.duration}"
             android:paddingVertical="5dp"
             android:progress="@{attachment.progress}"
-            android:progressTint="@color/orange_yellow"
+            android:progressTint="@color/lm_chat_orange_yellow"
             android:thumb="@drawable/lm_chat_seekbar_thumb"
             app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +149,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@{attachment.name}"
-            android:textColor="@color/black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintEnd_toStartOf="@id/guideline"

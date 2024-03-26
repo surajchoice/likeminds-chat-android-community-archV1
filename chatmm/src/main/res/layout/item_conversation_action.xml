@@ -31,7 +31,7 @@
             android:paddingEnd="9dp"
             android:paddingBottom="3dp"
             android:singleLine="false"
-            android:textColor="@color/white"
+            android:textColor="@color/lm_chat_white"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintLeft_toLeftOf="parent"

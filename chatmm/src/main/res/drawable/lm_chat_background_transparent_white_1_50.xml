@@ -4,6 +4,6 @@
     <solid android:color="@android:color/transparent" />
     <stroke
         android:width="2dp"
-        android:color="@color/white" />
+        android:color="@color/lm_chat_white" />
     <corners android:radius="50dp" />
 </shape>

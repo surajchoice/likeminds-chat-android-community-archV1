@@ -75,7 +75,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@color/black" />
+                    tools:src="@color/lm_chat_black" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>

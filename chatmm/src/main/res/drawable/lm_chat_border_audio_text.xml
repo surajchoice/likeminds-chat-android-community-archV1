@@ -3,6 +3,6 @@
     android:shape="rectangle">
     <stroke
         android:width="2dp"
-        android:color="@color/border_color_audio" />
+        android:color="@color/lm_chat_border_color_audio" />
     <corners android:radius="9dp" />
 </shape>

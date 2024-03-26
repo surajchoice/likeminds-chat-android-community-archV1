@@ -3,27 +3,27 @@
     <!-- Base application theme. -->
     <style name="LMAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:itemBackground">@color/white</item>
+        <item name="colorPrimary">@color/lm_chat_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/lm_chat_colorPrimaryDark</item>
+        <item name="colorAccent">@color/lm_chat_colorPrimary</item>
+        <item name="android:windowBackground">@color/lm_chat_background</item>
+        <item name="android:itemBackground">@color/lm_chat_white</item>
         <item name="android:itemTextAppearance">@style/iconMenuTextAppearance</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:actionModeBackground">@color/dark_turquoise</item>
+        <item name="android:actionModeBackground">@color/lm_chat_dark_turquoise</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="BottomNavigationTextActive" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/teal</item>
+        <item name="android:textColor">@color/lm_chat_teal</item>
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="BottomNavigationTextInActive" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/brown_grey</item>
+        <item name="android:textColor">@color/lm_chat_brown_grey</item>
         <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
@@ -63,17 +63,17 @@
 
     <style name="TutorialStyle" parent="@android:style/TextAppearance">
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/lm_chat_white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:typeface">sans</item>
     </style>
 
     <style name="iconMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/lm_chat_black</item>
     </style>
 
     <style name="MainActivity.MenuTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Menu">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/lm_chat_black</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
     </style>
@@ -85,8 +85,8 @@
 
 
     <style name="LMAppTheme.Black">
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorPrimary">@color/lm_chat_black</item>
+        <item name="colorPrimaryDark">@color/lm_chat_black</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -94,7 +94,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
-        <item name="titleTextColor">@color/white</item>
+        <item name="titleTextColor">@color/lm_chat_white</item>
         <item name="subtitleTextAppearance">@android:style/TextAppearance.DeviceDefault.Medium
         </item>
         <item name="titleTextAppearance">@android:style/TextAppearance.DeviceDefault.WindowTitle
@@ -105,11 +105,11 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColor">@color/lm_chat_grey</item>
     </style>
 
     <style name="AppTheme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="tabBackground">@color/white</item>
+        <item name="tabBackground">@color/lm_chat_white</item>
         <item name="tabGravity">fill</item>
         <item name="tabTextAppearance">@style/AppTheme.TabLayout.TextAppearance</item>
     </style>
@@ -120,16 +120,16 @@
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/white</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/lm_chat_white</item>
+        <item name="android:textColor">@color/lm_chat_black</item>
     </style>
 
 
     <!-- This style inflates overflow menu color -> background as white and text as black -->
     <!-- irrespective of device is in Dark mode or not -->
     <style name="OverFlowMenu" parent="Theme.MaterialComponents.Light">
-        <item name="android:colorBackground">@color/white</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:colorBackground">@color/lm_chat_white</item>
+        <item name="android:textColor">@color/lm_chat_black</item>
     </style>
 
     <style name="ChatFragmentTabItem" parent="TextAppearance.Design.Tab">

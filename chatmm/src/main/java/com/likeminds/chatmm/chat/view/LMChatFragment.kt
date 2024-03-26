@@ -23,16 +23,13 @@ import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
-import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
-import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import javax.inject.Inject
 
@@ -223,9 +220,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                                 number = unreadDMCount
                                 maxCharacterCount = 2
                                 backgroundColor =
-                                    ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_colorPrimary)
                                 badgeTextColor =
-                                    ContextCompat.getColor(requireContext(), R.color.white)
+                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                             }
                         }
 
@@ -265,9 +262,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     number = unreadDMCount
                     maxCharacterCount = 2
                     backgroundColor =
-                        ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+                        ContextCompat.getColor(requireContext(), R.color.lm_chat_colorPrimary)
                     badgeTextColor =
-                        ContextCompat.getColor(requireContext(), R.color.white)
+                        ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                 }
             }
         }

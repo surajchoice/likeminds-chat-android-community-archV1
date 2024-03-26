@@ -13,13 +13,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="@color/lm_chat_white"
             android:contentInsetStart="0dp"
             android:contentInsetLeft="0dp"
             android:contentInsetEnd="0dp"
@@ -64,7 +64,7 @@
                     android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="@string/participants"
-                    android:textColor="@color/white"
+                    android:textColor="@color/lm_chat_white"
                     android:textSize="20sp"
                     app:fontType="medium"
                     app:textType="title"
@@ -81,7 +81,7 @@
                     android:ellipsize="end"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/lm_chat_grey"
                     android:textSize="14sp"
                     app:fontType="regular"
                     app:layout_constraintBottom_toBottomOf="parent"

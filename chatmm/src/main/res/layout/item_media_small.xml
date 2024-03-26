@@ -23,7 +23,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_margin="2dp"
-            app:cardBackgroundColor="@color/black"
+            app:cardBackgroundColor="@color/lm_chat_black"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

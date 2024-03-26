@@ -66,7 +66,7 @@ class RangeSeekBarView @JvmOverloads constructor(
 
         mFirstRun = true
 
-        val shadowColor = ContextCompat.getColor(context, R.color.black)
+        val shadowColor = ContextCompat.getColor(context, R.color.lm_chat_black)
         mShadow.isAntiAlias = true
         mShadow.color = shadowColor
         mShadow.alpha = 140

@@ -57,10 +57,10 @@ internal class PollResultUserItemViewDataBinder constructor(
 
             when {
                 data.isGuest == true || MemberState.isMemberSkipPrivateLink(data.state) -> {
-                    setSubTitleTextColor(binding, R.color.turquoise)
+                    setSubTitleTextColor(binding, R.color.lm_chat_turquoise)
                 }
                 else -> {
-                    setSubTitleTextColor(binding, R.color.grey)
+                    setSubTitleTextColor(binding, R.color.lm_chat_grey)
                 }
             }
 

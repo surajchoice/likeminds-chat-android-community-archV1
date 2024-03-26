@@ -95,7 +95,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/groupchat_filepaths" />
+                android:resource="@xml/lm_chat_filepaths" />
         </provider>
 
 

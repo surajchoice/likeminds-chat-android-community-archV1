@@ -73,7 +73,7 @@ class MediaPickerAudioItemViewDataBinder @Inject constructor(
                     MediaPickerDataBinderUtils.getFilteredText(
                         data.mediaName ?: "",
                         data.filteredKeywords,
-                        ContextCompat.getColor(root.context, R.color.turquoise),
+                        ContextCompat.getColor(root.context, R.color.lm_chat_turquoise),
                     ), TextView.BufferType.SPANNABLE
                 )
             }

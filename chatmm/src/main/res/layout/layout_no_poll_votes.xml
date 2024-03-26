@@ -25,7 +25,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/no_response"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"

@@ -15,7 +15,7 @@ object ProgressHelper {
                 setBackgroundColor(
                     ContextCompat.getColor(
                         progressBarBinding.root.context,
-                        R.color.background
+                        R.color.lm_chat_background
                     )
                 )
             } else {

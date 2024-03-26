@@ -153,7 +153,7 @@ class ItemPollViewDataBinder constructor(
                 tvNoVotes.setTextColor(LMBranding.getButtonsColor())
             } else {
                 tvNoVotes.setTextColor(
-                    ContextCompat.getColor(context, R.color.grey)
+                    ContextCompat.getColor(context, R.color.lm_chat_grey)
                 )
             }
         }
@@ -172,7 +172,7 @@ class ItemPollViewDataBinder constructor(
         if (!isPollSelectedByUser && hasPollEnded) {
             drawable.setStroke(
                 width,
-                ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
             )
         } else {
             if (isPollSelectedByUser) {
@@ -181,14 +181,14 @@ class ItemPollViewDataBinder constructor(
                 } else {
                     drawable.setStroke(
                         width,
-                        ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                        ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
                     )
                 }
             } else {
                 if (multipleItemPoll) {
                     drawable.setStroke(
                         width,
-                        ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                        ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
                     )
                 } else {
                     drawable.setStroke(width, LMBranding.getButtonsColor())
@@ -230,12 +230,12 @@ class ItemPollViewDataBinder constructor(
         val clip = drawable.findDrawableByLayerId(R.id.progress) as ClipDrawable
         if (!isPollSelectedByUser && hasPollEnded) {
             // Show green progress for all if user hasn't participated
-            clip.setTint(ContextCompat.getColor(binding.root.context, R.color.cloudy_blue))
+            clip.setTint(ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue))
         } else {
             if (data.isSelected == true) {
                 clip.setTint(LMBranding.getButtonsColor())
             } else {
-                clip.setTint(ContextCompat.getColor(binding.root.context, R.color.cloudy_blue))
+                clip.setTint(ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue))
             }
         }
     }

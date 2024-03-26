@@ -5,5 +5,5 @@
         android:width="3dp"
         android:height="3dp" />
 
-    <solid android:color="@color/cloudy_blue" />
+    <solid android:color="@color/lm_chat_cloudy_blue" />
 </shape>

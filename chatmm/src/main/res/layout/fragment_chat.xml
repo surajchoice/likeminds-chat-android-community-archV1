@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
@@ -76,7 +76,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@color/black" />
+                    tools:src="@color/lm_chat_black" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
@@ -85,12 +85,12 @@
             android:id="@+id/tab_chat"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/white"
+            android:background="@color/lm_chat_white"
             android:elevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicator="@drawable/lm_chat_tab_indicator"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="4dp"
             app:tabMode="fixed"

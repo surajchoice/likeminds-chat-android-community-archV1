@@ -6,13 +6,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/lm_chat_white"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,7 @@
             app:menu="@menu/lm_chat_dm_all_member_menu"
             app:navigationIcon="@drawable/lm_chat_ic_arrow_back_black_24dp"
             app:title="@string/send_dm_to"
-            app:titleTextColor="@color/black" />
+            app:titleTextColor="@color/lm_chat_black" />
 
         <com.likeminds.chatmm.search.util.CustomSearchBar
             android:id="@+id/search_bar"
@@ -41,7 +41,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

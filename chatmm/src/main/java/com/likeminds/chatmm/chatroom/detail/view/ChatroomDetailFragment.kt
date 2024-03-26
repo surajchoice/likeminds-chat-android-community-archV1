@@ -631,25 +631,25 @@ class ChatroomDetailFragment :
                 .setIconColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.brown_grey
+                        R.color.lm_chat_brown_grey
                     )
                 )
                 .setSelectedIconColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.colorPrimary
+                        R.color.lm_chat_colorPrimary
                     )
                 )
                 .setBackgroundColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.emoji_kb_background
+                        R.color.lm_chat_emoji_kb_background
                     )
                 )
                 .setDividerColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.emoji_kb_background
+                        R.color.lm_chat_emoji_kb_background
                     )
                 )
                 .setOnEmojiPopupShownListener {
@@ -4443,7 +4443,7 @@ class ChatroomDetailFragment :
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.black_40
+                    R.color.lm_chat_black_40
                 )
             )
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
