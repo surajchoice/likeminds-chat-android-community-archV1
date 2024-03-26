@@ -19,7 +19,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/background_white_10_black16_1"
+            android:background="@drawable/lm_chat_background_white_10_black16_1"
             android:paddingBottom="23dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -31,7 +31,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/iv_gallery"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_create_camera"
+                app:srcCompat="@drawable/lm_chat_ic_create_camera"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -55,7 +55,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_create_gallery"
+                app:srcCompat="@drawable/lm_chat_ic_create_gallery"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -79,7 +79,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_gallery"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_document_new"
+                app:srcCompat="@drawable/lm_chat_ic_document_new"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -103,7 +103,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tv_gallery_title"
                 app:layout_constraintStart_toStartOf="@id/tv_gallery_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_camera_title"
-                app:srcCompat="@drawable/ic_poll_create_message_selector"
+                app:srcCompat="@drawable/lm_chat_ic_poll_create_message_selector"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -127,7 +127,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tv_camera_title"
                 app:layout_constraintStart_toStartOf="@+id/tv_camera_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_camera_title"
-                app:srcCompat="@drawable/ic_create_music"
+                app:srcCompat="@drawable/lm_chat_ic_create_music"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView

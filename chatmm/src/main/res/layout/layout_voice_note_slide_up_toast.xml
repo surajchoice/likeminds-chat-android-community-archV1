@@ -7,7 +7,7 @@
         android:id="@+id/layout_toast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_voice_note_toast"
+        android:background="@drawable/lm_chat_ic_voice_note_toast"
         android:translationZ="3dp"
         android:visibility="gone"
         tools:visibility="visible">

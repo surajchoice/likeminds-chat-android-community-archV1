@@ -42,7 +42,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/image_placeholder" />
+            tools:src="@drawable/lm_chat_image_placeholder" />
 
         <ImageView
             android:id="@+id/iv_image"

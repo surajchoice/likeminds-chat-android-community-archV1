@@ -260,10 +260,10 @@ internal class ConversationPollItemViewDataBinder constructor(
             val context = root.context
             if (pollView.isInstantPoll() || !pollView.isPollSubmitted()) {
                 btnSubmitVote.text = context.getString(R.string.submit_vote)
-                btnSubmitVote.setIconResource(R.drawable.ic_vote)
+                btnSubmitVote.setIconResource(R.drawable.lm_chat_ic_vote)
             } else {
                 btnSubmitVote.text = context.getString(R.string.edit_vote)
-                btnSubmitVote.setIconResource(R.drawable.ic_edit_24dp)
+                btnSubmitVote.setIconResource(R.drawable.lm_chat_ic_edit_24dp)
             }
         }
     }

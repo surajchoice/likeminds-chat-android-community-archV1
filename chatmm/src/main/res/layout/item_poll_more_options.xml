@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/background_poll_item_unselected"
+        android:background="@drawable/lm_chat_background_poll_item_unselected"
         android:minHeight="45dp">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

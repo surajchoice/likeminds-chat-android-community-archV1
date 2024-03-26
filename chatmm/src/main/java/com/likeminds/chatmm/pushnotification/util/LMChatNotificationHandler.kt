@@ -91,7 +91,7 @@ class LMChatNotificationHandler {
                 )
 
             return NotificationCompat.Action.Builder(
-                R.drawable.ic_vote, "Vote", votePendingIntent
+                R.drawable.lm_chat_ic_vote, "Vote", votePendingIntent
             ).build()
         }
 
@@ -116,7 +116,7 @@ class LMChatNotificationHandler {
                 )
 
             return NotificationCompat.Action.Builder(
-                R.drawable.ic_follow_notification, "Follow", followPendingIntent
+                R.drawable.lm_chat_ic_follow_notification, "Follow", followPendingIntent
             ).build()
         }
 
@@ -143,7 +143,7 @@ class LMChatNotificationHandler {
                 )
 
             return NotificationCompat.Action.Builder(
-                R.drawable.ic_mark_as_read,
+                R.drawable.lm_chat_ic_mark_as_read,
                 context.getString(R.string.mark_as_read),
                 markAsReadPendingIntent
             ).build()
@@ -187,7 +187,7 @@ class LMChatNotificationHandler {
                 )
 
             return NotificationCompat.Action.Builder(
-                R.drawable.ic_reply,
+                R.drawable.lm_chat_ic_reply,
                 context.getString(R.string.reply),
                 replyPendingIntent
             ).addRemoteInput(remoteInput).build()
@@ -256,7 +256,7 @@ class LMChatNotificationHandler {
 
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.ic_notification
+        notificationIcon = R.drawable.lm_chat_ic_notification
 
         notificationTextColor = LMBranding.getButtonsColor()
 

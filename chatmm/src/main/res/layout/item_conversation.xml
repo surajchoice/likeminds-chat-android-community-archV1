@@ -51,7 +51,7 @@
                 android:id="@+id/cl_conversation_bubble"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/chat_bubble_other"
+                android:background="@drawable/lm_chat_chat_bubble_other"
                 android:maxWidth="260dp"
                 android:padding="4dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -86,7 +86,7 @@
                         android:layout_width="3dp"
                         android:layout_height="3dp"
                         android:layout_marginStart="4dp"
-                        android:background="@drawable/background_circle_dot_custom_title"
+                        android:background="@drawable/lm_chat_background_circle_dot_custom_title"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_conversation_member_name"
                         app:layout_constraintEnd_toStartOf="@+id/tv_custom_title"
@@ -184,7 +184,7 @@
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_marginEnd="4dp"
-                    android:background="@drawable/shape_center_dot_cloudy_blue"
+                    android:background="@drawable/lm_chat_shape_center_dot_cloudy_blue"
                     android:visibility="@{conversation.isEdited == true &amp;&amp; conversation.deletedBy == null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_time"
                     app:layout_constraintEnd_toStartOf="@+id/tv_time"
@@ -215,7 +215,7 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_time"
                     app:tint="@color/brown_grey"
                     tools:ignore="ContentDescription"
-                    tools:src="@drawable/ic_sending" />
+                    tools:src="@drawable/lm_chat_ic_sending" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:padding="8dp"
-                android:src="@drawable/ic_add_reactions_bubble"
+                android:src="@drawable/lm_chat_ic_add_reactions_bubble"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/cl_conversation_bubble"
                 app:layout_constraintStart_toEndOf="@id/cl_conversation_bubble"
@@ -238,7 +238,7 @@
                 android:id="@+id/iv_report"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_warning_yellow"
+                android:src="@drawable/lm_chat_ic_warning_yellow"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -252,7 +252,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:paddingStart="8dp"
-                android:src="@drawable/ic_failed"
+                android:src="@drawable/lm_chat_ic_failed"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

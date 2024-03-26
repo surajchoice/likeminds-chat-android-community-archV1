@@ -55,7 +55,7 @@
             android:id="@+id/iv_status"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_warning_circle"
+            android:src="@drawable/lm_chat_ic_warning_circle"
             android:translationX="3dp"
             android:translationY="4dp"
             android:visibility="@{isDraftOrCreating == true ? View.VISIBLE : View.GONE}"
@@ -110,7 +110,7 @@
             app:layout_constraintWidth_default="wrap"
             app:layout_goneMarginStart="14dp"
             app:layout_goneMarginTop="24dp"
-            tools:drawableEnd="@drawable/ic_announcement_room"
+            tools:drawableEnd="@drawable/lm_chat_ic_announcement_room"
             tools:text="Announcement Rooms" />
 
         <ImageView
@@ -118,7 +118,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_secret_lock"
+            android:src="@drawable/lm_chat_ic_secret_lock"
             app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
             app:layout_constraintEnd_toStartOf="@+id/tv_time_stamp"
             app:layout_constraintStart_toEndOf="@+id/tv_chatroom_name"
@@ -181,7 +181,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_tagged_room"
+            android:src="@drawable/lm_chat_ic_tagged_room"
             android:tint="@{buttonColor}"
             android:visibility="@{homeFeedItemViewData.chatroom.isTagged == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
@@ -203,7 +203,7 @@
             android:visibility="@{homeFeedItemViewData.chatroom.muteStatus == false ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_conversation"
             app:layout_constraintEnd_toStartOf="@+id/tv_unseen_count"
-            app:srcCompat="@drawable/ic_mute"
+            app:srcCompat="@drawable/lm_chat_ic_mute"
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -212,7 +212,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:background="@drawable/background_pending_circular"
+            android:background="@drawable/lm_chat_background_pending_circular"
             android:backgroundTint="@{buttonColor}"
             android:gravity="center"
             android:includeFontPadding="false"

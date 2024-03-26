@@ -50,7 +50,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/tv_report_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/tv_report_title"
-                    app:srcCompat="@drawable/ic_cross"
+                    app:srcCompat="@drawable/lm_chat_ic_cross"
                     tools:ignore="ContentDescription" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

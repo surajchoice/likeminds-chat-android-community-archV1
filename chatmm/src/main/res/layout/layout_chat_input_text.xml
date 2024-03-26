@@ -7,7 +7,7 @@
         android:id="@+id/cl_chat_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_white_24_black10_1">
+        android:background="@drawable/lm_chat_background_white_24_black10_1">
 
         <include
             android:id="@+id/view_link"
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/background_input_gifs"
+                android:background="@drawable/lm_chat_background_input_gifs"
                 android:paddingStart="2dp"
                 android:paddingTop="1dp"
                 android:paddingEnd="2dp"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/ic_voice_note_bin_top"
+                android:src="@drawable/lm_chat_ic_voice_note_bin_top"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -95,7 +95,7 @@
                 android:layout_height="20dp"
                 android:layout_marginTop="0.5dp"
                 android:layout_marginBottom="12dp"
-                android:src="@drawable/ic_voice_note_bin"
+                android:src="@drawable/lm_chat_ic_voice_note_bin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/iv_bin_cover"
                 app:layout_constraintStart_toStartOf="@id/iv_bin_cover"
@@ -114,7 +114,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_voice_play"
+                app:srcCompat="@drawable/lm_chat_ic_voice_play"
                 tools:ignore="ContentDescription"
                 tools:visibility="visible" />
 
@@ -167,7 +167,7 @@
                 android:padding="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:srcCompat="@drawable/ic_attachment"
+                app:srcCompat="@drawable/lm_chat_ic_attachment"
                 tools:ignore="ContentDescription" />
 
             <ImageView
@@ -178,7 +178,7 @@
                 android:layout_marginEnd="18dp"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="12dp"
-                android:src="@drawable/ic_cancel_voice_note"
+                android:src="@drawable/lm_chat_ic_cancel_voice_note"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +192,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="12dp"
-                android:src="@drawable/ic_stop_voice_note"
+                android:src="@drawable/lm_chat_ic_stop_voice_note"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_cancel_voice"

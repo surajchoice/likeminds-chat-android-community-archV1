@@ -51,12 +51,12 @@ class CustomPlayerUiController(
 
     private fun pauseVideo() {
         youTubePlayer.pause()
-        playPauseButton?.setImageResource(R.drawable.ic_play)
+        playPauseButton?.setImageResource(R.drawable.lm_chat_ic_play)
     }
 
     private fun playVideo() {
         youTubePlayer.play()
-        playPauseButton?.setImageResource(R.drawable.ic_pause)
+        playPauseButton?.setImageResource(R.drawable.lm_chat_ic_pause)
     }
 
     /**

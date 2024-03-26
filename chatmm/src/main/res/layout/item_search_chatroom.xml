@@ -62,14 +62,14 @@
             app:layout_constraintTop_toTopOf="@+id/tv_chatroom_name"
             app:layout_constraintVertical_chainStyle="packed"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_announcement_room" />
+            tools:src="@drawable/lm_chat_ic_announcement_room" />
 
         <ImageView
             android:id="@+id/iv_chatroom_secret"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="4dp"
-            android:src="@drawable/ic_secret_lock"
+            android:src="@drawable/lm_chat_ic_secret_lock"
             android:visibility="@{searchChatViewData.chatroom.isSecret() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_chatroom_name"
             app:layout_constraintStart_toEndOf="@+id/iv_chatroom_type"

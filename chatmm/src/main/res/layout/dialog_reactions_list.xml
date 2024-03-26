@@ -4,7 +4,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_sheet">
+        android:background="@drawable/lm_chat_bg_sheet">
 
         <View
             android:id="@+id/view"
@@ -12,7 +12,7 @@
             android:layout_width="100dp"
             android:layout_height="7dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_sheet_handle"
+            android:background="@drawable/lm_chat_bg_sheet_handle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_merge_account_dialog"
+        android:background="@drawable/lm_chat_bg_merge_account_dialog"
         tools:context=".settings.account.view.AddEmailDialog">
 
         <View
@@ -13,7 +13,7 @@
             android:layout_width="100dp"
             android:layout_height="7dp"
             android:layout_margin="8dp"
-            android:background="@drawable/bg_sheet_handle"
+            android:background="@drawable/lm_chat_bg_sheet_handle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
             android:layout_marginEnd="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="12dp"
-            android:src="@drawable/ic_cross_black"
+            android:src="@drawable/lm_chat_ic_cross_black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"
             tools:ignore="ContentDescription" />
@@ -66,7 +66,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/background_poll_item_unselected"
+            android:background="@drawable/lm_chat_background_poll_item_unselected"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +106,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/et_option"
                 app:layout_constraintRight_toLeftOf="@+id/iv_poll_gallery"
                 app:layout_constraintTop_toTopOf="@+id/et_option"
-                app:srcCompat="@drawable/ic_paragraph"
+                app:srcCompat="@drawable/lm_chat_ic_paragraph"
                 app:tint="@color/turquoise"
                 tools:ignore="ContentDescription" />
 
@@ -120,7 +120,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/et_option"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_option"
-                app:srcCompat="@drawable/ic_gallery_1"
+                app:srcCompat="@drawable/lm_chat_ic_gallery_1"
                 tools:ignore="ContentDescription" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

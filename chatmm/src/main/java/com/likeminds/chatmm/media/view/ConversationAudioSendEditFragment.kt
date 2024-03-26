@@ -178,7 +178,7 @@ class ConversationAudioSendEditFragment :
             isDataSourceSet = false
             handler?.removeCallbacks(runnable ?: Runnable { })
             binding.tvCurrentDuration.text = getString(R.string.start_duration)
-            binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+            binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
             progressAnim.cancel()
             binding.wave.setRawData(ByteArray(0))
         }
@@ -231,13 +231,13 @@ class ConversationAudioSendEditFragment :
             when {
                 !isDataSourceSet -> {
                     mediaPlayer?.setMediaDataSource(selectedUri!!.uri)
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_pause)
                     inflateWave(selectedUri!!.uri, selectedUri!!.duration?.toLong() ?: 0L)
                 }
 
                 mediaPlayer?.isPlaying() == true -> {
                     mediaPlayer?.pause()
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
                     if (progressAnim.isRunning) {
                         progressAnim.pause()
                     }
@@ -245,7 +245,7 @@ class ConversationAudioSendEditFragment :
 
                 mediaPlayer?.isPlaying() == false -> {
                     mediaPlayer?.start()
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_pause)
                     if (progressAnim.isPaused) {
                         progressAnim.resume()
                     }
@@ -351,7 +351,7 @@ class ConversationAudioSendEditFragment :
                 DateUtil.formatSeconds(selectedUri.duration ?: 0)
             binding.tvSize.text = MediaUtils.getFileSizeText(selectedUri.size)
             binding.tvAudioName.text = selectedUri.mediaName ?: "Audio"
-            binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+            binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
         }
     }
 

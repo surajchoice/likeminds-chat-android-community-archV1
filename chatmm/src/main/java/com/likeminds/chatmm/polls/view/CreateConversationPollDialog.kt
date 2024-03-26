@@ -184,7 +184,7 @@ class CreateConversationPollDialog :
                 binding.tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_arrow_down,
+                    R.drawable.lm_chat_ic_arrow_down,
                     0
                 )
                 binding.constraintLayoutAdvanced.collapse()
@@ -193,7 +193,7 @@ class CreateConversationPollDialog :
                 binding.tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_arrow_up,
+                    R.drawable.lm_chat_ic_arrow_up,
                     0
                 )
                 binding.constraintLayoutAdvanced.expand()

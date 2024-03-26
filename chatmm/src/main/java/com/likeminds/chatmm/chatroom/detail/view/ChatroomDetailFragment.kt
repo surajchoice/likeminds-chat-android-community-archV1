@@ -289,7 +289,7 @@ class ChatroomDetailFragment :
                                 singleUriDataOfVoiceNote?.duration ?: 0
                             )
                         isVoiceNotePlaying = false
-                        binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                        binding.inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                     }
 
                     else -> {
@@ -1077,17 +1077,17 @@ class ChatroomDetailFragment :
                             isVoiceNotePlaying = true
                             playAudio(singleUriDataOfVoiceNote?.uri!!, 0)
                             viewModel.sendVoiceNotePreviewed()
-                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_pause_voice_note)
                         }
 
                         mediaAudioService?.isPlaying() == true -> {
                             mediaAudioService?.pauseAudio()
-                            ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                         }
 
                         mediaAudioService?.isPlaying() == false -> {
                             mediaAudioService?.playAudio()
-                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_pause_voice_note)
                         }
                     }
                 }
@@ -1498,7 +1498,7 @@ class ChatroomDetailFragment :
             when (type) {
                 CHAT_BOX_NORMAL -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_black10_1)
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
@@ -1518,7 +1518,7 @@ class ChatroomDetailFragment :
 
                 CHAT_BOX_REPLY -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
@@ -1529,7 +1529,7 @@ class ChatroomDetailFragment :
 
                 CHAT_BOX_LINK -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     inputBox.ivAttachment.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.VISIBLE
@@ -1538,7 +1538,7 @@ class ChatroomDetailFragment :
 
                 CHAT_BOX_INTERNAL_LINK -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     fabSend.show()
                     inputBox.ivAttachment.visibility = View.INVISIBLE
@@ -1673,14 +1673,14 @@ class ChatroomDetailFragment :
                 }
 
                 override fun onShow() {
-                    inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_bottom_black10_1)
+                    inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_bottom_black10_1)
                 }
 
                 override fun onHide() {
                     if (isReplyViewVisible() || isLinkViewVisible()) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     } else {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_black10_1)
                     }
                 }
 
@@ -3180,7 +3180,7 @@ class ChatroomDetailFragment :
                     ImageBindingUtil.loadImage(
                         viewLink.ivLink,
                         linkOgTags.image,
-                        placeholder = R.drawable.ic_link_primary_40dp
+                        placeholder = R.drawable.lm_chat_ic_link_primary_40dp
                     )
 
                     viewLink.tvLinkUrl.text = linkOgTags.url
@@ -4072,7 +4072,7 @@ class ChatroomDetailFragment :
                     binding.inputBox.tvVoiceNoteTime.text =
                         DateUtil.formatSeconds(singleUriDataOfVoiceNote?.duration ?: 0)
                     isVoiceNotePlaying = false
-                    binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                    binding.inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                 }
                 localParentConversationId = parentPositionId
                 localChildPosition = childPosition
@@ -4519,7 +4519,7 @@ class ChatroomDetailFragment :
             isVoiceNotePlaying = false
             fabMic.show()
             fabSend.hide()
-            inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+            inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
             singleUriDataOfVoiceNote = null
             if (voiceRecorder.isRecording()) {
                 voiceRecorder.stopRecording(requireContext())
@@ -4531,7 +4531,7 @@ class ChatroomDetailFragment :
         binding.apply {
             isVoiceNoteRecording = false
             fabMic.show()
-            inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+            inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
             fabSend.hide()
             isVoiceNotePlaying = false
             singleUriDataOfVoiceNote = null
@@ -5153,9 +5153,9 @@ class ChatroomDetailFragment :
             chatReplyData = replyData
 
             val placeholder = if (replyData.attachmentType == AUDIO) {
-                R.drawable.placeholder_audio
+                R.drawable.lm_chat_placeholder_audio
             } else {
-                R.drawable.image_placeholder
+                R.drawable.lm_chat_image_placeholder
             }
 
             if (replyData.imageUrl.isNullOrEmpty()) {

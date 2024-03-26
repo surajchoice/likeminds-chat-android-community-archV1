@@ -70,7 +70,7 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_link"
-            app:srcCompat="@drawable/ic_cross_tags_2"
+            app:srcCompat="@drawable/lm_chat_ic_cross_tags_2"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

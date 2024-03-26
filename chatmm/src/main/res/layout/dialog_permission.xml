@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/turquoise"
                     android:paddingVertical="48dp"
-                    android:src="@drawable/ic_folder"
+                    android:src="@drawable/lm_chat_ic_folder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

@@ -15,7 +15,7 @@
             android:id="@+id/layout_reaction_1"
             android:layout_width="52dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_reaction_grid"
+            android:background="@drawable/lm_chat_background_reaction_grid"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,7 @@
             android:layout_width="52dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:background="@drawable/background_reaction_grid"
+            android:background="@drawable/lm_chat_background_reaction_grid"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/layout_reaction_1"
@@ -94,12 +94,12 @@
             android:layout_width="33dp"
             android:layout_height="match_parent"
             android:layout_marginStart="4dp"
-            android:background="@drawable/background_reaction_grid"
+            android:background="@drawable/lm_chat_background_reaction_grid"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/layout_reaction_2"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_dot_separator"
+            app:srcCompat="@drawable/lm_chat_ic_dot_separator"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

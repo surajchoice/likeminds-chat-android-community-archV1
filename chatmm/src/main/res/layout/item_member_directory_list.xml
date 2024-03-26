@@ -60,7 +60,7 @@
             android:layout_width="3dp"
             android:layout_height="3dp"
             android:layout_marginStart="6dp"
-            android:background="@drawable/shape_center_dot_cloudy_blue"
+            android:background="@drawable/lm_chat_shape_center_dot_cloudy_blue"
             android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_member_name"
             app:layout_constraintStart_toEndOf="@+id/tv_member_name"
@@ -135,7 +135,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toStartOf="@+id/iv_reject"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_tick_circle"
+            app:srcCompat="@drawable/lm_chat_ic_tick_circle"
             tools:ignore="ContentDescription,UseAppTint" />
 
         <ImageView
@@ -147,7 +147,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_cross"
+            app:srcCompat="@drawable/lm_chat_ic_cross"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.Group
@@ -173,7 +173,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_more_vert_grey_24dp"
+            app:srcCompat="@drawable/lm_chat_ic_more_vert_grey_24dp"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.Barrier

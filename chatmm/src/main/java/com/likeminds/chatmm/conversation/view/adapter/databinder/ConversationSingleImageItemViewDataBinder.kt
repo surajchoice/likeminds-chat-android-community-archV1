@@ -233,7 +233,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                     ImageBindingUtil.loadImage(
                         ivSingleImage,
                         attachmentViewData.uri,
-                        placeholder = R.drawable.image_placeholder,
+                        placeholder = R.drawable.lm_chat_image_placeholder,
                         cornerRadius = 10
                     )
 

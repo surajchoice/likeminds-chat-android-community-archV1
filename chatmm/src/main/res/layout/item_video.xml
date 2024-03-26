@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/image_placeholder"
+                android:src="@drawable/lm_chat_image_placeholder"
                 tools:ignore="ContentDescription" />
         </androidx.cardview.widget.CardView>
 
@@ -56,7 +56,7 @@
             android:id="@+id/iv_play_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play"
+            android:src="@drawable/lm_chat_ic_play"
             app:layout_constraintBottom_toBottomOf="@+id/cv_image"
             app:layout_constraintEnd_toEndOf="@+id/cv_image"
             app:layout_constraintStart_toStartOf="@+id/cv_image"

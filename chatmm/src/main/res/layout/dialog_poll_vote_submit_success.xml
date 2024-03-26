@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_merge_account_dialog"
+        android:background="@drawable/lm_chat_bg_merge_account_dialog"
         tools:context=".settings.account.view.UpdateNameDialog">
 
         <View
@@ -13,7 +13,7 @@
             android:layout_width="100dp"
             android:layout_height="7dp"
             android:layout_margin="8dp"
-            android:background="@drawable/bg_sheet_handle"
+            android:background="@drawable/lm_chat_bg_sheet_handle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_vote_success"
+            android:src="@drawable/lm_chat_ic_vote_success"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"

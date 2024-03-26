@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_follow_telescope"
+            app:srcCompat="@drawable/lm_chat_ic_follow_telescope"
             tools:ignore="ContentDescription" />
 
 
@@ -58,7 +58,7 @@
             app:font_type="regular"
             app:text_type="normal"
             app:drawable_type="normal"
-            app:icon="@drawable/ic_follow_v1"
+            app:icon="@drawable/lm_chat_ic_follow_v1"
             app:iconTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

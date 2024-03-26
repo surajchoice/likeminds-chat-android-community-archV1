@@ -87,13 +87,13 @@ class MediaPickerAudioItemViewDataBinder @Inject constructor(
                 MEDIA_ACTION_PLAY -> {
                     ivPlayStateNone.hide()
                     ivPlayPause.show()
-                    ivPlayPause.setImageResource(R.drawable.ic_audio_pause)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_audio_pause)
                     audioProgressBar.show()
                 }
                 MEDIA_ACTION_PAUSE -> {
                     ivPlayStateNone.hide()
                     ivPlayPause.show()
-                    ivPlayPause.setImageResource(R.drawable.ic_audio_play)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_audio_play)
                     audioProgressBar.show()
                 }
             }

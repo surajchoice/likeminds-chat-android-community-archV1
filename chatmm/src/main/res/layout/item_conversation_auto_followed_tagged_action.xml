@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_auto_followed_tagged"
+            app:srcCompat="@drawable/lm_chat_ic_auto_followed_tagged"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

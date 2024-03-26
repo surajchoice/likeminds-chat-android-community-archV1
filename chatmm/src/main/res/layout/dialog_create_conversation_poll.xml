@@ -17,7 +17,7 @@
             android:id="@+id/constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_merge_account_dialog"
+            android:background="@drawable/lm_chat_bg_merge_account_dialog"
             tools:context=".community.detail.view.PendingChatRoomActionDialog">
 
             <View
@@ -25,7 +25,7 @@
                 android:layout_width="100dp"
                 android:layout_height="7dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/bg_sheet_handle"
+                android:background="@drawable/lm_chat_bg_sheet_handle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +34,7 @@
                 android:id="@+id/view_top_background"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:background="@drawable/background_cloudy_blue_50_top_radius_10"
+                android:background="@drawable/lm_chat_background_cloudy_blue_50_top_radius_10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -168,7 +168,7 @@
                 android:text="@string/add_an_option"
                 android:textColor="@color/teal"
                 android:textSize="16sp"
-                app:drawableStartCompat="@drawable/ic_add"
+                app:drawableStartCompat="@drawable/lm_chat_ic_add"
                 app:drawableTint="@color/black"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -399,7 +399,7 @@
                 android:textAllCaps="true"
                 android:textColor="@color/grey"
                 android:textSize="12sp"
-                app:drawableEndCompat="@drawable/ic_arrow_down"
+                app:drawableEndCompat="@drawable/lm_chat_ic_arrow_down"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -419,7 +419,7 @@
                 android:text="@string/create_chat_post"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:backgroundTint="@color/button_selector"
+                app:backgroundTint="@color/lm_chat_button_selector"
                 app:cornerRadius="24dp"
                 app:font_type="medium"
                 app:text_type="normal"

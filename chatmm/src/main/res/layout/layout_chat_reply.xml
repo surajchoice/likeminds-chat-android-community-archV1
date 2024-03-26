@@ -51,7 +51,7 @@
                     android:id="@+id/view_vertical_line"
                     android:layout_width="4dp"
                     android:layout_height="0dp"
-                    android:background="@drawable/preview_line_turquoise"
+                    android:background="@drawable/lm_chat_preview_line_turquoise"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -101,7 +101,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/image_placeholder"
+                    android:src="@drawable/lm_chat_image_placeholder"
                     android:visibility="@{chatReplyData.imageUrl.length() > 0 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="1dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_cross_reply"
+                    android:src="@drawable/lm_chat_ic_cross_reply"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />

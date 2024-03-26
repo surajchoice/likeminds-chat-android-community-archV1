@@ -83,7 +83,7 @@ class MemberTaggingView(
         if (extras.darkMode) {
             binding.constraintLayout.setBackgroundResource(R.color.black_80)
         } else {
-            binding.constraintLayout.setBackgroundResource(R.drawable.background_container)
+            binding.constraintLayout.setBackgroundResource(R.drawable.lm_chat_background_container)
         }
     }
 

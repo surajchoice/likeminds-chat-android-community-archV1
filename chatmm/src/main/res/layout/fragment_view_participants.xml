@@ -51,7 +51,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_arrow_back_white_24dp"
+                    app:srcCompat="@drawable/lm_chat_ic_arrow_back_white_24dp"
                     tools:ignore="ContentDescription,UnusedAttribute,UseAppTint" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_material_icons_white_search"
+                    android:src="@drawable/lm_chat_ic_material_icons_white_search"
                     android:tint="@{toolbarColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

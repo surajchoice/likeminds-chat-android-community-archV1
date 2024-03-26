@@ -79,7 +79,7 @@
     </style>
 
     <style name="RoundCheckBoxStyle" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:button">@drawable/round_checkbox_selector</item>
+        <item name="android:button">@drawable/lm_chat_round_checkbox_selector</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 

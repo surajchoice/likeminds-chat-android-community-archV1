@@ -55,7 +55,7 @@ internal object CustomTabIntent {
                 )
                 val closeIcon = CustomTabHelper.getBitmapFromVectorDrawable(
                     context,
-                    R.drawable.ic_arrow_back_white_24dp
+                    R.drawable.lm_chat_ic_arrow_back_white_24dp
                 )
                 if (closeIcon != null) {
                     builder.setCloseButtonIcon(closeIcon)
@@ -98,7 +98,7 @@ internal object CustomTabIntent {
                 )
                 val closeIcon = CustomTabHelper.getBitmapFromVectorDrawable(
                     context,
-                    R.drawable.ic_arrow_back_white_24dp
+                    R.drawable.lm_chat_ic_arrow_back_white_24dp
                 )
                 if (closeIcon != null) {
                     builder.setCloseButtonIcon(closeIcon)

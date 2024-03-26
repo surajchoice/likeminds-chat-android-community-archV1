@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_empty_data"
+            app:srcCompat="@drawable/lm_chat_ic_empty_data"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

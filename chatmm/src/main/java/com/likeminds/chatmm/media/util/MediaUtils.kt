@@ -86,10 +86,10 @@ object MediaUtils {
 
     fun getTextIcons(): Array<Int> {
         return arrayOf(
-            R.drawable.ic_text,
-            R.drawable.ic_text_bold,
-            R.drawable.ic_text_signature,
-            R.drawable.ic_text_condensed
+            R.drawable.lm_chat_ic_text,
+            R.drawable.lm_chat_ic_text_bold,
+            R.drawable.lm_chat_ic_text_signature,
+            R.drawable.lm_chat_ic_text_condensed
         )
     }
 

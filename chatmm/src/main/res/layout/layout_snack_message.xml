@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_snack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_snack"
-            app:srcCompat="@drawable/ic_cross"
+            app:srcCompat="@drawable/lm_chat_ic_cross"
             tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

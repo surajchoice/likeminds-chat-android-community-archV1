@@ -63,7 +63,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_poll"
             app:layout_constraintRight_toLeftOf="@+id/iv_poll_gallery"
             app:layout_constraintTop_toTopOf="@+id/et_poll"
-            app:srcCompat="@drawable/ic_paragraph"
+            app:srcCompat="@drawable/lm_chat_ic_paragraph"
             app:tint="@color/turquoise"
             tools:ignore="ContentDescription" />
 
@@ -76,7 +76,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_poll"
             app:layout_constraintRight_toLeftOf="@+id/iv_cross"
             app:layout_constraintTop_toTopOf="@+id/et_poll"
-            app:srcCompat="@drawable/ic_gallery_1"
+            app:srcCompat="@drawable/lm_chat_ic_gallery_1"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -88,7 +88,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_poll"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/et_poll"
-            app:srcCompat="@drawable/ic_cross_small"
+            app:srcCompat="@drawable/lm_chat_ic_cross_small"
             app:tint="@color/grey"
             tools:ignore="ContentDescription" />
 

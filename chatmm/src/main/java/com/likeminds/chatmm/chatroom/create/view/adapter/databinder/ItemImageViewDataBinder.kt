@@ -96,7 +96,7 @@ class ItemImageViewDataBinder constructor(
             ImageBindingUtil.loadImage(
                 image,
                 imageUri.toString(),
-                placeholder = R.drawable.image_placeholder,
+                placeholder = R.drawable.lm_chat_image_placeholder,
                 cornerRadius = 8
             )
         }
@@ -110,12 +110,12 @@ class ItemImageViewDataBinder constructor(
             val mediaLeft = attachmentViewData.mediaLeft
             if (mediaLeft != null) {
                 ivImage.background =
-                    ContextCompat.getDrawable(root.context, R.drawable.background_black60_8)
+                    ContextCompat.getDrawable(root.context, R.drawable.lm_chat_background_black60_8)
                 tvLeft.visibility = View.VISIBLE
                 tvLeft.text = "+ $mediaLeft"
             } else {
                 ivImage.background =
-                    ContextCompat.getDrawable(root.context, R.drawable.background_transparent)
+                    ContextCompat.getDrawable(root.context, R.drawable.lm_chat_background_transparent)
                 tvLeft.visibility = View.GONE
             }
         }

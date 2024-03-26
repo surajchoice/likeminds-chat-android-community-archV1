@@ -54,7 +54,7 @@
 
     <item
         android:id="@+id/share_chatroom_icon"
-        android:icon="@drawable/ic_share_white"
+        android:icon="@drawable/lm_chat_ic_share_white"
         android:title="@string/share_chatroom"
         android:visible="false"
         app:showAsAction="always" />

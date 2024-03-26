@@ -106,7 +106,7 @@
                 android:gravity="center"
                 android:paddingTop="3dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_add_reactions_bubble"
+                android:src="@drawable/lm_chat_ic_add_reactions_bubble"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_reaction_like"

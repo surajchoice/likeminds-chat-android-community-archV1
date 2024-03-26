@@ -73,7 +73,7 @@ object ChatroomConversationItemViewDataBinderUtil {
         )
         clBubble.background = ContextCompat.getDrawable(
             clBubble.context,
-            R.drawable.background_chat_other
+            R.drawable.lm_chat_background_chat_other
         )
     }
 
@@ -163,7 +163,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             customTitleDot.visibility = View.GONE
             clConversationBubble.background = ContextCompat.getDrawable(
                 clRoot.context,
-                R.drawable.chat_bubble_mine
+                R.drawable.lm_chat_chat_bubble_mine
             )
         } else {
             set.connect(
@@ -176,7 +176,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             imageViewFailed?.visibility = View.GONE
 
             clConversationBubble.background =
-                ContextCompat.getDrawable(clRoot.context, R.drawable.chat_bubble_other)
+                ContextCompat.getDrawable(clRoot.context, R.drawable.lm_chat_chat_bubble_other)
             setMessageSenderDetails(
                 memberViewData,
                 memberImage,
@@ -608,7 +608,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_NONE -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_play_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_play_voice_note)
                         isClickable = true
                     }
 
@@ -639,7 +639,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_PLAY -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_pause_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_pause_voice_note)
                         isClickable = true
                     }
                     tvDuration.text = attachment.currentDuration
@@ -654,7 +654,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_PAUSE -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_play_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_play_voice_note)
                         isClickable = true
                     }
                     tvDuration.text = attachment.currentDuration
@@ -745,7 +745,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 ViewUtils.dpToPx(1)
             )
             params.setMargins(0, 0, ViewUtils.dpToPx(8), ViewUtils.dpToPx(6))
-            tvTime.setBackgroundResource(R.drawable.background_conversation_timestamp)
+            tvTime.setBackgroundResource(R.drawable.lm_chat_background_conversation_timestamp)
         } else {
             tvTime.background = null
             tvTime.setPadding(0, 0, 0, 0)
@@ -768,10 +768,10 @@ object ChatroomConversationItemViewDataBinderUtil {
                 imageViewStatus?.visibility = View.GONE
                 val statusDrawable = when {
                     conversation.isSending() -> {
-                        ViewUtils.getDrawable(context, R.drawable.ic_sending, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sending, 12, R.color.white)
                     }
                     conversation.isSent() -> {
-                        ViewUtils.getDrawable(context, R.drawable.ic_sent, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sent, 12, R.color.white)
                     }
                     else -> return
                 } ?: return
@@ -782,11 +782,11 @@ object ChatroomConversationItemViewDataBinderUtil {
                 when {
                     conversation.isSending() -> {
                         imageViewStatus?.visibility = View.VISIBLE
-                        imageViewStatus?.setImageResource(R.drawable.ic_sending)
+                        imageViewStatus?.setImageResource(R.drawable.lm_chat_ic_sending)
                     }
                     conversation.isSent() -> {
                         imageViewStatus?.visibility = View.VISIBLE
-                        imageViewStatus?.setImageResource(R.drawable.ic_sent)
+                        imageViewStatus?.setImageResource(R.drawable.lm_chat_ic_sent)
                     }
                 }
                 tvTime.setCompoundDrawables(null, null, null, null)
@@ -837,9 +837,9 @@ object ChatroomConversationItemViewDataBinderUtil {
                     chatReplyData = replyData
 
                     val placeholder = if (replyData.attachmentType == AUDIO) {
-                        R.drawable.placeholder_audio
+                        R.drawable.lm_chat_placeholder_audio
                     } else {
-                        R.drawable.image_placeholder
+                        R.drawable.lm_chat_image_placeholder
                     }
 
                     if (replyData.imageUrl.isNullOrEmpty()) {
@@ -926,7 +926,7 @@ object ChatroomConversationItemViewDataBinderUtil {
         binding.apply {
             when (attachment.mediaState) {
                 MEDIA_ACTION_NONE -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_play_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_play_grey)
                     ivPlayPause.isClickable = true
                     if (attachment.meta != null) {
                         tvAudioDuration.text =
@@ -944,7 +944,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     waveAnim.hide()
                 }
                 MEDIA_ACTION_PLAY -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_pause_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_pause_grey)
                     ivPlayPause.isClickable = true
                     tvAudioDuration.text = attachment.currentDuration
                     ivAudioLogo.hide()
@@ -959,7 +959,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     }
                 }
                 MEDIA_ACTION_PAUSE -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_play_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_play_grey)
                     ivPlayPause.isClickable = true
                     tvAudioDuration.text = attachment.currentDuration
                     ivAudioLogo.hide()
@@ -1006,7 +1006,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     ivLink
                 },
                 data.image,
-                placeholder = R.drawable.ic_link_primary_40dp,
+                placeholder = R.drawable.lm_chat_ic_link_primary_40dp,
                 cornerRadius = 8,
                 isBlur = isYoutubeLink
             )
@@ -1295,7 +1295,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 ) {
                     background = ContextCompat.getDrawable(
                         context,
-                        R.drawable.background_scarlet_12
+                        R.drawable.lm_chat_background_scarlet_12
                     )
                 } else {
                     backgroundTintList =
