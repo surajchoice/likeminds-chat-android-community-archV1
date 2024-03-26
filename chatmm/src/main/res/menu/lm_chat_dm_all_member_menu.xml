@@ -5,7 +5,7 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/lm_chat_ic_material_icons_white_search"
-        android:iconTint="#000000"
+        app:iconTint="@color/lm_chat_black"
         android:title="@string/lm_chat_search"
         app:showAsAction="always"
         tools:ignore="UnusedAttribute" />

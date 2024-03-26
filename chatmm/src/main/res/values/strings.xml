@@ -293,4 +293,5 @@
     <string name="lm_chat_denied_notification_dialog_message">Allow Community Hood to send you notifications?.. Tap Settings > Permissions, and turn Notifications on.</string>
     <string name="lm_chat_groups">Groups</string>
     <string name="lm_chat_dms">DMs</string>
+    <string name="lm_chat_you_are_not_connected_with_this_user_yet">You are not connected with this user yet!</string>
 </resources>

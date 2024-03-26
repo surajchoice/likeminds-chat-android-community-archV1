@@ -685,6 +685,13 @@ class ChatroomDetailFragment :
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
         giphyDialog.setTargetFragment(this, REQUEST_GIFS)
         binding.inputBox.tvGifs.setOnClickListener {
+            if (viewModel.isDmChatroom() && viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING) {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
+                )
+                return@setOnClickListener
+            }
             giphyDialog.show(parentFragmentManager, "giphy_dialog")
         }
     }
@@ -1383,7 +1390,8 @@ class ChatroomDetailFragment :
                         // hides the input box and shows DM request pending message
                         hideAllChatBoxViews()
                         tvRestrictedMessage.visibility = View.VISIBLE
-                        tvRestrictedMessage.text = getString(R.string.lm_chat_dm_request_pending_message)
+                        tvRestrictedMessage.text =
+                            getString(R.string.lm_chat_dm_request_pending_message)
                         tvRestrictedMessage.gravity = Gravity.CENTER
                         return
                     }
@@ -1630,7 +1638,10 @@ class ChatroomDetailFragment :
                     null
                 }
                 if (cameraFile == null) {
-                    ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_image_not_found))
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.lm_chat_image_not_found)
+                    )
                 } else {
                     try {
                         val photoURI = FileProvider.getUriForFile(
@@ -1820,7 +1831,7 @@ class ChatroomDetailFragment :
                     // show dialog to send dm request if the chatroom is of type DM & chatRequestState is null
                     if (
                         viewModel.isDmChatroom()
-                        && viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING
+                        && (viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING)
                     ) {
                         viewModel.dmRequestText = inputText
                         if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
@@ -1924,7 +1935,10 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.lm_chat_please_enter_your_response))
+                ViewUtils.showShortSnack(
+                    root,
+                    getString(R.string.lm_chat_please_enter_your_response)
+                )
             }
         }
     }
@@ -1981,7 +1995,10 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.lm_chat_please_enter_your_response))
+                ViewUtils.showShortSnack(
+                    root,
+                    getString(R.string.lm_chat_please_enter_your_response)
+                )
             }
         }
     }
@@ -2627,7 +2644,10 @@ class ChatroomDetailFragment :
         viewModel.initialData.observe(viewLifecycleOwner) { initialData ->
             //chatroom is invalid or chatroom is deleted
             if (initialData == null) {
-                ViewUtils.showShortToast(context, getString(R.string.lm_chat_this_chatroom_doesnt_exist))
+                ViewUtils.showShortToast(
+                    context,
+                    getString(R.string.lm_chat_this_chatroom_doesnt_exist)
+                )
                 requireActivity().finish()
                 return@observe
             }
