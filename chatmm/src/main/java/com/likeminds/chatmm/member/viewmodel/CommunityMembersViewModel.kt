@@ -52,6 +52,7 @@ class CommunityMembersViewModel @Inject constructor(
         viewModelScope.launchIO {
             val requestBuilder = GetAllMemberRequest.Builder()
                 .page(page)
+                .excludeSelfUser(true)
 
             val request = when (showList) {
                 CommunityMembersFilter.ALL_MEMBERS.value -> {
@@ -97,14 +98,9 @@ class CommunityMembersViewModel @Inject constructor(
     private fun onCommunityMemberResponse(data: GetAllMemberResponse?) {
         if (data == null) return
         val members = data.members
-        val totalOnlyMembers = data.totalOnlyMembers ?: 0
-        val loggedInMemberUUID = userPreferences.getUUID()
+        val totalOnlyMembers = data.totalMembers ?: 0
 
-        val filteredMembers = members.filterNot { member ->
-            member.sdkClientInfo?.uuid == loggedInMemberUUID
-        }
-
-        val membersViewData = filteredMembers.map {
+        val membersViewData = members.map {
             ViewDataConverter.convertMember(it).toBuilder()
                 .dynamicViewType(ITEM_COMMUNITY_MEMBER)
                 .build()
@@ -121,6 +117,7 @@ class CommunityMembersViewModel @Inject constructor(
                 .pageSize(PAGE_SIZE)
                 .search(searchKeyword)
                 .searchType(MemberSearchType.NAME)
+                .excludeSelfUser(true)
 
             val request = when (showList) {
                 CommunityMembersFilter.ALL_MEMBERS.value -> {

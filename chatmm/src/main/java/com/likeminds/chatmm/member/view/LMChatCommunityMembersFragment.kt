@@ -82,10 +82,10 @@ class LMChatCommunityMembersFragment :
     override fun observeData() {
         super.observeData()
         viewModel.membersResponse.observe(viewLifecycleOwner) { response ->
-            val totalOnlyMembers = response.second
+            val membersCount = response.second
             val members = response.first
 
-            setMembersCount(totalOnlyMembers)
+            setMembersCount(membersCount)
             setMembers(members)
         }
 
@@ -185,14 +185,16 @@ class LMChatCommunityMembersFragment :
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun setMembersCount(totalOnlyMembers: Int) {
-        if (totalOnlyMembers == 0) return
+    private fun setMembersCount(membersCount: Int) {
+        if (membersCount == 0) {
+            return
+        }
         binding.tvMemberCount.apply {
             show()
             text = resources.getQuantityString(
                 R.plurals.lm_chat_number_of_member,
-                totalOnlyMembers,
-                totalOnlyMembers,
+                membersCount,
+                membersCount,
                 ""
             )
         }
@@ -200,6 +202,15 @@ class LMChatCommunityMembersFragment :
 
     private fun setMembers(members: List<MemberViewData>) {
         mAdapter.addAll(members)
+
+        binding.apply {
+            if (mAdapter.itemCount == 0) {
+                layoutNoResults.root.show()
+                tvMemberCount.hide()
+            } else {
+                layoutNoResults.root.hide()
+            }
+        }
     }
 
     private fun onDMLimitReceived(dmLimitData: CheckDMLimitViewData?, uuidSelected: String) {
