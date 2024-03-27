@@ -3,7 +3,6 @@ package com.likeminds.chatmm.dm.view.adapter.databinder
 import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
@@ -52,12 +51,6 @@ class DMChatroomViewDataBinder constructor(
 
             val chatroomWithUser = data.chatroom.chatroomWithUser
             val member = data.chatroom.memberViewData
-
-            Log.d("PUI", """
-                bindData
-                ${userPreferences.getUUID()}
-                ${chatroomWithUser?.sdkClientInfo?.uuid}
-            """.trimIndent())
 
             val memberToBeShown =
                 if (userPreferences.getUUID() == chatroomWithUser?.sdkClientInfo?.uuid) {

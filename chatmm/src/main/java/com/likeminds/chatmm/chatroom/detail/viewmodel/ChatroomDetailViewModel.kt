@@ -282,13 +282,6 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun getOtherDmMember(): MemberViewData? {
-        Log.d("PUI", """
-            getOtherDmMember
-            getUUID: ${userPreferences.getUUID()}
-            uuid: ${getChatroom()?.chatroomWithUser?.sdkClientInfo?.uuid}
-            name: ${getChatroom()?.chatroomWithUser?.name}
-            id: ${getChatroom()?.chatroomWithUser?.id}
-        """.trimIndent())
         return if (
             userPreferences.getUUID() == getChatroom()?.chatroomWithUser?.sdkClientInfo?.uuid
         ) {

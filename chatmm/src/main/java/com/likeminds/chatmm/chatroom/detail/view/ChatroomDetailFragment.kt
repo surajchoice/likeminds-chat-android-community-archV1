@@ -134,9 +134,9 @@ class ChatroomDetailFragment :
     VoiceNoteInterface,
     LeaveSecretChatroomDialogListener,
     DeleteMessageListener,
-    SendDMRequestDialogFragment.SendDMRequestDialogListener,
-    ApproveDMRequestDialogFragment.ApproveDMRequestDialogListener,
-    RejectDMRequestDialogFragment.RejectDMRequestDialogListener {
+    SendDMRequestDialogListener,
+    ApproveDMRequestDialogListener,
+    RejectDMRequestDialogListener {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -1358,10 +1358,6 @@ class ChatroomDetailFragment :
                 }
                 when (viewModel.getChatroomViewData()?.chatRequestState) {
                     ChatRequestState.NOTHING -> {
-                        Log.d(
-                            "PUI",
-                            "setChatInputBoxViewTypeForDM getOtherDmMember: ${viewModel.getOtherDmMember()}"
-                        )
                         // dm is not initiated and request is not send, showing message to send DM request
                         tvSendDmRequestToMember.show()
                         cvDmRequest.hide()
@@ -1822,12 +1818,6 @@ class ChatroomDetailFragment :
                         voiceNoteUtils.stopVoiceNote(this, RECORDING_SEND)
                     }
 
-                    Log.d(
-                        "PUI", """
-                        isDmChatroom: ${viewModel.isDmChatroom()}
-                        chatRequestState: ${viewModel.getChatroomViewData()?.chatRequestState}
-                    """.trimIndent()
-                    )
                     // show dialog to send dm request if the chatroom is of type DM & chatRequestState is null
                     if (
                         viewModel.isDmChatroom()
@@ -1844,21 +1834,22 @@ class ChatroomDetailFragment :
                             )
                             return@setOnClickListener
                         }
+
                         // if the DM is M2M then show dialog otherwise send dm request directly
-                        Log.d(
-                            "PUI",
-                            "initEnterClick: ${viewModel.getChatroomViewData()?.isPrivateMember}"
-                        )
                         if (viewModel.getChatroomViewData()?.isPrivateMember == true) {
                             SendDMRequestDialogFragment.showDialog(childFragmentManager)
+                            setChatInputBoxViewType(
+                                CHAT_BOX_NORMAL,
+                                viewModel.showDM.value
+                            )
                         } else {
                             viewModel.sendDMRequest(
                                 viewModel.getChatroomViewData()?.id.toString(),
                                 ChatRequestState.ACCEPTED,
                                 true
                             )
-                            clearEditTextAnswer()
                         }
+                        clearEditTextAnswer()
                         return@setOnClickListener
                     }
 
@@ -3036,6 +3027,7 @@ class ChatroomDetailFragment :
         binding.apply {
             val draftConversation = getChatroomViewData()?.draftConversation
             if (!draftConversation.isNullOrEmpty()) {
+
                 inputBox.etAnswer.setText(draftConversation)
                 inputBox.etAnswer.setSelection(draftConversation.length)
                 fabSend.show()
