@@ -908,6 +908,7 @@ class ChatroomDetailFragment :
     private fun handleDmChatrooms() {
         if (viewModel.isDmChatroom()) {
             memberTagging.taggingEnabled = false
+            binding.layoutAttachments.ivPoll.hide()
             checkDMStatus()
             disableAllGraphicViewTypes()
             removeChatroomItem()

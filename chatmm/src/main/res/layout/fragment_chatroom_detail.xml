@@ -158,9 +158,9 @@
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/barrier_top_conversation"
+            tools:ignore="UnusedAttribute"
             tools:text="@string/lm_chat_send_a_dm_request_to_s"
-            tools:visibility="visible"
-            tools:ignore="UnusedAttribute" />
+            tools:visibility="visible" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_dm_request"
