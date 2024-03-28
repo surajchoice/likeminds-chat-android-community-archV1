@@ -24,7 +24,9 @@ class ChatPagerAdapter(
         return when (position) {
             0 -> HomeFeedFragment.getInstance(lmChatExtras)
             1 -> DMFeedFragment.getInstance(fragment.dmMeta)
-            else -> throw IndexOutOfBoundsException()
+            else -> {
+                throw IndexOutOfBoundsException()
+            }
         }
     }
 }

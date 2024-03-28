@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentDmFeedBinding
@@ -92,6 +93,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         initRecyclerView()
         checkForHideDMTab()
         initApis()
@@ -124,6 +126,10 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
                 }
             }
         }
+    }
+
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
     }
 
     //init recycler view and handles all recycler view operation

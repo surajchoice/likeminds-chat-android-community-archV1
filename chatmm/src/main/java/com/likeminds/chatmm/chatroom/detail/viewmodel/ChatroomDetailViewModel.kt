@@ -207,6 +207,9 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun isDmChatroom(): Boolean {
+        if (!this::chatroomDetail.isInitialized) {
+            return false
+        }
         return getChatroom()?.type == TYPE_DIRECT_MESSAGE
     }
 

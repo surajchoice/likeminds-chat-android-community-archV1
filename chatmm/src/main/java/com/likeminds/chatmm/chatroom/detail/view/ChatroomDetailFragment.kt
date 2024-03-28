@@ -685,14 +685,18 @@ class ChatroomDetailFragment :
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
         giphyDialog.setTargetFragment(this, REQUEST_GIFS)
         binding.inputBox.tvGifs.setOnClickListener {
-            if (viewModel.isDmChatroom() && viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING) {
+            if (viewModel.isDmChatroom() &&
+                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                viewModel.getChatroomViewData()?.isPrivateMember == true
+            ) {
                 ViewUtils.showShortToast(
                     requireContext(),
                     getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
                 )
                 return@setOnClickListener
+            } else {
+                giphyDialog.show(parentFragmentManager, "giphy_dialog")
             }
-            giphyDialog.show(parentFragmentManager, "giphy_dialog")
         }
     }
 
@@ -772,8 +776,8 @@ class ChatroomDetailFragment :
                 initCameraAttachment()
             }
 
-            ivPoll.isVisible = viewModel.isMicroPollsEnabled()
-            tvPollTitle.isVisible = viewModel.isMicroPollsEnabled()
+            ivPoll.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
+            tvPollTitle.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
             ivPoll.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 CreateConversationPollDialog.show(
@@ -1107,6 +1111,17 @@ class ChatroomDetailFragment :
     private fun initTouchListenerOnMic() {
         binding.fabMic.setOnTouchListener { _, event ->
 
+            if (viewModel.isDmChatroom() &&
+                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                viewModel.getChatroomViewData()?.isPrivateMember == true
+            ) {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
+                )
+                return@setOnTouchListener true
+            }
+
             if (isDeletingVoiceNote || isVoiceNoteLocked) return@setOnTouchListener true
 
             when (event.action) {
@@ -1340,6 +1355,7 @@ class ChatroomDetailFragment :
         isBlocked: Boolean? = null
     ) {
         binding.apply {
+            Log.d("PUI", "setChatInputBoxViewTypeForDM is blocked: $isBlocked")
             if (showDM) {
                 val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
                 if (isPrivateMember == false) {
@@ -1407,21 +1423,7 @@ class ChatroomDetailFragment :
                             viewModel.getChatroomViewData()?.chatRequestedById
                         ) {
                             // logged in user has rejected the request
-                            val conversationIndex =
-                                chatroomDetailAdapter.items()
-                                    .indexOfLast { chatroomItem ->
-                                        (chatroomItem is ConversationViewData && chatroomItem.state == STATE_DM_REJECTED)
-                                    }
-
-                            val conversationViewData =
-                                chatroomDetailAdapter[conversationIndex] as? ConversationViewData
-                                    ?: return
-
-                            handleTapToUndo(
-                                conversationIndex,
-                                conversationViewData,
-                                true
-                            )
+                            updateTapToUndoLocally(true)
 
                             // hides the input box and shows rejected connection message
                             hideAllChatBoxViews()
@@ -1560,6 +1562,8 @@ class ChatroomDetailFragment :
         conversationViewData: ConversationViewData,
         toShowTapToUndo: Boolean
     ) {
+        Log.d("PUI", "handleTapToUndo: $index $toShowTapToUndo")
+
         val updatedConversation = conversationViewData.toBuilder()
             .showTapToUndo(toShowTapToUndo)
             .build()
@@ -1568,7 +1572,7 @@ class ChatroomDetailFragment :
     }
 
     // removes tap to undo view from the adapter
-    private fun removeTapToUndo() {
+    private fun updateTapToUndoLocally(toShowTapToUndo: Boolean) {
         val conversationIndex =
             chatroomDetailAdapter.items()
                 .indexOfLast { chatroomItem ->
@@ -1576,12 +1580,12 @@ class ChatroomDetailFragment :
                 }
 
         val conversationViewData =
-            chatroomDetailAdapter[conversationIndex] as ConversationViewData
+            chatroomDetailAdapter[conversationIndex] as? ConversationViewData ?: return
 
         handleTapToUndo(
             conversationIndex,
             conversationViewData,
-            false
+            toShowTapToUndo
         )
     }
 
@@ -2785,6 +2789,14 @@ class ChatroomDetailFragment :
      */
     private fun observeConversations() {
         viewModel.conversationEventFlow.onEach { response ->
+            Log.d(
+                "PUI",
+                """
+                    UpdatedConversation: ${response is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation}
+                    NewConversation: ${response is ChatroomDetailViewModel.ConversationEvent.NewConversation}
+                    PostedConversation: ${response is ChatroomDetailViewModel.ConversationEvent.PostedConversation}
+                """.trimIndent()
+            )
             when (response) {
                 is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation -> {
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
@@ -2799,6 +2811,7 @@ class ChatroomDetailFragment :
                     val isAddedBelow: Boolean
                     val conversations =
                         getNonPresentConversations(response.conversations).toMutableList()
+
                     val indexOfHeaderConversation = conversations.indexOfFirst { conversation ->
                         conversation.state == STATE_HEADER
                     }
@@ -2816,11 +2829,13 @@ class ChatroomDetailFragment :
                             conversations.removeAt(indexOfHeaderConversation)
                         }
                     }
+
                     if (conversations.isNotEmpty()) {
                         //Add the conversations to recyclerview
 
                         //get last conversation from the callback
                         val lastNewConversation = conversations.last()
+
                         //get first conversation from the adapter
                         val firstPresentConversation =
                             viewModel.getFirstNormalOrPollConversation(chatroomDetailAdapter.items())
@@ -2880,6 +2895,19 @@ class ChatroomDetailFragment :
                             })
                             showUnseenCount(false)
                         }
+
+                        //last new conversation DM REJECTED conversation
+                        if (lastNewConversation.state == STATE_DM_REJECTED) {
+                            val lastConversationIndex =
+                                getIndexOfConversation(lastNewConversation.id)
+
+                            //add tap to undo to the last conversation with DM REJECTED state
+                            handleTapToUndo(
+                                lastConversationIndex,
+                                lastNewConversation,
+                                true
+                            )
+                        }
                     }
                 }
 
@@ -2894,6 +2922,7 @@ class ChatroomDetailFragment :
                             chatroomDetailAdapter.add(response.conversation)
                             index = chatroomDetailAdapter.itemCount - 1
                         }
+                        Log.d("PUI", "PostedConversation: ${response.conversation.state}")
                         if (response.conversation.state == STATE_DM_REJECTED) {
                             handleTapToUndo(
                                 index,
@@ -5637,6 +5666,7 @@ class ChatroomDetailFragment :
 
     // unblocks the member and updates the tap to undo
     override fun blockMember(index: Int, state: MemberBlockState) {
+        Log.d("PUI", "blockMember: $state")
         val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
         val updatedConversationViewData = conversationViewData.toBuilder()
             .showTapToUndo(false)
@@ -5812,7 +5842,7 @@ class ChatroomDetailFragment :
                         requireContext(),
                         getString(R.string.lm_chat_member_unblocked)
                     )
-                    removeTapToUndo()
+                    updateTapToUndoLocally(false)
                 }
                 invalidateActionsMenu()
                 viewModel.blockMember(

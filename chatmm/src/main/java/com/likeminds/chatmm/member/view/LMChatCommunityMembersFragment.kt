@@ -74,6 +74,7 @@ class LMChatCommunityMembersFragment :
     override fun setUpViews() {
         super.setUpViews()
         setupMenu()
+        initializeClickListener()
         initRecyclerView()
         initData()
         initializeSearchView()
@@ -183,6 +184,12 @@ class LMChatCommunityMembersFragment :
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun initializeClickListener() {
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().finish()
+        }
     }
 
     private fun setMembersCount(membersCount: Int) {

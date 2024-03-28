@@ -2,6 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="buttonColor"
+            type="int" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/lm_chat_colorPrimary"
+            android:backgroundTint="@{buttonColor}"
             android:fontFamily="@font/lm_chat_roboto_medium"
             android:gravity="center"
             android:paddingHorizontal="16dp"

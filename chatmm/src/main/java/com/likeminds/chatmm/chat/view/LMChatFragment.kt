@@ -3,6 +3,7 @@ package com.likeminds.chatmm.chat.view
 import android.Manifest
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -90,6 +91,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     override fun setUpViews() {
         super.setUpViews()
         checkForNotificationPermission()
+        initTabLayout()
         setBranding()
         setupReceivers()
         initiateUser()
@@ -142,6 +144,13 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
                 }
             }
+        }
+    }
+
+    private fun initTabLayout() {
+        binding.tabChat.apply {
+            setSelectedTabIndicatorColor(LMBranding.getButtonsColor())
+            setTabTextColors(Color.GRAY, LMBranding.getButtonsColor())
         }
     }
 
@@ -220,7 +229,10 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                                 number = unreadDMCount
                                 maxCharacterCount = 2
                                 backgroundColor =
-                                    ContextCompat.getColor(requireContext(), R.color.lm_chat_colorPrimary)
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        LMBranding.getButtonsColor()
+                                    )
                                 badgeTextColor =
                                     ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                             }
@@ -229,7 +241,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     }
                 }
 
-                else -> throw IndexOutOfBoundsException()
+                else -> {
+                    throw IndexOutOfBoundsException()
+                }
             }
         }.attach()
     }
@@ -261,8 +275,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 badge.apply {
                     number = unreadDMCount
                     maxCharacterCount = 2
-                    backgroundColor =
-                        ContextCompat.getColor(requireContext(), R.color.lm_chat_colorPrimary)
+                    backgroundColor = LMBranding.getButtonsColor()
                     badgeTextColor =
                         ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                 }
