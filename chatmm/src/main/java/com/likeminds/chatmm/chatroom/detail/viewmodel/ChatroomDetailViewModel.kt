@@ -298,6 +298,15 @@ class ChatroomDetailViewModel @Inject constructor(
         return userPreferences.getMemberId()
     }
 
+    //gets the member with provided [uuid] from DB
+    fun getMemberFromDB(uuid: String): MemberViewData {
+        val memberRequest = GetMemberRequest.Builder()
+            .uuid(uuid)
+            .build()
+
+        return ViewDataConverter.convertMember(lmChatClient.getMember(memberRequest).data?.member)
+    }
+
     //get first normal or poll conversation for list
     fun getFirstNormalOrPollConversation(items: List<BaseViewType>): ConversationViewData? {
         return items.firstOrNull {

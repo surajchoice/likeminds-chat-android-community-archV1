@@ -88,29 +88,8 @@ class PollResultTabFragment :
     }
 
     override fun showMemberProfile(memberViewData: MemberViewData, source: String) {
-        // todo:
-//        val extra = ProfileExtras.Builder()
-//            .userId(memberViewData.id!!)
-//            .communityId(memberViewData.communityId ?: "")
-//            .source(source)
-//            .build()
-//        val intent = ProfileActivity.getIntent(
-//            requireContext(),
-//            extra
-//        )
-//        memberProfileResult.launch(intent)
+        SDKApplication.getLikeMindsCallback()?.openProfile(memberViewData)
     }
-
-    private val memberProfileResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.fetchPollParticipantsData(
-                    extra.pollViewData?.id,
-                    extra.communityId,
-                    conversationId = extra.conversationId
-                )
-            }
-        }
 
     override fun showMemberOptionsDialog(memberViewData: MemberViewData) {
         //todo

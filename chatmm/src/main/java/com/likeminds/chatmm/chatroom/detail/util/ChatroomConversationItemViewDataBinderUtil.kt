@@ -334,8 +334,8 @@ object ChatroomConversationItemViewDataBinderUtil {
             trimmedText,
             true,
             LMBranding.getTextLinkColor()
-        ) { _ ->
-            // todo: onMemberClicked()
+        ) { it ->
+            adapterListener?.onMemberTagClicked(it)
         }
 
         val readMoreColor = ContextCompat.getColor(tvConversation.context, R.color.lm_chat_caribbean_green)

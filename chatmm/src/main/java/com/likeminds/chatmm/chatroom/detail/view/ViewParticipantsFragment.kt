@@ -221,6 +221,6 @@ class ViewParticipantsFragment :
 
     override fun onMemberClick(memberViewData: MemberViewData) {
         super.onMemberClick(memberViewData)
-        // todo: member clicked.
+        SDKApplication.getLikeMindsCallback()?.openProfile(memberViewData)
     }
 }

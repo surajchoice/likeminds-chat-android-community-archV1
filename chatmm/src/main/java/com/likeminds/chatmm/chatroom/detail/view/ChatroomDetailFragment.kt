@@ -80,6 +80,7 @@ import com.likeminds.chatmm.report.model.ReportExtras
 import com.likeminds.chatmm.report.view.ReportActivity
 import com.likeminds.chatmm.report.view.ReportSuccessDialog
 import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.Route.getNullableQueryParameter
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
@@ -4302,7 +4303,7 @@ class ChatroomDetailFragment :
     }
 
     override fun showMemberProfile(member: MemberViewData) {
-        // todo: show member profile
+        SDKApplication.getLikeMindsCallback()?.openProfile(member)
     }
 
     //add this function for every navigation from chatroom
@@ -5673,6 +5674,21 @@ class ChatroomDetailFragment :
             chatroomId,
             state
         )
+    }
+
+    override fun onMemberTagClicked(memberTag: Uri) {
+        super.onMemberTagClicked(memberTag)
+
+        if (memberTag.host == Route.ROUTE_MEMBER
+            || memberTag.host == Route.ROUTE_MEMBER_PROFILE
+            || memberTag.host == Route.ROUTE_USER_PROFILE
+        ) {
+            val uuid = memberTag.getNullableQueryParameter("uuid")
+                ?: memberTag.lastPathSegment ?: return
+
+            val member = viewModel.getMemberFromDB(uuid)
+            SDKApplication.getLikeMindsCallback()?.openProfile(member)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

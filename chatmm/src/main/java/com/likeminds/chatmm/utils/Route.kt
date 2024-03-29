@@ -18,6 +18,7 @@ object Route {
     const val ROUTE_MAIL = "mail"
     const val ROUTE_MEMBER = "member"
     const val ROUTE_MEMBER_PROFILE = "member_profile"
+    const val ROUTE_USER_PROFILE = "user_profile"
     const val ROUTE_COMMUNITY_FEED = "community_feed"
     const val ROUTE_POLL_CHATROOM = "poll_chatroom"
     const val ROUTE_SYNC = "sync"
