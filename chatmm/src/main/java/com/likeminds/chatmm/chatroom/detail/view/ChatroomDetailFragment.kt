@@ -226,6 +226,8 @@ class ChatroomDetailFragment :
     private var isAudioComplete = false
     private var isDMRequestSent = false
 
+    private var showTapToUndoLocally = true
+
     private val progressReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.extras != null) {
@@ -1355,7 +1357,6 @@ class ChatroomDetailFragment :
         isBlocked: Boolean? = null
     ) {
         binding.apply {
-            Log.d("PUI", "setChatInputBoxViewTypeForDM is blocked: $isBlocked")
             if (showDM) {
                 val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
                 if (isPrivateMember == false) {
@@ -1423,7 +1424,9 @@ class ChatroomDetailFragment :
                             viewModel.getChatroomViewData()?.chatRequestedById
                         ) {
                             // logged in user has rejected the request
-                            updateTapToUndoLocally(true)
+                            if (showTapToUndoLocally) {
+                                updateTapToUndoLocally(true)
+                            }
 
                             // hides the input box and shows rejected connection message
                             hideAllChatBoxViews()
@@ -1562,8 +1565,6 @@ class ChatroomDetailFragment :
         conversationViewData: ConversationViewData,
         toShowTapToUndo: Boolean
     ) {
-        Log.d("PUI", "handleTapToUndo: $index $toShowTapToUndo")
-
         val updatedConversation = conversationViewData.toBuilder()
             .showTapToUndo(toShowTapToUndo)
             .build()
@@ -2789,14 +2790,6 @@ class ChatroomDetailFragment :
      */
     private fun observeConversations() {
         viewModel.conversationEventFlow.onEach { response ->
-            Log.d(
-                "PUI",
-                """
-                    UpdatedConversation: ${response is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation}
-                    NewConversation: ${response is ChatroomDetailViewModel.ConversationEvent.NewConversation}
-                    PostedConversation: ${response is ChatroomDetailViewModel.ConversationEvent.PostedConversation}
-                """.trimIndent()
-            )
             when (response) {
                 is ChatroomDetailViewModel.ConversationEvent.UpdatedConversation -> {
                     //Observe for any updates to conversations already appended to the recyclerview, usually for
@@ -2922,7 +2915,6 @@ class ChatroomDetailFragment :
                             chatroomDetailAdapter.add(response.conversation)
                             index = chatroomDetailAdapter.itemCount - 1
                         }
-                        Log.d("PUI", "PostedConversation: ${response.conversation.state}")
                         if (response.conversation.state == STATE_DM_REJECTED) {
                             handleTapToUndo(
                                 index,
@@ -3362,6 +3354,7 @@ class ChatroomDetailFragment :
     // observes memberBlocked live data
     private fun observeMemberBlocked() {
         viewModel.memberBlocked.observe(viewLifecycleOwner) { memberBlocked ->
+            showTapToUndoLocally = false
             setChatInputBoxViewType(
                 CHAT_BOX_NORMAL,
                 viewModel.showDM.value,
@@ -4645,7 +4638,9 @@ class ChatroomDetailFragment :
                 item is ConversationViewData &&
                 (item.id == conversations[i].id || item.id == conversations[i].temporaryId)
             ) {
-                map[index] = conversations[i]
+                map[index] = conversations[i].toBuilder()
+                    .showTapToUndo(item.showTapToUndo)
+                    .build()
                 i++
             }
         }
@@ -5666,11 +5661,11 @@ class ChatroomDetailFragment :
 
     // unblocks the member and updates the tap to undo
     override fun blockMember(index: Int, state: MemberBlockState) {
-        Log.d("PUI", "blockMember: $state")
         val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
         val updatedConversationViewData = conversationViewData.toBuilder()
             .showTapToUndo(false)
             .build()
+
         chatroomDetailAdapter.update(index, updatedConversationViewData)
         updatedBlockActionTitle = BLOCK_ACTION_TITLE
         invalidateActionsMenu()

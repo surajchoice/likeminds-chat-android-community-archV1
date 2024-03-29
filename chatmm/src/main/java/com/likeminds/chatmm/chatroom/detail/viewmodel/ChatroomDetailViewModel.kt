@@ -2217,6 +2217,7 @@ class ChatroomDetailViewModel @Inject constructor(
             ?.chatRequestState(chatRequestState)
             ?.chatRequestedById(userPreferences.getMemberId())
             ?.build()
+
         chatroomDetail = chatroomDetail.toBuilder().chatroom(updatedChatroom).build()
         _updatedChatRequestState.postValue(chatRequestState)
     }
@@ -2240,8 +2241,10 @@ class ChatroomDetailViewModel @Inject constructor(
             if (response.success) {
                 if (status == MemberBlockState.MEMBER_BLOCKED) {
                     _memberBlocked.postValue(true)
+                    updateChatRequestStateLocally(ChatRequestState.REJECTED)
                 } else {
                     _memberBlocked.postValue(false)
+                    updateChatRequestStateLocally(ChatRequestState.ACCEPTED)
                 }
             } else {
                 errorEventChannel.send(ErrorMessageEvent.BlockMember(response.errorMessage))
