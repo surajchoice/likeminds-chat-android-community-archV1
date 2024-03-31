@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
+import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
@@ -79,8 +80,18 @@ class ConversationViewData private constructor(
                 val videoCount: Int = ChatroomUtil.getMediaCount(VIDEO, attachments)
                 val audioCount: Int = ChatroomUtil.getMediaCount(AUDIO, attachments)
                 val voiceNoteCount: Int = ChatroomUtil.getMediaCount(VOICE_NOTE, attachments)
-                val widgetMetadata = JSONObject(widgetViewData?.metadata.toString())
-                val viewTypeInMetaData = widgetMetadata.get("view_type") as? Int
+
+                val widgetMetadata = if (widgetViewData != null) {
+                    JSONObject(widgetViewData.metadata.toString())
+                } else {
+                    null
+                }
+
+                val viewTypeInMetaData = if (widgetMetadata?.has("view_type") == true) {
+                    widgetMetadata.get("view_type") as? Int
+                } else {
+                    null
+                }
 
 
                 when {

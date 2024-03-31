@@ -678,8 +678,29 @@ class ChatroomDetailViewModel @Inject constructor(
             lmChatClient.getConversations(getBottomConversationsRequest)
         val bottomConversations = getBottomConversationsResponse.data?.conversations ?: emptyList()
 
+        Log.d(
+            TAG, """
+            bottomConversations = ${
+                bottomConversations.map {
+                    it.widget?.metadata?.toString()
+                }
+            }
+        """.trimIndent()
+        )
+
         var bottomConversationsViewData =
             ViewDataConverter.convertConversations(bottomConversations)
+
+        Log.d(
+            TAG, """
+            bottomConversationsViewData = ${
+                bottomConversationsViewData.map {
+                    it.widgetViewData?.metadata
+                }
+            }
+        """.trimIndent()
+        )
+
         if (chatroomViewData.totalAllResponseCount <= CONVERSATIONS_LIMIT) {
             //All conversations are fetched
             dataList.add(getDateView(chatroomViewData.date))
