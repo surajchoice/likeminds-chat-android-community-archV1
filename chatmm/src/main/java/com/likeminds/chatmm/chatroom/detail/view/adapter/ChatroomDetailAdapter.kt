@@ -6,6 +6,7 @@ import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItem
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.view.adapter.databinder.*
 import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationGroupChatWidgetAItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationGroupChatWidgetBItemViewDataBinder
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.PollViewData
@@ -144,6 +145,14 @@ class ChatroomDetailAdapter constructor(
                 listener
             )
         viewDataBinders.add(conversationGroupChatWidgetAItemViewDataBinder)
+
+        val conversationGroupChatWidgetBItemViewDataBinder =
+            ConversationGroupChatWidgetBItemViewDataBinder(
+                userPreferences,
+                reactionsPreferences,
+                listener
+            )
+        viewDataBinders.add(conversationGroupChatWidgetBItemViewDataBinder)
 
         return viewDataBinders
     }

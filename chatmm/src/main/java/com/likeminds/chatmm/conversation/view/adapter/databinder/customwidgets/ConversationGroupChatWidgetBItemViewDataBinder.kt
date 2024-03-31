@@ -8,26 +8,26 @@ import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDat
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
 import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationItemViewDataBinder
-import com.likeminds.chatmm.databinding.ItemConversationGroupChatWidgetABinding
+import com.likeminds.chatmm.databinding.ItemConversationGroupChatWidgetBBinding
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_GROUP
 import org.json.JSONObject
 
-class ConversationGroupChatWidgetAItemViewDataBinder(
+class ConversationGroupChatWidgetBItemViewDataBinder(
     private val userPreferences: UserPreferences,
     private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener
-) : ViewDataBinder<ItemConversationGroupChatWidgetABinding, ConversationViewData>() {
+) : ViewDataBinder<ItemConversationGroupChatWidgetBBinding, ConversationViewData>() {
     override val viewType: Int
-        get() = ITEM_CUSTOM_WIDGET_A_GROUP
+        get() = ITEM_CUSTOM_WIDGET_B_GROUP
 
-    override fun createBinder(parent: ViewGroup): ItemConversationGroupChatWidgetABinding {
-        val binding = ItemConversationGroupChatWidgetABinding.inflate(
+    override fun createBinder(parent: ViewGroup): ItemConversationGroupChatWidgetBBinding {
+        val binding = ItemConversationGroupChatWidgetBBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -37,7 +37,7 @@ class ConversationGroupChatWidgetAItemViewDataBinder(
     }
 
     override fun bindData(
-        binding: ItemConversationGroupChatWidgetABinding,
+        binding: ItemConversationGroupChatWidgetBBinding,
         data: ConversationViewData,
         position: Int
     ) {

@@ -18,6 +18,7 @@ import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
@@ -29,6 +30,7 @@ import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.*
+import com.likeminds.likemindschat.widget.model.Widget
 
 object ViewDataConverter {
 
@@ -243,6 +245,8 @@ object ViewDataConverter {
             .lastSeen(conversation.lastSeen)
             .reactions(convertConversationReactions(conversation.reactions, conversation.id))
             .deletedByMember(convertMember(conversation.deletedByMember))
+            .widgetId(conversation.widgetId)
+            .widget(convertWidget(conversation.widget))
             .build()
     }
 
@@ -529,6 +533,18 @@ object ViewDataConverter {
             .id(chatroomAction.id.toString())
             .title(chatroomAction.title)
             .route(chatroomAction.route)
+            .build()
+    }
+
+    private fun convertWidget(widget: Widget?): WidgetViewData? {
+        if (widget == null) return null
+        return WidgetViewData.Builder()
+            .id(widget.id)
+            .parentEntityId(widget.parentEntityId)
+            .parentEntityType(widget.parentEntityType)
+            .metadata(widget.metadata.toString())
+            .createdAt(widget.createdAt)
+            .updatedAt(widget.updatedAt)
             .build()
     }
 
