@@ -30,6 +30,7 @@ import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWo
 import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.chatroom.model.*
@@ -45,6 +46,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -1451,7 +1453,8 @@ class ChatroomDetailViewModel @Inject constructor(
         replyConversationId: String?,
         replyChatRoomId: String?,
         taggedUsers: List<TagViewData>,
-        replyChatData: ChatReplyViewData?
+        replyChatData: ChatReplyViewData?,
+        metadata: JSONObject? = null
     ) {
         viewModelScope.launchIO {
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
@@ -1487,6 +1490,11 @@ class ChatroomDetailViewModel @Inject constructor(
                     }
                 }
             }
+
+            if (metadata != null) {
+                postConversationRequestBuilder.metadata(metadata)
+            }
+
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(

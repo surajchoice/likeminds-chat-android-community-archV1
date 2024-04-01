@@ -557,8 +557,23 @@ object ViewDataConverter {
         uuid: String,
         communityId: String?,
         request: PostConversationRequest,
-        fileUris: List<SingleUriData>?
+        fileUris: List<SingleUriData>?,
     ): Conversation {
+
+        val metadata = request.metadata
+        val currentTimeStamp = System.currentTimeMillis()
+        val widget = if (metadata != null) {
+            Widget.Builder()
+                .id("-$currentTimeStamp")
+                .metadata(metadata)
+                .parentEntityType("message")
+                .createdAt(currentTimeStamp)
+                .updatedAt(currentTimeStamp)
+                .build()
+        } else {
+            null
+        }
+
         return Conversation.Builder()
             .id(request.temporaryId)
             .chatroomId(request.chatroomId)
@@ -579,6 +594,7 @@ object ViewDataConverter {
             .isEdited(false)
             .replyChatroomId(request.repliedChatroomId)
             .attachmentUploaded(false)
+            .widget(widget)
             .build()
     }
 

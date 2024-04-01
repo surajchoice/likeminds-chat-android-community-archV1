@@ -108,6 +108,10 @@ import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_DM
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_DM
+import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_GROUP
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
@@ -117,6 +121,7 @@ import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -771,10 +776,68 @@ class ChatroomDetailFragment :
                     chatroomDetailExtras
                 )
             }
+
+            ivCustomWidgetA.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetAClicked()
+            }
+
+            ivCustomWidgetB.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetBClicked()
+            }
+
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
             }
         }
+    }
+
+    private fun onCustomWidgetAClicked() {
+        //todo add code
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val viewType = if (isDMChatroom) {
+            ITEM_CUSTOM_WIDGET_A_DM
+        } else {
+            ITEM_CUSTOM_WIDGET_A_GROUP
+        }
+
+        val amount = binding.inputBox.etAnswer.text ?: "50"
+
+        val metaData = JSONObject().apply {
+            put("view_type", viewType)
+            put("payment_amount",amount)
+        }
+
+        postConversation(
+            conversation = amount.trim().toString(),
+            metadata = metaData
+        )
+    }
+
+    private fun onCustomWidgetBClicked() {
+        //todo add code
+
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val viewType = if (isDMChatroom) {
+            ITEM_CUSTOM_WIDGET_B_DM
+        } else {
+            ITEM_CUSTOM_WIDGET_B_GROUP
+        }
+
+        val amount = binding.inputBox.etAnswer.text ?: "50"
+
+        val metaData = JSONObject().apply {
+            put("view_type", viewType)
+            put("payment_amount",amount)
+        }
+
+        postConversation(
+            conversation = amount.trim().toString(),
+            metadata = metaData
+        )
     }
 
     private fun disableAnswerPosting() {
@@ -1847,6 +1910,7 @@ class ChatroomDetailFragment :
         conversation: String? = null,
         fileUris: List<SingleUriData>? = null,
         shareLink: String? = null,
+        metadata:JSONObject? = null
     ) {
         binding.apply {
             val shareTextLink = shareLink?.trim()
@@ -1897,7 +1961,8 @@ class ChatroomDetailFragment :
                     replyConversationId,
                     replyChatRoomId,
                     memberTagging.getTaggedMembers(),
-                    replyChatData
+                    replyChatData,
+                    metadata
                 )
                 clearEditTextAnswer()
                 updateDmMessaged()

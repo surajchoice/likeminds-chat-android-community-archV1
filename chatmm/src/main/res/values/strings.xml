@@ -67,6 +67,8 @@
     <string name="document">Document</string>
     <string name="poll">Poll</string>
     <string name="audio">Audio</string>
+    <string name="custom_widget_a">Custom Widget A</string>
+    <string name="custom_widget_b">Custom Widget B</string>
     <string name="chatroom_not_joined_yet">chatroom not joined yet</string>
     <string name="no_results_found">No results found</string>
     <string name="audio_is_played">Audio is being played in chatroom</string>
