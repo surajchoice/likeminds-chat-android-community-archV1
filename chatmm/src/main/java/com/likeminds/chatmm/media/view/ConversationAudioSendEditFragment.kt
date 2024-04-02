@@ -10,7 +10,6 @@ import android.view.animation.LinearInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -30,6 +29,7 @@ import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
@@ -315,6 +315,8 @@ class ConversationAudioSendEditFragment :
             mediaExtras.text,
             LMBranding.getTextLinkColor()
         )
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     private fun initRVForMedia() {

@@ -715,6 +715,7 @@ class ChatroomDetailFragment :
                     .communityId(communityId?.toIntOrNull())
                     .text(text)
                     .isSecretChatroom(getChatroomViewData()?.isSecret)
+                    .isTaggingEnabled(!viewModel.isDmChatroom())
                     .build()
 
                 val intent = MediaActivity.getIntent(
@@ -3676,6 +3677,7 @@ class ChatroomDetailFragment :
             .text(text)
             .isExternallyShared(isExternallyShared)
             .isSecretChatroom(getChatroomViewData()?.isSecret)
+            .isTaggingEnabled(!viewModel.isDmChatroom())
             .build()
         if (attachments.isNotEmpty()) {
             val intent =
@@ -3733,6 +3735,7 @@ class ChatroomDetailFragment :
                 .text(text)
                 .isExternallyShared(isExternallyShared)
                 .isSecretChatroom(getChatroomViewData()?.isSecret)
+                .isTaggingEnabled(!viewModel.isDmChatroom())
                 .build()
             if (attachments.isNotEmpty()) {
                 val intent = MediaActivity.getIntent(
@@ -3775,6 +3778,7 @@ class ChatroomDetailFragment :
             .communityId(communityId?.toIntOrNull())
             .text(text)
             .isSecretChatroom(getChatroomViewData()?.isSecret)
+            .isTaggingEnabled(!viewModel.isDmChatroom())
             .build()
         val intent =
             MediaActivity.getIntent(requireContext(), mediaExtras, activity?.intent?.clipData)
@@ -3814,6 +3818,7 @@ class ChatroomDetailFragment :
                 .text(text)
                 .isExternallyShared(isExternallyShared)
                 .isSecretChatroom(getChatroomViewData()?.isSecret)
+                .isTaggingEnabled(!viewModel.isDmChatroom())
                 .build()
 
             val intent =

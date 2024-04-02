@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -30,6 +29,7 @@ import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
@@ -459,6 +459,8 @@ class ConversationDocumentSendFragment :
                 )
             }
         })
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     //result callback for new document pick

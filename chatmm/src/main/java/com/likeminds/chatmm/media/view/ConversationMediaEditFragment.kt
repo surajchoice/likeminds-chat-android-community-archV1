@@ -542,6 +542,8 @@ class ConversationMediaEditFragment :
                 )
             }
         })
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     //result callback for new media pick

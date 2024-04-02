@@ -135,6 +135,8 @@ class ConversationGifSendFragment :
                 )
             }
         })
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     private fun initGiphy() {
