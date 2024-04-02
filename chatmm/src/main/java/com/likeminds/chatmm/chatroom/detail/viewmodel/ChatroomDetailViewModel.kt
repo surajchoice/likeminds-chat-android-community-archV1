@@ -45,6 +45,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -692,8 +693,10 @@ class ChatroomDetailViewModel @Inject constructor(
             lmChatClient.getConversations(getBottomConversationsRequest)
         val bottomConversations = getBottomConversationsResponse.data?.conversations ?: emptyList()
 
+
         var bottomConversationsViewData =
             ViewDataConverter.convertConversations(bottomConversations)
+
         if (chatroomViewData.totalAllResponseCount <= CONVERSATIONS_LIMIT) {
             //All conversations are fetched
             dataList.add(getDateView(chatroomViewData.date))
@@ -769,6 +772,7 @@ class ChatroomDetailViewModel @Inject constructor(
         val value = conversations.sortedBy {
             it.createdEpoch
         }
+
         viewModelScope.launchDefault {
             conversationEventChannel.send(ConversationEvent.UpdatedConversation(value))
         }
@@ -1444,7 +1448,8 @@ class ChatroomDetailViewModel @Inject constructor(
         replyConversationId: String?,
         replyChatRoomId: String?,
         taggedUsers: List<TagViewData>,
-        replyChatData: ChatReplyViewData?
+        replyChatData: ChatReplyViewData?,
+        metadata: JSONObject? = null
     ) {
         viewModelScope.launchIO {
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
@@ -1480,6 +1485,11 @@ class ChatroomDetailViewModel @Inject constructor(
                     }
                 }
             }
+
+            if (metadata != null) {
+                postConversationRequestBuilder.metadata(metadata)
+            }
+
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(
@@ -1793,7 +1803,6 @@ class ChatroomDetailViewModel @Inject constructor(
         lmChatClient.updateConversationUploadWorkerUUID(updateConversationUploadWorkerUUIDRequest)
         uploadData.first.enqueue()
     }
-
 
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
     private fun uploadFilesViaWorker(

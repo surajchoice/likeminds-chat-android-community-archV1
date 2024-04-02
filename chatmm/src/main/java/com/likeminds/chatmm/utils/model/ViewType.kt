@@ -75,6 +75,10 @@ const val ITEM_DM_FEED_EMPTY_DATA = 68
 const val ITEM_DIRECT_MESSAGE = 69
 const val ITEM_COMMUNITY_MEMBER = 70
 
+
+//for custom widgets
+const val ITEM_CONVERSATION_CUSTOM_WIDGET = 1001
+
 @IntDef(
     ITEM_NONE,
     ITEM_MEMBER,
@@ -146,7 +150,8 @@ const val ITEM_COMMUNITY_MEMBER = 70
     ITEM_EXPLORE,
     ITEM_DM_FEED_EMPTY_DATA,
     ITEM_DIRECT_MESSAGE,
-    ITEM_COMMUNITY_MEMBER
+    ITEM_COMMUNITY_MEMBER,
+    ITEM_CONVERSATION_CUSTOM_WIDGET
 )
 @Retention(AnnotationRetention.SOURCE)
 internal annotation class ViewType

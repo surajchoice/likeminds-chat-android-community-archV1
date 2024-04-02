@@ -2,7 +2,9 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.*
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest

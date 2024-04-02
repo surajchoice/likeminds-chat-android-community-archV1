@@ -19,6 +19,7 @@ import com.likeminds.chatmm.search.model.*
 import com.likeminds.chatmm.search.util.SearchUtils
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.ITEM_VIEW_PARTICIPANTS
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.Member
 import com.likeminds.likemindschat.conversation.model.*
@@ -31,6 +32,7 @@ import com.likeminds.likemindschat.poll.model.Poll
 import com.likeminds.likemindschat.search.model.SearchChatroom
 import com.likeminds.likemindschat.search.model.SearchConversation
 import com.likeminds.likemindschat.user.model.*
+import com.likeminds.likemindschat.widget.model.Widget
 
 object ViewDataConverter {
 
@@ -252,6 +254,8 @@ object ViewDataConverter {
             .lastSeen(conversation.lastSeen)
             .reactions(convertConversationReactions(conversation.reactions, conversation.id))
             .deletedByMember(convertMember(conversation.deletedByMember))
+            .widgetId(conversation.widgetId)
+            .widget(convertWidget(conversation.widget))
             .build()
     }
 
@@ -533,11 +537,33 @@ object ViewDataConverter {
         }
     }
 
+    /**
+     * convert [ChatroomAction] to [ChatroomActionViewData]
+     *
+     * @param chatroomAction: object to [ChatroomAction]
+     */
     private fun convertChatroomAction(chatroomAction: ChatroomAction): ChatroomActionViewData {
         return ChatroomActionViewData.Builder()
             .id(chatroomAction.id.toString())
             .title(chatroomAction.title)
             .route(chatroomAction.route)
+            .build()
+    }
+
+    /**
+     * convert [Widget] to [WidgetViewData]
+     *
+     * @param widget: object to [Widget]
+     */
+    private fun convertWidget(widget: Widget?): WidgetViewData? {
+        if (widget == null) return null
+        return WidgetViewData.Builder()
+            .id(widget.id)
+            .parentEntityId(widget.parentEntityId)
+            .parentEntityType(widget.parentEntityType)
+            .metadata(widget.metadata.toString())
+            .createdAt(widget.createdAt)
+            .updatedAt(widget.updatedAt)
             .build()
     }
 
@@ -550,8 +576,23 @@ object ViewDataConverter {
         uuid: String,
         communityId: String?,
         request: PostConversationRequest,
-        fileUris: List<SingleUriData>?
+        fileUris: List<SingleUriData>?,
     ): Conversation {
+
+        val metadata = request.metadata
+        val currentTimeStamp = System.currentTimeMillis()
+        val widget = if (metadata != null) {
+            Widget.Builder()
+                .id("-$currentTimeStamp")
+                .metadata(metadata)
+                .parentEntityType("message")
+                .createdAt(currentTimeStamp)
+                .updatedAt(currentTimeStamp)
+                .build()
+        } else {
+            null
+        }
+
         return Conversation.Builder()
             .id(request.temporaryId)
             .chatroomId(request.chatroomId)
@@ -572,6 +613,7 @@ object ViewDataConverter {
             .isEdited(false)
             .replyChatroomId(request.repliedChatroomId)
             .attachmentUploaded(false)
+            .widget(widget)
             .build()
     }
 

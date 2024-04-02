@@ -4,18 +4,40 @@ import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
-import com.likeminds.chatmm.conversation.model.*
-import com.likeminds.chatmm.conversation.view.adapter.databinder.*
+import com.likeminds.chatmm.conversation.model.AttachmentViewData
+import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.conversation.model.ReportLinkExtras
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ChatroomAnnouncementItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationActionItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationAudioItemViewBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationAutoFollowedTaggedActionViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationFollowItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationLinkItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationListShimmerViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationMultipleDocumentViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationMultipleMediaItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationPollItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleGifItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleImageItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSinglePdfItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleVideoItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationVoiceNoteItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationWidgetItemViewDataBinder
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.PollViewData
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.getItemInList
-import com.likeminds.chatmm.utils.customview.*
-import com.likeminds.chatmm.utils.model.*
+import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
+import com.likeminds.chatmm.utils.customview.DataBoundViewHolder
+import com.likeminds.chatmm.utils.customview.ViewDataBinder
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUTO_FOLLOWED_TAGGED_CHAT_ROOM
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_FOLLOW
 import com.likeminds.likemindschat.user.model.MemberBlockState
-import java.util.*
+import java.util.UUID
 
 class ChatroomDetailAdapter(
     val sdkPreferences: SDKPreferences,
@@ -135,6 +157,15 @@ class ChatroomDetailAdapter(
 
         val chatroomDateItemViewDataBinder = ChatroomDateItemViewDataBinder()
         viewDataBinders.add(chatroomDateItemViewDataBinder)
+
+        //custom widgets view data binders
+        val conversationWidgetItemViewDataBinder =
+            ConversationWidgetItemViewDataBinder(
+                userPreferences,
+                reactionsPreferences,
+                listener
+            )
+        viewDataBinders.add(conversationWidgetItemViewDataBinder)
 
         return viewDataBinders
     }

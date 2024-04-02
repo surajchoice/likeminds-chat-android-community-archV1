@@ -108,15 +108,18 @@ import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -137,7 +140,8 @@ class ChatroomDetailFragment :
     DeleteMessageListener,
     SendDMRequestDialogListener,
     ApproveDMRequestDialogListener,
-    RejectDMRequestDialogListener {
+    RejectDMRequestDialogListener,
+    ChatEvent.ChatObserver {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -534,6 +538,12 @@ class ChatroomDetailFragment :
         initTouchListenerOnMic()
         initVoiceNotes()
         initVoiceNoteControl()
+        subscribeToChatEvent()
+    }
+
+    override fun doCleanup() {
+        unsubscribeToChatEvent()
+        super.doCleanup()
     }
 
     // initializes the toolbar
@@ -790,10 +800,65 @@ class ChatroomDetailFragment :
                     chatroomDetailExtras
                 )
             }
+
+            ivCustomWidgetA.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetAClicked()
+            }
+
+            ivCustomWidgetB.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetBClicked()
+            }
+
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
             }
         }
+    }
+
+    //on click function when custom widget A is clicked
+    private fun onCustomWidgetAClicked() {
+        //todo add code
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val widgetType = if (isDMChatroom) {
+            "send_payment"
+        } else {
+            "spilt_payment"
+        }
+
+        val metaData = JSONObject().apply {
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
+        }
+
+        postConversation(
+            metadata = metaData
+        )
+    }
+
+    //on click function when custom widget B is clicked
+    private fun onCustomWidgetBClicked() {
+        //todo add code
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val widgetType = if (isDMChatroom) {
+            "request_payment"
+        } else {
+            "show_payment"
+        }
+
+        val metaData = JSONObject().apply {
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
+        }
+
+        postConversation(
+            metadata = metaData
+        )
     }
 
     private fun disableAnswerPosting() {
@@ -1897,11 +1962,12 @@ class ChatroomDetailFragment :
         conversation: String? = null,
         fileUris: List<SingleUriData>? = null,
         shareLink: String? = null,
+        metadata: JSONObject? = null
     ) {
         binding.apply {
             val shareTextLink = shareLink?.trim()
 
-            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false) {
+            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false || metadata != null) {
 
                 scrollToExtremeBottom()
 
@@ -1947,7 +2013,8 @@ class ChatroomDetailFragment :
                     replyConversationId,
                     replyChatRoomId,
                     memberTagging.getTaggedMembers(),
-                    replyChatData
+                    replyChatData,
+                    metadata
                 )
                 clearEditTextAnswer()
                 updateDmMessaged()
@@ -2652,7 +2719,6 @@ class ChatroomDetailFragment :
         observeMemberBlocked()
         observeErrorMessage()
         observeDMStatus()
-        observeErrors()
         observeChatRequestState()
         observeDMInitiatedForCM()
     }
@@ -2740,6 +2806,7 @@ class ChatroomDetailFragment :
                 }
             }
             getUnseenConversationsAndShow(data.data, false)
+            filterConversationWithWidget(data.data.filterIsInstance<ConversationViewData>())
         }
     }
 
@@ -2821,6 +2888,7 @@ class ChatroomDetailFragment :
                     getIndexedConversations(response.conversations).forEach { item ->
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
+                    filterConversationWithWidget(response.conversations)
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
@@ -2898,6 +2966,8 @@ class ChatroomDetailFragment :
                             }
                         }
 
+                        filterConversationWithWidget(conversations)
+
                         //Check if the new conversation is created by the user itself
                         if (
                             (conversations.count { conversation ->
@@ -2944,6 +3014,8 @@ class ChatroomDetailFragment :
                             index = chatroomDetailAdapter.itemCount - 1
                         }
 
+                        filterConversationWithWidget(listOf(response.conversation))
+
                         //add tap to undo if dm is rejected and the logged in member has rejected the DM request
                         if (response.conversation.state == STATE_DM_REJECTED
                             && viewModel.getLoggedInMemberId() ==
@@ -2960,6 +3032,20 @@ class ChatroomDetailFragment :
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    //filter conversation with widgets and return to customer
+    private fun filterConversationWithWidget(conversations: List<ConversationViewData>) {
+        val filteredHashMap = HashMap<String?, WidgetViewData?>()
+
+        conversations.filter { conversation ->
+            conversation.widgetViewData != null
+        }.forEach {
+            filteredHashMap[it.id] = it.widgetViewData
+        }
+
+        SDKApplication.getLikeMindsCallback()
+            ?.getWidgetCallback(filteredHashMap)
     }
 
     /**
@@ -3009,6 +3095,7 @@ class ChatroomDetailFragment :
                 }
             }
         }
+        filterConversationWithWidget(initialData.data.filterIsInstance<ConversationViewData>())
     }
 
     /**
@@ -6011,5 +6098,37 @@ class ChatroomDetailFragment :
         }
         voiceNoteUtils.clear()
         super.onDestroy()
+    }
+
+    private fun subscribeToChatEvent() {
+        ChatEvent.getPublisher().subscribe(this)
+    }
+
+    private fun unsubscribeToChatEvent() {
+        ChatEvent.getPublisher().unsubscribe(this)
+    }
+
+    override fun update(postData: Any) {
+        if (postData is HashMap<*, *>) {
+            postData.map {
+                val conversationID = it.key ?: return
+                if (conversationID is String) {
+                    val widgetViewData = it.value ?: return
+                    if (widgetViewData is WidgetViewData) {
+                        val index = getIndexOfConversation(conversationID)
+                        if (index >= 0) {
+                            var conversationViewData =
+                                chatroomDetailAdapter.items()[index] as? ConversationViewData
+                                    ?: return
+                            conversationViewData =
+                                conversationViewData.toBuilder().widget(widgetViewData).build()
+
+                            //update recycler view
+                            chatroomDetailAdapter.update(index, conversationViewData)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

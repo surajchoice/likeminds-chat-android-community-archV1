@@ -67,6 +67,8 @@
     <string name="lm_chat_document">Document</string>
     <string name="lm_chat_poll">Poll</string>
     <string name="lm_chat_audio">Audio</string>
+    <string name="lm_chat_custom_widget_a">Custom Widget A</string>
+    <string name="lm_chat_custom_widget_b">Custom Widget B</string>
     <string name="lm_chat_chatroom_not_joined_yet">chatroom not joined yet</string>
     <string name="lm_chat_no_results_found">No results found</string>
     <string name="lm_chat_audio_is_played">Audio is being played in chatroom</string>
