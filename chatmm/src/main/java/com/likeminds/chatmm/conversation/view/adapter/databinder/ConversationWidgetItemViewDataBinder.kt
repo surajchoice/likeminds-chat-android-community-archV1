@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets
+package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,27 +7,26 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
-import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationItemViewDataBinder
-import com.likeminds.chatmm.databinding.ItemConversationGroupChatWidgetABinding
+import com.likeminds.chatmm.databinding.ItemConversationCustomWidgetBinding
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_CUSTOM_WIDGET
 import org.json.JSONObject
 
-class ConversationGroupChatWidgetAItemViewDataBinder(
+class ConversationWidgetItemViewDataBinder(
     private val userPreferences: UserPreferences,
     private val reactionsPreferences: ReactionsPreferences,
     private val adapterListener: ChatroomDetailAdapterListener
-) : ViewDataBinder<ItemConversationGroupChatWidgetABinding, ConversationViewData>() {
+) : ViewDataBinder<ItemConversationCustomWidgetBinding, ConversationViewData>() {
     override val viewType: Int
-        get() = ITEM_CUSTOM_WIDGET_A_GROUP
+        get() = ITEM_CONVERSATION_CUSTOM_WIDGET
 
-    override fun createBinder(parent: ViewGroup): ItemConversationGroupChatWidgetABinding {
-        val binding = ItemConversationGroupChatWidgetABinding.inflate(
+    override fun createBinder(parent: ViewGroup): ItemConversationCustomWidgetBinding {
+        val binding = ItemConversationCustomWidgetBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -37,19 +36,34 @@ class ConversationGroupChatWidgetAItemViewDataBinder(
     }
 
     override fun bindData(
-        binding: ItemConversationGroupChatWidgetABinding,
+        binding: ItemConversationCustomWidgetBinding,
         data: ConversationViewData,
         position: Int
     ) {
         binding.apply {
             buttonColor = LMBranding.getButtonsColor()
             viewReply.buttonColor = LMBranding.getButtonsColor()
-            conversation = data as ConversationViewData
+            conversation = data
+
+            val context = root.context
 
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
+
+            val isDMChatroom = if (metadata.has("is_dm")) {
+                metadata.get("is_dm") as Boolean
+            } else {
+                false
+            }
+
             val transactionId = if (metadata.has("transaction_id")) {
                 metadata.get("transaction_id") as? String
+            } else {
+                null
+            }
+
+            val widgetType = if (metadata.has("widget_type")) {
+                metadata.get("widget_type") as? String
             } else {
                 null
             }

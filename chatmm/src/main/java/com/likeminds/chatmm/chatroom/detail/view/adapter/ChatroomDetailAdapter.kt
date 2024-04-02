@@ -22,10 +22,7 @@ import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSin
 import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSinglePdfItemViewDataBinder
 import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationSingleVideoItemViewDataBinder
 import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationVoiceNoteItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationDMWidgetAItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationDMWidgetBItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationGroupChatWidgetAItemViewDataBinder
-import com.likeminds.chatmm.conversation.view.adapter.databinder.customwidgets.ConversationGroupChatWidgetBItemViewDataBinder
+import com.likeminds.chatmm.conversation.view.adapter.databinder.ConversationWidgetItemViewDataBinder
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.polls.model.PollViewData
@@ -161,29 +158,13 @@ class ChatroomDetailAdapter constructor(
         viewDataBinders.add(chatroomDateItemViewDataBinder)
 
         //custom widgets view data binders
-        val conversationGroupChatWidgetAItemViewDataBinder =
-            ConversationGroupChatWidgetAItemViewDataBinder(
+        val conversationWidgetItemViewDataBinder =
+            ConversationWidgetItemViewDataBinder(
                 userPreferences,
                 reactionsPreferences,
                 listener
             )
-        viewDataBinders.add(conversationGroupChatWidgetAItemViewDataBinder)
-
-        val conversationGroupChatWidgetBItemViewDataBinder =
-            ConversationGroupChatWidgetBItemViewDataBinder(
-                userPreferences,
-                reactionsPreferences,
-                listener
-            )
-        viewDataBinders.add(conversationGroupChatWidgetBItemViewDataBinder)
-
-        val conversationDMWidgetAItemViewDataBinder =
-            ConversationDMWidgetAItemViewDataBinder(userPreferences, reactionsPreferences, listener)
-        viewDataBinders.add(conversationDMWidgetAItemViewDataBinder)
-
-        val conversationDMWidgetBItemViewDataBinder =
-            ConversationDMWidgetBItemViewDataBinder(userPreferences, reactionsPreferences, listener)
-        viewDataBinders.add(conversationDMWidgetBItemViewDataBinder)
+        viewDataBinders.add(conversationWidgetItemViewDataBinder)
 
         return viewDataBinders
     }

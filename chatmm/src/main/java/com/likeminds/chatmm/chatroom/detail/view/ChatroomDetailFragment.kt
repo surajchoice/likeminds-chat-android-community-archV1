@@ -108,10 +108,6 @@ import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_DM
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_DM
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_GROUP
 import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
@@ -806,47 +802,40 @@ class ChatroomDetailFragment :
         //todo add code
         val isDMChatroom = viewModel.isDmChatroom()
 
-        val viewType = if (isDMChatroom) {
-            ITEM_CUSTOM_WIDGET_A_DM
+        val widgetType = if (isDMChatroom) {
+            "send_payment"
         } else {
-            ITEM_CUSTOM_WIDGET_A_GROUP
+            "spilt_payment"
         }
 
-        val amount = binding.inputBox.etAnswer.text ?: "50"
-
         val metaData = JSONObject().apply {
-            put("view_type", viewType)
-            put("payment_amount", amount)
             put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
         }
 
         postConversation(
-            conversation = amount.trim().toString(),
             metadata = metaData
         )
     }
 
     private fun onCustomWidgetBClicked() {
         //todo add code
-
         val isDMChatroom = viewModel.isDmChatroom()
 
-        val viewType = if (isDMChatroom) {
-            ITEM_CUSTOM_WIDGET_B_DM
+        val widgetType = if (isDMChatroom) {
+            "request_payment"
         } else {
-            ITEM_CUSTOM_WIDGET_B_GROUP
+            "show_payment"
         }
 
-        val amount = binding.inputBox.etAnswer.text ?: "50"
-
         val metaData = JSONObject().apply {
-            put("view_type", viewType)
-            put("payment_amount", amount)
             put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
         }
 
         postConversation(
-            conversation = amount.trim().toString(),
             metadata = metaData
         )
     }
@@ -1926,7 +1915,7 @@ class ChatroomDetailFragment :
         binding.apply {
             val shareTextLink = shareLink?.trim()
 
-            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false) {
+            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false || metadata != null) {
 
                 scrollToExtremeBottom()
 
@@ -2756,10 +2745,7 @@ class ChatroomDetailFragment :
                 }
             }
             getUnseenConversationsAndShow(data.data, false)
-            filterConversationWithTransactionIds(
-                chatroomDetailAdapter.items()
-                    .filterIsInstance<ConversationViewData>()
-            )
+            filterConversationWithWidget()
         }
     }
 
@@ -2954,18 +2940,18 @@ class ChatroomDetailFragment :
                     }
                 }
             }
-            filterConversationWithTransactionIds(
-                chatroomDetailAdapter.items()
-                    .filterIsInstance<ConversationViewData>()
-            )
+            filterConversationWithWidget()
         }.observeInLifecycle(viewLifecycleOwner)
     }
 
-    private fun filterConversationWithTransactionIds(conversations: List<ConversationViewData>?) {
+    private fun filterConversationWithWidget() {
         val filteredHashMap = HashMap<String?, WidgetViewData?>()
-        val filterConversationWithTransactionIds = conversations?.filter { conversation ->
+        val conversations = chatroomDetailAdapter.items()
+            .filterIsInstance<ConversationViewData>()
+
+        conversations.filter { conversation ->
             conversation.widgetViewData != null
-        }?.forEach {
+        }.forEach {
             filteredHashMap[it.id] = it.widgetViewData
         }
 
@@ -3020,10 +3006,7 @@ class ChatroomDetailFragment :
                 }
             }
         }
-        filterConversationWithTransactionIds(
-            chatroomDetailAdapter.items()
-                .filterIsInstance<ConversationViewData>()
-        )
+        filterConversationWithWidget()
     }
 
     /**

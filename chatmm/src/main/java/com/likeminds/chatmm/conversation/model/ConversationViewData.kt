@@ -1,16 +1,32 @@
 package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
-import android.util.Log
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
-import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.media.model.AUDIO
+import com.likeminds.chatmm.media.model.GIF
+import com.likeminds.chatmm.media.model.IMAGE
+import com.likeminds.chatmm.media.model.PDF
+import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.VOICE_NOTE
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
-import com.likeminds.chatmm.utils.model.*
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_ACTION
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUDIO
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_CUSTOM_WIDGET
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_MEDIA
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_POLL
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_GIF
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_IMAGE
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_PDF
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_VIDEO
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_VOICE_NOTE
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import kotlinx.parcelize.Parcelize
-import org.json.JSONObject
 
 @Parcelize
 class ConversationViewData private constructor(
@@ -81,18 +97,6 @@ class ConversationViewData private constructor(
                 val audioCount: Int = ChatroomUtil.getMediaCount(AUDIO, attachments)
                 val voiceNoteCount: Int = ChatroomUtil.getMediaCount(VOICE_NOTE, attachments)
 
-                val widgetMetadata = if (widgetViewData != null) {
-                    JSONObject(widgetViewData.metadata.toString())
-                } else {
-                    null
-                }
-
-                val viewTypeInMetaData = if (widgetMetadata?.has("view_type") == true) {
-                    widgetMetadata.get("view_type") as? Int
-                } else {
-                    null
-                }
-
 
                 when {
                     (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
@@ -127,20 +131,8 @@ class ConversationViewData private constructor(
                         ITEM_CONVERSATION_MULTIPLE_MEDIA
                     }
 
-                    (viewTypeInMetaData != null && viewTypeInMetaData == ITEM_CUSTOM_WIDGET_A_GROUP) -> {
-                        ITEM_CUSTOM_WIDGET_A_GROUP
-                    }
-
-                    (viewTypeInMetaData != null && viewTypeInMetaData == ITEM_CUSTOM_WIDGET_B_GROUP) -> {
-                        ITEM_CUSTOM_WIDGET_B_GROUP
-                    }
-
-                    (viewTypeInMetaData != null && viewTypeInMetaData == ITEM_CUSTOM_WIDGET_A_DM) -> {
-                        ITEM_CUSTOM_WIDGET_A_DM
-                    }
-
-                    (viewTypeInMetaData != null && viewTypeInMetaData == ITEM_CUSTOM_WIDGET_B_DM) -> {
-                        ITEM_CUSTOM_WIDGET_B_DM
+                    (widgetViewData != null) -> {
+                        ITEM_CONVERSATION_CUSTOM_WIDGET
                     }
 
                     (ogTags != null) -> {
