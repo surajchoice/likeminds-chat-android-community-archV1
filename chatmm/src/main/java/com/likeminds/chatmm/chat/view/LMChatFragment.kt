@@ -232,8 +232,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                                 badgeTextColor =
                                     ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                             }
+                        } else {
+                            removeBadge()
                         }
-
                     }
                 }
 
@@ -280,6 +281,8 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                     badgeTextColor =
                         ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                 }
+            } else {
+                it.removeBadge()
             }
         }
     }

@@ -483,6 +483,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_UP)
                         .build()
                 }
+
                 //5th case -> chatroom is opened through deeplink/explore feed, which is open for the first time
                 chatroomWasNotLoaded -> {
                     Log.d(TAG, "case 5")
@@ -495,6 +496,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_DOWN)
                         .build()
                 }
+
                 //6th case -> chatroom is present and conversation is present, chatroom opened for the first time from home feed
                 chatroom.lastSeenConversation == null || chatroomDetailExtras.loadFromTop == true -> {
                     Log.d(TAG, "case 6")

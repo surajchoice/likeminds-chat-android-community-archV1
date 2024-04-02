@@ -2671,6 +2671,7 @@ class ChatroomDetailFragment :
                 requireActivity().finish()
                 return@observe
             }
+
             //chatroom is not present
             if (initialData.chatRoom == null) {
                 if (chatroomDetailExtras.loadingAfterSync) {
