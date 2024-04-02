@@ -18,7 +18,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_play_pause"
             app:layout_constraintStart_toStartOf="@id/iv_play_pause"
             app:layout_constraintTop_toTopOf="@id/iv_play_pause"
-            app:trackColor="@color/cloudy_blue"
+            app:trackColor="@color/lm_chat_cloudy_blue"
             app:trackThickness="4dp" />
 
         <ImageView
@@ -27,7 +27,7 @@
             android:layout_height="32dp"
             android:layout_marginVertical="18dp"
             android:layout_marginStart="15dp"
-            android:src="@drawable/ic_conversation_play_voice_note"
+            android:src="@drawable/lm_chat_ic_conversation_play_voice_note"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,9 +41,9 @@
             android:background="@null"
             android:indeterminate="false"
             android:paddingVertical="5dp"
-            android:progressBackgroundTint="@color/grey"
-            android:progressTint="@color/orange_yellow"
-            android:thumb="@drawable/seekbar_thumb"
+            android:progressBackgroundTint="@color/lm_chat_grey"
+            android:progressTint="@color/lm_chat_orange_yellow"
+            android:thumb="@drawable/lm_chat_seekbar_thumb"
             app:layout_constraintBottom_toBottomOf="@id/iv_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_play_pause"
@@ -56,10 +56,10 @@
             android:layout_height="15dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
-            android:src="@drawable/ic_mic"
+            android:src="@drawable/lm_chat_ic_mic"
             app:layout_constraintStart_toStartOf="@id/seek_bar"
             app:layout_constraintTop_toBottomOf="@id/seek_bar"
-            app:tint="@color/brown_grey"
+            app:tint="@color/lm_chat_brown_grey"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@id/iv_mic"

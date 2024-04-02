@@ -28,7 +28,8 @@ class MediaExtras private constructor(
     val searchKey: String?,
     val giphyMedia: Media?,
     val conversationId: String?,
-    val isSecretChatroom: Boolean?
+    val isSecretChatroom: Boolean?,
+    val isTaggingEnabled: Boolean
 ) : Parcelable {
 
     class Builder {
@@ -54,6 +55,7 @@ class MediaExtras private constructor(
         private var giphyMedia: Media? = null
         private var conversationId: String? = null
         private var isSecretChatroom: Boolean? = null
+        private var isTaggingEnabled: Boolean = true
 
         fun isExternallyShared(isExternallyShared: Boolean) =
             apply { this.isExternallyShared = isExternallyShared }
@@ -88,6 +90,10 @@ class MediaExtras private constructor(
         fun isSecretChatroom(isSecretChatroom: Boolean?) =
             apply { this.isSecretChatroom = isSecretChatroom }
 
+        fun isTaggingEnabled(isTaggingEnabled: Boolean) = apply {
+            this.isTaggingEnabled = isTaggingEnabled
+        }
+
         fun build() = MediaExtras(
             isExternallyShared,
             mediaScreenType,
@@ -110,7 +116,8 @@ class MediaExtras private constructor(
             searchKey,
             giphyMedia,
             conversationId,
-            isSecretChatroom
+            isSecretChatroom,
+            isTaggingEnabled
         )
     }
 
@@ -137,5 +144,6 @@ class MediaExtras private constructor(
             .giphyMedia(giphyMedia)
             .conversationId(conversationId)
             .isSecretChatroom(isSecretChatroom)
+            .isTaggingEnabled(isTaggingEnabled)
     }
 }

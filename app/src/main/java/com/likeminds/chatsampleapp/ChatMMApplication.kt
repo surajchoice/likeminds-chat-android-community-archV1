@@ -16,16 +16,12 @@ class ChatMMApplication : Application(), LMUICallback {
 
     private lateinit var authPreferences: AuthPreferences
 
-    private lateinit var transactionData: HashMap<String, JSONObject?>
-
     companion object {
         const val EXTRA_LOGIN = "extra of login"
     }
 
     override fun onCreate() {
         super.onCreate()
-
-        transactionData = HashMap()
 
         authPreferences = AuthPreferences(this)
 
@@ -68,9 +64,5 @@ class ChatMMApplication : Application(), LMUICallback {
         Handler(Looper.getMainLooper()).postDelayed({
             ChatEvent.getPublisher().notify(updatedWidgetData)
         }, 3000)
-    }
-
-    override fun getTransactionData(): HashMap<String, JSONObject?> {
-        return transactionData
     }
 }

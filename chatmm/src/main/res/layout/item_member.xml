@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/black" />
+            tools:src="@color/lm_chat_black" />
 
         <TextView
             android:id="@+id/tv_member_name"
@@ -45,7 +45,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@{member.name}"
-            android:textColor="@{darkMode? @color/white : @color/black}"
+            android:textColor="@{darkMode? @color/lm_chat_white : @color/lm_chat_black}"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@id/tv_description"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_member_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
             android:id="@+id/v_bottom_line"
             android:layout_width="0dp"
             android:layout_height="0.5dp"
-            android:background="@{darkMode? @color/cloudy_blue_30 : @color/grey_v2}"
+            android:background="@{darkMode? @color/lm_chat_cloudy_blue_30 : @color/lm_chat_grey_v2}"
             android:visibility="@{hideBottomLine ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

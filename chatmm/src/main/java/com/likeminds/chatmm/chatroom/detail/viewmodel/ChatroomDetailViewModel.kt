@@ -208,6 +208,9 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun isDmChatroom(): Boolean {
+        if (!this::chatroomDetail.isInitialized) {
+            return false
+        }
         return getChatroom()?.type == TYPE_DIRECT_MESSAGE
     }
 
@@ -294,6 +297,15 @@ class ChatroomDetailViewModel @Inject constructor(
 
     fun getLoggedInMemberId(): String {
         return userPreferences.getMemberId()
+    }
+
+    //gets the member with provided [uuid] from DB
+    fun getMemberFromDB(uuid: String): MemberViewData {
+        val memberRequest = GetMemberRequest.Builder()
+            .uuid(uuid)
+            .build()
+
+        return ViewDataConverter.convertMember(lmChatClient.getMember(memberRequest).data?.member)
     }
 
     //get first normal or poll conversation for list
@@ -472,6 +484,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_UP)
                         .build()
                 }
+
                 //5th case -> chatroom is opened through deeplink/explore feed, which is open for the first time
                 chatroomWasNotLoaded -> {
                     Log.d(TAG, "case 5")
@@ -484,6 +497,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_DOWN)
                         .build()
                 }
+
                 //6th case -> chatroom is present and conversation is present, chatroom opened for the first time from home feed
                 chatroom.lastSeenConversation == null || chatroomDetailExtras.loadFromTop == true -> {
                     Log.d(TAG, "case 6")
@@ -2225,6 +2239,7 @@ class ChatroomDetailViewModel @Inject constructor(
             ?.chatRequestState(chatRequestState)
             ?.chatRequestedById(userPreferences.getMemberId())
             ?.build()
+
         chatroomDetail = chatroomDetail.toBuilder().chatroom(updatedChatroom).build()
         _updatedChatRequestState.postValue(chatRequestState)
     }
@@ -2248,8 +2263,10 @@ class ChatroomDetailViewModel @Inject constructor(
             if (response.success) {
                 if (status == MemberBlockState.MEMBER_BLOCKED) {
                     _memberBlocked.postValue(true)
+                    updateChatRequestStateLocally(ChatRequestState.REJECTED)
                 } else {
                     _memberBlocked.postValue(false)
+                    updateChatRequestStateLocally(ChatRequestState.ACCEPTED)
                 }
             } else {
                 errorEventChannel.send(ErrorMessageEvent.BlockMember(response.errorMessage))

@@ -55,12 +55,12 @@ class ItemAudioViewDataBinder @Inject constructor(
                 ImageBindingUtil.loadImage(
                     ivAudioCover,
                     attachment.thumbnail,
-                    placeholder = R.drawable.view_corner_radius_audio,
+                    placeholder = R.drawable.lm_chat_view_corner_radius_audio,
                     cornerRadius = 8
                 )
             } else {
                 viewMask.hide()
-                ivAudioCover.setImageResource(R.drawable.view_corner_radius_audio)
+                ivAudioCover.setImageResource(R.drawable.lm_chat_view_corner_radius_audio)
             }
 
             seekBar.max = attachment.meta?.duration ?: 100

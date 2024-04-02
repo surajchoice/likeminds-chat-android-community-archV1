@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/image_view"
@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
-            tools:src="@mipmap/ic_launcher" />
+            tools:src="@mipmap/lm_chat_ic_launcher" />
 
         <ImageView
             android:id="@+id/btn_back"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_arrow_back_white_24dp"
+            android:src="@drawable/lm_chat_ic_arrow_back_white_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
@@ -45,7 +45,7 @@
             android:id="@+id/bottom_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_80"
+            android:background="@color/lm_chat_black_80"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -56,13 +56,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:background="@null"
-                android:hint="@string/add_message"
+                android:hint="@string/lm_chat_add_message"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:lineSpacingExtra="4sp"
                 android:maxHeight="135dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white_50"
+                android:textColor="@color/lm_chat_white"
+                android:textColorHint="@color/lm_chat_white_50"
                 android:textSize="16sp"
                 app:font_style="regular"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -79,12 +79,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:backgroundTint="@{buttonColor}"
-            android:src="@drawable/ic_send"
-            app:backgroundTint="@color/teal"
+            android:src="@drawable/lm_chat_ic_send"
+            app:backgroundTint="@color/lm_chat_teal"
             app:layout_constraintBottom_toTopOf="@+id/bottom_view"
             app:layout_constraintEnd_toEndOf="@+id/bottom_view"
             app:layout_constraintTop_toTopOf="@+id/bottom_view"
-            app:tint="@color/white"
+            app:tint="@color/lm_chat_white"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView

@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.databinding.LayoutMemberTaggingBinding
 import com.likeminds.chatmm.utils.EndlessRecyclerScrollListener
@@ -81,9 +81,9 @@ class MemberTaggingView(
 
         //Set the theme
         if (extras.darkMode) {
-            binding.constraintLayout.setBackgroundResource(R.color.black_80)
+            binding.constraintLayout.setBackgroundResource(R.color.lm_chat_black_80)
         } else {
-            binding.constraintLayout.setBackgroundResource(R.drawable.background_container)
+            binding.constraintLayout.setBackgroundResource(R.drawable.lm_chat_background_container)
         }
     }
 

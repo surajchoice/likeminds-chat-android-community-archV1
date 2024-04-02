@@ -51,8 +51,8 @@ class SendDMRequestDialogFragment :
             }
         }
     }
+}
 
-    interface SendDMRequestDialogListener {
-        fun sendDMRequest()
-    }
+interface SendDMRequestDialogListener {
+    fun sendDMRequest()
 }

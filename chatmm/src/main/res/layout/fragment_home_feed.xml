@@ -26,6 +26,7 @@
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
             app:contentInsetStart="0dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -45,21 +46,21 @@
                     android:ellipsize="end"
                     android:maxEms="15"
                     android:maxLines="1"
-                    android:text="@string/community"
+                    android:text="@string/lm_chat_community"
                     android:textColor="@{toolbarColor}"
                     android:textSize="22sp"
                     app:fontType="medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/community" />
+                    tools:text="@string/lm_chat_community" />
 
                 <ImageView
                     android:id="@+id/iv_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_material_icons_white_search"
+                    android:src="@drawable/lm_chat_ic_material_icons_white_search"
                     android:tint="@{toolbarColor}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/member_image"
@@ -74,7 +75,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@color/black" />
+                    tools:src="@color/lm_chat_black" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>

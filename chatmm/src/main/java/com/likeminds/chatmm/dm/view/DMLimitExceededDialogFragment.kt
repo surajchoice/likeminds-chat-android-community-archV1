@@ -5,8 +5,7 @@ import androidx.fragment.app.FragmentManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.databinding.DialogFragmentDmLimitExceededBinding
 import com.likeminds.chatmm.dm.model.DMLimitExceededDialogExtras
-import com.likeminds.chatmm.utils.ErrorUtil
-import com.likeminds.chatmm.utils.TimeUtil
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.customview.BaseDialogFragment
 
 class DMLimitExceededDialogFragment :
@@ -37,8 +36,11 @@ class DMLimitExceededDialogFragment :
 
     override fun setArguments(args: Bundle?) {
         super.setArguments(args)
-        dmLimitExceededDialogExtras =
-            arguments?.getParcelable(DM_LIMIT_EXTRAS) ?: throw ErrorUtil.emptyExtrasException(TAG)
+        dmLimitExceededDialogExtras = ExtrasUtil.getParcelable(
+            arguments,
+            DM_LIMIT_EXTRAS,
+            DMLimitExceededDialogExtras::class.java
+        ) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {
@@ -56,12 +58,12 @@ class DMLimitExceededDialogFragment :
                 )
 
             tvLimitInfo.text = getString(
-                R.string.you_can_send_only_s_requests,
+                R.string.lm_chat_you_can_send_only_s_requests,
                 dmLimitExceededDialogExtras.numberInDuration.toString(),
                 dmLimitExceededDialogExtras.duration,
             )
 
-            tvTryAgain.text = getString(R.string.try_again_in_s, newRequestDMString)
+            tvTryAgain.text = getString(R.string.lm_chat_try_again_in_s, newRequestDMString)
         }
     }
 }

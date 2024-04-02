@@ -2,6 +2,8 @@ package com.likeminds.chatmm.di
 
 import android.app.Application
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.di.chat.ChatComponent
+import com.likeminds.chatmm.di.chat.ChatComponentModule
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponentModule
 import com.likeminds.chatmm.di.dm.DMComponent
@@ -39,7 +41,8 @@ import javax.inject.Singleton
         ReactionsComponentModule::class,
         ReportComponentModule::class,
         DMComponentModule::class,
-        MemberComponentModule::class
+        MemberComponentModule::class,
+        ChatComponentModule::class
     ]
 )
 interface LikeMindsChatComponent {
@@ -56,6 +59,7 @@ interface LikeMindsChatComponent {
     fun reportComponent(): ReportComponent.Factory
     fun dmComponent(): DMComponent.Factory
     fun memberComponent(): MemberComponent.Factory
+    fun chatComponent(): ChatComponent.Factory
 
     @Component.Builder
     interface Builder {

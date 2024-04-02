@@ -113,7 +113,6 @@ class PollView(
                 POLL_MULTIPLE_STATE_EXACTLY -> {
                     //exactly
                     ChatroomConversationItemViewDataBinderUtil.multipleItemSelectPollExactly(
-                        context,
                         pollViewData,
                         optionCount,
                         pollItems,
@@ -129,7 +128,6 @@ class PollView(
                 POLL_MULTIPLE_STATE_MAX -> {
                     //at max
                     ChatroomConversationItemViewDataBinderUtil.multipleItemSelectPollAtMax(
-                        context,
                         pollViewData,
                         optionCount,
                         pollItems,
@@ -145,7 +143,6 @@ class PollView(
                 POLL_MULTIPLE_STATE_LEAST -> {
                     //at least
                     ChatroomConversationItemViewDataBinderUtil.multipleItemSelectPollAtLeast(
-                        context,
                         pollViewData,
                         optionCount,
                         pollItems,

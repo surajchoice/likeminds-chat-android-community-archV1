@@ -4,7 +4,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_sheet">
+        android:background="@drawable/lm_chat_bg_sheet">
 
         <View
             android:id="@+id/view"
@@ -12,7 +12,7 @@
             android:layout_width="100dp"
             android:layout_height="7dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_sheet_handle"
+            android:background="@drawable/lm_chat_bg_sheet_handle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -24,8 +24,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:lineSpacingExtra="2sp"
-            android:text="@string/reactions"
-            android:textColor="@color/black"
+            android:text="@string/lm_chat_reactions"
+            android:textColor="@color/lm_chat_black"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,21 +37,21 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:background="@color/white"
+            android:background="@color/lm_chat_white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_reactions"
-            app:tabIndicatorColor="@color/caribbean_green"
+            app:tabIndicatorColor="@color/lm_chat_caribbean_green"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/caribbean_green"
+            app:tabSelectedTextColor="@color/lm_chat_caribbean_green"
             app:tabTextAppearance="@style/TabLayout"
-            app:tabTextColor="@color/grey" />
+            app:tabTextColor="@color/lm_chat_grey" />
 
         <View
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/cloudy_blue_50"
+            android:background="@color/lm_chat_cloudy_blue_50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/reactions_tab" />

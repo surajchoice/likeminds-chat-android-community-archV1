@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/lm_chat_white"
         android:padding="6dp">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -15,8 +16,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
             android:lineSpacingExtra="8sp"
-            android:text="@string/delete_message"
-            android:textColor="@color/black_87"
+            android:text="@string/lm_chat_delete_message"
+            android:textColor="@color/lm_chat_black_87"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +31,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:lineSpacingExtra="7sp"
-            android:text="@string/delete_single_message"
-            android:textColor="@color/black_54"
+            android:text="@string/lm_chat_delete_single_message"
+            android:textColor="@color/lm_chat_black_54"
             android:textSize="15sp"
             android:textStyle="normal"
             app:fontType="regular"
@@ -52,16 +53,17 @@
             android:letterSpacing="0.04"
             android:paddingHorizontal="22dp"
             android:paddingVertical="10dp"
-            android:text="@string/delete"
+            android:text="@string/lm_chat_delete"
             android:textAllCaps="true"
-            android:textColor="@color/teal_two"
+            android:textColor="@color/lm_chat_teal_two"
             android:textSize="13sp"
             android:textStyle="normal"
             app:fontType="medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_message"
-            app:textType="special" />
+            app:textType="special"
+            tools:ignore="UnusedAttribute" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/btn_negative"
@@ -76,14 +78,15 @@
             android:letterSpacing="0.04"
             android:paddingHorizontal="22dp"
             android:paddingVertical="10dp"
-            android:text="@string/cancel"
+            android:text="@string/lm_chat_cancel"
             android:textAllCaps="true"
-            android:textColor="@color/black_40"
+            android:textColor="@color/lm_chat_black_40"
             android:textSize="13sp"
             android:textStyle="normal"
             app:fontType="medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_positive"
-            app:layout_constraintTop_toBottomOf="@id/tv_message" />
+            app:layout_constraintTop_toBottomOf="@id/tv_message"
+            tools:ignore="UnusedAttribute" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

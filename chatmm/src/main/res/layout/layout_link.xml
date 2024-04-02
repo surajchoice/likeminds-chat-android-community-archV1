@@ -33,7 +33,7 @@
             android:ellipsize="end"
             android:lineSpacingExtra="4sp"
             android:maxLines="2"
-            android:textColor="@color/black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             android:textStyle="normal"
             app:fontType="medium"
@@ -52,7 +52,7 @@
             android:ellipsize="end"
             android:lineSpacingExtra="2sp"
             android:singleLine="true"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             android:textStyle="normal"
             app:fontType="regular"
@@ -70,7 +70,7 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_link"
-            app:srcCompat="@drawable/ic_cross_tags_2"
+            app:srcCompat="@drawable/lm_chat_ic_cross_tags_2"
             tools:ignore="ContentDescription" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -80,7 +80,7 @@
             android:ellipsize="end"
             android:lineSpacingExtra="4sp"
             android:maxLines="1"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="12sp"
             android:textStyle="normal"
             app:fontType="regular"

@@ -65,7 +65,7 @@ class ItemPollViewDataBinder constructor(
                     if (data.pollInfoData.hasPollEnded()) {
                         ViewUtils.showShortToast(
                             context,
-                            context.getString(R.string.poll_ended_message_for_option_selection)
+                            context.getString(R.string.lm_chat_poll_ended_message_for_option_selection)
                         )
                         return@setOnClickListener
                     }
@@ -141,19 +141,19 @@ class ItemPollViewDataBinder constructor(
             val context = binding.root.context
             tvNoVotes.text = if (noVotes > 0)
                 context.resources.getQuantityString(
-                    R.plurals.votes,
+                    R.plurals.lm_chat_votes,
                     noVotes,
                     noVotes
                 )
             else {
-                context.getString(R.string.zero_vote)
+                context.getString(R.string.lm_chat_zero_vote)
             }
             tvNoVotes.visibility = View.VISIBLE
             if (data.isSelected == true) {
                 tvNoVotes.setTextColor(LMBranding.getButtonsColor())
             } else {
                 tvNoVotes.setTextColor(
-                    ContextCompat.getColor(context, R.color.grey)
+                    ContextCompat.getColor(context, R.color.lm_chat_grey)
                 )
             }
         }
@@ -172,7 +172,7 @@ class ItemPollViewDataBinder constructor(
         if (!isPollSelectedByUser && hasPollEnded) {
             drawable.setStroke(
                 width,
-                ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
             )
         } else {
             if (isPollSelectedByUser) {
@@ -181,14 +181,14 @@ class ItemPollViewDataBinder constructor(
                 } else {
                     drawable.setStroke(
                         width,
-                        ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                        ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
                     )
                 }
             } else {
                 if (multipleItemPoll) {
                     drawable.setStroke(
                         width,
-                        ContextCompat.getColor(binding.root.context, R.color.cloudy_blue)
+                        ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue)
                     )
                 } else {
                     drawable.setStroke(width, LMBranding.getButtonsColor())
@@ -230,12 +230,12 @@ class ItemPollViewDataBinder constructor(
         val clip = drawable.findDrawableByLayerId(R.id.progress) as ClipDrawable
         if (!isPollSelectedByUser && hasPollEnded) {
             // Show green progress for all if user hasn't participated
-            clip.setTint(ContextCompat.getColor(binding.root.context, R.color.cloudy_blue))
+            clip.setTint(ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue))
         } else {
             if (data.isSelected == true) {
                 clip.setTint(LMBranding.getButtonsColor())
             } else {
-                clip.setTint(ContextCompat.getColor(binding.root.context, R.color.cloudy_blue))
+                clip.setTint(ContextCompat.getColor(binding.root.context, R.color.lm_chat_cloudy_blue))
             }
         }
     }

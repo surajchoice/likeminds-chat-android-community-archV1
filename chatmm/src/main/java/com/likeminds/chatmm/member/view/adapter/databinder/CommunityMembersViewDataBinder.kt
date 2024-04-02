@@ -34,7 +34,7 @@ class CommunityMembersViewDataBinder @Inject constructor(
         binding.apply {
             memberViewData = data
             showCustomTitle = !data.customTitle.isNullOrEmpty()
-                    && data.customTitle != binding.root.context.getString(R.string.member)
+                    && data.customTitle != binding.root.context.getString(R.string.lm_chat_member)
             MemberImageUtil.setImage(data.imageUrl, data.name, data.id, ivMemberImage)
 
             tvMemberName.text = MemberUtil.getMemberNameForDisplay(data, userPreferences.getUUID())

@@ -7,6 +7,7 @@ import com.likeminds.chatmm.databinding.DialogReactionsListBinding
 import com.likeminds.chatmm.reactions.model.ReactionsListExtras
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.view.adapter.ReactionsTabAdapter
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.customview.BaseBottomSheetFragment
 
 class ReactionsListDialog :
@@ -54,7 +55,11 @@ class ReactionsListDialog :
             throw ClassCastException("Calling fragment must implement MessageReactionRemovedDialogListener interface")
         }
         arguments?.let { bundle ->
-            reactionsListExtras = bundle.getParcelable(ARG_MESSAGE_REACTIONS_LIST_EXTRAS)
+            reactionsListExtras = ExtrasUtil.getParcelable(
+                bundle,
+                ARG_MESSAGE_REACTIONS_LIST_EXTRAS,
+                ReactionsListExtras::class.java
+            )
         }
     }
 

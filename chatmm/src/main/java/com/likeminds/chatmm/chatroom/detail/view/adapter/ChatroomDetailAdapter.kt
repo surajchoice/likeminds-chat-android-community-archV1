@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.chatroom.detail.view.adapter
 
+import android.net.Uri
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomDateItemViewDataBinder
 import com.likeminds.chatmm.chatroom.detail.view.adapter.databinder.ChatroomItemViewDataBinder
@@ -38,7 +39,7 @@ import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_FOLLOW
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import java.util.UUID
 
-class ChatroomDetailAdapter constructor(
+class ChatroomDetailAdapter(
     val sdkPreferences: SDKPreferences,
     val userPreferences: UserPreferences,
     val reactionsPreferences: ReactionsPreferences,
@@ -268,4 +269,5 @@ interface ChatroomDetailAdapterListener {
     )
 
     fun blockMember(index: Int, state: MemberBlockState) {}
+    fun onMemberTagClicked(memberTag: Uri) {}
 }

@@ -6,7 +6,7 @@ import android.graphics.Color
 object LMBranding {
 
     private var headerColor: String = "#FFFFFF"
-    private var buttonsColor: String = "#5046E5"
+    private var buttonsColor: String = "#00897B"
     private var textLinkColor: String = "#007AFF"
     private var fonts: LMFonts? = null
 

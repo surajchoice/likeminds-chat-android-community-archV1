@@ -15,7 +15,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:lineSpacingExtra="2sp"
-            android:textColor="@color/dark_grey"
+            android:textColor="@color/lm_chat_dark_grey"
             android:textSize="16sp"
             android:textStyle="bold"
             app:fontType="regular"

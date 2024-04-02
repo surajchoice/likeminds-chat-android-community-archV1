@@ -5,7 +5,6 @@ import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.*
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.R
@@ -90,14 +89,14 @@ class DMChatroomViewDataBinder constructor(
                 data.lastConversation?.state == STATE_DM_CM_BECOMES_MEMBER_DISABLE
             ) {
                 tvMemberName.alpha = 0.2f
-                tvCommunityName.setTextColor(context.fetchColor(R.color.brown_grey))
-                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.brown_grey))
-                tvLastConversation.setTextColor(context.fetchColor(R.color.brown_grey))
+                tvCommunityName.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
+                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
+                tvLastConversation.setTextColor(context.fetchColor(R.color.lm_chat_brown_grey))
             } else {
                 tvMemberName.alpha = 1f
-                tvCommunityName.setTextColor(context.fetchColor(R.color.grey))
-                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.grey))
-                tvLastConversation.setTextColor(context.fetchColor(R.color.grey))
+                tvCommunityName.setTextColor(context.fetchColor(R.color.lm_chat_grey))
+                tvLastConversationPersonName.setTextColor(context.fetchColor(R.color.lm_chat_grey))
+                tvLastConversation.setTextColor(context.fetchColor(R.color.lm_chat_grey))
             }
         }
     }
@@ -135,9 +134,9 @@ class DMChatroomViewDataBinder constructor(
                     lastConversation.state == STATE_DM_MEMBER_REMOVED_OR_LEFT
                             || lastConversation.state == STATE_DM_CM_BECOMES_MEMBER_DISABLE
                 val taggingColor = if (isDisabled) {
-                    context.fetchColor(R.color.brown_grey)
+                    context.fetchColor(R.color.lm_chat_brown_grey)
                 } else {
-                    context.fetchColor(R.color.grey)
+                    context.fetchColor(R.color.lm_chat_grey)
                 }
                 MemberTaggingDecoder.decode(
                     tvLastConversation,
@@ -145,7 +144,9 @@ class DMChatroomViewDataBinder constructor(
                     true,
                     taggingColor
                 )
-                LinkifyCompat.addLinks(tvLastConversation, Linkify.ALL)
+                val linkifyLinks =
+                    (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+                LinkifyCompat.addLinks(tvLastConversation, linkifyLinks)
                 tvLastConversation.setLinkTextColor(LMBranding.getTextLinkColor())
                 tvLastConversation.movementMethod = LinkMovementMethod.getInstance()
                 return
@@ -209,9 +210,9 @@ class DMChatroomViewDataBinder constructor(
             tvLastConversation.visibility = View.VISIBLE
 
             tvLastConversation.text = if (memberToBeShown.state == STATE_ADMIN) {
-                context.getString(R.string.direct_message_your_community_manager)
+                context.getString(R.string.lm_chat_direct_message_your_community_manager)
             } else {
-                "${context.getString(R.string.start_a_conversation_with)} ${memberToBeShown.name}."
+                "${context.getString(R.string.lm_chat_start_a_conversation_with)} ${memberToBeShown.name}."
             }
         }
     }

@@ -1,13 +1,16 @@
 package com.likeminds.chatmm.dm.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.dm.model.DMFeedEmptyViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_DIRECT_MESSAGE
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.chatroom.model.Chatroom
 import com.likeminds.likemindschat.dm.model.*
@@ -48,7 +51,16 @@ class DMFeedViewModel @Inject constructor(
 
     sealed class ErrorMessageEvent {
         data class GetDMChatroom(val errorMessage: String?) : ErrorMessageEvent()
+
         data class CheckDMStatus(val errorMessage: String?) : ErrorMessageEvent()
+    }
+
+    fun isDBEmpty(): Boolean {
+        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: false)
+    }
+
+    fun syncChatrooms(context: Context): Pair<LiveData<MutableList<WorkInfo>>?, LiveData<MutableList<WorkInfo>>?>? {
+        return lmChatClient.syncChatrooms(context)
     }
 
     private val chatroomListener = object : HomeChatroomListener() {
@@ -76,7 +88,11 @@ class DMFeedViewModel @Inject constructor(
     private fun showInitialChatrooms(chatrooms: List<Chatroom>) {
         viewModelScope.launch {
             val chatViewDataList = chatrooms.map { chatroom ->
-                HomeFeedUtil.getChatRoomViewData(chatroom, userPreferences)
+                HomeFeedUtil.getChatRoomViewData(
+                    chatroom,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
             }
             allChatRoomsData.clear()
             allChatRoomsData.addAll(chatViewDataList)
@@ -94,10 +110,22 @@ class DMFeedViewModel @Inject constructor(
             allChatRoomsData.removeAt(index)
         }
         val insertedChatViewDataList = inserted.map { pair ->
-            Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
+            Pair(
+                pair.first, HomeFeedUtil.getChatRoomViewData(
+                    pair.second,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
+            )
         }
         val changedChatViewDataList = changed.map { pair ->
-            Pair(pair.first, HomeFeedUtil.getChatRoomViewData(pair.second, userPreferences))
+            Pair(
+                pair.first, HomeFeedUtil.getChatRoomViewData(
+                    pair.second,
+                    userPreferences,
+                    ITEM_DIRECT_MESSAGE
+                )
+            )
         }
 
         insertedChatViewDataList.forEach { pair ->
@@ -131,6 +159,11 @@ class DMFeedViewModel @Inject constructor(
 
     private fun getEmptyChatView(): DMFeedEmptyViewData {
         return DMFeedEmptyViewData.Builder().build()
+    }
+
+    fun refetchDMChatrooms() {
+        compositeDisposable.clear()
+        observeDMChatrooms()
     }
 
     //observes all dm chatrooms from local and return in [chatroomListener]

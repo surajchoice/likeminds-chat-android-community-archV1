@@ -19,7 +19,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/background_white_10_black16_1"
+            android:background="@drawable/lm_chat_background_white_10_black16_1"
             android:paddingBottom="23dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -31,7 +31,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/iv_gallery"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_create_camera"
+                app:srcCompat="@drawable/lm_chat_ic_create_camera"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -39,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/camera"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_camera"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_camera"
@@ -55,7 +55,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_create_gallery"
+                app:srcCompat="@drawable/lm_chat_ic_create_gallery"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -63,8 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/gallery"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_gallery"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_gallery"
@@ -79,7 +79,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_gallery"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_document_new"
+                app:srcCompat="@drawable/lm_chat_ic_document_new"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -87,8 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/document"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_document"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_document"
@@ -103,7 +103,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tv_gallery_title"
                 app:layout_constraintStart_toStartOf="@id/tv_gallery_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_camera_title"
-                app:srcCompat="@drawable/ic_poll_create_message_selector"
+                app:srcCompat="@drawable/lm_chat_ic_poll_create_message_selector"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -111,8 +111,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/poll"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_poll"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_poll"
@@ -127,7 +127,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tv_camera_title"
                 app:layout_constraintStart_toStartOf="@+id/tv_camera_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_camera_title"
-                app:srcCompat="@drawable/ic_create_music"
+                app:srcCompat="@drawable/lm_chat_ic_create_music"
                 tools:ignore="ContentDescription" />
 
             <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -135,8 +135,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/audio"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_audio"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_audio"
@@ -159,8 +159,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/custom_widget_a"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_custom_widget_a"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_custom_widget_a"
@@ -183,8 +183,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/custom_widget_b"
-                android:textColor="@color/brown_grey"
+                android:text="@string/lm_chat_custom_widget_b"
+                android:textColor="@color/lm_chat_brown_grey"
                 android:textSize="13sp"
                 app:fontType="regular"
                 app:layout_constraintEnd_toEndOf="@+id/iv_custom_widget_b"

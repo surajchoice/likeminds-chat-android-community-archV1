@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.utils.customview
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.permissions.*
+import com.likeminds.chatmm.utils.permissions.model.LMChatPermissionExtras
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import javax.inject.Inject
 
@@ -28,8 +30,8 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
     @Inject
     lateinit var snackBar: CustomSnackBar
 
-    private lateinit var sessionPermission: SessionPermission
-    private val permissionCallbackSparseArray = SparseArray<PermissionCallback>()
+    private lateinit var lmChatSessionPermission: LMChatSessionPermission
+    private val lmChatPermissionCallbackSparseArray = SparseArray<LMChatPermissionCallback>()
 
     private var wasNetworkGone = false
 
@@ -45,7 +47,7 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         attachDagger()
-        sessionPermission = SessionPermission(application)
+        lmChatSessionPermission = LMChatSessionPermission(application)
     }
 
     override fun onResume() {
@@ -66,6 +68,8 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         super.onPause()
     }
 
+    @SuppressLint("InlinedApi")
+    @Suppress("Deprecation")
     private fun setStatusBarColor(statusBarColor: Int) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -73,7 +77,7 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
-    fun hasPermission(permission: Permission): Boolean {
+    fun hasPermission(permission: LMChatPermission): Boolean {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             true
         } else {
@@ -81,21 +85,64 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         }
     }
 
+    fun hasPermissions(permissions: Array<String>): Boolean {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            true
+        } else {
+            var hasPermission = true
+            permissions.forEach { permission ->
+                hasPermission =
+                    hasPermission && checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+            }
+            return hasPermission
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
-    fun requestPermission(permission: Permission, permissionCallback: PermissionCallback) {
-        permissionCallbackSparseArray.put(permission.requestCode, permissionCallback)
-        sessionPermission.setPermissionRequest(permission)
-        requestPermissions(arrayOf(permission.permissionName), permission.requestCode)
+    fun requestMultiplePermissions(
+        permissionExtras: LMChatPermissionExtras,
+        permissionCallback: LMChatPermissionCallback
+    ) {
+        permissionExtras.apply {
+            permissions.forEach { permissionName ->
+                lmChatPermissionCallbackSparseArray.put(requestCode, permissionCallback)
+                lmChatSessionPermission.setPermissionRequest(permissionName)
+            }
+            requestPermissions(permissions, requestCode)
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    fun requestPermission(
+        lmChatPermission: LMChatPermission,
+        lmFeedPermissionCallback: LMChatPermissionCallback
+    ) {
+        lmChatPermissionCallbackSparseArray.put(
+            lmChatPermission.requestCode,
+            lmFeedPermissionCallback
+        )
+        lmChatSessionPermission.setPermissionRequest(lmChatPermission.permissionName)
+        requestPermissions(arrayOf(lmChatPermission.permissionName), lmChatPermission.requestCode)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    fun canRequestPermission(permission: Permission): Boolean {
-        return !wasRequestedBefore(permission) ||
-                shouldShowRequestPermissionRationale(permission.permissionName)
+    fun canRequestPermission(lmChatPermission: LMChatPermission): Boolean {
+        return !wasRequestedBefore(lmChatPermission.permissionName) ||
+                shouldShowRequestPermissionRationale(lmChatPermission.permissionName)
     }
 
-    private fun wasRequestedBefore(permission: Permission): Boolean {
-        return sessionPermission.wasPermissionRequestedBefore(permission)
+    @TargetApi(Build.VERSION_CODES.M)
+    fun canRequestPermissions(permissions: Array<String>): Boolean {
+        var canRequest = true
+        permissions.forEach { permission ->
+            canRequest = canRequest && (!wasRequestedBefore(permission) ||
+                    shouldShowRequestPermissionRationale(permission))
+        }
+        return canRequest
+    }
+
+    private fun wasRequestedBefore(permissionName: String): Boolean {
+        return lmChatSessionPermission.wasPermissionRequestedBefore(permissionName)
     }
 
     override fun onRequestPermissionsResult(
@@ -104,7 +151,7 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val callback = permissionCallbackSparseArray.get(requestCode, null) ?: return
+        val callback = lmChatPermissionCallbackSparseArray.get(requestCode, null) ?: return
         if (grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callback.onGrant()
@@ -124,7 +171,7 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
-                        getString(R.string.internet_connection_restored),
+                        getString(R.string.lm_chat_internet_connection_restored),
                         true
                     )
                 }

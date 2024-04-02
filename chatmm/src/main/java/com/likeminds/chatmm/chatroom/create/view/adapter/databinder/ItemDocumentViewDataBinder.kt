@@ -59,7 +59,7 @@ class ItemDocumentViewDataBinder constructor(
                 if (noOfPage > 0) {
                     tvMeta1.show()
                     tvMeta1.text = binding.root.context.getString(
-                        R.string.placeholder_pages, noOfPage
+                        R.string.lm_chat_placeholder_pages, noOfPage
                     )
                 }
                 if (size > 0) {

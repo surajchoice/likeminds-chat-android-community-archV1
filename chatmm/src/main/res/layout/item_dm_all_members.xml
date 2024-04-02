@@ -25,7 +25,7 @@
         style="@style/ClickableView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_member_image"
@@ -41,13 +41,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
             android:ellipsize="end"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/lm_chat_roboto_medium"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_subtitle"
             app:layout_constraintEnd_toStartOf="@id/view_dot"
             app:layout_constraintStart_toEndOf="@id/iv_member_image"
             app:layout_constraintTop_toTopOf="@id/iv_member_image"
@@ -59,7 +59,7 @@
             android:layout_width="3dp"
             android:layout_height="3dp"
             android:layout_marginStart="6dp"
-            android:background="@drawable/shape_center_dot_cloudy_blue"
+            android:background="@drawable/lm_chat_shape_center_dot_cloudy_blue"
             android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_member_name"
             app:layout_constraintStart_toEndOf="@id/tv_member_name"
@@ -75,14 +75,14 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="@{memberViewData.customTitle}"
-            android:textColor="@color/turquoise"
+            android:textColor="@color/lm_chat_turquoise"
             android:textSize="12sp"
             android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/tv_member_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_dot"
             app:layout_constraintTop_toTopOf="@id/tv_member_name"
-            tools:text="@string/community_manager"
+            tools:text="@string/lm_chat_community_manager"
             tools:visibility="visible" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -95,7 +95,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="2"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_member_image"
             app:layout_constraintStart_toEndOf="@id/iv_member_image"

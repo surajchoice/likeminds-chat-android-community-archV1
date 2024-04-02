@@ -38,7 +38,7 @@ class InitiateViewModel @Inject constructor(
     ) {
         viewModelScope.launchIO {
             if (apiKey.isEmpty()) {
-                _initiateErrorMessage.postValue(context.getString(R.string.empty_api_key))
+                _initiateErrorMessage.postValue(context.getString(R.string.lm_chat_empty_api_key))
                 return@launchIO
             }
 
@@ -140,6 +140,29 @@ class InitiateViewModel @Inject constructor(
 
             //call api
             lmChatClient.registerDevice(request)
+        }
+    }
+
+    fun getConfig() {
+        viewModelScope.launchIO {
+            val getConfigResponse = lmChatClient.getConfig()
+
+            if (getConfigResponse.success) {
+                val data = getConfigResponse.data
+                if (data != null) {
+                    sdkPreferences.setMicroPollsEnabled(data.enableMicroPolls)
+                    sdkPreferences.setGifSupportEnabled(data.enableGifs)
+                    sdkPreferences.setAudioSupportEnabled(data.enableAudio)
+                    sdkPreferences.setVoiceNoteSupportEnabled(data.enableVoiceNote)
+                }
+            } else {
+                Log.d(
+                    SDKApplication.LOG_TAG,
+                    "config api failed: ${getConfigResponse.errorMessage}"
+                )
+                // sets default values to config prefs
+                sdkPreferences.setDefaultConfigPrefs()
+            }
         }
     }
 }

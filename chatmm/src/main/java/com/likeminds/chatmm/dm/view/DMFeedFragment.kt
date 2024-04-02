@@ -6,10 +6,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.databinding.FragmentDmFeedBinding
@@ -20,29 +24,33 @@ import com.likeminds.chatmm.dm.viewmodel.DMFeedViewModel
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.member.view.CommunityMembersActivity
+import com.likeminds.chatmm.member.view.LMChatCommunityMembersActivity
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.likemindschat.dm.model.CheckDMTabResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     DMAdapterListener {
 
-    private lateinit var dmMetaExtras: CheckDMTabResponse
+    private lateinit var dmMetaExtras: CheckDMTabViewData
     private var showList: Int = CommunityMembersFilter.ALL_MEMBERS.value
 
     @Inject
     lateinit var userPreferences: UserPreferences
 
-    private val dmAllMemberLauncher =
+    private val communityMembersLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val resultExtras = result.data?.extras?.getParcelable<CommunityMembersResultExtras>(
-                    DM_ALL_MEMBER_RESULT,
+                val extras = result.data?.extras
+                val resultExtras = ExtrasUtil.getParcelable(
+                    extras,
+                    COMMUNITY_MEMBERS_RESULT,
+                    CommunityMembersResultExtras::class.java
                 ) ?: return@registerForActivityResult
 
                 openDMChatroom(resultExtras.chatroomId)
@@ -51,11 +59,11 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     companion object {
         const val DM_META_EXTRAS = "DM_META_EXTRAS"
-        const val DM_ALL_MEMBER_RESULT = "DM_ALL_MEMBER_RESULT"
+        const val COMMUNITY_MEMBERS_RESULT = "COMMUNITY_MEMBERS_RESULT"
         const val TAG = "DMFeedFragment"
         const val QUERY_SHOW_LIST = "show_list"
 
-        fun getInstance(dmMeta: CheckDMTabViewData): DMFeedFragment {
+        fun getInstance(dmMeta: CheckDMTabViewData?): DMFeedFragment {
             val fragment = DMFeedFragment()
             val bundle = Bundle()
             bundle.putParcelable(DM_META_EXTRAS, dmMeta)
@@ -68,8 +76,11 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun receiveExtras() {
         super.receiveExtras()
-        dmMetaExtras =
-            arguments?.getParcelable(DM_META_EXTRAS) ?: throw ErrorUtil.emptyExtrasException(TAG)
+        dmMetaExtras = ExtrasUtil.getParcelable(
+            arguments,
+            DM_META_EXTRAS,
+            CheckDMTabViewData::class.java
+        ) ?: throw ErrorUtil.emptyExtrasException(TAG)
     }
 
     override fun attachDagger() {
@@ -87,6 +98,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     override fun setUpViews() {
         super.setUpViews()
+        setBranding()
         initRecyclerView()
         checkForHideDMTab()
         initApis()
@@ -119,6 +131,53 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
+            startSync()
+        }
+    }
+
+    private fun startSync() {
+        val pairOfObservers = viewModel.syncChatrooms(requireContext())
+
+        val firstTimeObserver = pairOfObservers?.first
+        val appConfigObserver = pairOfObservers?.second
+        lifecycleScope.launch(Dispatchers.Main) {
+            when {
+                firstTimeObserver != null -> {
+                    val syncStartedAt = System.currentTimeMillis()
+                    firstTimeObserver.observe(this@DMFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        val timeTaken = (System.currentTimeMillis() - syncStartedAt) / 1000f
+//                        viewModel.setWasChatroomFetched(true)
+                        viewModel.refetchDMChatrooms()
+//                        viewModel.sendSyncCompleteEvent(timeTaken)
+                    })
+                }
+
+                appConfigObserver != null -> {
+                    appConfigObserver.observe(this@DMFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        viewModel.refetchDMChatrooms()
+                    })
+                }
+            }
+        }
+    }
+
+    private fun setBranding() {
+        binding.buttonColor = LMBranding.getButtonsColor()
     }
 
     //init recycler view and handles all recycler view operation
@@ -173,6 +232,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     //calls the initial APIs
     private fun initApis() {
+        startSync()
         viewModel.observeDMChatrooms()
         viewModel.checkDMStatus()
     }
@@ -184,8 +244,8 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
                 .showList(showList)
                 .build()
 
-            val intent = CommunityMembersActivity.getIntent(requireContext(), extras)
-            dmAllMemberLauncher.launch(intent)
+            val intent = LMChatCommunityMembersActivity.getIntent(requireContext(), extras)
+            communityMembersLauncher.launch(intent)
         }
     }
 
@@ -200,7 +260,10 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
         binding.fabNewDm.isVisible = showDM
     }
 
-    private fun handleCTA(cta: String) {
+    private fun handleCTA(cta: String?) {
+        if (cta == null) {
+            return
+        }
         val route = Uri.parse(cta)
         showList = route.getQueryParameter(QUERY_SHOW_LIST)?.toInt()
             ?: CommunityMembersFilter.ALL_MEMBERS.value

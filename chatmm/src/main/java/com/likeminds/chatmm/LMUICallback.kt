@@ -2,17 +2,18 @@ package com.likeminds.chatmm
 
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import org.json.JSONObject
+import com.likeminds.chatmm.member.model.MemberViewData
 
 interface LMUICallback {
     fun login() {
         // to implement whenever refresh token is expired
     }
 
-    fun getWidgetCallback(widgetData: HashMap<String?, WidgetViewData?>) {
-
+    fun openProfile(user: MemberViewData) {
+        //implement to open your profile page with member data
     }
 
-    fun getTransactionData(): HashMap<String, JSONObject?> {
-        return HashMap()
+    fun getWidgetCallback(widgetData: HashMap<String?, WidgetViewData?>) {
+
     }
 }

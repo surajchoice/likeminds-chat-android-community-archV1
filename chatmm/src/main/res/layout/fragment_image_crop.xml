@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <com.canhub.cropper.CropImageView
             android:id="@+id/crop_image_view"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:padding="16dp"
-            android:src="@drawable/ic_rotate"
+            android:src="@drawable/lm_chat_ic_rotate"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:gravity="center_horizontal"
-            android:text="@string/cancel"
-            android:textColor="@color/white"
+            android:text="@string/lm_chat_cancel"
+            android:textColor="@color/lm_chat_white"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintBottom_toBottomOf="@+id/btn_rotate"
@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:gravity="center_horizontal"
-            android:text="@string/done"
-            android:textColor="@color/white"
+            android:text="@string/lm_chat_done"
+            android:textColor="@color/lm_chat_white"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintBottom_toBottomOf="@+id/btn_rotate"

@@ -77,19 +77,19 @@ object MediaUtils {
     }
 
     fun getTextTypeFaces(context: Context): Array<Typeface?> {
-        val regular = ResourcesCompat.getFont(context, R.font.roboto_regular)
-        val bold = ResourcesCompat.getFont(context, R.font.roboto_bold)
-        val signature = ResourcesCompat.getFont(context, R.font.signature)
-        val condensed = ResourcesCompat.getFont(context, R.font.roboto_condensed_bold)
+        val regular = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_regular)
+        val bold = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_bold)
+        val signature = ResourcesCompat.getFont(context, R.font.lm_chat_signature)
+        val condensed = ResourcesCompat.getFont(context, R.font.lm_chat_roboto_condensed_bold)
         return arrayOf(regular, bold, signature, condensed)
     }
 
     fun getTextIcons(): Array<Int> {
         return arrayOf(
-            R.drawable.ic_text,
-            R.drawable.ic_text_bold,
-            R.drawable.ic_text_signature,
-            R.drawable.ic_text_condensed
+            R.drawable.lm_chat_ic_text,
+            R.drawable.lm_chat_ic_text_bold,
+            R.drawable.lm_chat_ic_text_signature,
+            R.drawable.lm_chat_ic_text_condensed
         )
     }
 
@@ -165,7 +165,7 @@ object MediaUtils {
 
         if (largeFileSelected) {
             ViewUtils.showShortToast(
-                context, context.getString(R.string.large_file_select_error_message)
+                context, context.getString(R.string.lm_chat_large_file_select_error_message)
             )
         }
         return mediaUris
