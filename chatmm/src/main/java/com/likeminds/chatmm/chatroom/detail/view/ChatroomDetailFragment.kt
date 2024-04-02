@@ -1114,21 +1114,17 @@ class ChatroomDetailFragment :
     private fun initTouchListenerOnMic() {
         binding.fabMic.setOnTouchListener { _, event ->
 
-            if (viewModel.isDmChatroom() &&
-                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
-                viewModel.getChatroomViewData()?.isPrivateMember == true
-            ) {
-                ViewUtils.showShortToast(
-                    requireContext(),
-                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
-                )
-                return@setOnTouchListener true
-            }
-
             if (isDeletingVoiceNote || isVoiceNoteLocked) return@setOnTouchListener true
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    if (viewModel.isDmChatroom() &&
+                        viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                        viewModel.getChatroomViewData()?.isPrivateMember == true
+                    ) {
+                        return@setOnTouchListener true
+                    }
+
                     if (isGuestUser) {
                         callGuestFlowCallback()
                     } else {
@@ -1165,14 +1161,31 @@ class ChatroomDetailFragment :
                 MotionEvent.ACTION_UP -> {
                     if ((activity as BaseAppCompatActivity).hasPermission(LMChatPermission.getRecordAudioPermissionData())) {
                         if (showTapAndHoldToast) {
+                            if (viewModel.isDmChatroom() &&
+                                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                                viewModel.getChatroomViewData()?.isPrivateMember == true
+                            ) {
+                                ViewUtils.showShortToast(
+                                    requireContext(),
+                                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
+                                )
+                                return@setOnTouchListener true
+                            }
+
                             ViewUtils.showAnchoredToast(binding.voiceNoteTapHoldToast.layoutToast)
 
                             requireView().performHapticFeedback(
                                 HapticFeedbackConstants.LONG_PRESS,
                                 HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
                             )
-
                         } else {
+                            if (viewModel.isDmChatroom() &&
+                                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                                viewModel.getChatroomViewData()?.isPrivateMember == true
+                            ) {
+                                return@setOnTouchListener true
+                            }
+
                             if (isVoiceNoteRecording) {
                                 resetVoiceNoteVariables()
                                 voiceNoteUtils.stopVoiceNote(binding, RECORDING_RELEASED)
@@ -1185,6 +1198,13 @@ class ChatroomDetailFragment :
 
                 MotionEvent.ACTION_MOVE -> {
                     if (stopTrackingVoiceNoteAction || !voiceRecorder.isRecording()) {
+                        return@setOnTouchListener true
+                    }
+
+                    if (viewModel.isDmChatroom() &&
+                        viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                        viewModel.getChatroomViewData()?.isPrivateMember == true
+                    ) {
                         return@setOnTouchListener true
                     }
 
@@ -1829,6 +1849,7 @@ class ChatroomDetailFragment :
                     if (
                         viewModel.isDmChatroom()
                         && (viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING)
+                        && (viewModel.getChatroomViewData()?.isPrivateMember == true)
                     ) {
                         viewModel.dmRequestText = inputText
                         if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
@@ -2849,7 +2870,8 @@ class ChatroomDetailFragment :
                                 } else {
                                     chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
                                 }
-                            } else { //add below last item in adapter
+                            } else {
+                                //add below last item in adapter
                                 isAddedBelow = false
                                 val indexToAdd = getIndexOfAnyGraphicItem()
                                 if (indexToAdd.isValidIndex()) {
@@ -2891,7 +2913,10 @@ class ChatroomDetailFragment :
                         }
 
                         //last new conversation DM REJECTED conversation
-                        if (lastNewConversation.state == STATE_DM_REJECTED) {
+                        if (lastNewConversation.state == STATE_DM_REJECTED
+                            && viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
                             val lastConversationIndex =
                                 getIndexOfConversation(lastNewConversation.id)
 
@@ -2916,7 +2941,12 @@ class ChatroomDetailFragment :
                             chatroomDetailAdapter.add(response.conversation)
                             index = chatroomDetailAdapter.itemCount - 1
                         }
-                        if (response.conversation.state == STATE_DM_REJECTED) {
+
+                        //add tap to undo if dm is rejected and the logged in member has rejected the DM request
+                        if (response.conversation.state == STATE_DM_REJECTED
+                            && viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
                             handleTapToUndo(
                                 index,
                                 response.conversation,
@@ -5842,17 +5872,9 @@ class ChatroomDetailFragment :
                 ) {
                     updatedBlockActionTitle = UNBLOCK_ACTION_TITLE
                     value = MemberBlockState.MEMBER_BLOCKED
-                    ViewUtils.showShortToast(
-                        requireContext(),
-                        getString(R.string.lm_chat_member_blocked)
-                    )
                 } else {
                     updatedBlockActionTitle = BLOCK_ACTION_TITLE
                     value = MemberBlockState.MEMBER_UNBLOCKED
-                    ViewUtils.showShortToast(
-                        requireContext(),
-                        getString(R.string.lm_chat_member_unblocked)
-                    )
                     updateTapToUndoLocally(false)
                 }
                 invalidateActionsMenu()

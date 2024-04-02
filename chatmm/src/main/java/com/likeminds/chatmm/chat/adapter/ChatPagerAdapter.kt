@@ -22,8 +22,14 @@ class ChatPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> HomeFeedFragment.getInstance(lmChatExtras)
-            1 -> DMFeedFragment.getInstance(fragment.dmMeta)
+            0 -> {
+                HomeFeedFragment.getInstance(lmChatExtras)
+            }
+
+            1 -> {
+                DMFeedFragment.getInstance(fragment.dmMeta)
+            }
+
             else -> {
                 throw IndexOutOfBoundsException()
             }

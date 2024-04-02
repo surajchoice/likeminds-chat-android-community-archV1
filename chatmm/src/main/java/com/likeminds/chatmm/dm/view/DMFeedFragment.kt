@@ -6,8 +6,11 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -26,7 +29,9 @@ import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
@@ -128,6 +133,49 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
+            startSync()
+        }
+    }
+
+    private fun startSync() {
+        val pairOfObservers = viewModel.syncChatrooms(requireContext())
+
+        val firstTimeObserver = pairOfObservers?.first
+        val appConfigObserver = pairOfObservers?.second
+        lifecycleScope.launch(Dispatchers.Main) {
+            when {
+                firstTimeObserver != null -> {
+                    val syncStartedAt = System.currentTimeMillis()
+                    firstTimeObserver.observe(this@DMFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        val timeTaken = (System.currentTimeMillis() - syncStartedAt) / 1000f
+//                        viewModel.setWasChatroomFetched(true)
+                        viewModel.refetchDMChatrooms()
+//                        viewModel.sendSyncCompleteEvent(timeTaken)
+                    })
+                }
+
+                appConfigObserver != null -> {
+                    appConfigObserver.observe(this@DMFeedFragment, Observer { workInfoList ->
+                        workInfoList.forEach { workInfo ->
+                            if (workInfo.state != WorkInfo.State.SUCCEEDED) {
+                                return@Observer
+                            }
+                        }
+                        viewModel.refetchDMChatrooms()
+                    })
+                }
+            }
+        }
+    }
+
     private fun setBranding() {
         binding.buttonColor = LMBranding.getButtonsColor()
     }
@@ -184,6 +232,7 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
 
     //calls the initial APIs
     private fun initApis() {
+        startSync()
         viewModel.observeDMChatrooms()
         viewModel.checkDMStatus()
     }
@@ -212,6 +261,9 @@ class DMFeedFragment : BaseFragment<FragmentDmFeedBinding, DMFeedViewModel>(),
     }
 
     private fun handleCTA(cta: String?) {
+        if (cta == null) {
+            return
+        }
         val route = Uri.parse(cta)
         showList = route.getQueryParameter(QUERY_SHOW_LIST)?.toInt()
             ?: CommunityMembersFilter.ALL_MEMBERS.value

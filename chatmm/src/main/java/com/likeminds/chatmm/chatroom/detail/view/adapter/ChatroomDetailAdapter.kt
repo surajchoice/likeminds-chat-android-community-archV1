@@ -17,7 +17,7 @@ import com.likeminds.chatmm.utils.model.*
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import java.util.*
 
-class ChatroomDetailAdapter constructor(
+class ChatroomDetailAdapter(
     val sdkPreferences: SDKPreferences,
     val userPreferences: UserPreferences,
     val reactionsPreferences: ReactionsPreferences,

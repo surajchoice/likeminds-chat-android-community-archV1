@@ -199,7 +199,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     // calls api to initiate data
     private fun initData() {
         initToolbar()
-        viewModel.checkDMTab()
     }
 
     //init tab adapter and perform operations are per selected tab
@@ -228,11 +227,8 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                             badge.apply {
                                 number = unreadDMCount
                                 maxCharacterCount = 2
-                                backgroundColor =
-                                    ContextCompat.getColor(
-                                        requireContext(),
-                                        LMBranding.getButtonsColor()
-                                    )
+                                backgroundColor = LMBranding.getButtonsColor()
+
                                 badgeTextColor =
                                     ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                             }
@@ -264,6 +260,11 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 objectKey = user.updatedAt
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkDMTab()
     }
 
     //update the unread count on dm tab

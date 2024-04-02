@@ -45,6 +45,7 @@ class HomeFeedViewModel @Inject constructor(
 
     sealed class ErrorMessageEvent {
         data class GetChatroom(val errorMessage: String?) : ErrorMessageEvent()
+
         data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
     }
 

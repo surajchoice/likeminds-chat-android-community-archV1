@@ -1,7 +1,9 @@
 package com.likeminds.chatmm.dm.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.WorkInfo
 import com.likeminds.chatmm.dm.model.DMFeedEmptyViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
@@ -49,7 +51,16 @@ class DMFeedViewModel @Inject constructor(
 
     sealed class ErrorMessageEvent {
         data class GetDMChatroom(val errorMessage: String?) : ErrorMessageEvent()
+
         data class CheckDMStatus(val errorMessage: String?) : ErrorMessageEvent()
+    }
+
+    fun isDBEmpty(): Boolean {
+        return (lmChatClient.getDBEmpty().data?.isDBEmpty ?: false)
+    }
+
+    fun syncChatrooms(context: Context): Pair<LiveData<MutableList<WorkInfo>>?, LiveData<MutableList<WorkInfo>>?>? {
+        return lmChatClient.syncChatrooms(context)
     }
 
     private val chatroomListener = object : HomeChatroomListener() {
@@ -148,6 +159,11 @@ class DMFeedViewModel @Inject constructor(
 
     private fun getEmptyChatView(): DMFeedEmptyViewData {
         return DMFeedEmptyViewData.Builder().build()
+    }
+
+    fun refetchDMChatrooms() {
+        compositeDisposable.clear()
+        observeDMChatrooms()
     }
 
     //observes all dm chatrooms from local and return in [chatroomListener]
