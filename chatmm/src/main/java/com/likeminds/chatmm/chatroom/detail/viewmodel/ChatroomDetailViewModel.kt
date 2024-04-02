@@ -30,7 +30,7 @@ import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWo
 import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.chatroom.model.*
@@ -680,28 +680,11 @@ class ChatroomDetailViewModel @Inject constructor(
             lmChatClient.getConversations(getBottomConversationsRequest)
         val bottomConversations = getBottomConversationsResponse.data?.conversations ?: emptyList()
 
-        Log.d(
-            TAG, """
-            bottomConversations = ${
-                bottomConversations.map {
-                    it.widget?.metadata?.toString()
-                }
-            }
-        """.trimIndent()
-        )
 
         var bottomConversationsViewData =
             ViewDataConverter.convertConversations(bottomConversations)
 
-        Log.d(
-            TAG, """
-            bottomConversationsViewData = ${
-                bottomConversationsViewData.map {
-                    it.widgetViewData?.metadata
-                }
-            }
-        """.trimIndent()
-        )
+        //filterConversationWithTransactionIds(bottomConversationsViewData)
 
         if (chatroomViewData.totalAllResponseCount <= CONVERSATIONS_LIMIT) {
             //All conversations are fetched
@@ -778,6 +761,7 @@ class ChatroomDetailViewModel @Inject constructor(
         val value = conversations.sortedBy {
             it.createdEpoch
         }
+
         viewModelScope.launchDefault {
             conversationEventChannel.send(ConversationEvent.UpdatedConversation(value))
         }

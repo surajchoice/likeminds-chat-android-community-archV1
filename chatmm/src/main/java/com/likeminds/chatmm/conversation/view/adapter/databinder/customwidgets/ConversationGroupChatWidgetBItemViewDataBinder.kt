@@ -48,17 +48,27 @@ class ConversationGroupChatWidgetBItemViewDataBinder(
 
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
-            val payment = if (metadata.has("payment_amount")) {
-                metadata.get("payment_amount") as? String
+            val transactionId = if (metadata.has("transaction_id")) {
+                metadata.get("transaction_id") as? String
             } else {
                 null
             }
 
-            if (payment.isNullOrEmpty()) {
-                clWidget.hide()
-            } else {
+            if (!transactionId.isNullOrEmpty()) {
                 clWidget.show()
-                tvKey1.text = "$$payment"
+                val timeStamp = if (metadata.has("timestamp")) {
+                    metadata.get("timestamp") as? Long
+                } else {
+                    null
+                }
+
+                tvKey1.text = if (timeStamp != null) {
+                    "$timeStamp"
+                } else {
+                    "null timestamp"
+                }
+            } else {
+                clWidget.hide()
             }
 
 

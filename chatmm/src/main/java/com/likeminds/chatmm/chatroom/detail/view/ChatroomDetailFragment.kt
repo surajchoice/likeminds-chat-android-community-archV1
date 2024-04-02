@@ -112,9 +112,11 @@ import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_DM
 import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_A_GROUP
 import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_DM
 import com.likeminds.chatmm.utils.model.ITEM_CUSTOM_WIDGET_B_GROUP
+import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.chatroom.model.ChatRequestState
 import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
@@ -142,7 +144,8 @@ class ChatroomDetailFragment :
     DeleteMessageListener,
     SendDMRequestDialogFragment.SendDMRequestDialogListener,
     ApproveDMRequestDialogFragment.ApproveDMRequestDialogListener,
-    RejectDMRequestDialogFragment.RejectDMRequestDialogListener {
+    RejectDMRequestDialogFragment.RejectDMRequestDialogListener,
+    ChatEvent.ChatObserver {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -521,6 +524,12 @@ class ChatroomDetailFragment :
         initTouchListenerOnMic()
         initVoiceNotes()
         initVoiceNoteControl()
+        subscribeToChatEvent()
+    }
+
+    override fun doCleanup() {
+        unsubscribeToChatEvent()
+        super.doCleanup()
     }
 
     // initializes the toolbar
@@ -807,7 +816,8 @@ class ChatroomDetailFragment :
 
         val metaData = JSONObject().apply {
             put("view_type", viewType)
-            put("payment_amount",amount)
+            put("payment_amount", amount)
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
         }
 
         postConversation(
@@ -831,7 +841,8 @@ class ChatroomDetailFragment :
 
         val metaData = JSONObject().apply {
             put("view_type", viewType)
-            put("payment_amount",amount)
+            put("payment_amount", amount)
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
         }
 
         postConversation(
@@ -1910,7 +1921,7 @@ class ChatroomDetailFragment :
         conversation: String? = null,
         fileUris: List<SingleUriData>? = null,
         shareLink: String? = null,
-        metadata:JSONObject? = null
+        metadata: JSONObject? = null
     ) {
         binding.apply {
             val shareTextLink = shareLink?.trim()
@@ -2745,6 +2756,10 @@ class ChatroomDetailFragment :
                 }
             }
             getUnseenConversationsAndShow(data.data, false)
+            filterConversationWithTransactionIds(
+                chatroomDetailAdapter.items()
+                    .filterIsInstance<ConversationViewData>()
+            )
         }
     }
 
@@ -2939,7 +2954,23 @@ class ChatroomDetailFragment :
                     }
                 }
             }
+            filterConversationWithTransactionIds(
+                chatroomDetailAdapter.items()
+                    .filterIsInstance<ConversationViewData>()
+            )
         }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    private fun filterConversationWithTransactionIds(conversations: List<ConversationViewData>?) {
+        val filteredHashMap = HashMap<String?, WidgetViewData?>()
+        val filterConversationWithTransactionIds = conversations?.filter { conversation ->
+            conversation.widgetViewData != null
+        }?.forEach {
+            filteredHashMap[it.id] = it.widgetViewData
+        }
+
+        SDKApplication.getLikeMindsCallback()
+            ?.getWidgetCallback(filteredHashMap)
     }
 
     /**
@@ -2989,6 +3020,10 @@ class ChatroomDetailFragment :
                 }
             }
         }
+        filterConversationWithTransactionIds(
+            chatroomDetailAdapter.items()
+                .filterIsInstance<ConversationViewData>()
+        )
     }
 
     /**
@@ -5967,5 +6002,33 @@ class ChatroomDetailFragment :
         }
         voiceNoteUtils.clear()
         super.onDestroy()
+    }
+
+    private fun subscribeToChatEvent() {
+        ChatEvent.getPublisher().subscribe(this)
+    }
+
+    private fun unsubscribeToChatEvent() {
+        ChatEvent.getPublisher().unsubscribe(this)
+    }
+
+    override fun update(postData: Any) {
+        if (postData is HashMap<*, *>) {
+            postData.map {
+                val conversationID = it.key ?: return
+                if (conversationID is String) {
+                    val widgetViewData = it.value ?: return
+                    if (widgetViewData is WidgetViewData) {
+                        val index = getIndexOfConversation(conversationID)
+                        var conversationViewData =
+                            chatroomDetailAdapter.items()[index] as? ConversationViewData ?: return
+                        conversationViewData =
+                            conversationViewData.toBuilder().widget(widgetViewData).build()
+
+                        chatroomDetailAdapter.update(index, conversationViewData)
+                    }
+                }
+            }
+        }
     }
 }

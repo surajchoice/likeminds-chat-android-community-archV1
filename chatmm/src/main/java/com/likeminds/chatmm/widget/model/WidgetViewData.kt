@@ -2,8 +2,6 @@ package com.likeminds.chatmm.widget.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
-import org.json.JSONObject
 
 @Parcelize
 class WidgetViewData private constructor(
