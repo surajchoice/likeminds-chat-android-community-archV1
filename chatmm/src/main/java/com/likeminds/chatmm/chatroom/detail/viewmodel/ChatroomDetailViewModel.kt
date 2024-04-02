@@ -30,7 +30,6 @@ import com.likeminds.chatmm.utils.mediauploader.worker.ConversationMediaUploadWo
 import com.likeminds.chatmm.utils.mediauploader.worker.UploadHelper
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.LMResponse
 import com.likeminds.likemindschat.chatroom.model.*
@@ -1792,7 +1791,6 @@ class ChatroomDetailViewModel @Inject constructor(
         lmChatClient.updateConversationUploadWorkerUUID(updateConversationUploadWorkerUUIDRequest)
         uploadData.first.enqueue()
     }
-
 
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
     private fun uploadFilesViaWorker(

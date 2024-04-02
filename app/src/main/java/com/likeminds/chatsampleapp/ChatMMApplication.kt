@@ -67,7 +67,7 @@ class ChatMMApplication : Application(), LMUICallback {
         }
         Handler(Looper.getMainLooper()).postDelayed({
             ChatEvent.getPublisher().notify(updatedWidgetData)
-        }, 10000)
+        }, 3000)
     }
 
     override fun getTransactionData(): HashMap<String, JSONObject?> {

@@ -2745,7 +2745,7 @@ class ChatroomDetailFragment :
                 }
             }
             getUnseenConversationsAndShow(data.data, false)
-            filterConversationWithWidget()
+            filterConversationWithWidget(data.data.filterIsInstance<ConversationViewData>())
         }
     }
 
@@ -2827,6 +2827,7 @@ class ChatroomDetailFragment :
                     getIndexedConversations(response.conversations).forEach { item ->
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
+                    filterConversationWithWidget(response.conversations)
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
@@ -2900,6 +2901,8 @@ class ChatroomDetailFragment :
                             }
                         }
 
+                        filterConversationWithWidget(conversations)
+
                         //Check if the new conversation is created by the user itself
                         if (
                             (conversations.count { conversation ->
@@ -2929,6 +2932,7 @@ class ChatroomDetailFragment :
                             chatroomDetailAdapter.add(response.conversation)
                             index = chatroomDetailAdapter.itemCount - 1
                         }
+                        filterConversationWithWidget(listOf(response.conversation))
                         if (response.conversation.state == STATE_DM_REJECTED) {
                             handleTapToUndo(
                                 index,
@@ -2940,14 +2944,12 @@ class ChatroomDetailFragment :
                     }
                 }
             }
-            filterConversationWithWidget()
         }.observeInLifecycle(viewLifecycleOwner)
     }
 
-    private fun filterConversationWithWidget() {
+    //filter conversation with widgets and return to customer
+    private fun filterConversationWithWidget(conversations: List<ConversationViewData>) {
         val filteredHashMap = HashMap<String?, WidgetViewData?>()
-        val conversations = chatroomDetailAdapter.items()
-            .filterIsInstance<ConversationViewData>()
 
         conversations.filter { conversation ->
             conversation.widgetViewData != null
@@ -3006,7 +3008,7 @@ class ChatroomDetailFragment :
                 }
             }
         }
-        filterConversationWithWidget()
+        filterConversationWithWidget(initialData.data.filterIsInstance<ConversationViewData>())
     }
 
     /**
@@ -6003,12 +6005,16 @@ class ChatroomDetailFragment :
                     val widgetViewData = it.value ?: return
                     if (widgetViewData is WidgetViewData) {
                         val index = getIndexOfConversation(conversationID)
-                        var conversationViewData =
-                            chatroomDetailAdapter.items()[index] as? ConversationViewData ?: return
-                        conversationViewData =
-                            conversationViewData.toBuilder().widget(widgetViewData).build()
+                        if (index >= 0) {
+                            var conversationViewData =
+                                chatroomDetailAdapter.items()[index] as? ConversationViewData
+                                    ?: return
+                            conversationViewData =
+                                conversationViewData.toBuilder().widget(widgetViewData).build()
 
-                        chatroomDetailAdapter.update(index, conversationViewData)
+                            //update recycler view
+                            chatroomDetailAdapter.update(index, conversationViewData)
+                        }
                     }
                 }
             }
