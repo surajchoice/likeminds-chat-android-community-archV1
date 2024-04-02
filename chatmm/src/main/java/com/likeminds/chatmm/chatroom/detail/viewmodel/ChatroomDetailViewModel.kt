@@ -697,8 +697,6 @@ class ChatroomDetailViewModel @Inject constructor(
         var bottomConversationsViewData =
             ViewDataConverter.convertConversations(bottomConversations)
 
-        //filterConversationWithTransactionIds(bottomConversationsViewData)
-
         if (chatroomViewData.totalAllResponseCount <= CONVERSATIONS_LIMIT) {
             //All conversations are fetched
             dataList.add(getDateView(chatroomViewData.date))

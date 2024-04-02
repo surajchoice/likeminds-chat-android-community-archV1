@@ -537,6 +537,11 @@ object ViewDataConverter {
         }
     }
 
+    /**
+     * convert [ChatroomAction] to [ChatroomActionViewData]
+     *
+     * @param chatroomAction: object to [ChatroomAction]
+     */
     private fun convertChatroomAction(chatroomAction: ChatroomAction): ChatroomActionViewData {
         return ChatroomActionViewData.Builder()
             .id(chatroomAction.id.toString())
@@ -545,6 +550,11 @@ object ViewDataConverter {
             .build()
     }
 
+    /**
+     * convert [Widget] to [WidgetViewData]
+     *
+     * @param widget: object to [Widget]
+     */
     private fun convertWidget(widget: Widget?): WidgetViewData? {
         if (widget == null) return null
         return WidgetViewData.Builder()

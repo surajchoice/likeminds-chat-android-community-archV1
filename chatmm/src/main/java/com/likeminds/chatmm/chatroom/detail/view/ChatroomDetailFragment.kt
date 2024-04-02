@@ -817,6 +817,7 @@ class ChatroomDetailFragment :
         }
     }
 
+    //on click function when custom widget A is clicked
     private fun onCustomWidgetAClicked() {
         //todo add code
         val isDMChatroom = viewModel.isDmChatroom()
@@ -838,6 +839,7 @@ class ChatroomDetailFragment :
         )
     }
 
+    //on click function when custom widget B is clicked
     private fun onCustomWidgetBClicked() {
         //todo add code
         val isDMChatroom = viewModel.isDmChatroom()

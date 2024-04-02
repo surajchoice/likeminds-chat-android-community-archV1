@@ -50,6 +50,7 @@ class ChatMMApplication : Application(), LMUICallback {
         // override this function to trigger login.
     }
 
+    //get widget data and modify the data and return updated data in ChatEvent
     override fun getWidgetCallback(widgetData: HashMap<String?, WidgetViewData?>) {
         val updatedWidgetData = HashMap<String?, WidgetViewData?>()
 
