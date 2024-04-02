@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <ImageView
             android:id="@+id/iv_video_placeholder"
@@ -26,13 +26,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/image_placeholder" />
+            tools:src="@drawable/lm_chat_image_placeholder" />
 
         <ImageView
             android:id="@+id/iv_play_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play"
+            android:src="@drawable/lm_chat_ic_play"
             app:layout_constraintBottom_toBottomOf="@+id/iv_video_placeholder"
             app:layout_constraintEnd_toEndOf="@+id/iv_video_placeholder"
             app:layout_constraintStart_toStartOf="@+id/iv_video_placeholder"

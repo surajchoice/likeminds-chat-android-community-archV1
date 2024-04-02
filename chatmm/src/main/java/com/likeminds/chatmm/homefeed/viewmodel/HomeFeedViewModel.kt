@@ -11,7 +11,6 @@ import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.util.HomeFeedUtil
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFeedViewModel @Inject constructor(
-    private val sdkPreferences: SDKPreferences,
     private val userPreferences: UserPreferences,
     private val homeFeedPreferences: HomeFeedPreferences,
 ) : ViewModel() {
@@ -47,6 +45,7 @@ class HomeFeedViewModel @Inject constructor(
 
     sealed class ErrorMessageEvent {
         data class GetChatroom(val errorMessage: String?) : ErrorMessageEvent()
+
         data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
     }
 
@@ -191,7 +190,7 @@ class HomeFeedViewModel @Inject constructor(
         dataList.add(lineBreakViewData)
 
         //Chat rooms
-        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.joined_chatrooms)))
+        dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
             !wasChatroomsFetched -> {
@@ -233,29 +232,6 @@ class HomeFeedViewModel @Inject constructor(
 
     fun observeLiveHomeFeed(context: Context) {
         lmChatClient.observeLiveHomeFeed(context)
-    }
-
-    fun getConfig() {
-        viewModelScope.launchIO {
-            val getConfigResponse = lmChatClient.getConfig()
-
-            if (getConfigResponse.success) {
-                val data = getConfigResponse.data
-                if (data != null) {
-                    sdkPreferences.setMicroPollsEnabled(data.enableMicroPolls)
-                    sdkPreferences.setGifSupportEnabled(data.enableGifs)
-                    sdkPreferences.setAudioSupportEnabled(data.enableAudio)
-                    sdkPreferences.setVoiceNoteSupportEnabled(data.enableVoiceNote)
-                }
-            } else {
-                Log.d(
-                    SDKApplication.LOG_TAG,
-                    "config api failed: ${getConfigResponse.errorMessage}"
-                )
-                // sets default values to config prefs
-                sdkPreferences.setDefaultConfigPrefs()
-            }
-        }
     }
 
     fun getExploreTabCount() {

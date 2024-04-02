@@ -7,7 +7,7 @@
         android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_container"
+        android:background="@drawable/lm_chat_background_container"
         android:clipChildren="true"
         android:clipToPadding="true"
         android:elevation="6dp"

@@ -55,7 +55,7 @@ class SearchChatroomTitleViewDataBinder(
                         SearchUtils.getHighlightedText(
                             it,
                             data.keywordMatchedInChatroomName,
-                            ContextCompat.getColor(root.context, R.color.black)
+                            ContextCompat.getColor(root.context, R.color.lm_chat_black)
                         )
                     }
                 } else {
@@ -90,7 +90,7 @@ class SearchChatroomTitleViewDataBinder(
                     SearchUtils.getTrimmedText(
                         answerWithNonHighlightedTags,
                         it,
-                        ContextCompat.getColor(root.context, R.color.black)
+                        ContextCompat.getColor(root.context, R.color.lm_chat_black)
                     )
                 })
             } else {

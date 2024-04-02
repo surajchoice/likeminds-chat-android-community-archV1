@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_browse_media"
+            android:src="@drawable/lm_chat_ic_browse_media"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,8 +26,8 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif"
             android:includeFontPadding="false"
-            android:text="@string/browse_other_docs"
-            android:textColor="@color/black"
+            android:text="@string/lm_chat_browse_other_docs"
+            android:textColor="@color/lm_chat_black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_browse"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/cloudy_blue"
+            android:background="@color/lm_chat_cloudy_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/iv_browse" />

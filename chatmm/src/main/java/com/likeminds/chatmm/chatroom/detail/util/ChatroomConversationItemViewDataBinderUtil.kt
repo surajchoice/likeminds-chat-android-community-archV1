@@ -73,7 +73,7 @@ object ChatroomConversationItemViewDataBinderUtil {
         )
         clBubble.background = ContextCompat.getDrawable(
             clBubble.context,
-            R.drawable.background_chat_other
+            R.drawable.lm_chat_background_chat_other
         )
     }
 
@@ -163,7 +163,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             customTitleDot.visibility = View.GONE
             clConversationBubble.background = ContextCompat.getDrawable(
                 clRoot.context,
-                R.drawable.chat_bubble_mine
+                R.drawable.lm_chat_chat_bubble_mine
             )
         } else {
             set.connect(
@@ -176,7 +176,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             imageViewFailed?.visibility = View.GONE
 
             clConversationBubble.background =
-                ContextCompat.getDrawable(clRoot.context, R.drawable.chat_bubble_other)
+                ContextCompat.getDrawable(clRoot.context, R.drawable.lm_chat_chat_bubble_other)
             setMessageSenderDetails(
                 memberViewData,
                 memberImage,
@@ -334,11 +334,11 @@ object ChatroomConversationItemViewDataBinderUtil {
             trimmedText,
             true,
             LMBranding.getTextLinkColor()
-        ) { tag ->
-            // todo: onMemberClicked()
+        ) { it ->
+            adapterListener?.onMemberTagClicked(it)
         }
 
-        val readMoreColor = ContextCompat.getColor(tvConversation.context, R.color.caribbean_green)
+        val readMoreColor = ContextCompat.getColor(tvConversation.context, R.color.lm_chat_caribbean_green)
         val readMore = SpannableStringBuilder(" Read More")
         readMore.setSpan(
             ForegroundColorSpan(readMoreColor),
@@ -371,7 +371,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             )
         }
 
-        val viewLessColor = ContextCompat.getColor(tvConversation.context, R.color.caribbean_green)
+        val viewLessColor = ContextCompat.getColor(tvConversation.context, R.color.lm_chat_caribbean_green)
         val viewLess = SpannableStringBuilder(" View Less")
         viewLess.setSpan(
             ForegroundColorSpan(viewLessColor),
@@ -416,7 +416,9 @@ object ChatroomConversationItemViewDataBinderUtil {
                 conversation?.isDeleted()
             )
         )
-        LinkifyCompat.addLinks(tvConversation, Linkify.ALL)
+        val linkifyLinks =
+            (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+        LinkifyCompat.addLinks(tvConversation, linkifyLinks)
         tvConversation.movementMethod = LMLinkMovementMethod { url ->
             if ((conversation != null || chatRoom != null) && adapterListener != null
                 && adapterListener.isSelectionEnabled()
@@ -500,7 +502,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             val current = MediaUtils.getFileSizeText(progress.first)
             val total = MediaUtils.getFileSizeText(progress.second)
             textView.apply {
-                text = context.getString(R.string.uploading_progress_placeholder, current, total)
+                text = context.getString(R.string.lm_chat_uploading_progress_placeholder, current, total)
             }
         }
     }
@@ -606,7 +608,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_NONE -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_play_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_play_voice_note)
                         isClickable = true
                     }
 
@@ -637,7 +639,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_PLAY -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_pause_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_pause_voice_note)
                         isClickable = true
                     }
                     tvDuration.text = attachment.currentDuration
@@ -652,7 +654,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             MEDIA_ACTION_PAUSE -> {
                 binding.voiceNoteView.apply {
                     ivPlayPause.apply {
-                        setImageResource(R.drawable.ic_conversation_play_voice_note)
+                        setImageResource(R.drawable.lm_chat_ic_conversation_play_voice_note)
                         isClickable = true
                     }
                     tvDuration.text = attachment.currentDuration
@@ -743,12 +745,12 @@ object ChatroomConversationItemViewDataBinderUtil {
                 ViewUtils.dpToPx(1)
             )
             params.setMargins(0, 0, ViewUtils.dpToPx(8), ViewUtils.dpToPx(6))
-            tvTime.setBackgroundResource(R.drawable.background_conversation_timestamp)
+            tvTime.setBackgroundResource(R.drawable.lm_chat_background_conversation_timestamp)
         } else {
             tvTime.background = null
             tvTime.setPadding(0, 0, 0, 0)
             params.setMargins(0, 0, 0, 0)
-            tvTime.setTextColor(ContextCompat.getColor(context, R.color.brown_grey))
+            tvTime.setTextColor(ContextCompat.getColor(context, R.color.lm_chat_brown_grey))
         }
         tvTime.layoutParams = params
 
@@ -766,10 +768,10 @@ object ChatroomConversationItemViewDataBinderUtil {
                 imageViewStatus?.visibility = View.GONE
                 val statusDrawable = when {
                     conversation.isSending() -> {
-                        ViewUtils.getDrawable(context, R.drawable.ic_sending, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sending, 12, R.color.lm_chat_white)
                     }
                     conversation.isSent() -> {
-                        ViewUtils.getDrawable(context, R.drawable.ic_sent, 12, R.color.white)
+                        ViewUtils.getDrawable(context, R.drawable.lm_chat_ic_sent, 12, R.color.lm_chat_white)
                     }
                     else -> return
                 } ?: return
@@ -780,11 +782,11 @@ object ChatroomConversationItemViewDataBinderUtil {
                 when {
                     conversation.isSending() -> {
                         imageViewStatus?.visibility = View.VISIBLE
-                        imageViewStatus?.setImageResource(R.drawable.ic_sending)
+                        imageViewStatus?.setImageResource(R.drawable.lm_chat_ic_sending)
                     }
                     conversation.isSent() -> {
                         imageViewStatus?.visibility = View.VISIBLE
-                        imageViewStatus?.setImageResource(R.drawable.ic_sent)
+                        imageViewStatus?.setImageResource(R.drawable.lm_chat_ic_sent)
                     }
                 }
                 tvTime.setCompoundDrawables(null, null, null, null)
@@ -835,9 +837,9 @@ object ChatroomConversationItemViewDataBinderUtil {
                     chatReplyData = replyData
 
                     val placeholder = if (replyData.attachmentType == AUDIO) {
-                        R.drawable.placeholder_audio
+                        R.drawable.lm_chat_placeholder_audio
                     } else {
-                        R.drawable.image_placeholder
+                        R.drawable.lm_chat_image_placeholder
                     }
 
                     if (replyData.imageUrl.isNullOrEmpty()) {
@@ -924,7 +926,7 @@ object ChatroomConversationItemViewDataBinderUtil {
         binding.apply {
             when (attachment.mediaState) {
                 MEDIA_ACTION_NONE -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_play_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_play_grey)
                     ivPlayPause.isClickable = true
                     if (attachment.meta != null) {
                         tvAudioDuration.text =
@@ -942,7 +944,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     waveAnim.hide()
                 }
                 MEDIA_ACTION_PLAY -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_pause_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_pause_grey)
                     ivPlayPause.isClickable = true
                     tvAudioDuration.text = attachment.currentDuration
                     ivAudioLogo.hide()
@@ -957,7 +959,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     }
                 }
                 MEDIA_ACTION_PAUSE -> {
-                    ivPlayPause.setImageResource(R.drawable.ic_play_grey)
+                    ivPlayPause.setImageResource(R.drawable.lm_chat_ic_play_grey)
                     ivPlayPause.isClickable = true
                     tvAudioDuration.text = attachment.currentDuration
                     ivAudioLogo.hide()
@@ -981,7 +983,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             tvLinkTitle.text = if (data.title?.isNotBlank() == true) {
                 data.title
             } else {
-                root.context.getString(R.string.link)
+                root.context.getString(R.string.lm_chat_link)
             }
             tvLinkDescription.isVisible = !data.description.isNullOrEmpty()
             tvLinkDescription.text = data.description
@@ -1004,7 +1006,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     ivLink
                 },
                 data.image,
-                placeholder = R.drawable.ic_link_primary_40dp,
+                placeholder = R.drawable.lm_chat_ic_link_primary_40dp,
                 cornerRadius = 8,
                 isBlur = isYoutubeLink
             )
@@ -1032,7 +1034,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                 if (noOfPage > 0) {
                     tvMeta1.show()
                     tvMeta1.text = root.context.getString(
-                        R.string.placeholder_pages, noOfPage
+                        R.string.lm_chat_placeholder_pages, noOfPage
                     )
                 }
                 if (size > 0) {
@@ -1248,19 +1250,19 @@ object ChatroomConversationItemViewDataBinderUtil {
                     when (pollInfoData.multipleSelectState) {
                         POLL_MULTIPLE_STATE_EXACTLY -> {
                             context.getString(
-                                R.string.select_exact_options_text,
+                                R.string.lm_chat_select_exact_options_text,
                                 multiSelectNum.toString()
                             )
                         }
                         POLL_MULTIPLE_STATE_MAX -> {
                             context.getString(
-                                R.string.select_at_most_text,
+                                R.string.lm_chat_select_at_most_text,
                                 multiSelectNum.toString()
                             )
                         }
                         POLL_MULTIPLE_STATE_LEAST -> {
                             context.getString(
-                                R.string.select_at_least_text,
+                                R.string.lm_chat_select_at_least_text,
                                 multiSelectNum.toString()
                             )
                         }
@@ -1288,12 +1290,12 @@ object ChatroomConversationItemViewDataBinderUtil {
                 visibility = View.VISIBLE
                 text = dayTimeLeft
 
-                if (dayTimeLeft == context.getString(R.string.poll_ended)
-                    || dayTimeLeft == context.getString(R.string.event_ended_regular)
+                if (dayTimeLeft == context.getString(R.string.lm_chat_poll_ended)
+                    || dayTimeLeft == context.getString(R.string.lm_chat_event_ended_regular)
                 ) {
                     background = ContextCompat.getDrawable(
                         context,
-                        R.drawable.background_scarlet_12
+                        R.drawable.lm_chat_background_scarlet_12
                     )
                 } else {
                     backgroundTintList =
@@ -1346,9 +1348,9 @@ object ChatroomConversationItemViewDataBinderUtil {
         }
         btnSubmitVote.apply {
             val context = context
-            setIconTintResource(R.color.grey)
-            setTextColor(ContextCompat.getColor(context, R.color.grey))
-            setStrokeColorResource(R.color.black_20)
+            setIconTintResource(R.color.lm_chat_grey)
+            setTextColor(ContextCompat.getColor(context, R.color.lm_chat_grey))
+            setStrokeColorResource(R.color.lm_chat_black_20)
             tag = "POLL_CLICK_DISABLED"
             isEnabled = false
         }
@@ -1356,16 +1358,15 @@ object ChatroomConversationItemViewDataBinderUtil {
 
     fun showAnonymousPollDialog(context: Context) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(context.getString(R.string.anonymous_poll))
-            .setMessage(context.getString(R.string.anonymous_poll_message))
-            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+        builder.setTitle(context.getString(R.string.lm_chat_anonymous_poll))
+            .setMessage(context.getString(R.string.lm_chat_anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.lm_chat_okay)) { dialog, _ ->
                 dialog.dismiss()
             }
         builder.create().show()
     }
 
     fun multipleItemSelectPollExactly(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,
@@ -1416,7 +1417,6 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun multipleItemSelectPollAtMax(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,
@@ -1463,7 +1463,6 @@ object ChatroomConversationItemViewDataBinderUtil {
     }
 
     fun multipleItemSelectPollAtLeast(
-        context: Context,
         pollViewData: PollViewData,
         optionCount: Int,
         pollViewDataList: List<PollViewData>,

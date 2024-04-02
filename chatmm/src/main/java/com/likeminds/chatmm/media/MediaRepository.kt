@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.MediaStore.VOLUME_EXTERNAL
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.annotation.WorkerThread
@@ -399,7 +400,7 @@ class MediaRepository @Inject constructor() {
         context: Context,
         mimeTypes: Array<String?>,
     ): List<MediaViewData> {
-        val contentUri = MediaStore.Files.getContentUri("external")
+        val contentUri = MediaStore.Files.getContentUri(VOLUME_EXTERNAL)
         val media: MutableList<MediaViewData> = LinkedList()
         val sortBy = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
         val projection = arrayOf(

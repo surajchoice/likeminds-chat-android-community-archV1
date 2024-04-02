@@ -254,14 +254,14 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                     ImageBindingUtil.loadImage(
                         ivSingleImage,
                         attachmentViewData.thumbnail,
-                        placeholder = R.drawable.image_placeholder,
+                        placeholder = R.drawable.lm_chat_image_placeholder,
                         cornerRadius = 10
                     )
                 } else {
                     ImageBindingUtil.loadImage(
                         ivSingleImage,
                         attachmentViewData.uri.toString(),
-                        placeholder = R.drawable.image_placeholder,
+                        placeholder = R.drawable.lm_chat_image_placeholder,
                         cornerRadius = 10
                     )
                 }

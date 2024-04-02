@@ -240,14 +240,14 @@ internal class ConversationSingleGifItemViewDataBinder constructor(
                 ImageBindingUtil.loadImage(
                     imageView,
                     thumbnail,
-                    placeholder = R.drawable.image_placeholder,
+                    placeholder = R.drawable.lm_chat_image_placeholder,
                     cornerRadius = 10
                 )
             } else {
                 ImageBindingUtil.loadFirstFrameOfGif(
                     imageView,
                     attachment.uri,
-                    placeholder = R.drawable.image_placeholder,
+                    placeholder = R.drawable.lm_chat_image_placeholder,
                     cornerRadius = 10
                 )
             }
@@ -333,22 +333,20 @@ internal class ConversationSingleGifItemViewDataBinder constructor(
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
-                    target: Target<GifDrawable?>?,
-                    isFirstResource: Boolean,
+                    target: Target<GifDrawable?>,
+                    isFirstResource: Boolean
                 ): Boolean {
                     return false
                 }
 
                 override fun onResourceReady(
-                    resource: GifDrawable?,
-                    model: Any?,
+                    resource: GifDrawable,
+                    model: Any,
                     target: Target<GifDrawable?>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
                 ): Boolean {
-                    if (resource != null) {
-                        startGifAnimation(binding, resource)
-                    }
+                    startGifAnimation(binding, resource)
                     return false
                 }
             })

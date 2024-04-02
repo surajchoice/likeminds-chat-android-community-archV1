@@ -28,7 +28,7 @@ class ItemPollMoreOptionsViewDataBinder :
         val context = binding.root.context
         val optionCount = data.optionsCount
         binding.tvPoll.text = context.resources.getQuantityString(
-            R.plurals.more_option,
+            R.plurals.lm_chat_more_option,
             optionCount,
             optionCount
         )

@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:background="@drawable/background_item_document">
+        android:background="@drawable/lm_chat_background_item_document">
 
         <ImageView
             android:id="@+id/iv_document_icon"
@@ -39,7 +39,7 @@
             android:layout_marginVertical="16dp"
             android:layout_marginStart="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_pdf"
+            android:src="@drawable/lm_chat_ic_pdf"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +54,7 @@
             android:layout_marginBottom="3dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintBottom_toTopOf="@+id/tv_meta_1"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="3dp"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@+id/iv_document_icon"
@@ -84,7 +84,7 @@
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="5dp"
-            android:background="@drawable/background_circle_dot_custom_title"
+            android:background="@drawable/lm_chat_background_circle_dot_custom_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_meta_1"
             app:layout_constraintStart_toEndOf="@+id/tv_meta_1"
             app:layout_constraintTop_toTopOf="@+id/tv_meta_1" />
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@+id/view_meta_dot_1"
@@ -107,7 +107,7 @@
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="5dp"
-            android:background="@drawable/background_circle_dot_custom_title"
+            android:background="@drawable/lm_chat_background_circle_dot_custom_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_meta_2"
             app:layout_constraintStart_toEndOf="@+id/tv_meta_2"
             app:layout_constraintTop_toTopOf="@+id/tv_meta_2" />
@@ -118,13 +118,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:textAllCaps="true"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@+id/view_meta_dot_2"
             app:layout_constraintStart_toEndOf="@+id/view_meta_dot_2"
             app:layout_constraintTop_toTopOf="@+id/view_meta_dot_2"
-            tools:text="@string/pdf" />
+            tools:text="@string/lm_chat_pdf" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

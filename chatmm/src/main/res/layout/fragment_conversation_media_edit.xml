@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black">
+        android:background="@color/lm_chat_black">
 
         <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/photo_view"
@@ -26,7 +26,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@mipmap/ic_launcher" />
+            tools:src="@mipmap/lm_chat_ic_launcher" />
 
         <com.likeminds.chatmm.media.customviews.CanvasView
             android:id="@+id/canvas"
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_text_increase"
+            android:src="@drawable/lm_chat_ic_text_increase"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/btn_text_decrease"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_text_decrease"
+            android:src="@drawable/lm_chat_ic_text_decrease"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +115,7 @@
             android:shadowColor="#81000000"
             android:shadowDy="1"
             android:shadowRadius="2"
-            android:textColor="@color/light_red"
+            android:textColor="@color/lm_chat_light_red"
             android:textSize="24sp"
             android:textStyle="bold"
             android:visibility="gone"
@@ -132,7 +132,7 @@
             android:id="@+id/header_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_80"
+            android:background="@color/lm_chat_black_80"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -144,7 +144,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="26dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_back_white_24dp"
+                android:src="@drawable/lm_chat_ic_arrow_back_white_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -156,7 +156,7 @@
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_undo"
+                android:src="@drawable/lm_chat_ic_undo"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_back"
                 app:layout_constraintEnd_toStartOf="@+id/btn_crop_rotate"
@@ -170,7 +170,7 @@
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_crop_rotate"
+                android:src="@drawable/lm_chat_ic_crop_rotate"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_text"
                 app:layout_constraintTop_toTopOf="parent"
@@ -183,7 +183,7 @@
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_text"
+                android:src="@drawable/lm_chat_ic_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_draw"
                 app:layout_constraintTop_toTopOf="parent"
@@ -196,7 +196,7 @@
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_edit"
+                android:src="@drawable/lm_chat_ic_edit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintTop_toTopOf="parent"
@@ -209,11 +209,11 @@
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_delete"
+                android:src="@drawable/lm_chat_ic_delete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white"
+                app:tint="@color/lm_chat_white"
                 tools:ignore="ContentDescription" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -223,19 +223,19 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:backgroundTint="@{buttonColor}"
-            android:src="@drawable/ic_send"
+            android:src="@drawable/lm_chat_ic_send"
             android:translationZ="10dp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_view"
             app:layout_constraintEnd_toEndOf="@+id/bottom_view"
             app:layout_constraintTop_toTopOf="@+id/bottom_view"
-            app:tint="@color/white"
+            app:tint="@color/lm_chat_white"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_80"
+            android:background="@color/lm_chat_black_80"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -247,13 +247,13 @@
                 android:layout_margin="16dp"
                 android:background="@null"
                 android:fontFamily="sans-serif"
-                android:hint="@string/add_message"
+                android:hint="@string/lm_chat_add_message"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences|textMultiLine"
                 android:lineSpacingExtra="4sp"
                 android:maxHeight="135dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white_50"
+                android:textColor="@color/lm_chat_white"
+                android:textColorHint="@color/lm_chat_white_50"
                 android:textSize="16sp"
                 app:font_style="regular"
                 app:layout_constraintBottom_toTopOf="@+id/rv_medias"
@@ -269,7 +269,7 @@
                 android:adjustViewBounds="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="8dp"
-                android:src="@drawable/ic_image_add"
+                android:src="@drawable/lm_chat_ic_image_add"
                 app:layout_constraintBottom_toBottomOf="@+id/et_conversation"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_conversation"

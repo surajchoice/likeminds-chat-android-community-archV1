@@ -52,6 +52,7 @@ class CommunityMembersViewModel @Inject constructor(
         viewModelScope.launchIO {
             val requestBuilder = GetAllMemberRequest.Builder()
                 .page(page)
+                .excludeSelfUser(true)
 
             val request = when (showList) {
                 CommunityMembersFilter.ALL_MEMBERS.value -> {
@@ -84,7 +85,7 @@ class CommunityMembersViewModel @Inject constructor(
             val response = lmChatClient.getAllMember(request)
 
             if (response.success) {
-                onCommunityMemberResponse(response.data)
+                onCommunityMemberResponse(response.data, showList)
             } else {
                 val errorMessage = response.errorMessage
                 Log.e(LOG_TAG, "community/member error: $errorMessage")
@@ -94,17 +95,16 @@ class CommunityMembersViewModel @Inject constructor(
     }
 
     //process response of getAllMembers
-    private fun onCommunityMemberResponse(data: GetAllMemberResponse?) {
+    private fun onCommunityMemberResponse(data: GetAllMemberResponse?, showList: Int) {
         if (data == null) return
         val members = data.members
-        val totalOnlyMembers = data.totalOnlyMembers ?: 0
-        val loggedInMemberUUID = userPreferences.getUUID()
-
-        val filteredMembers = members.filterNot { member ->
-            member.sdkClientInfo?.uuid == loggedInMemberUUID
+        val totalOnlyMembers = if (showList == CommunityMembersFilter.ONLY_CMS.value) {
+            data.adminsCount ?: 0
+        } else {
+            data.totalMembers ?: 0
         }
 
-        val membersViewData = filteredMembers.map {
+        val membersViewData = members.map {
             ViewDataConverter.convertMember(it).toBuilder()
                 .dynamicViewType(ITEM_COMMUNITY_MEMBER)
                 .build()
@@ -121,6 +121,7 @@ class CommunityMembersViewModel @Inject constructor(
                 .pageSize(PAGE_SIZE)
                 .search(searchKeyword)
                 .searchType(MemberSearchType.NAME)
+                .excludeSelfUser(true)
 
             val request = when (showList) {
                 CommunityMembersFilter.ALL_MEMBERS.value -> {
@@ -155,7 +156,7 @@ class CommunityMembersViewModel @Inject constructor(
     private fun onMemberSearched(data: SearchMembersResponse?) {
         if (data == null) return
         val members = data.members
-        val totalOnlyMembers = data.members.size
+        val membersCount = data.recordsCount
 
         val membersViewData = members.map {
             ViewDataConverter.convertMember(it).toBuilder()
@@ -163,7 +164,7 @@ class CommunityMembersViewModel @Inject constructor(
                 .build()
         }
 
-        _membersResponse.postValue(Pair(membersViewData, totalOnlyMembers))
+        _membersResponse.postValue(Pair(membersViewData, membersCount))
     }
 
     //checks dm limit

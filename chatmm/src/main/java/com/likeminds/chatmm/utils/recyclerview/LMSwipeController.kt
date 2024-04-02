@@ -61,8 +61,8 @@ class LMSwipeController(
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         mView = viewHolder.itemView
-        imageDrawable = ContextCompat.getDrawable(context, R.drawable.ic_reply)!!
-        shareRound = ContextCompat.getDrawable(context, R.drawable.ic_reply_background)!!
+        imageDrawable = ContextCompat.getDrawable(context, R.drawable.lm_chat_ic_reply)!!
+        shareRound = ContextCompat.getDrawable(context, R.drawable.lm_chat_ic_reply_background)!!
 
         val adapter = (viewHolder.bindingAdapter as BaseRecyclerAdapter<*>)
         val viewType = adapter.getItemViewType(viewHolder.bindingAdapterPosition)

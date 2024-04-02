@@ -41,7 +41,7 @@ internal class PollResultUserItemViewDataBinder constructor(
         binding.apply {
             memberViewData = data
             showCustomTitle =
-                !data.customTitle.isNullOrEmpty() && data.customTitle != root.context.getString(R.string.member)
+                !data.customTitle.isNullOrEmpty() && data.customTitle != root.context.getString(R.string.lm_chat_member)
 
             MemberImageUtil.setImage(
                 data.imageUrl,
@@ -57,10 +57,10 @@ internal class PollResultUserItemViewDataBinder constructor(
 
             when {
                 data.isGuest == true || MemberState.isMemberSkipPrivateLink(data.state) -> {
-                    setSubTitleTextColor(binding, R.color.turquoise)
+                    setSubTitleTextColor(binding, R.color.lm_chat_turquoise)
                 }
                 else -> {
-                    setSubTitleTextColor(binding, R.color.grey)
+                    setSubTitleTextColor(binding, R.color.lm_chat_grey)
                 }
             }
 
@@ -108,7 +108,7 @@ internal class PollResultUserItemViewDataBinder constructor(
             val memberViewData =
                 binding.memberViewData ?: return@setOnClickListener
             if (memberViewData.customClickText != null) {
-                DialogUtil.showProfileNotExist(it.context, memberViewData.customClickText!!)
+                DialogUtil.showProfileNotExist(it.context, memberViewData.customClickText)
             } else {
                 adapterListener.showMemberProfile(
                     memberViewData,

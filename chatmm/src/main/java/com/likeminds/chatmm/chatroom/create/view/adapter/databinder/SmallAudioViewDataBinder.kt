@@ -32,12 +32,12 @@ class SmallAudioViewDataBinder constructor(private val imageAdapterListener: Ima
             if (data.isSelected) {
                 constraintLayout.background = ContextCompat.getDrawable(
                     binding.root.context,
-                    R.drawable.background_transparent_turquoise_2
+                    R.drawable.lm_chat_background_transparent_turquoise_2
                 )
             } else {
                 constraintLayout.background = ContextCompat.getDrawable(
                     binding.root.context,
-                    R.drawable.background_transparent
+                    R.drawable.lm_chat_background_transparent
                 )
             }
 

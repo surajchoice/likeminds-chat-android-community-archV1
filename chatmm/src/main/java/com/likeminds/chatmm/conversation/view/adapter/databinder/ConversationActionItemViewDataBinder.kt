@@ -63,9 +63,9 @@ class ConversationActionItemViewDataBinder constructor(
                 true,
                 ContextCompat.getColor(
                     tvAction.context,
-                    R.color.white
+                    R.color.lm_chat_white
                 )
-            ) { tag ->
+            ) { _ ->
                 // todo: onMemberClick()
             }
 
@@ -97,7 +97,7 @@ class ConversationActionItemViewDataBinder constructor(
                 }
             }
 
-            val tapToUndoString = tvAction.context.getString(R.string.tap_to_undo)
+            val tapToUndoString = tvAction.context.getString(R.string.lm_chat_tap_to_undo)
 
             if (conversation.showTapToUndo) {
                 if (!editable.contains(tapToUndoString)) {
@@ -125,11 +125,13 @@ class ConversationActionItemViewDataBinder constructor(
                 }
             }
 
-            LinkifyCompat.addLinks(tvAction, Linkify.ALL)
+            val linkifyLinks =
+                (Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS)
+            LinkifyCompat.addLinks(tvAction, linkifyLinks)
             tvAction.setLinkTextColor(
                 ContextCompat.getColor(
                     tvAction.context,
-                    R.color.white
+                    R.color.lm_chat_white
                 )
             )
             tvAction.movementMethod = LinkMovementMethod.getInstance()

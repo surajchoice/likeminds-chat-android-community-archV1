@@ -201,28 +201,28 @@ object ChatReplyUtil {
         val hasLink = linkViewData != null
         return when {
             conversationState == STATE_POLL -> {
-                R.drawable.ic_poll_room_header
+                R.drawable.lm_chat_ic_poll_room_header
             }
             firstMediaType == IMAGE && imagesCount > 0 -> {
-                R.drawable.ic_photo_header
+                R.drawable.lm_chat_ic_photo_header
             }
             firstMediaType == GIF && gifsCount > 0 -> {
-                R.drawable.ic_gif_header
+                R.drawable.lm_chat_ic_gif_header
             }
             firstMediaType == VIDEO && videosCount > 0 -> {
-                R.drawable.ic_video_header
+                R.drawable.lm_chat_ic_video_header
             }
             firstMediaType == PDF && pdfsCount > 0 -> {
-                R.drawable.ic_document_header
+                R.drawable.lm_chat_ic_document_header
             }
             firstMediaType == AUDIO && audiosCount > 0 -> {
-                R.drawable.ic_audio_header_grey
+                R.drawable.lm_chat_ic_audio_header_grey
             }
             firstMediaType == VOICE_NOTE && voiceNoteCount > 0 -> {
-                R.drawable.ic_voice_note_header_grey
+                R.drawable.lm_chat_ic_voice_note_header_grey
             }
             hasLink -> {
-                R.drawable.ic_link_header
+                R.drawable.lm_chat_ic_link_header
             }
             else -> null
         }

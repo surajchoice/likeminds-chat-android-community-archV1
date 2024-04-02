@@ -42,11 +42,11 @@ class Thumb private constructor() {
                 val th = Thumb()
                 th.index = i
                 if (i == 0) {
-                    val resImageLeft = R.drawable.combined_shape
+                    val resImageLeft = R.drawable.lm_chat_combined_shape
                     th.bitmap = BitmapFactory.decodeResource(resources, resImageLeft)
 //                    th.bitmap = drawableToBitmap(resources.getDrawable(R.drawable.seek_left_handle))
                 } else {
-                    val resImageRight = R.drawable.combined_shape
+                    val resImageRight = R.drawable.lm_chat_combined_shape
                     th.bitmap = BitmapFactory.decodeResource(resources, resImageRight)
 //                    th.bitmap = drawableToBitmap(resources.getDrawable(R.drawable.seek_right_handle))
                 }

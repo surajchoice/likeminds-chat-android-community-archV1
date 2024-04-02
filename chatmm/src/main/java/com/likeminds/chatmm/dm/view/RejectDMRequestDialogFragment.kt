@@ -57,9 +57,9 @@ class RejectDMRequestDialogFragment :
             }
         }
     }
+}
 
-    interface RejectDMRequestDialogListener {
-        fun rejectDMRequest()
-        fun reportAndRejectDMRequest()
-    }
+interface RejectDMRequestDialogListener {
+    fun rejectDMRequest()
+    fun reportAndRejectDMRequest()
 }

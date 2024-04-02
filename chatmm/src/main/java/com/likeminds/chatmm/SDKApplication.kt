@@ -8,6 +8,7 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
+import com.likeminds.chatmm.di.chat.ChatComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
 import com.likeminds.chatmm.di.dm.DMComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
@@ -42,6 +43,7 @@ class SDKApplication {
     private var reportComponent: ReportComponent? = null
     private var dmComponent: DMComponent? = null
     private var memberComponent: MemberComponent? = null
+    private var chatComponent: ChatComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -194,17 +196,33 @@ class SDKApplication {
         return reportComponent
     }
 
+    /**
+     * initiate and return DMComponent: All dependencies required for report package
+     * */
     fun dmComponent(): DMComponent? {
-        if(dmComponent == null) {
+        if (dmComponent == null) {
             dmComponent = likeMindsChatComponent?.dmComponent()?.create()
         }
         return dmComponent
     }
 
+    /**
+     * initiate and return MemberComponent: All dependencies required for report package
+     * */
     fun memberComponent(): MemberComponent? {
-        if(memberComponent == null) {
+        if (memberComponent == null) {
             memberComponent = likeMindsChatComponent?.memberComponent()?.create()
         }
         return memberComponent
+    }
+
+    /**
+     * initiate and return ChatComponent: All dependencies required for report package
+     * */
+    fun chatComponent(): ChatComponent? {
+        if (chatComponent == null) {
+            chatComponent = likeMindsChatComponent?.chatComponent()?.create()
+        }
+        return chatComponent
     }
 }

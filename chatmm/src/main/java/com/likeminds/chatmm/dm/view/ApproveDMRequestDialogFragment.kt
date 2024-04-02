@@ -51,8 +51,8 @@ class ApproveDMRequestDialogFragment :
             }
         }
     }
+}
 
-    interface ApproveDMRequestDialogListener {
-        fun approveDMRequest()
-    }
+interface ApproveDMRequestDialogListener {
+    fun approveDMRequest()
 }

@@ -72,7 +72,7 @@ internal class VideoTrimmer @JvmOverloads constructor(
     private fun setUpListeners() {
         binding.apply {
             mListeners = ArrayList()
-            mListeners.add(OnProgressVideoListener { time, max, scale -> updateVideoProgress(time) })
+            mListeners.add(OnProgressVideoListener { time, _, _ -> updateVideoProgress(time) })
 
             val gestureDetector =
                 GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {

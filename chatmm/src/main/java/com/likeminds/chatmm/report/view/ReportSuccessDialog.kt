@@ -32,9 +32,9 @@ class ReportSuccessDialog(private val type: String) :
         //set header and sub header as per [type] received in constructor
         Log.d(SDKApplication.LOG_TAG, "reports success opened")
         binding.apply {
-            tvReportedHeader.text = getString(R.string.s_is_reported_for_review, type)
+            tvReportedHeader.text = getString(R.string.lm_chat_s_is_reported_for_review, type)
             tvReportSubHeader.text = getString(
-                R.string.our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s,
+                R.string.lm_chat_our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s,
                 type
             )
 

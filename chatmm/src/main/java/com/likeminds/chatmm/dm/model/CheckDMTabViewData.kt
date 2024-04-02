@@ -20,6 +20,13 @@ class CheckDMTabViewData private constructor(
         fun hideDMText(hideDMText: String?) = apply { this.hideDMText = hideDMText }
         fun isCM(isCM: Boolean) = apply { this.isCM = isCM }
         fun unreadDMCount(unreadDMCount: Int) = apply { this.unreadDMCount = unreadDMCount }
+
+        fun build() = CheckDMTabViewData(
+            hideDMTab,
+            hideDMText,
+            isCM,
+            unreadDMCount
+        )
     }
 
     fun toBuilder(): Builder {

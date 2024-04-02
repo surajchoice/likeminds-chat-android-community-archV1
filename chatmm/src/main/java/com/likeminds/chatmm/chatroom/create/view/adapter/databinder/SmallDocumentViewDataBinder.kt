@@ -32,17 +32,17 @@ class SmallDocumentViewDataBinder constructor(private val imageAdapterListener: 
             ImageBindingUtil.loadImage(
                 ivIcon,
                 data.singleUriData.thumbnailUri,
-                R.drawable.ic_pdf
+                R.drawable.lm_chat_ic_pdf
             )
             if (data.isSelected) {
                 constraintLayout.background = ContextCompat.getDrawable(
                     root.context,
-                    R.drawable.background_transparent_turquoise_2
+                    R.drawable.lm_chat_background_transparent_turquoise_2
                 )
             } else {
                 constraintLayout.background = ContextCompat.getDrawable(
                     root.context,
-                    R.drawable.background_transparent
+                    R.drawable.lm_chat_background_transparent
                 )
             }
             root.setOnClickListener {

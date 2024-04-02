@@ -84,7 +84,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
         createRockyComponent(context.applicationContext as Application)
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.ic_notification
+        notificationIcon = R.drawable.lm_chat_ic_notification
 
         // set notification text color as Branding color
         notificationTextColor = LMBranding.getButtonsColor()
@@ -318,7 +318,7 @@ class NotificationActionBroadcastReceiver : BroadcastReceiver() {
                         LMChatNotificationHandler.GENERAL_CHANNEL_ID
                     )
                         .setSmallIcon(notificationIcon)
-                        .setContentTitle(context.getString(R.string.app_name))
+                        .setContentTitle(context.getString(R.string.lm_chat_app_name))
                         .setContentText(data.title)
 
                 val unreadConversationPerson = Person.Builder()

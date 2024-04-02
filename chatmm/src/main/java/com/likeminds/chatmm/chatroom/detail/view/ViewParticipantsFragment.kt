@@ -25,7 +25,7 @@ class ViewParticipantsFragment :
     BaseFragment<FragmentViewParticipantsBinding, ViewParticipantsViewModel>(),
     ViewParticipantsAdapterListener {
 
-    private lateinit var extras: ViewParticipantsExtras
+    private lateinit var viewParticipantExtras: ViewParticipantsExtras
     private lateinit var mAdapter: ViewParticipantsAdapter
 
     private lateinit var scrollListener: EndlessRecyclerScrollListener
@@ -49,9 +49,12 @@ class ViewParticipantsFragment :
     override fun receiveExtras() {
         super.receiveExtras()
 
-        extras = activity?.intent?.getBundleExtra("bundle")
-            ?.getParcelable(ViewParticipantsActivity.VIEW_PARTICIPANTS_EXTRAS)
-            ?: throw emptyExtrasException(TAG)
+        val extras = activity?.intent?.getBundleExtra("bundle")
+        viewParticipantExtras = ExtrasUtil.getParcelable(
+            extras,
+            ViewParticipantsActivity.VIEW_PARTICIPANTS_EXTRAS,
+            ViewParticipantsExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
     }
 
     override fun attachDagger() {
@@ -71,8 +74,8 @@ class ViewParticipantsFragment :
     // fetches initial data
     private fun initData() {
         viewModel.fetchParticipants(
-            extras.isSecretChatroom,
-            extras.chatroomId,
+            viewParticipantExtras.isSecretChatroom,
+            viewParticipantExtras.chatroomId,
             1,
             null
         )
@@ -106,8 +109,8 @@ class ViewParticipantsFragment :
             override fun onLoadMore(currentPage: Int) {
                 if (currentPage > 0) {
                     viewModel.fetchParticipants(
-                        extras.isSecretChatroom,
-                        extras.chatroomId,
+                        viewParticipantExtras.isSecretChatroom,
+                        viewParticipantExtras.chatroomId,
                         currentPage,
                         searchKeyword
                     )
@@ -143,8 +146,8 @@ class ViewParticipantsFragment :
                     mAdapter.clearAndNotify()
                     searchKeyword = keyword
                     viewModel.fetchParticipants(
-                        extras.isSecretChatroom,
-                        extras.chatroomId,
+                        viewParticipantExtras.isSecretChatroom,
+                        viewParticipantExtras.chatroomId,
                         1,
                         keyword
                     )
@@ -174,8 +177,8 @@ class ViewParticipantsFragment :
         mAdapter.clearAndNotify()
         searchKeyword = null
         viewModel.fetchParticipants(
-            extras.isSecretChatroom,
-            extras.chatroomId,
+            viewParticipantExtras.isSecretChatroom,
+            viewParticipantExtras.chatroomId,
             1,
             null
         )
@@ -210,7 +213,7 @@ class ViewParticipantsFragment :
     //set total participants in header's subtitle
     private fun setTotalParticipantsCount(totalParticipants: Int) {
         binding.tvToolbarSubTitle.text = resources.getQuantityString(
-            R.plurals.participants_s,
+            R.plurals.lm_chat_participants_s,
             totalParticipants,
             totalParticipants
         )
@@ -218,6 +221,6 @@ class ViewParticipantsFragment :
 
     override fun onMemberClick(memberViewData: MemberViewData) {
         super.onMemberClick(memberViewData)
-        // todo: member clicked.
+        SDKApplication.getLikeMindsCallback()?.openProfile(memberViewData)
     }
 }

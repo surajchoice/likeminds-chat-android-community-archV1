@@ -14,7 +14,7 @@
         android:id="@+id/constraint_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_transparent_turquoise_2">
+        android:background="@drawable/lm_chat_background_transparent_turquoise_2">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_thumbnail"
@@ -35,7 +35,7 @@
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 tools:ignore="ContentDescription"
-                tools:src="@color/black" />
+                tools:src="@color/lm_chat_black" />
 
             <ImageView
                 android:id="@+id/iv_audio"
@@ -44,7 +44,7 @@
                 android:layout_gravity="bottom|start"
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="4dp"
-                android:src="@drawable/ic_audio_header"
+                android:src="@drawable/lm_chat_ic_audio_header"
                 tools:ignore="ContentDescription" />
         </androidx.cardview.widget.CardView>
 
@@ -54,7 +54,7 @@
             android:layout_height="56dp"
             android:layout_margin="2dp"
             android:visibility="gone"
-            app:cardBackgroundColor="@color/orange_yellow"
+            app:cardBackgroundColor="@color/lm_chat_orange_yellow"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
                     android:id="@+id/iv_audio_header"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_audio_header"
+                    android:src="@drawable/lm_chat_ic_audio_header"
                     tools:ignore="ContentDescription" />
 
                 <com.likeminds.chatmm.branding.customview.LikeMindsTextView
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
                     android:gravity="center_horizontal"
-                    android:textColor="@color/white"
+                    android:textColor="@color/lm_chat_white"
                     android:textSize="12sp"
                     android:textStyle="normal"
                     app:fontType="regular"

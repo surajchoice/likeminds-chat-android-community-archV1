@@ -52,9 +52,9 @@ class MediaPickerFolderItemViewDataBinder @Inject constructor(
 
     private fun getFolderIcon(folderType: MediaFolderType): Int {
         return when (folderType) {
-            MediaFolderType.CAMERA -> R.drawable.ic_camera_white
-            MediaFolderType.LIKEMINDS -> R.drawable.ic_likeminds_logo
-            else -> R.drawable.ic_folder
+            MediaFolderType.CAMERA -> R.drawable.lm_chat_ic_camera_white
+            MediaFolderType.LIKEMINDS -> R.drawable.lm_chat_ic_likeminds_logo
+            else -> R.drawable.lm_chat_ic_folder
         }
     }
 }

@@ -259,11 +259,11 @@ internal class ConversationPollItemViewDataBinder constructor(
         binding.apply {
             val context = root.context
             if (pollView.isInstantPoll() || !pollView.isPollSubmitted()) {
-                btnSubmitVote.text = context.getString(R.string.submit_vote)
-                btnSubmitVote.setIconResource(R.drawable.ic_vote)
+                btnSubmitVote.text = context.getString(R.string.lm_chat_submit_vote)
+                btnSubmitVote.setIconResource(R.drawable.lm_chat_ic_vote)
             } else {
-                btnSubmitVote.text = context.getString(R.string.edit_vote)
-                btnSubmitVote.setIconResource(R.drawable.ic_edit_24dp)
+                btnSubmitVote.text = context.getString(R.string.lm_chat_edit_vote)
+                btnSubmitVote.setIconResource(R.drawable.lm_chat_ic_edit_24dp)
             }
         }
     }
@@ -286,7 +286,7 @@ internal class ConversationPollItemViewDataBinder constructor(
             if (memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()) {
                 btnAddOption.strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
             } else {
-                btnAddOption.setStrokeColorResource(R.color.cloudy_blue)
+                btnAddOption.setStrokeColorResource(R.color.lm_chat_cloudy_blue)
             }
         }
     }
@@ -303,7 +303,7 @@ internal class ConversationPollItemViewDataBinder constructor(
     private fun setPollSubmitClick(binding: ItemConversationPollBinding) {
         binding.apply {
             btnSubmitVote.setOnClickListener {
-                if (btnSubmitVote.text.toString() == root.context.getString(R.string.edit_vote)) {
+                if (btnSubmitVote.text.toString() == root.context.getString(R.string.lm_chat_edit_vote)) {
                     //enable editing poll
                     updatePollSubmittedValue(this, false)
                     pollView.reload()

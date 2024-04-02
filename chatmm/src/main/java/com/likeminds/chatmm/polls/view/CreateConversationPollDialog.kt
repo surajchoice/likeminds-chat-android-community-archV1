@@ -89,10 +89,16 @@ class CreateConversationPollDialog :
 
     override fun receiveExtras() {
         super.receiveExtras()
-        chatroom = arguments?.getParcelable(ARG_CHATROOM) as? ChatroomViewData
-            ?: throw emptyExtrasException(TAG)
-        chatroomExtras =
-            requireArguments().getParcelable(ARG_CHATROOM_EXTRAS) ?: throw emptyExtrasException(TAG)
+        chatroom = ExtrasUtil.getParcelable(
+            arguments,
+            ARG_CHATROOM,
+            ChatroomViewData::class.java
+        ) ?: throw emptyExtrasException(TAG)
+        chatroomExtras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            ARG_CHATROOM_EXTRAS,
+            ChatroomDetailExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {
@@ -120,7 +126,7 @@ class CreateConversationPollDialog :
                 ),
                 intArrayOf(
                     LMBranding.getButtonsColor(),
-                    requireContext().fetchColor(R.color.black_14)
+                    requireContext().fetchColor(R.color.lm_chat_black_14)
                 )
             )
         }
@@ -178,7 +184,7 @@ class CreateConversationPollDialog :
                 binding.tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_arrow_down,
+                    R.drawable.lm_chat_ic_arrow_down,
                     0
                 )
                 binding.constraintLayoutAdvanced.collapse()
@@ -187,7 +193,7 @@ class CreateConversationPollDialog :
                 binding.tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_arrow_up,
+                    R.drawable.lm_chat_ic_arrow_up,
                     0
                 )
                 binding.constraintLayoutAdvanced.expand()
@@ -206,13 +212,13 @@ class CreateConversationPollDialog :
 
     private fun showConfirmationDialog() {
         AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle(getString(R.string.discard_poll))
-            .setMessage(getString(R.string.discard_poll_message))
-            .setPositiveButton(getString(R.string.discard)) { dialog, _ ->
+            .setTitle(getString(R.string.lm_chat_discard_poll))
+            .setMessage(getString(R.string.lm_chat_discard_poll_message))
+            .setPositiveButton(getString(R.string.lm_chat_discard)) { dialog, _ ->
                 dialog.dismiss()
                 this.dismiss()
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton(getString(R.string.lm_chat_cancel), null)
             .show()
     }
 
@@ -399,7 +405,7 @@ class CreateConversationPollDialog :
     private fun showPastExpiryDateSelectedError() {
         ViewUtils.showShortToast(
             requireContext(),
-            getString(R.string.please_select_future_date_as_poll_expire_time)
+            getString(R.string.lm_chat_please_select_future_date_as_poll_expire_time)
         )
     }
 

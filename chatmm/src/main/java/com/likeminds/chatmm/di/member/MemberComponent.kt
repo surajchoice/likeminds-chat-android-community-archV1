@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.di.member
 
-import com.likeminds.chatmm.member.view.CommunityMembersActivity
-import com.likeminds.chatmm.member.view.CommunityMembersFragment
+import com.likeminds.chatmm.member.view.LMChatCommunityMembersActivity
+import com.likeminds.chatmm.member.view.LMChatCommunityMembersFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [MemberViewModelModule::class])
@@ -12,6 +12,6 @@ interface MemberComponent {
         fun create(): MemberComponent
     }
 
-    fun inject(communityMembersActivity: CommunityMembersActivity)
-    fun inject(communityMembersFragment: CommunityMembersFragment)
+    fun inject(communityMembersActivity: LMChatCommunityMembersActivity)
+    fun inject(communityMembersFragment: LMChatCommunityMembersFragment)
 }

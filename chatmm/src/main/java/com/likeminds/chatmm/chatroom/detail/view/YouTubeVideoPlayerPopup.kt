@@ -221,12 +221,12 @@ class YouTubeVideoPlayerPopup(
 
             if (isFullScreen) {
                 customPlayerUiController?.enterFullScreen()
-                ivEnterExitFullscreen.setImageResource(R.drawable.ic_full_screen_exit)
+                ivEnterExitFullscreen.setImageResource(R.drawable.lm_chat_ic_full_screen_exit)
                 showSeekBar()
                 cardLayout.radius = 0f
             } else {
                 customPlayerUiController?.exitFullScreen()
-                ivEnterExitFullscreen.setImageResource(R.drawable.ic_switch_to_full_screen)
+                ivEnterExitFullscreen.setImageResource(R.drawable.lm_chat_ic_switch_to_full_screen)
                 hideSeekBar()
                 cardLayout.radius = 20f
             }

@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils.currentFragment
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -58,12 +59,16 @@ class MediaActivity : BaseAppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as? NavHostFragment ?: return
         val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_media_graph)
+        val navGraph = graphInflater.inflate(R.navigation.lm_chat_nav_media_graph)
         val navController = navHostFragment.navController
         if (intent != null) {
             val bundle = intent.extras
             if (bundle != null) {
-                val mediaExtras = bundle.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
+                val mediaExtras = ExtrasUtil.getParcelable(
+                    bundle,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 if (mediaExtras != null) {
                     when (mediaExtras.mediaScreenType) {
                         MEDIA_VERTICAL_LIST_SCREEN -> {

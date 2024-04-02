@@ -45,15 +45,15 @@ class DeleteMessagesDialog(
     private fun initView() {
         val text = if (topic != null) {
             if (conversations.size > 1) {
-                getString(R.string.topic_delete_multiple_messages)
+                getString(R.string.lm_chat_topic_delete_multiple_messages)
             } else {
-                getString(R.string.topic_delete_single_messages)
+                getString(R.string.lm_chat_topic_delete_single_messages)
             }
         } else {
             if (conversations.size > 1) {
-                getString(R.string.delete_multiple_message)
+                getString(R.string.lm_chat_delete_multiple_message)
             } else {
-                getString(R.string.delete_single_message)
+                getString(R.string.lm_chat_delete_single_message)
             }
         }
 
