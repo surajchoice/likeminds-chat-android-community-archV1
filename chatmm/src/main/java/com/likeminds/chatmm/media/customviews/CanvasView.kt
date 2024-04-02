@@ -271,32 +271,8 @@ internal class CanvasView : View, OnRotationGestureListener {
         val textX = this.textX
         val textY = this.textY
 
-//        val paintForMeasureText = Paint()
-
-        // Line break automatically
-//        val textLength = paintForMeasureText.measureText(text)
-//        val lengthOfChar = textLength / text.length.toFloat()
-//        val restWidth = canvas.width - textX // text-align : right
-//        val numChars =
-//            if (lengthOfChar <= 0) 1 else floor((restWidth / lengthOfChar).toDouble())
-//                .toInt() // The number of characters at 1 line
-//        val modNumChars = if (numChars < 1) 1 else numChars
-//        var y = textY
-//        var i = 0
-//        val len = text.length
-        //canvas.translate(textX, textY)
         textPaint.style = Paint.Style.FILL
 
-//        while (i < len) {
-//            val substring: String = if (i + modNumChars < len) {
-//                text.substring(i, i + modNumChars)
-//            } else {
-//                text.substring(i, len)
-//            }
-//            y += fontSize
-//            canvas.drawText(substring, textX, y, textPaint)
-//            i += modNumChars
-//        }
         textRect?.prepare(
             text,
             width,
