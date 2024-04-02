@@ -3415,7 +3415,10 @@ class ChatroomDetailFragment :
                 }
 
                 is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
-                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                    ViewUtils.showShortToast(
+                        context,
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                    )
                 }
 
                 is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
@@ -3438,10 +3441,6 @@ class ChatroomDetailFragment :
                     ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
 
-                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
-                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
-                }
-
                 is ChatroomDetailViewModel.ErrorMessageEvent.PostConversation -> {
                     ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
@@ -3451,6 +3450,13 @@ class ChatroomDetailFragment :
                 }
 
                 is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
+                    ViewUtils.showShortToast(
+                        context,
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                    )
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
                     ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
             }
@@ -3465,61 +3471,6 @@ class ChatroomDetailFragment :
                 showDM
             )
         }
-    }
-
-    private fun observeErrors() {
-        viewModel.errorMessageFlow.onEach { response ->
-            when (response) {
-                is ChatroomDetailViewModel.ErrorMessageEvent.FollowChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.LeaveSecretChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.SetChatroomTopic -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.PostConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.EditConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
-                    ViewUtils.showShortToast(
-                        context,
-                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
-                    )
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
-                    ViewUtils.showShortToast(
-                        context,
-                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
-                    )
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
-                    ViewUtils.showLongSnack(binding.root, response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.BlockMember -> TODO()
-                is ChatroomDetailViewModel.ErrorMessageEvent.SendDMRequest -> TODO()
-            }
-        }.observeInLifecycle(viewLifecycleOwner)
     }
 
     // observes updatedChatRequestState live data
