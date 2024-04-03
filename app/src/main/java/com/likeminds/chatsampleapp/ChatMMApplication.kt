@@ -38,7 +38,7 @@ class ChatMMApplication : Application(), LMUICallback {
             )
             .build()
 
-        LikeMindsChatUI.initiateGroupChatUI(
+        LikeMindsChatUI.initiateChatUI(
             this,
             this,
             brandingRequest
