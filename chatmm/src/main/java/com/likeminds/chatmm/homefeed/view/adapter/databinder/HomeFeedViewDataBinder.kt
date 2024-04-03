@@ -50,18 +50,18 @@ class HomeFeedViewDataBinder @Inject constructor(
             if (data.newChatRooms > 0) {
                 tvUnreadChatroom.isVisible = true
                 if (data.newChatRooms > 99) {
-                    tvUnreadChatroom.text = context.getString(R.string.ninety_nine_plus_new)
+                    tvUnreadChatroom.text = context.getString(R.string.lm_chat_ninety_nine_plus_new)
                 } else {
                     tvUnreadChatroom.text =
-                        context.getString(R.string.new_chatroom_count, data.newChatRooms)
+                        context.getString(R.string.lm_chat_new_chatroom_count, data.newChatRooms)
                 }
             } else if (data.totalChatRooms > 0) {
                 tvUnreadChatroom.isVisible = true
                 if (data.totalChatRooms > 99) {
-                    tvUnreadChatroom.text = context.getString(R.string.ninety_nine_plus_chatrooms)
+                    tvUnreadChatroom.text = context.getString(R.string.lm_chat_ninety_nine_plus_chatrooms)
                 } else {
                     tvUnreadChatroom.text = context.resources.getQuantityString(
-                        R.plurals.chatrooms_count,
+                        R.plurals.lm_chat_chatrooms_count,
                         data.totalChatRooms,
                         data.totalChatRooms
                     )

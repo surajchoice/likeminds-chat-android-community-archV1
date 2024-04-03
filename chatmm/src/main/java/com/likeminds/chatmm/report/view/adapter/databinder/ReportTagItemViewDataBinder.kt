@@ -42,7 +42,7 @@ class ReportTagItemViewDataBinder constructor(
             } else {
                 drawable.setStroke(
                     width,
-                    ContextCompat.getColor(root.context, R.color.brown_grey)
+                    ContextCompat.getColor(root.context, R.color.lm_chat_brown_grey)
                 )
             }
         }

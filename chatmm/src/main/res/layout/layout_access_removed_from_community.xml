@@ -6,14 +6,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <ImageView
             android:id="@+id/iv_blocked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="240dp"
-            android:src="@drawable/ic_blocked"
+            android:src="@drawable/lm_chat_ic_blocked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,13 +26,14 @@
             android:layout_marginTop="26dp"
             android:gravity="center"
             android:lineHeight="20sp"
-            android:text="@string/access_denied"
-            android:textColor="@color/dark_grey"
+            android:text="@string/lm_chat_access_denied"
+            android:textColor="@color/lm_chat_dark_grey"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_blocked" />
+            app:layout_constraintTop_toBottomOf="@id/iv_blocked"
+            tools:ignore="UnusedAttribute" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_description"
@@ -42,13 +43,14 @@
             android:layout_marginTop="12dp"
             android:gravity="center"
             android:lineHeight="20sp"
-            android:text="@string/oops_you_don_t_seem_to_have_access_to_the_community"
-            android:textColor="@color/grey"
+            android:text="@string/lm_chat_oops_you_don_t_seem_to_have_access_to_the_community"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="16sp"
             app:fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_heading" />
+            app:layout_constraintTop_toBottomOf="@id/tv_heading"
+            tools:ignore="UnusedAttribute" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

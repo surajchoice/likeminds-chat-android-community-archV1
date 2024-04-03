@@ -28,7 +28,7 @@ class Permission private constructor(
                 REQUEST_CAMERA,
                 "The app allows users to click pictures from camera and share it with other users.",
                 "To share pictures, allow LikeMinds access to camera. Tap on Settings > Permission, and turn Camera on.",
-                R.drawable.ic_camera_white
+                R.drawable.lm_chat_ic_camera_white
             )
         }
 
@@ -38,7 +38,7 @@ class Permission private constructor(
                 REQUEST_STORAGE,
                 "To easily receive and send photos, videos and other files, allow LikeMinds access to your device’s photos, media and files.",
                 "To send media, allow LikeMinds access to your device’s photos, media and files. Tap on Settings > Permission, and turn Storage on.",
-                R.drawable.ic_folder
+                R.drawable.lm_chat_ic_folder
             )
         }
 
@@ -48,7 +48,7 @@ class Permission private constructor(
                 REQUEST_RECORD_AUDIO,
                 "To record a Voice Message, allow LikeMinds access to your microphone.",
                 "To record a Voice Message, allow LikeMinds access to your microphone. Tap Settings > Permissions, and turn Microphone on.",
-                R.drawable.ic_mic
+                R.drawable.lm_chat_ic_mic
             )
         }
     }

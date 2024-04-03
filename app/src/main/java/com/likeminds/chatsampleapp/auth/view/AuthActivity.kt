@@ -32,7 +32,7 @@ class AuthActivity : AppCompatActivity() {
 
     companion object {
         const val DEFAULT_HEADER_COLOR = "#FFFFFF"
-        const val DEFAULT_BUTTON_COLOR = "#6200EE"
+        const val DEFAULT_BUTTON_COLOR = "#00897B"
         const val DEFAULT_TEXT_LINK = "#007AFF"
     }
 

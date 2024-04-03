@@ -16,14 +16,14 @@
         android:id="@+id/cl_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_transparent_turquoise_2">
+        android:background="@drawable/lm_chat_background_transparent_turquoise_2">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_image"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_margin="2dp"
-            app:cardBackgroundColor="@color/black"
+            app:cardBackgroundColor="@color/lm_chat_black"
             app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
             android:id="@+id/iv_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_video_small"
+            android:src="@drawable/lm_chat_ic_video_small"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/cv_image"
             app:layout_constraintStart_toStartOf="@+id/cv_image"

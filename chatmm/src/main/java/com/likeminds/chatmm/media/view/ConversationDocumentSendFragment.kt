@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -25,13 +24,12 @@ import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.ProgressHelper
-import com.likeminds.chatmm.utils.ViewUtils
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
@@ -127,12 +125,12 @@ class ConversationDocumentSendFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extras = MediaPickerExtras.Builder()
+            val extras = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(PDF))
                 .build()
 
-            val intent = MediaPickerActivity.getIntent(requireContext(), extras)
+            val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
             pickerLauncher.launch(intent)
         }
 
@@ -193,9 +191,12 @@ class ConversationDocumentSendFragment :
     //result callback for new document pick from custom gallery
     private val pickerLauncher = registerForActivityResult(StartActivityForResult()) { result ->
         if (result?.resultCode == Activity.RESULT_OK && result.data != null) {
-            val mediaPickerResult =
-                result.data?.extras?.getParcelable<MediaPickerResult>(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT)
-                    ?: return@registerForActivityResult
+            val extras = result.data?.extras
+            val mediaPickerResult = ExtrasUtil.getParcelable(
+                extras,
+                LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                MediaPickerResult::class.java
+            ) ?: return@registerForActivityResult
             when (mediaPickerResult.mediaPickerResultType) {
                 MEDIA_RESULT_BROWSE -> {
                     val intent = AndroidUtils.getExternalDocumentPickerIntent(
@@ -203,6 +204,7 @@ class ConversationDocumentSendFragment :
                     )
                     browsePickerLauncher.launch(intent)
                 }
+
                 MEDIA_RESULT_PICKED -> {
                     val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
                         requireContext(), mediaPickerResult.medias
@@ -240,7 +242,7 @@ class ConversationDocumentSendFragment :
                 binding.tvDocumentPageCount.show()
                 binding.viewDotPageCount.show()
                 binding.tvDocumentPageCount.text =
-                    getString(R.string.placeholder_pages, pageCount)
+                    getString(R.string.lm_chat_placeholder_pages, pageCount)
             } else {
                 binding.tvDocumentPageCount.hide()
                 binding.viewDotPageCount.hide()
@@ -457,6 +459,8 @@ class ConversationDocumentSendFragment :
                 )
             }
         })
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     //result callback for new document pick

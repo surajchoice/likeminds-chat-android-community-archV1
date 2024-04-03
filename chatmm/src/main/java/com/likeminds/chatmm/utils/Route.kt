@@ -18,9 +18,11 @@ object Route {
     const val ROUTE_MAIL = "mail"
     const val ROUTE_MEMBER = "member"
     const val ROUTE_MEMBER_PROFILE = "member_profile"
+    const val ROUTE_USER_PROFILE = "user_profile"
     const val ROUTE_COMMUNITY_FEED = "community_feed"
     const val ROUTE_POLL_CHATROOM = "poll_chatroom"
     const val ROUTE_SYNC = "sync"
+    private const val ROUTE_DIRECT_MESSAGE = "direct_messages"
 
     private const val DEEP_LINK_CHATROOM = "collabcard"
     private const val DEEP_LINK_SCHEME = "likeminds"
@@ -70,6 +72,7 @@ object Route {
             (firstPathSegment == DEEP_LINK_CHATROOM) -> {
                 return createChatroomRoute(data)
             }
+
             (firstPathSegment == DEEP_LINK_CHATROOM_DETAIL) -> {
                 return createChatroomDetailRoute(data)
             }
@@ -80,9 +83,11 @@ object Route {
                     DEEP_LINK_COMMUNITY_FEED -> {
                         createCommunityFeedRoute(data)
                     }
+
                     else -> null
                 }
             }
+
             else -> {
                 createWebsiteRoute(data)
             }
@@ -161,14 +166,21 @@ object Route {
                     deepLinkUrl
                 )
             }
+
             route.host == ROUTE_BROWSER -> {
                 intent = getRouteToBrowser(route)
             }
+
             route.host == ROUTE_CHATROOM_DETAIL -> {
                 intent = getRouteToChatroomDetail(context, route, source, deepLinkUrl)
             }
+
             route.host == ROUTE_MAIL -> {
                 intent = getRouteToMail(route)
+            }
+
+            route.host == ROUTE_DIRECT_MESSAGE -> {
+                intent = getRouteToDirectMessage(context, route)
             }
         }
         if (intent != null) {
@@ -300,11 +312,34 @@ object Route {
         }
     }
 
+    private fun getRouteToDirectMessage(context: Context, route: Uri): Intent? {
+        val chatroomId = route.getQueryParameter("chatroom_id") ?: return null
+        val communityId = route.getQueryParameter("community_id")
+        return ChatroomDetailActivity.getIntent(
+            context,
+            ChatroomDetailExtras.Builder()
+                .chatroomId(chatroomId)
+                .communityId(communityId)
+                .build()
+        )
+    }
+
     //route://poll_chatroom?chatroom_id=<>&poll_end=<true/false>
     fun getPollRouteQueryParameters(route: String): Pair<String?, Boolean> {
         val routeUri = Uri.parse(route)
         val chatroomId = routeUri.getQueryParameter("chatroom_id")
         val pollEnd = routeUri.getBooleanQueryParameter("poll_end", false)
         return Pair(chatroomId, pollEnd)
+    }
+
+    // create route for direct messages
+    // route://direct_messages?chatroom_id=<>&community_id=<>
+    fun createDirectMessageRoute(chatroomId: String): String {
+        return Uri.Builder()
+            .scheme(ROUTE_SCHEME)
+            .authority(ROUTE_DIRECT_MESSAGE)
+            .appendQueryParameter("chatroom_id", chatroomId)
+            .build()
+            .toString()
     }
 }

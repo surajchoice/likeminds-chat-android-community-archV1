@@ -15,6 +15,7 @@ import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.polls.model.PollResultExtras
 import com.likeminds.chatmm.polls.viewmodel.PollResultViewModel
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
 
@@ -54,9 +55,12 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
 
     override fun receiveExtras() {
         super.receiveExtras()
-        extra = requireActivity().intent?.getBundleExtra("bundle")
-            ?.getParcelable(PollResultsActivity.ARG_POLL_RESULTS)
-            ?: throw emptyExtrasException(TAG)
+        val extras = requireActivity().intent?.getBundleExtra("bundle")
+        extra = ExtrasUtil.getParcelable(
+            extras,
+            PollResultsActivity.ARG_POLL_RESULTS,
+            PollResultExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
     }
 
     override fun setUpViews() {
@@ -160,7 +164,7 @@ class PollResultFragment : BaseFragment<FragmentPollResultBinding, PollResultVie
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 val view = tab?.customView?.findViewById<TextView>(R.id.tv_poll_count) ?: return
                 view.apply {
-                    setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.lm_chat_grey))
                     setTypeface(null, Typeface.NORMAL)
                 }
             }

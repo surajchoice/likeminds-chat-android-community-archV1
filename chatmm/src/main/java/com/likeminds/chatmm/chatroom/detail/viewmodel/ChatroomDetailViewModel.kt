@@ -36,13 +36,16 @@ import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.community.model.GetMemberRequest
 import com.likeminds.likemindschat.conversation.model.*
 import com.likeminds.likemindschat.conversation.util.*
+import com.likeminds.likemindschat.dm.model.*
 import com.likeminds.likemindschat.helper.model.*
 import com.likeminds.likemindschat.poll.model.*
+import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.likeminds.likemindschat.user.model.MemberStateResponse
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -124,6 +127,20 @@ class ChatroomDetailViewModel @Inject constructor(
     private val _deleteConversationsResponse by lazy { MutableLiveData<Int>() }
     val deleteConversationsResponse: LiveData<Int> = _deleteConversationsResponse
 
+    private val _showDM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showDM: LiveData<Boolean> by lazy { _showDM }
+
+    var dmRequestText: String = ""
+
+    private val _updatedChatRequestState: MutableLiveData<ChatRequestState> by lazy { MutableLiveData() }
+    val updatedChatRequestState: LiveData<ChatRequestState> by lazy { _updatedChatRequestState }
+
+    private val _dmInitiatedForCM: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val dmInitiatedForCM: LiveData<Boolean> by lazy { _dmInitiatedForCM }
+
+    private val _memberBlocked: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val memberBlocked: LiveData<Boolean> by lazy { _memberBlocked }
+
     private var sendLinkPreview = true
 
     sealed class ConversationEvent {
@@ -164,6 +181,8 @@ class ChatroomDetailViewModel @Inject constructor(
         data class SubmitPoll(val errorMessage: String?) : ErrorMessageEvent()
         data class AddPollOption(val errorMessage: String?) : ErrorMessageEvent()
         data class EditChatroomTitle(val errorMessage: String?) : ErrorMessageEvent()
+        data class SendDMRequest(val errorMessage: String?) : ErrorMessageEvent()
+        data class BlockMember(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private fun getChatroom() = chatroomDetail.chatroom
@@ -189,6 +208,9 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun isDmChatroom(): Boolean {
+        if (!this::chatroomDetail.isInitialized) {
+            return false
+        }
         return getChatroom()?.type == TYPE_DIRECT_MESSAGE
     }
 
@@ -264,16 +286,26 @@ class ChatroomDetailViewModel @Inject constructor(
     }
 
     fun getOtherDmMember(): MemberViewData? {
-        return null
-        // todo:
-//        return if (
-//            userPreferences.getMemberId() == getChatroom()?.chatroomWithUser?.id
-//        ) {
-//            getChatroom()?.memberViewData
-//        }
-//        else {
-//            getChatroom()?.chatroomWithUser
-//        }
+        return if (
+            userPreferences.getUUID() == getChatroom()?.chatroomWithUser?.sdkClientInfo?.uuid
+        ) {
+            getChatroom()?.memberViewData
+        } else {
+            getChatroom()?.chatroomWithUser
+        }
+    }
+
+    fun getLoggedInMemberId(): String {
+        return userPreferences.getMemberId()
+    }
+
+    //gets the member with provided [uuid] from DB
+    fun getMemberFromDB(uuid: String): MemberViewData {
+        val memberRequest = GetMemberRequest.Builder()
+            .uuid(uuid)
+            .build()
+
+        return ViewDataConverter.convertMember(lmChatClient.getMember(memberRequest).data?.member)
     }
 
     //get first normal or poll conversation for list
@@ -369,7 +401,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * chatroom is present and conversation is present, chatroom has unseen conversations
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getInitialData(context: Context, chatroomDetailExtras: ChatroomDetailExtras) {
+    fun getInitialData(chatroomDetailExtras: ChatroomDetailExtras) {
         viewModelScope.launchIO {
             val request =
                 GetChatroomRequest.Builder().chatroomId(chatroomDetailExtras.chatroomId).build()
@@ -452,6 +484,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_UP)
                         .build()
                 }
+
                 //5th case -> chatroom is opened through deeplink/explore feed, which is open for the first time
                 chatroomWasNotLoaded -> {
                     Log.d(TAG, "case 5")
@@ -464,6 +497,7 @@ class ChatroomDetailViewModel @Inject constructor(
                         .scrollPosition(SCROLL_DOWN)
                         .build()
                 }
+
                 //6th case -> chatroom is present and conversation is present, chatroom opened for the first time from home feed
                 chatroom.lastSeenConversation == null || chatroomDetailExtras.loadFromTop == true -> {
                     Log.d(TAG, "case 6")
@@ -516,7 +550,7 @@ class ChatroomDetailViewModel @Inject constructor(
             fetchChatroomFromNetwork()
             markChatroomAsRead(chatroomDetailExtras.chatroomId)
             fetchMemberState()
-            observeConversations(context, chatroomDetailExtras.chatroomId)
+            observeConversations(chatroomDetailExtras.chatroomId)
         }
     }
 
@@ -659,8 +693,10 @@ class ChatroomDetailViewModel @Inject constructor(
             lmChatClient.getConversations(getBottomConversationsRequest)
         val bottomConversations = getBottomConversationsResponse.data?.conversations ?: emptyList()
 
+
         var bottomConversationsViewData =
             ViewDataConverter.convertConversations(bottomConversations)
+
         if (chatroomViewData.totalAllResponseCount <= CONVERSATIONS_LIMIT) {
             //All conversations are fetched
             dataList.add(getDateView(chatroomViewData.date))
@@ -685,7 +721,7 @@ class ChatroomDetailViewModel @Inject constructor(
      * Observe current chatroom conversations
      * @param chatroomId
      */
-    private fun observeConversations(context: Context, chatroomId: String) {
+    private fun observeConversations(chatroomId: String) {
         viewModelScope.launchMain {
             val conversationChangeListener = object : ConversationChangeListener {
                 override fun getChangedConversations(conversations: List<Conversation>?) {
@@ -736,6 +772,7 @@ class ChatroomDetailViewModel @Inject constructor(
         val value = conversations.sortedBy {
             it.createdEpoch
         }
+
         viewModelScope.launchDefault {
             conversationEventChannel.send(ConversationEvent.UpdatedConversation(value))
         }
@@ -1411,7 +1448,8 @@ class ChatroomDetailViewModel @Inject constructor(
         replyConversationId: String?,
         replyChatRoomId: String?,
         taggedUsers: List<TagViewData>,
-        replyChatData: ChatReplyViewData?
+        replyChatData: ChatReplyViewData?,
+        metadata: JSONObject? = null
     ) {
         viewModelScope.launchIO {
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
@@ -1447,6 +1485,11 @@ class ChatroomDetailViewModel @Inject constructor(
                     }
                 }
             }
+
+            if (metadata != null) {
+                postConversationRequestBuilder.metadata(metadata)
+            }
+
             val postConversationRequest = postConversationRequestBuilder.build()
 
             val temporaryConversation = saveTemporaryConversation(
@@ -1760,7 +1803,6 @@ class ChatroomDetailViewModel @Inject constructor(
         lmChatClient.updateConversationUploadWorkerUUID(updateConversationUploadWorkerUUIDRequest)
         uploadData.first.enqueue()
     }
-
 
     @SuppressLint("CheckResult", "EnqueueWork", "RestrictedApi")
     private fun uploadFilesViaWorker(
@@ -2145,10 +2187,89 @@ class ChatroomDetailViewModel @Inject constructor(
         _linkOgTags.postValue(ViewDataConverter.convertLinkOGTags(ogTags))
     }
 
+    // calls api to check the status of the DM
+    fun checkDMStatus(chatroomId: String) {
+        viewModelScope.launchIO {
+            val request = CheckDMStatusRequest.Builder()
+                .requestFrom(DMRequestFrom.CHATROOM)
+                .chatroomId(chatroomId)
+                .build()
+
+            val response = lmChatClient.checkDMStatus(request)
+            if (response.success) {
+                val showDM = response.data?.showDM ?: true
+                _showDM.postValue(showDM)
+            } else {
+                _showDM.postValue(true)
+            }
+        }
+    }
+
+    // calls api to send dm request
+    fun sendDMRequest(
+        chatroomId: String,
+        chatRequestState: ChatRequestState,
+        isM2CM: Boolean = false
+    ) {
+        viewModelScope.launchIO {
+            val request = SendDMRequest.Builder()
+                .chatroomId(chatroomId)
+                .text(dmRequestText)
+                .chatRequestState(chatRequestState)
+                .build()
+
+            val response = lmChatClient.sendDMRequest(request)
+            if (response.success) {
+                if (isM2CM) {
+                    _dmInitiatedForCM.postValue(true)
+                }
+                updateChatRequestStateLocally(chatRequestState)
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.SendDMRequest(response.errorMessage))
+            }
+        }
+    }
+
+    // updates the chatroom view data locally
+    private fun updateChatRequestStateLocally(chatRequestState: ChatRequestState) {
+        val updatedChatroom = getChatroom()
+            ?.toBuilder()
+            ?.chatRequestState(chatRequestState)
+            ?.chatRequestedById(userPreferences.getMemberId())
+            ?.build()
+
+        chatroomDetail = chatroomDetail.toBuilder().chatroom(updatedChatroom).build()
+        _updatedChatRequestState.postValue(chatRequestState)
+    }
+
     override fun onCleared() {
         previewLinkJob?.cancel()
         compositeDisposable.dispose()
         super.onCleared()
+    }
+
+    // calls api to block/unblock member
+    fun blockMember(chatroomId: String, status: MemberBlockState) {
+        viewModelScope.launchIO {
+            val request = BlockMemberRequest.Builder()
+                .chatroomId(chatroomId)
+                .status(status)
+                .build()
+
+            val response = lmChatClient.blockMember(request)
+
+            if (response.success) {
+                if (status == MemberBlockState.MEMBER_BLOCKED) {
+                    _memberBlocked.postValue(true)
+                    updateChatRequestStateLocally(ChatRequestState.REJECTED)
+                } else {
+                    _memberBlocked.postValue(false)
+                    updateChatRequestStateLocally(ChatRequestState.ACCEPTED)
+                }
+            } else {
+                errorEventChannel.send(ErrorMessageEvent.BlockMember(response.errorMessage))
+            }
+        }
     }
 
     /**------------------------------------------------------------

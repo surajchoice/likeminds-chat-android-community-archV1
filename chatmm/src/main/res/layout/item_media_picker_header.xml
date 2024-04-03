@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_header"
@@ -16,7 +16,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:textAllCaps="true"
-            android:textColor="@color/brown_grey"
+            android:textColor="@color/lm_chat_brown_grey"
             android:textSize="12sp"
             app:fontType="bold"
             app:layout_constraintBottom_toBottomOf="parent"

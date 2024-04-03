@@ -49,7 +49,7 @@ class AfterLoginActivity : AppCompatActivity() {
     }
 
     private fun initCommunityTab() {
-        LikeMindsChatUI.initiateHomeFeed(
+        LikeMindsChatUI.initiateChatFragment(
             this,
             R.id.frameLayout,
             authPreferences.getApiKey(),

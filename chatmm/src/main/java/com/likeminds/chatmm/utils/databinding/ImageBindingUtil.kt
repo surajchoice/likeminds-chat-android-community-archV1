@@ -2,9 +2,7 @@ package com.likeminds.chatmm.utils.databinding
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
@@ -21,9 +19,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.github.chrisbanes.photoview.PhotoView
 import com.likeminds.chatmm.utils.ViewUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 object ImageBindingUtil {
 
@@ -49,9 +45,11 @@ object ImageBindingUtil {
             url != null -> {
                 Glide.with(view).load(url)
             }
+
             drawable != null -> {
                 Glide.with(view).load(drawable).placeholder(placeholder).error(placeholder)
             }
+
             else -> {
                 return
             }
@@ -182,7 +180,7 @@ object ImageBindingUtil {
             override fun onLoadFailed(
                 e: GlideException?,
                 model: Any?,
-                target: Target<GifDrawable>?,
+                target: Target<GifDrawable>,
                 isFirstResource: Boolean
             ): Boolean {
                 return false
@@ -190,9 +188,9 @@ object ImageBindingUtil {
 
             override fun onResourceReady(
                 resource: GifDrawable,
-                model: Any?,
+                model: Any,
                 target: Target<GifDrawable>?,
-                dataSource: DataSource?,
+                dataSource: DataSource,
                 isFirstResource: Boolean
             ): Boolean {
                 if (isValidContextForGlide(view.context)) {

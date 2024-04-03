@@ -2,16 +2,21 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.*
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.Callback
+import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
+import com.likeminds.chatmm.di.chat.ChatComponent
 import com.likeminds.chatmm.di.chatroomdetail.ChatroomDetailComponent
+import com.likeminds.chatmm.di.dm.DMComponent
 import com.likeminds.chatmm.di.explore.ExploreComponent
 import com.likeminds.chatmm.di.homefeed.HomeFeedComponent
 import com.likeminds.chatmm.di.media.MediaComponent
+import com.likeminds.chatmm.di.member.MemberComponent
 import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.report.ReportComponent
@@ -38,6 +43,9 @@ class SDKApplication {
     private var pollsComponent: PollsComponent? = null
     private var reactionsComponent: ReactionsComponent? = null
     private var reportComponent: ReportComponent? = null
+    private var dmComponent: DMComponent? = null
+    private var memberComponent: MemberComponent? = null
+    private var chatComponent: ChatComponent? = null
 
     companion object {
         const val LOG_TAG = "LikeMindsChat"
@@ -66,8 +74,8 @@ class SDKApplication {
 
     fun initSDKApplication(
         application: Application,
-        lmUICallback: LMUICallback,
-        brandingRequest: SetBrandingRequest
+        lmUICallback: LMUICallback?,
+        brandingRequest: SetBrandingRequest?
     ) {
         LMChatClient.Builder(application)
             .build()
@@ -79,8 +87,9 @@ class SDKApplication {
     }
 
     // sets branding to the app
-    fun setupBranding(setBrandingRequest: SetBrandingRequest) {
-        LMBranding.setBranding(setBrandingRequest)
+    fun setupBranding(setBrandingRequest: SetBrandingRequest?) {
+        val brandingRequest = setBrandingRequest ?: SetBrandingRequest.Builder().build()
+        LMBranding.setBranding(brandingRequest)
     }
 
     private fun initAWSMobileClient(applicationContext: Context) {
@@ -188,5 +197,35 @@ class SDKApplication {
             reportComponent = likeMindsChatComponent?.reportComponent()?.create()
         }
         return reportComponent
+    }
+
+    /**
+     * initiate and return DMComponent: All dependencies required for report package
+     * */
+    fun dmComponent(): DMComponent? {
+        if (dmComponent == null) {
+            dmComponent = likeMindsChatComponent?.dmComponent()?.create()
+        }
+        return dmComponent
+    }
+
+    /**
+     * initiate and return MemberComponent: All dependencies required for report package
+     * */
+    fun memberComponent(): MemberComponent? {
+        if (memberComponent == null) {
+            memberComponent = likeMindsChatComponent?.memberComponent()?.create()
+        }
+        return memberComponent
+    }
+
+    /**
+     * initiate and return ChatComponent: All dependencies required for report package
+     * */
+    fun chatComponent(): ChatComponent? {
+        if (chatComponent == null) {
+            chatComponent = likeMindsChatComponent?.chatComponent()?.create()
+        }
+        return chatComponent
     }
 }

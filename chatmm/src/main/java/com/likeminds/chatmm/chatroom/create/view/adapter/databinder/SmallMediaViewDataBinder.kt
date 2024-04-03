@@ -33,12 +33,12 @@ class SmallMediaViewDataBinder constructor(private val imageAdapterListener: Ima
             if (data.isSelected) {
                 clImage.background = ContextCompat.getDrawable(
                     root.context,
-                    R.drawable.background_transparent_turquoise_2
+                    R.drawable.lm_chat_background_transparent_turquoise_2
                 )
             } else {
                 clImage.background = ContextCompat.getDrawable(
                     root.context,
-                    R.drawable.background_transparent
+                    R.drawable.lm_chat_background_transparent
                 )
             }
             ivImg.setOnClickListener {

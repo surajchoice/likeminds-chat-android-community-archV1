@@ -67,7 +67,7 @@ class FollowedChatroomViewDataBinder(
             //Show unseen count
             tvUnseenCount.text =
                 if (data.unseenConversationCount > MAX_UNSEEN_CONVERSATION) {
-                    root.context.getString(R.string.max_two_digit_number)
+                    root.context.getString(R.string.lm_chat_max_two_digit_number)
                 } else {
                     data.unseenConversationCount.toString()
                 }

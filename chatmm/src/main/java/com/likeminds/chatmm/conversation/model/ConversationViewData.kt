@@ -2,11 +2,30 @@ package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
-import com.likeminds.chatmm.media.model.*
+import com.likeminds.chatmm.media.model.AUDIO
+import com.likeminds.chatmm.media.model.GIF
+import com.likeminds.chatmm.media.model.IMAGE
+import com.likeminds.chatmm.media.model.PDF
+import com.likeminds.chatmm.media.model.VIDEO
+import com.likeminds.chatmm.media.model.VOICE_NOTE
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
-import com.likeminds.chatmm.utils.model.*
+import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_ACTION
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUDIO
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_CUSTOM_WIDGET
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_MEDIA
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_POLL
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_GIF
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_IMAGE
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_PDF
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_VIDEO
+import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_VOICE_NOTE
+import com.likeminds.chatmm.widget.model.WidgetViewData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -39,7 +58,10 @@ class ConversationViewData private constructor(
     val isLastItem: Boolean?,
     val pollInfoData: PollInfoData?,
     val isExpanded: Boolean,
-    val deletedByMember: MemberViewData?
+    val deletedByMember: MemberViewData?,
+    val showTapToUndo: Boolean,
+    val widgetId: String?,
+    val widgetViewData: WidgetViewData?
 ) : BaseViewType, Parcelable {
     override val viewType: Int
         get() = when (state) {
@@ -53,16 +75,20 @@ class ConversationViewData private constructor(
             STATE_REMOVED_FROM_CHATROOM,
             STATE_ADD_MEMBERS,
             STATE_TOPIC,
-            DM_MEMBER_REMOVED_OR_LEFT,
-            DM_CM_BECOMES_MEMBER_DISABLE,
-            DM_MEMBER_BECOMES_CM,
-            DM_CM_BECOMES_MEMBER_ENABLE,
-            DM_MEMBER_BECOMES_CM_ENABLE -> {
+            STATE_DM_MEMBER_REMOVED_OR_LEFT,
+            STATE_DM_CM_BECOMES_MEMBER_DISABLE,
+            STATE_DM_MEMBER_BECOMES_CM,
+            STATE_DM_CM_BECOMES_MEMBER_ENABLE,
+            STATE_DM_MEMBER_BECOMES_CM_ENABLE,
+            STATE_DM_ACCEPTED,
+            STATE_DM_REJECTED -> {
                 ITEM_CONVERSATION_ACTION
             }
+
             STATE_POLL -> {
                 ITEM_CONVERSATION_POLL
             }
+
             else -> {
                 val imageCount: Int = ChatroomUtil.getMediaCount(IMAGE, attachments)
                 val gifCount: Int = ChatroomUtil.getMediaCount(GIF, attachments)
@@ -70,6 +96,8 @@ class ConversationViewData private constructor(
                 val videoCount: Int = ChatroomUtil.getMediaCount(VIDEO, attachments)
                 val audioCount: Int = ChatroomUtil.getMediaCount(AUDIO, attachments)
                 val voiceNoteCount: Int = ChatroomUtil.getMediaCount(VOICE_NOTE, attachments)
+
+
                 when {
                     (imageCount == 1 && gifCount == 0 && pdfCount == 0 && videoCount == 0 && audioCount == 0 && voiceNoteCount == 0) -> {
                         ITEM_CONVERSATION_SINGLE_IMAGE
@@ -101,6 +129,10 @@ class ConversationViewData private constructor(
 
                     (imageCount + gifCount + pdfCount + videoCount > 1) -> {
                         ITEM_CONVERSATION_MULTIPLE_MEDIA
+                    }
+
+                    (widgetViewData != null) -> {
+                        ITEM_CONVERSATION_CUSTOM_WIDGET
                     }
 
                     (ogTags != null) -> {
@@ -200,6 +232,9 @@ class ConversationViewData private constructor(
         private var pollInfoData: PollInfoData? = null
         private var isExpanded: Boolean = false
         private var deletedByMember: MemberViewData? = null
+        private var showTapToUndo: Boolean = false
+        private var widgetId: String? = null
+        private var widgetViewData: WidgetViewData? = null
 
         fun id(id: String) = apply { this.id = id }
         fun memberViewData(memberViewData: MemberViewData) =
@@ -252,6 +287,10 @@ class ConversationViewData private constructor(
         fun deletedByMember(deletedByMember: MemberViewData?) =
             apply { this.deletedByMember = deletedByMember }
 
+        fun showTapToUndo(showTapToUndo: Boolean) = apply { this.showTapToUndo = showTapToUndo }
+        fun widgetId(widgetId: String?) = apply { this.widgetId = widgetId }
+        fun widget(widgetViewData: WidgetViewData?) = apply { this.widgetViewData = widgetViewData }
+
         fun build() = ConversationViewData(
             id,
             memberViewData,
@@ -281,7 +320,10 @@ class ConversationViewData private constructor(
             isLastItem,
             pollInfoData,
             isExpanded,
-            deletedByMember
+            deletedByMember,
+            showTapToUndo,
+            widgetId,
+            widgetViewData
         )
     }
 
@@ -315,5 +357,6 @@ class ConversationViewData private constructor(
             .pollInfoData(pollInfoData)
             .isExpanded(isExpanded)
             .deletedByMember(deletedByMember)
+            .showTapToUndo(showTapToUndo)
     }
 }

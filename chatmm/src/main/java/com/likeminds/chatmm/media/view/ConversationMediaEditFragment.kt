@@ -1,9 +1,7 @@
 package com.likeminds.chatmm.media.view
 
 import android.app.Activity
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.Intent
+import android.content.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaMetadataRetriever
@@ -17,7 +15,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.collabmates.membertagging.model.MemberTaggingExtras
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
 import com.likeminds.chatmm.branding.model.LMBranding
@@ -27,7 +25,9 @@ import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.databinding.FragmentConversationMediaEditBinding
 import com.likeminds.chatmm.media.customviews.ColorSeekBar
 import com.likeminds.chatmm.media.customviews.MediaEditMode
-import com.likeminds.chatmm.media.customviews.MediaEditMode.*
+import com.likeminds.chatmm.media.customviews.MediaEditMode.DRAW
+import com.likeminds.chatmm.media.customviews.MediaEditMode.TEXT
+import com.likeminds.chatmm.media.customviews.MediaEditMode.TRIM
 import com.likeminds.chatmm.media.customviews.interfaces.CanvasListener
 import com.likeminds.chatmm.media.customviews.interfaces.OnTrimVideoListener
 import com.likeminds.chatmm.media.model.*
@@ -35,10 +35,8 @@ import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
@@ -115,8 +113,11 @@ class ConversationMediaEditFragment :
     override fun handleResultListener() {
         super.handleResultListener()
         setFragmentResultListener(ImageCropFragment.REQUEST_KEY) { _, bundle ->
-            val singleUriData =
-                bundle.getParcelable<SingleUriData>(ImageCropFragment.BUNDLE_ARG_URI)
+            val singleUriData = ExtrasUtil.getParcelable(
+                bundle,
+                ImageCropFragment.BUNDLE_ARG_URI,
+                SingleUriData::class.java
+            )
             initMedia(singleUriData)
             replaceItem(selectedPosition, singleUriData)
             if (singleUriData == null) {
@@ -166,11 +167,11 @@ class ConversationMediaEditFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extra = MediaPickerExtras.Builder()
+            val extra = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(IMAGE, VIDEO))
                 .build()
-            val intent = MediaPickerActivity.getIntent(
+            val intent = LMChatMediaPickerActivity.getIntent(
                 requireContext(),
                 extra
             )
@@ -301,9 +302,12 @@ class ConversationMediaEditFragment :
     //result callback for new media pick from custom gallery
     private val pickerLauncher = registerForActivityResult(StartActivityForResult()) { result ->
         if (result?.resultCode == Activity.RESULT_OK && result.data != null) {
-            val mediaPickerResult =
-                result.data?.extras?.getParcelable<MediaPickerResult>(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT)
-                    ?: return@registerForActivityResult
+            val extras = result.data?.extras
+            val mediaPickerResult = ExtrasUtil.getParcelable(
+                extras,
+                LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                MediaPickerResult::class.java
+            ) ?: return@registerForActivityResult
             when (mediaPickerResult.mediaPickerResultType) {
                 MEDIA_RESULT_BROWSE -> {
                     val intent =
@@ -315,6 +319,7 @@ class ConversationMediaEditFragment :
                     if (intent != null)
                         browsePickerLauncher.launch(intent)
                 }
+
                 MEDIA_RESULT_PICKED -> {
                     val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
                         requireContext(), mediaPickerResult.medias
@@ -409,6 +414,7 @@ class ConversationMediaEditFragment :
                     .setVideoURI(singleUriData.uri)
                     .setVideoInformationVisibility(true)
             }
+
             IMAGE, GIF -> {
                 binding.videoView.visibility = View.GONE
                 binding.photoView.visibility = View.VISIBLE
@@ -536,6 +542,8 @@ class ConversationMediaEditFragment :
                 )
             }
         })
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     //result callback for new media pick
@@ -593,6 +601,7 @@ class ConversationMediaEditFragment :
         when (editMode) {
             DRAW -> binding.btnDraw.background = drawable
             TEXT -> binding.btnText.background = drawable
+            else -> {}
         }
     }
 
