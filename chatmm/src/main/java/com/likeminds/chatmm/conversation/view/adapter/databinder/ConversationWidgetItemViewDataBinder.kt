@@ -73,17 +73,6 @@ class ConversationWidgetItemViewDataBinder(
 
             if (!transactionId.isNullOrEmpty()) {
                 clWidget.show()
-                val timeStamp = if (metadata.has("timestamp")) {
-                    metadata.get("timestamp") as? Long
-                } else {
-                    null
-                }
-
-                tvKey1.text = if (timeStamp != null) {
-                    "$timeStamp"
-                } else {
-                    "null timestamp"
-                }
             } else {
                 clWidget.hide()
             }

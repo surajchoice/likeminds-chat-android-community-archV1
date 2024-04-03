@@ -803,12 +803,12 @@ class ChatroomDetailFragment :
 
             ivCustomWidgetA.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
-                onCustomWidgetAClicked()
+                onCustomWidgetAAttachmentClicked()
             }
 
             ivCustomWidgetB.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
-                onCustomWidgetBClicked()
+                onCustomWidgetBAttachmentClicked()
             }
 
             clBottomBar.setOnClickListener {
@@ -818,7 +818,7 @@ class ChatroomDetailFragment :
     }
 
     //on click function when custom widget A is clicked
-    private fun onCustomWidgetAClicked() {
+    private fun onCustomWidgetAAttachmentClicked() {
         //todo add code
         val isDMChatroom = viewModel.isDmChatroom()
 
@@ -840,7 +840,7 @@ class ChatroomDetailFragment :
     }
 
     //on click function when custom widget B is clicked
-    private fun onCustomWidgetBClicked() {
+    private fun onCustomWidgetBAttachmentClicked() {
         //todo add code
         val isDMChatroom = viewModel.isDmChatroom()
 
