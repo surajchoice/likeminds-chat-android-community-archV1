@@ -119,18 +119,25 @@ class InitiateViewModel @Inject constructor(
 
     //call register device
     private fun registerDevice() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(
-                    SDKApplication.LOG_TAG,
-                    "Fetching FCM registration token failed",
-                    task.exception
-                )
-                return@addOnCompleteListener
-            }
+        try {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(
+                        SDKApplication.LOG_TAG,
+                        "Fetching FCM registration token failed",
+                        task.exception
+                    )
+                    return@addOnCompleteListener
+                }
 
-            val token = task.result.toString()
-            pushToken(token)
+                val token = task.result.toString()
+                pushToken(token)
+            }
+        } catch (e: Exception) {
+            Log.w(
+                SDKApplication.LOG_TAG,
+                "Please add firebase to your project to enable notifications"
+            )
         }
     }
 
