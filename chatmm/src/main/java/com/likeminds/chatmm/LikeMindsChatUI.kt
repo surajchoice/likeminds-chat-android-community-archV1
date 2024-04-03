@@ -16,7 +16,7 @@ object LikeMindsChatUI {
      * @param application: application instance of client's app
      * @param brandingRequest: branding request from client
      **/
-    fun initiateGroupChatUI(
+    fun initiateChatUI(
         application: Application,
         lmUICallback: LMUICallback,
         brandingRequest: SetBrandingRequest? = null
