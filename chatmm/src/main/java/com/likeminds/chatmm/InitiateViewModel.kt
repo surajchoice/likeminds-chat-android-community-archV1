@@ -26,6 +26,8 @@ class InitiateViewModel @Inject constructor(
     private val _initiateUserResponse = MutableLiveData<MemberViewData?>()
     val initiateUserResponse: LiveData<MemberViewData?> = _initiateUserResponse
 
+    var isUserInitiated: Boolean = false
+
     private val _logoutResponse = MutableLiveData<Boolean>()
     val logoutResponse: LiveData<Boolean> = _logoutResponse
 
@@ -79,6 +81,8 @@ class InitiateViewModel @Inject constructor(
             val memberId = user?.id.toString()
             val uuid = user?.sdkClientInfo?.uuid ?: ""
             val name = user?.name ?: ""
+
+            isUserInitiated = true
 
             // save details to prefs
             saveDetailsToPrefs(

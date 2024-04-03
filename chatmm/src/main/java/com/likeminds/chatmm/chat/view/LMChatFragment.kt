@@ -120,6 +120,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) {
             initPagerAdapter()
             initData()
+            viewModel.checkDMTab()
             initiateViewModel.getConfig()
         }
 
@@ -227,9 +228,11 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                             val badge = orCreateBadge
                             badge.apply {
                                 horizontalOffset =
-                                    resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin).roundToInt()
+                                    resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
+                                        .roundToInt()
                                 verticalOffset =
-                                    resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin).roundToInt()
+                                    resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
+                                        .roundToInt()
 
                                 number = unreadDMCount
                                 maxCharacterCount = 2
@@ -271,7 +274,9 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     override fun onResume() {
         super.onResume()
-        viewModel.checkDMTab()
+        if (initiateViewModel.isUserInitiated) {
+            viewModel.checkDMTab()
+        }
     }
 
     //update the unread count on dm tab
@@ -282,9 +287,11 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                 val badge = it.orCreateBadge
                 badge.apply {
                     horizontalOffset =
-                        resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin).roundToInt()
+                        resources.getDimension(R.dimen.lm_chat_dm_badge_horizontal_margin)
+                            .roundToInt()
                     verticalOffset =
-                        resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin).roundToInt()
+                        resources.getDimension(R.dimen.lm_chat_dm_badge_vertical_margin)
+                            .roundToInt()
                     number = unreadDMCount
                     maxCharacterCount = 2
                     backgroundColor = LMBranding.getButtonsColor()
