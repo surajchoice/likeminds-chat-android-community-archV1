@@ -18,7 +18,7 @@ object LikeMindsChatUI {
      **/
     fun initiateChatUI(
         application: Application,
-        lmUICallback: LMUICallback,
+        lmUICallback: LMUICallback? = null,
         brandingRequest: SetBrandingRequest? = null
     ) {
         Log.d(SDKApplication.LOG_TAG, "initiate LikeMindsChatUI called")

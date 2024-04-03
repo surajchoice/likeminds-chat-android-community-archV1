@@ -74,7 +74,7 @@ class SDKApplication {
 
     fun initSDKApplication(
         application: Application,
-        lmUICallback: LMUICallback,
+        lmUICallback: LMUICallback?,
         brandingRequest: SetBrandingRequest?
     ) {
         LMChatClient.Builder(application)
