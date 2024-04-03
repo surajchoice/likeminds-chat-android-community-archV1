@@ -74,8 +74,8 @@ class SDKApplication {
 
     fun initSDKApplication(
         application: Application,
-        lmUICallback: LMUICallback,
-        brandingRequest: SetBrandingRequest
+        lmUICallback: LMUICallback?,
+        brandingRequest: SetBrandingRequest?
     ) {
         LMChatClient.Builder(application)
             .build()
@@ -87,8 +87,9 @@ class SDKApplication {
     }
 
     // sets branding to the app
-    fun setupBranding(setBrandingRequest: SetBrandingRequest) {
-        LMBranding.setBranding(setBrandingRequest)
+    fun setupBranding(setBrandingRequest: SetBrandingRequest?) {
+        val brandingRequest = setBrandingRequest ?: SetBrandingRequest.Builder().build()
+        LMBranding.setBranding(brandingRequest)
     }
 
     private fun initAWSMobileClient(applicationContext: Context) {
