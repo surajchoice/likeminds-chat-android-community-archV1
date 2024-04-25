@@ -5,6 +5,7 @@
 # Gradle files
 .gradle/
 build/
+*.dm
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -315,5 +316,3 @@ obj/
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,kotlin,intellij,java,firebase
-
-out
