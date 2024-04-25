@@ -5,6 +5,7 @@
 # Gradle files
 .gradle/
 build/
+*.dm
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -32,6 +33,9 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+
+# release json deta
+output-metadata.json
 
 # Android Profiling
 *.hprof
