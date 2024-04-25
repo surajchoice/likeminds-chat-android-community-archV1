@@ -18,6 +18,7 @@ class SDKPreferences @Inject constructor(
         private const val AUDIO_SUPPORT_ENABLED = "audio_support_enabled"
         private const val VOICE_NOTE_ENABLED = "voice_note_enabled"
         private const val SLIDE_UP_VOICE_NOTE_TOAST = "SLIDE_UP_VOICE_NOTE_TOAST"
+        private const val WIDGET_ENABLED = "widget_enabled"
     }
 
     fun setAPIKey(apiKey: String) {
@@ -66,6 +67,14 @@ class SDKPreferences @Inject constructor(
 
     fun setSlideUpVoiceNoteToast(value: Boolean) {
         putPreference(SLIDE_UP_VOICE_NOTE_TOAST, value)
+    }
+
+    fun setIsWidgetEnabled(enabled: Boolean) {
+        putPreference(WIDGET_ENABLED, enabled)
+    }
+
+    fun getIsWidgetEnabled(): Boolean {
+        return getPreference(WIDGET_ENABLED, false)
     }
 
     fun setDefaultConfigPrefs() {

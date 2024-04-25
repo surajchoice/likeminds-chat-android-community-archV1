@@ -10,6 +10,7 @@ import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.community.model.ConfigurationType
 import com.likeminds.likemindschat.initiateUser.model.*
 import javax.inject.Inject
 
@@ -30,6 +31,10 @@ class InitiateViewModel @Inject constructor(
 
     private val _logoutResponse = MutableLiveData<Boolean>()
     val logoutResponse: LiveData<Boolean> = _logoutResponse
+
+    companion object {
+        const val WIDGET_MESSAGE_KEY = "message"
+    }
 
     fun initiateUser(
         context: Context,
@@ -95,6 +100,9 @@ class InitiateViewModel @Inject constructor(
 
             //call register device api
             registerDevice()
+
+            //call community configuration api
+            getCommunityConfiguration()
 
             _initiateUserResponse.postValue(ViewDataConverter.convertUser(user))
         }
@@ -173,6 +181,28 @@ class InitiateViewModel @Inject constructor(
                 )
                 // sets default values to config prefs
                 sdkPreferences.setDefaultConfigPrefs()
+            }
+        }
+    }
+
+    //gets community configurations and save it into local db
+    private fun getCommunityConfiguration() {
+        viewModelScope.launchIO {
+            val communityConfigurationResponse = lmChatClient.getCommunityConfigurations()
+            if (communityConfigurationResponse.success) {
+                val widgetConfiguration =
+                    communityConfigurationResponse.data?.configurations?.find {
+                        it.type == ConfigurationType.WIDGET_METADATA
+                    } ?: return@launchIO
+
+                val value = widgetConfiguration.value
+
+                if (value.has(WIDGET_MESSAGE_KEY)) {
+                    val isEnabled = value.getBoolean(WIDGET_MESSAGE_KEY)
+                    sdkPreferences.setIsWidgetEnabled(isEnabled)
+                } else {
+                    sdkPreferences.setIsWidgetEnabled(false)
+                }
             }
         }
     }
