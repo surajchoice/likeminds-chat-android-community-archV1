@@ -114,12 +114,12 @@ class ItemVideoViewDataBinder constructor(
             val mediaLeft = attachmentViewData.mediaLeft
             if (mediaLeft != null) {
                 ivImage.background =
-                    ContextCompat.getDrawable(root.context, R.drawable.background_black60_8)
+                    ContextCompat.getDrawable(root.context, R.drawable.lm_chat_background_black60_8)
                 tvLeft.show()
                 tvLeft.text = "+ $mediaLeft"
             } else {
                 ivImage.background =
-                    ContextCompat.getDrawable(root.context, R.drawable.background_transparent)
+                    ContextCompat.getDrawable(root.context, R.drawable.lm_chat_background_transparent)
                 tvLeft.hide()
             }
         }

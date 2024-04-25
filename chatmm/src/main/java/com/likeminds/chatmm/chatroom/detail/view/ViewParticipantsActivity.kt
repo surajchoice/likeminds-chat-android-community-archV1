@@ -9,6 +9,7 @@ import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.chatroom.detail.model.ViewParticipantsExtras
 import com.likeminds.chatmm.databinding.ActivityViewParticipantsBinding
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -57,7 +58,11 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
         val bundle = intent.getBundleExtra("bundle")
 
         if (bundle != null) {
-            viewParticipantsExtras = bundle.getParcelable(VIEW_PARTICIPANTS_EXTRAS)
+            viewParticipantsExtras = ExtrasUtil.getParcelable(
+                bundle,
+                VIEW_PARTICIPANTS_EXTRAS,
+                ViewParticipantsExtras::class.java
+            )
             val args = Bundle().apply {
                 putParcelable(VIEW_PARTICIPANTS_EXTRAS, viewParticipantsExtras)
             }
@@ -66,7 +71,7 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
             navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             navController = navHostFragment.navController
-            navController.setGraph(R.navigation.nav_graph_view_participants, args)
+            navController.setGraph(R.navigation.lm_chat_nav_graph_view_participants, args)
         } else {
             redirectActivity(true)
         }
@@ -79,8 +84,8 @@ class ViewParticipantsActivity : BaseAppCompatActivity() {
         supportFragmentManager.popBackStack()
         super.onBackPressed()
         overridePendingTransition(
-            R.anim.slide_from_left,
-            R.anim.slide_to_right
+            R.anim.lm_chat_slide_from_left,
+            R.anim.lm_chat_slide_to_right
         )
     }
 }

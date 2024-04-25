@@ -19,7 +19,7 @@ internal class AnimatedRecyclerView : RecyclerView {
     private var columns = 1
 
     @AnimRes
-    private var animation = R.anim.layout_animation_from_bottom_scale
+    private var animation = R.anim.lm_chat_layout_animation_from_bottom_scale
     private var animationController: LayoutAnimationController? = null
 
     constructor(
@@ -76,7 +76,7 @@ internal class AnimatedRecyclerView : RecyclerView {
                 animation
             ) else AnimationUtils.loadLayoutAnimation(
                 getContext(),
-                R.anim.layout_animation_from_bottom_scale
+                R.anim.lm_chat_layout_animation_from_bottom_scale
             )
         animationController!!.animation.duration = animationDuration.toLong()
         layoutAnimation = animationController
@@ -96,7 +96,7 @@ internal class AnimatedRecyclerView : RecyclerView {
         private var columns = 1
 
         @AnimRes
-        private var animation = R.anim.layout_animation_from_bottom_scale
+        private var animation = R.anim.lm_chat_layout_animation_from_bottom_scale
         private var animationController: LayoutAnimationController? = null
         fun orientation(orientation: Int): Builder {
             this.orientation = orientation

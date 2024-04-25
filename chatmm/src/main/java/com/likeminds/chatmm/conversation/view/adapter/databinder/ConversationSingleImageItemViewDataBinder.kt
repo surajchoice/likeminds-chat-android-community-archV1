@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.conversation.view.adapter.databinder
 
 import android.net.Uri
+import android.util.Log
 import android.view.*
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
@@ -41,10 +42,12 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
         position: Int,
     ) {
         binding.apply {
+
             buttonColor = LMBranding.getButtonsColor()
             viewReply.buttonColor = LMBranding.getButtonsColor()
             conversation = data as ConversationViewData
             itemPosition = position
+
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
                 clConversationBubble,
@@ -233,7 +236,7 @@ internal class ConversationSingleImageItemViewDataBinder constructor(
                     ImageBindingUtil.loadImage(
                         ivSingleImage,
                         attachmentViewData.uri,
-                        placeholder = R.drawable.image_placeholder,
+                        placeholder = R.drawable.lm_chat_image_placeholder,
                         cornerRadius = 10
                     )
 

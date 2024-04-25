@@ -16,7 +16,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/nav_poll_results" />
+            app:navGraph="@navigation/lm_chat_nav_poll_results" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

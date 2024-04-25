@@ -45,7 +45,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
             app:fontType="medium"
             app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
@@ -60,7 +60,7 @@
             android:layout_width="3dp"
             android:layout_height="3dp"
             android:layout_marginStart="6dp"
-            android:background="@drawable/shape_center_dot_cloudy_blue"
+            android:background="@drawable/lm_chat_shape_center_dot_cloudy_blue"
             android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_member_name"
             app:layout_constraintStart_toEndOf="@+id/tv_member_name"
@@ -75,7 +75,7 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="@{memberViewData.customTitle}"
-            android:textColor="@color/turquoise"
+            android:textColor="@color/lm_chat_turquoise"
             android:textSize="12sp"
             android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
             app:fontType="regular"
@@ -84,7 +84,7 @@
             app:layout_constraintStart_toEndOf="@+id/view_dot"
             app:layout_constraintTop_toTopOf="@+id/tv_member_name"
             app:textType="special"
-            tools:text="@string/community_manager" />
+            tools:text="@string/lm_chat_community_manager" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_subtitle"
@@ -96,7 +96,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="2"
-            android:textColor="@color/grey"
+            android:textColor="@color/lm_chat_grey"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintBottom_toTopOf="@+id/tv_verification_pending"
@@ -115,8 +115,8 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="@string/verification_pending"
-            android:textColor="@color/turquoise"
+            android:text="@string/lm_chat_verification_pending"
+            android:textColor="@color/lm_chat_turquoise"
             android:textSize="14sp"
             app:fontType="regular"
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
@@ -135,7 +135,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toStartOf="@+id/iv_reject"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_tick_circle"
+            app:srcCompat="@drawable/lm_chat_ic_tick_circle"
             tools:ignore="ContentDescription,UseAppTint" />
 
         <ImageView
@@ -147,7 +147,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_cross"
+            app:srcCompat="@drawable/lm_chat_ic_cross"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.Group
@@ -173,7 +173,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/member_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/member_image"
-            app:srcCompat="@drawable/ic_more_vert_grey_24dp"
+            app:srcCompat="@drawable/lm_chat_ic_more_vert_grey_24dp"
             tools:ignore="ContentDescription" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -187,7 +187,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/cloudy_blue"
+            android:background="@color/lm_chat_cloudy_blue"
             android:visibility="@{hideBottomLine ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_member_name"

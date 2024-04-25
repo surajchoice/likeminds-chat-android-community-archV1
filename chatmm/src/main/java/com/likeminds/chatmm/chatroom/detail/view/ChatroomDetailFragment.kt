@@ -29,11 +29,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
-import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
@@ -51,6 +49,7 @@ import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.conversation.util.ChatReplyUtil
 import com.likeminds.chatmm.databinding.*
+import com.likeminds.chatmm.dm.view.*
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.AUDIO_SERVICE_PROGRESS_EXTRA
@@ -60,10 +59,10 @@ import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BRO
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_PROGRESS
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.BROADCAST_SEEKBAR_DRAGGED
 import com.likeminds.chatmm.media.util.MediaAudioForegroundService.Companion.PROGRESS_SEEKBAR_DRAGGED
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity
+import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.media.view.MediaActivity.Companion.BUNDLE_MEDIA_EXTRAS
-import com.likeminds.chatmm.media.view.MediaPickerActivity
-import com.likeminds.chatmm.media.view.MediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -81,6 +80,7 @@ import com.likeminds.chatmm.report.model.ReportExtras
 import com.likeminds.chatmm.report.view.ReportActivity
 import com.likeminds.chatmm.report.view.ReportSuccessDialog
 import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.Route.getNullableQueryParameter
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
 import com.likeminds.chatmm.utils.ValueUtils.getMaxCountNumberText
 import com.likeminds.chatmm.utils.ValueUtils.getMediaType
@@ -102,18 +102,24 @@ import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.file.util.FileUtil
 import com.likeminds.chatmm.utils.mediauploader.worker.MediaUploadWorker
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.model.TagViewData
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
 import com.likeminds.chatmm.utils.model.BaseViewType
+import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.utils.permissions.*
 import com.likeminds.chatmm.utils.recyclerview.LMSwipeController
 import com.likeminds.chatmm.utils.recyclerview.SwipeControllerActions
+import com.likeminds.chatmm.widget.model.WidgetViewData
+import com.likeminds.likemindschat.chatroom.model.ChatRequestState
+import com.likeminds.likemindschat.user.model.MemberBlockState
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -131,7 +137,11 @@ class ChatroomDetailFragment :
     YouTubeVideoPlayerPopup.VideoPlayerListener,
     VoiceNoteInterface,
     LeaveSecretChatroomDialogListener,
-    DeleteMessageListener {
+    DeleteMessageListener,
+    SendDMRequestDialogListener,
+    ApproveDMRequestDialogListener,
+    RejectDMRequestDialogListener,
+    ChatEvent.ChatObserver {
 
     private var actionModeCallback: ActionModeCallback<ChatroomDetailActionModeData>? = null
     private var lmSwipeController: LMSwipeController? = null
@@ -182,6 +192,8 @@ class ChatroomDetailFragment :
     private lateinit var chatroomScrollListener: ChatroomScrollListener
     private var updatedMuteActionTitle: String? = null
     private var updatedFollowActionTitle: String? = null
+    private var updatedBlockActionTitle: String? = null
+
     private var blockedAccessPopUp: AlertDialog? = null
 
     private var cameraPath: String? = null
@@ -217,6 +229,9 @@ class ChatroomDetailFragment :
     private var isDeletingVoiceNote = false
     private var isVoiceNoteRecording = false
     private var isAudioComplete = false
+    private var isDMRequestSent = false
+
+    private var showTapToUndoLocally = true
 
     private val progressReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -249,7 +264,7 @@ class ChatroomDetailFragment :
                                 .progress(audioDurationInt)
                                 .currentDuration(
                                     audioDurationString
-                                        ?: requireContext().getString(R.string.start_duration)
+                                        ?: requireContext().getString(R.string.lm_chat_start_duration)
                                 )
                                 .build()
 
@@ -281,7 +296,7 @@ class ChatroomDetailFragment :
                                 singleUriDataOfVoiceNote?.duration ?: 0
                             )
                         isVoiceNotePlaying = false
-                        binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                        binding.inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                     }
 
                     else -> {
@@ -297,7 +312,7 @@ class ChatroomDetailFragment :
                             if (isAudioComplete) {
                                 attachment = attachment.toBuilder()
                                     .progress(0)
-                                    .currentDuration(requireContext().getString(R.string.start_duration))
+                                    .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                                     .mediaState(MEDIA_ACTION_NONE)
                                     .build()
                             }
@@ -324,8 +339,12 @@ class ChatroomDetailFragment :
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val bundle = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    bundle,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -334,8 +353,12 @@ class ChatroomDetailFragment :
     private val documentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -344,8 +367,12 @@ class ChatroomDetailFragment :
     private val audioLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(ARG_MEDIA_PICKER_RESULT)
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                )
                 checkMediaPickedResult(data)
             }
         }
@@ -407,9 +434,14 @@ class ChatroomDetailFragment :
         const val FOLLOW_ACTION_TITLE = "Join chatroom"
         const val UNFOLLOW_ACTION_TITLE = "Leave chatroom"
 
+        const val BLOCK_ACTION_TITLE = "Block"
+        const val UNBLOCK_ACTION_TITLE = "Unblock"
+
         const val SOURCE_CHAT_ROOM_OVERFLOW_MENU = "chatroom_overflow_menu"
 
         const val REQUEST_GIFS = 3004
+
+        private const val DM_SEND_REQUEST_TEXT_LIMIT = 300
     }
 
     override fun getViewModelClass(): Class<ChatroomDetailViewModel> {
@@ -432,7 +464,11 @@ class ChatroomDetailFragment :
             requireActivity().supportFragmentManager.popBackStack()
             return
         }
-        chatroomDetailExtras = requireArguments().getParcelable(CHATROOM_DETAIL_EXTRAS)!!
+        chatroomDetailExtras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            CHATROOM_DETAIL_EXTRAS,
+            ChatroomDetailExtras::class.java
+        ) ?: return
         isGuestUser = userPreferences.getIsGuestUser()
         checkForExplicitActions()
         fetchInitialData()
@@ -472,7 +508,7 @@ class ChatroomDetailFragment :
      */
     @RequiresApi(Build.VERSION_CODES.N)
     private fun fetchInitialData() {
-        viewModel.getInitialData(requireContext(), chatroomDetailExtras)
+        viewModel.getInitialData(chatroomDetailExtras)
     }
 
     private fun getChatroomViewData(): ChatroomViewData? {
@@ -491,6 +527,7 @@ class ChatroomDetailFragment :
         initAttachmentsView()
         disableAnswerPosting()
         initReplyView()
+        initDMRequestClickListeners()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             syncChatroom()
         }
@@ -501,6 +538,12 @@ class ChatroomDetailFragment :
         initTouchListenerOnMic()
         initVoiceNotes()
         initVoiceNoteControl()
+        subscribeToChatEvent()
+    }
+
+    override fun doCleanup() {
+        unsubscribeToChatEvent()
+        super.doCleanup()
     }
 
     // initializes the toolbar
@@ -601,25 +644,25 @@ class ChatroomDetailFragment :
                 .setIconColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.brown_grey
+                        R.color.lm_chat_brown_grey
                     )
                 )
                 .setSelectedIconColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.colorPrimary
+                        R.color.lm_chat_colorPrimary
                     )
                 )
                 .setBackgroundColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.emoji_kb_background
+                        R.color.lm_chat_emoji_kb_background
                     )
                 )
                 .setDividerColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.emoji_kb_background
+                        R.color.lm_chat_emoji_kb_background
                     )
                 )
                 .setOnEmojiPopupShownListener {
@@ -649,13 +692,24 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
+        val settings = GPHSettings(GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
         giphyDialog.setTargetFragment(this, REQUEST_GIFS)
         binding.inputBox.tvGifs.setOnClickListener {
-            giphyDialog.show(parentFragmentManager, "giphy_dialog")
+            if (viewModel.isDmChatroom() &&
+                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                viewModel.getChatroomViewData()?.isPrivateMember == true
+            ) {
+                ViewUtils.showShortToast(
+                    requireContext(),
+                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
+                )
+                return@setOnClickListener
+            } else {
+                giphyDialog.show(parentFragmentManager, "giphy_dialog")
+            }
         }
     }
 
@@ -671,6 +725,7 @@ class ChatroomDetailFragment :
                     .communityId(communityId?.toIntOrNull())
                     .text(text)
                     .isSecretChatroom(getChatroomViewData()?.isSecret)
+                    .isTaggingEnabled(!viewModel.isDmChatroom())
                     .build()
 
                 val intent = MediaActivity.getIntent(
@@ -700,54 +755,43 @@ class ChatroomDetailFragment :
             ivGallery.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extras = MediaPickerExtras.Builder()
+                val extras = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(IMAGE, VIDEO))
                     .build()
 
-                val intent = MediaPickerActivity.getIntent(requireContext(), extras)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extras)
                 galleryLauncher.launch(intent)
             }
 
             ivDocument.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extra = MediaPickerExtras.Builder()
+                val extra = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(PDF))
                     .build()
-                val intent = MediaPickerActivity.getIntent(requireContext(), extra)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
                 documentLauncher.launch(intent)
             }
 
             ivAudio.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onScreenChanged()
-                val extra = MediaPickerExtras.Builder()
+                val extra = LMChatMediaPickerExtras.Builder()
                     .senderName(viewModel.chatroomDetail.chatroom?.header)
                     .mediaTypes(listOf(AUDIO))
                     .build()
-                val intent = MediaPickerActivity.getIntent(requireContext(), extra)
+                val intent = LMChatMediaPickerActivity.getIntent(requireContext(), extra)
                 audioLauncher.launch(intent)
             }
 
             ivCamera.setOnClickListener {
-                PermissionManager.performTaskWithPermission(
-                    activity as BaseAppCompatActivity,
-                    { initCameraAttachment() },
-                    Permission.getCameraPermissionData(),
-                    showInitialPopup = true,
-                    showDeniedPopup = true,
-                    permissionDeniedCallback = object : PermissionDeniedCallback {
-                        override fun onDeny() {}
-
-                        override fun onCancel() {}
-                    }
-                )
+                initCameraAttachment()
             }
 
-            ivPoll.isVisible = viewModel.isMicroPollsEnabled()
-            tvPollTitle.isVisible = viewModel.isMicroPollsEnabled()
+            ivPoll.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
+            tvPollTitle.isVisible = (viewModel.isMicroPollsEnabled() && !viewModel.isDmChatroom())
             ivPoll.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 CreateConversationPollDialog.show(
@@ -756,10 +800,75 @@ class ChatroomDetailFragment :
                     chatroomDetailExtras
                 )
             }
+
+            //to check whether widget is enabled or not
+            val isWidgetEnabled = viewModel.isWidgetEnabled()
+
+            ivCustomWidgetA.isVisible = isWidgetEnabled
+            tvCustomWidgetATitle.isVisible = isWidgetEnabled
+
+            ivCustomWidgetB.isVisible = isWidgetEnabled
+            tvCustomWidgetBTitle.isVisible = isWidgetEnabled
+
+
+            ivCustomWidgetA.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetAAttachmentClicked()
+            }
+
+            ivCustomWidgetB.setOnClickListener {
+                initVisibilityOfAttachmentsBar(View.GONE)
+                onCustomWidgetBAttachmentClicked()
+            }
+
             clBottomBar.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
             }
         }
+    }
+
+    //on click function when custom widget A is clicked
+    private fun onCustomWidgetAAttachmentClicked() {
+        //todo add code
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val widgetType = if (isDMChatroom) {
+            "send_payment"
+        } else {
+            "spilt_payment"
+        }
+
+        val metaData = JSONObject().apply {
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
+        }
+
+        postConversation(
+            metadata = metaData
+        )
+    }
+
+    //on click function when custom widget B is clicked
+    private fun onCustomWidgetBAttachmentClicked() {
+        //todo add code
+        val isDMChatroom = viewModel.isDmChatroom()
+
+        val widgetType = if (isDMChatroom) {
+            "request_payment"
+        } else {
+            "show_payment"
+        }
+
+        val metaData = JSONObject().apply {
+            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
+            put("is_dm", isDMChatroom)
+            put("widget_type", widgetType)
+        }
+
+        postConversation(
+            metadata = metaData
+        )
     }
 
     private fun disableAnswerPosting() {
@@ -775,7 +884,7 @@ class ChatroomDetailFragment :
             fabSend.isEnabled = state
             inputBox.ivAttachment.isEnabled = state
             inputBox.etAnswer.isEnabled = state
-            inputBox.etAnswer.setHint(R.string.type_your_response)
+            inputBox.etAnswer.setHint(R.string.lm_chat_type_your_response)
         }
     }
 
@@ -785,7 +894,7 @@ class ChatroomDetailFragment :
      */
     private fun checkForExternalSharedContent() {
         val clipData = activity?.intent?.clipData ?: return
-        if (clipData.description.label != context?.getString(R.string.third_party_share)) {
+        if (clipData.description.label != context?.getString(R.string.lm_chat_third_party_share)) {
             return
         }
 
@@ -831,7 +940,7 @@ class ChatroomDetailFragment :
         if (counterForMultipleType > 1) {
             ViewUtils.showShortToast(
                 requireContext(),
-                getString(R.string.warning_multimedia_and_document_share_error)
+                getString(R.string.lm_chat_warning_multimedia_and_document_share_error)
             )
             return
         }
@@ -882,9 +991,15 @@ class ChatroomDetailFragment :
     private fun handleDmChatrooms() {
         if (viewModel.isDmChatroom()) {
             memberTagging.taggingEnabled = false
+            binding.layoutAttachments.ivPoll.hide()
+            checkDMStatus()
             disableAllGraphicViewTypes()
             removeChatroomItem()
         }
+    }
+
+    private fun checkDMStatus() {
+        viewModel.checkDMStatus(chatroomId)
     }
 
     private fun initReplyView() {
@@ -893,6 +1008,19 @@ class ChatroomDetailFragment :
                 clearEditTextAnswer()
             }
             setChatInputBoxViewType(CHAT_BOX_NORMAL)
+        }
+    }
+
+    // initializes click listeners on dm request approve reject buttons
+    private fun initDMRequestClickListeners() {
+        binding.apply {
+            tvApproveDmRequest.setOnClickListener {
+                ApproveDMRequestDialogFragment.showDialog(childFragmentManager)
+            }
+
+            tvRejectDmRequest.setOnClickListener {
+                RejectDMRequestDialogFragment.showDialog(childFragmentManager)
+            }
         }
     }
 
@@ -975,12 +1103,12 @@ class ChatroomDetailFragment :
 
     private fun registerAudioCompleteBroadcast() {
         val filter = IntentFilter(BROADCAST_COMPLETE)
-        activity?.registerReceiver(audioCompleteReceiver, filter)
+        requireActivity().registerReceiver(audioCompleteReceiver, filter)
     }
 
     private fun registerProgressBroadcast() {
         val filter = IntentFilter(BROADCAST_PROGRESS)
-        activity?.registerReceiver(progressReceiver, filter)
+        requireActivity()?.registerReceiver(progressReceiver, filter)
     }
 
     /**------------------------------------------------------------
@@ -1020,7 +1148,7 @@ class ChatroomDetailFragment :
 
                         attachment = attachment.toBuilder()
                             .progress(0)
-                            .currentDuration(requireContext().getString(R.string.start_duration))
+                            .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                             .mediaState(MEDIA_ACTION_NONE)
                             .build()
 
@@ -1040,17 +1168,17 @@ class ChatroomDetailFragment :
                             isVoiceNotePlaying = true
                             playAudio(singleUriDataOfVoiceNote?.uri!!, 0)
                             viewModel.sendVoiceNotePreviewed()
-                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_pause_voice_note)
                         }
 
                         mediaAudioService?.isPlaying() == true -> {
                             mediaAudioService?.pauseAudio()
-                            ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                         }
 
                         mediaAudioService?.isPlaying() == false -> {
                             mediaAudioService?.playAudio()
-                            ivPlayRecording.setImageResource(R.drawable.ic_pause_voice_note)
+                            ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_pause_voice_note)
                         }
                     }
                 }
@@ -1066,18 +1194,26 @@ class ChatroomDetailFragment :
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    if (viewModel.isDmChatroom() &&
+                        viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                        viewModel.getChatroomViewData()?.isPrivateMember == true
+                    ) {
+                        return@setOnTouchListener true
+                    }
+
                     if (isGuestUser) {
                         callGuestFlowCallback()
                     } else {
                         showTapAndHoldToast = true
                         motionDownHandler = Handler(Looper.getMainLooper())
-                        PermissionManager.performTaskWithPermission(
+                        LMChatPermissionManager.performTaskWithPermission(
                             activity as BaseAppCompatActivity,
                             { },
-                            Permission.getRecordAudioPermissionData(),
+                            LMChatPermission.getRecordAudioPermissionData(),
                             showInitialPopup = true,
                             showDeniedPopup = true,
-                            permissionDeniedCallback = object : PermissionDeniedCallback {
+                            lmChatPermissionDeniedCallback = object :
+                                LMChatPermissionDeniedCallback {
                                 override fun onDeny() {}
 
                                 override fun onCancel() {}
@@ -1086,7 +1222,7 @@ class ChatroomDetailFragment :
                         motionDownHandler?.postDelayed({
                             showTapAndHoldToast = false
                             stopTrackingVoiceNoteAction = false
-                            if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                            if ((activity as BaseAppCompatActivity).hasPermission(LMChatPermission.getRecordAudioPermissionData())) {
                                 startVoiceNote()
                             }
                         }, 400)
@@ -1099,16 +1235,33 @@ class ChatroomDetailFragment :
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if ((activity as BaseAppCompatActivity).hasPermission(Permission.getRecordAudioPermissionData())) {
+                    if ((activity as BaseAppCompatActivity).hasPermission(LMChatPermission.getRecordAudioPermissionData())) {
                         if (showTapAndHoldToast) {
+                            if (viewModel.isDmChatroom() &&
+                                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                                viewModel.getChatroomViewData()?.isPrivateMember == true
+                            ) {
+                                ViewUtils.showShortToast(
+                                    requireContext(),
+                                    getString(R.string.lm_chat_you_are_not_connected_with_this_user_yet)
+                                )
+                                return@setOnTouchListener true
+                            }
+
                             ViewUtils.showAnchoredToast(binding.voiceNoteTapHoldToast.layoutToast)
 
                             requireView().performHapticFeedback(
                                 HapticFeedbackConstants.LONG_PRESS,
                                 HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
                             )
-
                         } else {
+                            if (viewModel.isDmChatroom() &&
+                                viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                                viewModel.getChatroomViewData()?.isPrivateMember == true
+                            ) {
+                                return@setOnTouchListener true
+                            }
+
                             if (isVoiceNoteRecording) {
                                 resetVoiceNoteVariables()
                                 voiceNoteUtils.stopVoiceNote(binding, RECORDING_RELEASED)
@@ -1121,6 +1274,13 @@ class ChatroomDetailFragment :
 
                 MotionEvent.ACTION_MOVE -> {
                     if (stopTrackingVoiceNoteAction || !voiceRecorder.isRecording()) {
+                        return@setOnTouchListener true
+                    }
+
+                    if (viewModel.isDmChatroom() &&
+                        viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING &&
+                        viewModel.getChatroomViewData()?.isPrivateMember == true
+                    ) {
                         return@setOnTouchListener true
                     }
 
@@ -1268,21 +1428,152 @@ class ChatroomDetailFragment :
      */
     private fun setChatInputBoxViewType(
         @ChatBoxType type: Int? = null,
-        lastConversationState: Int? = null,
+        showDM: Boolean? = null,
+        isBlocked: Boolean? = null
+    ) {
+        binding.apply {
+            if (viewModel.isDmChatroom()) {
+                setChatInputBoxViewTypeForDM(
+                    type,
+                    (showDM ?: true),
+                    isBlocked
+                )
+            } else {
+                setChatInputBoxViewTypeForGroupChat(type)
+            }
+            if (type == null) {
+                return
+            }
+        }
+    }
+
+    // sets the chat input box for DM chat
+    private fun setChatInputBoxViewTypeForDM(
+        @ChatBoxType type: Int? = null,
+        showDM: Boolean,
+        isBlocked: Boolean? = null
+    ) {
+        binding.apply {
+            if (showDM) {
+                val isPrivateMember = viewModel.getChatroomViewData()?.isPrivateMember
+                if (isPrivateMember == false) {
+                    tvSendDmRequestToMember.hide()
+                    return
+                }
+                if (isBlocked == true) {
+                    hideAllChatBoxViews()
+                    tvRestrictedMessage.visibility = View.VISIBLE
+                    tvRestrictedMessage.text =
+                        getString(R.string.lm_chat_you_cannot_send_message_to_rejected_connection)
+                    tvRestrictedMessage.gravity = Gravity.CENTER
+                    return
+                } else if (isBlocked == false) {
+                    setupCommonChatInputBox(type)
+                    return
+                }
+                when (viewModel.getChatroomViewData()?.chatRequestState) {
+                    ChatRequestState.NOTHING -> {
+                        // dm is not initiated and request is not send, showing message to send DM request
+                        tvSendDmRequestToMember.show()
+                        cvDmRequest.hide()
+                        tvSendDmRequestToMember.text =
+                            getString(
+                                R.string.lm_chat_send_a_dm_request_to_s,
+                                viewModel.getOtherDmMember()?.name
+                            )
+                        isDMRequestSent = true
+                        inputBox.ivAttachment.visibility = View.INVISIBLE
+                        return
+                    }
+
+                    ChatRequestState.INITIATED -> {
+                        // chatroom request is sent, i.e., chatroom is initiated
+                        tvSendDmRequestToMember.hide()
+                        if (viewModel.getLoggedInMemberId() !=
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            // logged in member is the request receiver, so showing DM request view
+                            cvDmRequest.show()
+                        } else {
+                            // logged in member is the request sender, so hiding DM request view
+                            cvDmRequest.hide()
+                        }
+                        // hides the input box and shows DM request pending message
+                        hideAllChatBoxViews()
+                        tvRestrictedMessage.visibility = View.VISIBLE
+                        tvRestrictedMessage.text =
+                            getString(R.string.lm_chat_dm_request_pending_message)
+                        tvRestrictedMessage.gravity = Gravity.CENTER
+                        return
+                    }
+
+                    ChatRequestState.ACCEPTED -> {
+                        // DM is accepted so hiding the DM request view
+                        cvDmRequest.hide()
+                        tvSendDmRequestToMember.hide()
+                    }
+
+                    ChatRequestState.REJECTED -> {
+                        // DM is rejected
+                        tvSendDmRequestToMember.hide()
+                        cvDmRequest.hide()
+                        if (viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            // logged in user has rejected the request
+                            if (showTapToUndoLocally) {
+                                updateTapToUndoLocally(true)
+                            }
+
+                            // hides the input box and shows rejected connection message
+                            hideAllChatBoxViews()
+                            tvRestrictedMessage.visibility = View.VISIBLE
+                            tvRestrictedMessage.text =
+                                getString(R.string.lm_chat_you_cannot_send_message_to_rejected_connection)
+                            tvRestrictedMessage.gravity = Gravity.CENTER
+                        } else {
+                            hideAllChatBoxViews()
+                            tvRestrictedMessage.visibility = View.VISIBLE
+                            tvRestrictedMessage.text =
+                                getString(R.string.lm_chat_dm_request_pending_message)
+                            tvRestrictedMessage.gravity = Gravity.CENTER
+                        }
+                        return
+                    }
+
+                    else -> {
+                        return
+                    }
+                }
+            } else {
+                hideAllChatBoxViews()
+                tvRestrictedMessage.visibility = View.VISIBLE
+                tvRestrictedMessage.text = getString(
+                    R.string.lm_chat_direct_messaging_among_members_has_been_disabled_by_the_community_manager
+                )
+                return
+            }
+            setupCommonChatInputBox(type)
+        }
+    }
+
+    // sets the chat input box for group chat
+    private fun setChatInputBoxViewTypeForGroupChat(
+        @ChatBoxType type: Int? = null
     ) {
         binding.apply {
             if (!viewModel.hasMemberRespondRight()) {
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.the_community_managers_have_restricted_you_from_responding_here)
+                    getString(R.string.lm_chat_the_community_managers_have_restricted_you_from_responding_here)
                 return
             }
             if (!viewModel.isAdminMember() && viewModel.isAnnouncementChatroom()) {
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.only_community_managers_can_respond)
+                    getString(R.string.lm_chat_only_community_managers_can_respond)
                 tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
@@ -1290,7 +1581,7 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.only_community_managers_can_respond)
+                    getString(R.string.lm_chat_only_community_managers_can_respond)
                 tvRestrictedMessage.gravity = Gravity.CENTER
                 return
             }
@@ -1298,43 +1589,43 @@ class ChatroomDetailFragment :
                 hideAllChatBoxViews()
                 tvRestrictedMessage.visibility = View.VISIBLE
                 tvRestrictedMessage.text =
-                    getString(R.string.secret_chatroom_restricted_message)
+                    getString(R.string.lm_chat_secret_chatroom_restricted_message)
                 return
             }
-            if (lastConversationState == DM_CM_BECOMES_MEMBER_DISABLE) {
-                hideAllChatBoxViews()
-                tvRestrictedMessage.visibility = View.VISIBLE
-                tvRestrictedMessage.text =
-                    getString(R.string.direct_messages_community_manager_removed)
-                return
-            }
-            if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
-                hideAllChatBoxViews()
-                tvRestrictedMessage.visibility = View.VISIBLE
-                tvRestrictedMessage.text = getString(R.string.direct_messaging_member_left)
-                return
-            }
-            if (type == null) {
-                return
-            }
+            setupCommonChatInputBox(type)
+        }
+    }
+
+    private fun setupCommonChatInputBox(
+        @ChatBoxType type: Int? = null
+    ) {
+        binding.apply {
             inputBox.clChatContainer.visibility = View.VISIBLE
             tvRestrictedMessage.visibility = View.GONE
             when (type) {
                 CHAT_BOX_NORMAL -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_black10_1)
                     }
-                    if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
+                    if (!isVoiceNoteLocked && !isVoiceNoteRecording && !isDMRequestSent) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
                     }
                     inputBox.viewLink.clLink.visibility = View.GONE
                     inputBox.viewReply.clReply.visibility = View.GONE
-
+                    if (inputBox.etAnswer.text?.trim()
+                            .isNullOrEmpty() && viewModel.isVoiceNoteSupportEnabled()
+                    ) {
+                        fabSend.hide()
+                        fabMic.show()
+                    } else {
+                        fabSend.show()
+                        fabMic.hide()
+                    }
                 }
 
                 CHAT_BOX_REPLY -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     if (!isVoiceNoteLocked && !isVoiceNoteRecording) {
                         inputBox.ivAttachment.visibility = View.VISIBLE
@@ -1345,7 +1636,7 @@ class ChatroomDetailFragment :
 
                 CHAT_BOX_LINK -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     inputBox.ivAttachment.visibility = View.INVISIBLE
                     inputBox.viewLink.clLink.visibility = View.VISIBLE
@@ -1354,7 +1645,7 @@ class ChatroomDetailFragment :
 
                 CHAT_BOX_INTERNAL_LINK -> {
                     if (!memberTagging.isShowing) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     }
                     fabSend.show()
                     inputBox.ivAttachment.visibility = View.INVISIBLE
@@ -1363,6 +1654,37 @@ class ChatroomDetailFragment :
                 }
             }
         }
+    }
+
+    // handles tap to undo view in the adapter
+    private fun handleTapToUndo(
+        index: Int,
+        conversationViewData: ConversationViewData,
+        toShowTapToUndo: Boolean
+    ) {
+        val updatedConversation = conversationViewData.toBuilder()
+            .showTapToUndo(toShowTapToUndo)
+            .build()
+
+        chatroomDetailAdapter.update(index, updatedConversation)
+    }
+
+    // removes tap to undo view from the adapter
+    private fun updateTapToUndoLocally(toShowTapToUndo: Boolean) {
+        val conversationIndex =
+            chatroomDetailAdapter.items()
+                .indexOfLast { chatroomItem ->
+                    (chatroomItem is ConversationViewData && chatroomItem.state == STATE_DM_REJECTED)
+                }
+
+        val conversationViewData =
+            chatroomDetailAdapter[conversationIndex] as? ConversationViewData ?: return
+
+        handleTapToUndo(
+            conversationIndex,
+            conversationViewData,
+            toShowTapToUndo
+        )
     }
 
     private fun hideAllChatBoxViews() {
@@ -1391,7 +1713,7 @@ class ChatroomDetailFragment :
             } else {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.large_file_select_error_message)
+                    getString(R.string.lm_chat_large_file_select_error_message)
                 )
             }
         }
@@ -1415,7 +1737,10 @@ class ChatroomDetailFragment :
                     null
                 }
                 if (cameraFile == null) {
-                    ViewUtils.showShortToast(requireContext(), getString(R.string.image_not_found))
+                    ViewUtils.showShortToast(
+                        requireContext(),
+                        getString(R.string.lm_chat_image_not_found)
+                    )
                 } else {
                     try {
                         val photoURI = FileProvider.getUriForFile(
@@ -1458,14 +1783,14 @@ class ChatroomDetailFragment :
                 }
 
                 override fun onShow() {
-                    inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_bottom_black10_1)
+                    inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_bottom_black10_1)
                 }
 
                 override fun onHide() {
                     if (isReplyViewVisible() || isLinkViewVisible()) {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_12top_24_bottom_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_12top_24_bottom_black10_1)
                     } else {
-                        inputBox.clChatContainer.setBackgroundResource(R.drawable.background_white_24_black10_1)
+                        inputBox.clChatContainer.setBackgroundResource(R.drawable.lm_chat_background_white_24_black10_1)
                     }
                 }
 
@@ -1596,6 +1921,42 @@ class ChatroomDetailFragment :
                         voiceNoteUtils.stopVoiceNote(this, RECORDING_SEND)
                     }
 
+                    // show dialog to send dm request if the chatroom is of type DM & chatRequestState is null
+                    if (
+                        viewModel.isDmChatroom()
+                        && (viewModel.getChatroomViewData()?.chatRequestState == ChatRequestState.NOTHING)
+                        && (viewModel.getChatroomViewData()?.isPrivateMember == true)
+                    ) {
+                        viewModel.dmRequestText = inputText
+                        if (inputText.length >= DM_SEND_REQUEST_TEXT_LIMIT) {
+                            ViewUtils.showShortToast(
+                                requireContext(),
+                                getString(
+                                    R.string.lm_chat_request_cant_be_more_than_s_characters,
+                                    DM_SEND_REQUEST_TEXT_LIMIT.toString()
+                                )
+                            )
+                            return@setOnClickListener
+                        }
+
+                        // if the DM is M2M then show dialog otherwise send dm request directly
+                        if (viewModel.getChatroomViewData()?.isPrivateMember == true) {
+                            SendDMRequestDialogFragment.showDialog(childFragmentManager)
+                            setChatInputBoxViewType(
+                                CHAT_BOX_NORMAL,
+                                viewModel.showDM.value
+                            )
+                        } else {
+                            viewModel.sendDMRequest(
+                                viewModel.getChatroomViewData()?.id.toString(),
+                                ChatRequestState.ACCEPTED,
+                                true
+                            )
+                        }
+                        clearEditTextAnswer()
+                        return@setOnClickListener
+                    }
+
                     postConversation(
                         editableConversation = editableText,
                         shareLink = shareLink,
@@ -1611,11 +1972,12 @@ class ChatroomDetailFragment :
         conversation: String? = null,
         fileUris: List<SingleUriData>? = null,
         shareLink: String? = null,
+        metadata: JSONObject? = null
     ) {
         binding.apply {
             val shareTextLink = shareLink?.trim()
 
-            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false) {
+            if (!conversation.isNullOrEmpty() || !editableConversation.isNullOrEmpty() || fileUris != null || shareTextLink?.isBlank() == false || metadata != null) {
 
                 scrollToExtremeBottom()
 
@@ -1626,7 +1988,7 @@ class ChatroomDetailFragment :
                     updateChatroomFollowStatus(true)
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.added_to_your_joined_chat_rooms)
+                        getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                     )
                 }
 
@@ -1661,7 +2023,8 @@ class ChatroomDetailFragment :
                     replyConversationId,
                     replyChatRoomId,
                     memberTagging.getTaggedMembers(),
-                    replyChatData
+                    replyChatData,
+                    metadata
                 )
                 clearEditTextAnswer()
                 updateDmMessaged()
@@ -1669,7 +2032,10 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
+                ViewUtils.showShortSnack(
+                    root,
+                    getString(R.string.lm_chat_please_enter_your_response)
+                )
             }
         }
     }
@@ -1686,7 +2052,7 @@ class ChatroomDetailFragment :
                         } else {
                             ViewUtils.showShortSnack(
                                 root,
-                                getString(R.string.please_enter_your_response)
+                                getString(R.string.lm_chat_please_enter_your_response)
                             )
                         }
                     }
@@ -1715,7 +2081,7 @@ class ChatroomDetailFragment :
                         } else {
                             ViewUtils.showShortSnack(
                                 root,
-                                getString(R.string.please_enter_your_response)
+                                getString(R.string.lm_chat_please_enter_your_response)
                             )
                         }
                     }
@@ -1726,7 +2092,10 @@ class ChatroomDetailFragment :
                     setChatInputBoxViewType(CHAT_BOX_NORMAL)
                 }
             } else {
-                ViewUtils.showShortSnack(root, getString(R.string.please_enter_your_response))
+                ViewUtils.showShortSnack(
+                    root,
+                    getString(R.string.lm_chat_please_enter_your_response)
+                )
             }
         }
     }
@@ -1917,7 +2286,7 @@ class ChatroomDetailFragment :
 
     private fun fadeOutAnimatorListener(view: View): Animator.AnimatorListener {
         return object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 view.visibility = View.GONE
             }
@@ -1987,7 +2356,7 @@ class ChatroomDetailFragment :
             if (topic == null) {
                 setTopViewToChatroom(chatroomViewData)
             } else {
-                tvChatroomMemberName.text = getString(R.string.current_topic_text)
+                tvChatroomMemberName.text = getString(R.string.lm_chat_current_topic_text)
                 tvChatroomMemberName.setTypeface(tvChatroomMemberName.typeface, Typeface.BOLD)
                 when {
                     topic.isDeleted() -> {
@@ -2357,7 +2726,11 @@ class ChatroomDetailFragment :
         observeTopic()
         observeContentDownloadSettings()
         observeMemberState()
-        observeErrors()
+        observeMemberBlocked()
+        observeErrorMessage()
+        observeDMStatus()
+        observeChatRequestState()
+        observeDMInitiatedForCM()
     }
 
     /**
@@ -2367,15 +2740,22 @@ class ChatroomDetailFragment :
         viewModel.initialData.observe(viewLifecycleOwner) { initialData ->
             //chatroom is invalid or chatroom is deleted
             if (initialData == null) {
-                ViewUtils.showShortToast(context, "This chatroom doesn't exist")
+                ViewUtils.showShortToast(
+                    context,
+                    getString(R.string.lm_chat_this_chatroom_doesnt_exist)
+                )
                 requireActivity().finish()
                 return@observe
             }
+
             //chatroom is not present
             if (initialData.chatRoom == null) {
                 if (chatroomDetailExtras.loadingAfterSync) {
                     //chatroom id is invalid or user don't have access to it
-                    ViewUtils.showShortToast(context, "This chatroom doesn't exist")
+                    ViewUtils.showShortToast(
+                        context,
+                        getString(R.string.lm_chat_this_chatroom_doesnt_exist)
+                    )
                     requireActivity().finish()
                     return@observe
                 }
@@ -2436,6 +2816,7 @@ class ChatroomDetailFragment :
                 }
             }
             getUnseenConversationsAndShow(data.data, false)
+            filterConversationWithWidget(data.data.filterIsInstance<ConversationViewData>())
         }
     }
 
@@ -2517,6 +2898,7 @@ class ChatroomDetailFragment :
                     getIndexedConversations(response.conversations).forEach { item ->
                         chatroomDetailAdapter.update(item.key, item.value)
                     }
+                    filterConversationWithWidget(response.conversations)
                 }
 
                 is ChatroomDetailViewModel.ConversationEvent.NewConversation -> {
@@ -2524,6 +2906,7 @@ class ChatroomDetailFragment :
                     val isAddedBelow: Boolean
                     val conversations =
                         getNonPresentConversations(response.conversations).toMutableList()
+
                     val indexOfHeaderConversation = conversations.indexOfFirst { conversation ->
                         conversation.state == STATE_HEADER
                     }
@@ -2541,11 +2924,13 @@ class ChatroomDetailFragment :
                             conversations.removeAt(indexOfHeaderConversation)
                         }
                     }
+
                     if (conversations.isNotEmpty()) {
                         //Add the conversations to recyclerview
 
                         //get last conversation from the callback
                         val lastNewConversation = conversations.last()
+
                         //get first conversation from the adapter
                         val firstPresentConversation =
                             viewModel.getFirstNormalOrPollConversation(chatroomDetailAdapter.items())
@@ -2565,7 +2950,8 @@ class ChatroomDetailFragment :
                                 } else {
                                     chatroomDetailAdapter.addAll(conversations as List<BaseViewType>)
                                 }
-                            } else { //add below last item in adapter
+                            } else {
+                                //add below last item in adapter
                                 isAddedBelow = false
                                 val indexToAdd = getIndexOfAnyGraphicItem()
                                 if (indexToAdd.isValidIndex()) {
@@ -2590,6 +2976,8 @@ class ChatroomDetailFragment :
                             }
                         }
 
+                        filterConversationWithWidget(conversations)
+
                         //Check if the new conversation is created by the user itself
                         if (
                             (conversations.count { conversation ->
@@ -2605,6 +2993,22 @@ class ChatroomDetailFragment :
                             })
                             showUnseenCount(false)
                         }
+
+                        //last new conversation DM REJECTED conversation
+                        if (lastNewConversation.state == STATE_DM_REJECTED
+                            && viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            val lastConversationIndex =
+                                getIndexOfConversation(lastNewConversation.id)
+
+                            //add tap to undo to the last conversation with DM REJECTED state
+                            handleTapToUndo(
+                                lastConversationIndex,
+                                lastNewConversation,
+                                true
+                            )
+                        }
                     }
                 }
 
@@ -2612,16 +3016,46 @@ class ChatroomDetailFragment :
                     //Observe for new posted conversation by the user. This is a temporary conversation
                     if (!isConversationAlreadyPresent(response.conversation.id)) {
                         val indexToAdd = getIndexOfAnyGraphicItem()
+                        var index = indexToAdd
                         if (indexToAdd.isValidIndex()) {
                             chatroomDetailAdapter.add(indexToAdd, response.conversation)
                         } else {
                             chatroomDetailAdapter.add(response.conversation)
+                            index = chatroomDetailAdapter.itemCount - 1
+                        }
+
+                        filterConversationWithWidget(listOf(response.conversation))
+
+                        //add tap to undo if dm is rejected and the logged in member has rejected the DM request
+                        if (response.conversation.state == STATE_DM_REJECTED
+                            && viewModel.getLoggedInMemberId() ==
+                            viewModel.getChatroomViewData()?.chatRequestedById
+                        ) {
+                            handleTapToUndo(
+                                index,
+                                response.conversation,
+                                true
+                            )
                         }
                         scrollToPosition(SCROLL_DOWN)
                     }
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    //filter conversation with widgets and return to customer
+    private fun filterConversationWithWidget(conversations: List<ConversationViewData>) {
+        val filteredHashMap = HashMap<String?, WidgetViewData?>()
+
+        conversations.filter { conversation ->
+            conversation.widgetViewData != null
+        }.forEach {
+            filteredHashMap[it.id] = it.widgetViewData
+        }
+
+        SDKApplication.getLikeMindsCallback()
+            ?.getWidgetCallback(filteredHashMap)
     }
 
     /**
@@ -2671,6 +3105,7 @@ class ChatroomDetailFragment :
                 }
             }
         }
+        filterConversationWithWidget(initialData.data.filterIsInstance<ConversationViewData>())
     }
 
     /**
@@ -2714,6 +3149,7 @@ class ChatroomDetailFragment :
     private fun updateHeader(header: String, isSecretChatRoom: Boolean) {
         binding.apply {
             if (viewModel.isDmChatroom()) {
+                tvToolbarSubTitle.hide()
                 val member = viewModel.getOtherDmMember() ?: return
                 tvToolbarTitle.text = member.name
                 ivMemberImage.show()
@@ -2724,7 +3160,6 @@ class ChatroomDetailFragment :
                     imageView = ivMemberImage,
                     showRoundImage = true
                 )
-                tvToolbarSubTitle.hide()
             } else {
                 tvToolbarTitle.text = header
                 ivMemberImage.hide()
@@ -2744,6 +3179,7 @@ class ChatroomDetailFragment :
         binding.apply {
             val draftConversation = getChatroomViewData()?.draftConversation
             if (!draftConversation.isNullOrEmpty()) {
+
                 inputBox.etAnswer.setText(draftConversation)
                 inputBox.etAnswer.setSelection(draftConversation.length)
                 fabSend.show()
@@ -2778,7 +3214,6 @@ class ChatroomDetailFragment :
             }
             invalidateActionsMenu()
             updateChatroom(chatroomDetail.chatroom)
-            checkForLastDmConversationState()
         }
     }
 
@@ -2799,13 +3234,15 @@ class ChatroomDetailFragment :
 
     // updates participants count as per the count
     private fun updateParticipantsCount(count: Int) {
-        binding.tvToolbarSubTitle.apply {
-            show()
-            text = resources.getQuantityString(
-                R.plurals.participants_s,
-                count,
-                count
-            )
+        if (!viewModel.isDmChatroom()) {
+            binding.tvToolbarSubTitle.apply {
+                show()
+                text = resources.getQuantityString(
+                    R.plurals.lm_chat_participants_s,
+                    count,
+                    count
+                )
+            }
         }
     }
 
@@ -2813,19 +3250,6 @@ class ChatroomDetailFragment :
     private fun updateChatroom(chatroom: ChatroomViewData?) {
         val chatroomPosition = getIndexOfChatroom() ?: return
         chatroomDetailAdapter.update(chatroomPosition, chatroom)
-    }
-
-    // checks the state of last dm conversation and sets input box accordingly
-    private fun checkForLastDmConversationState() {
-        val lastConversationState = viewModel.getLastConversationFromAdapter(
-            chatroomDetailAdapter.items()
-        )?.state
-        if (lastConversationState == DM_CM_BECOMES_MEMBER_DISABLE) {
-            setChatInputBoxViewType(null, DM_CM_BECOMES_MEMBER_DISABLE)
-        }
-        if (lastConversationState == DM_MEMBER_REMOVED_OR_LEFT) {
-            setChatInputBoxViewType(null, DM_MEMBER_REMOVED_OR_LEFT)
-        }
     }
 
     /**
@@ -2836,7 +3260,7 @@ class ChatroomDetailFragment :
         viewModel.leaveSecretChatroomResponse.observe(viewLifecycleOwner) {
             ViewUtils.showShortToast(
                 requireContext(),
-                requireContext().getString(R.string.you_have_left_the_chat_room)
+                requireContext().getString(R.string.lm_chat_you_have_left_the_chat_room)
             )
             //send a result back to the user
             if (!viewModel.isAdminMember()) {
@@ -2849,12 +3273,12 @@ class ChatroomDetailFragment :
             if (size > 1) {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.messages_deleted)
+                    requireContext().getString(R.string.lm_chat_messages_deleted)
                 )
             } else {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.message_deleted)
+                    requireContext().getString(R.string.lm_chat_message_deleted)
                 )
             }
         }
@@ -2906,7 +3330,7 @@ class ChatroomDetailFragment :
                     val title = if (!linkOgTags.title.isNullOrEmpty()) {
                         linkOgTags.title
                     } else {
-                        getString(R.string.link)
+                        getString(R.string.lm_chat_link)
                     }
                     viewLink.tvLinkTitle.text = title
 
@@ -2920,7 +3344,7 @@ class ChatroomDetailFragment :
                     ImageBindingUtil.loadImage(
                         viewLink.ivLink,
                         linkOgTags.image,
-                        placeholder = R.drawable.ic_link_primary_40dp
+                        placeholder = R.drawable.lm_chat_ic_link_primary_40dp
                     )
 
                     viewLink.tvLinkUrl.text = linkOgTags.url
@@ -2965,16 +3389,16 @@ class ChatroomDetailFragment :
         //remove Follow button if showing
         if (pollInfoData?.pollType == POLL_TYPE_INSTANT) {
             val message = if (removeFollowView()) {
-                getString(R.string.your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms)
+                getString(R.string.lm_chat_your_vote_submitted_successfully_poll_room_has_been_added_to_your_followed_chat_rooms)
             } else {
-                getString(R.string.your_vote_submitted_successfully)
+                getString(R.string.lm_chat_your_vote_submitted_successfully)
             }
             ViewUtils.showShortToast(requireContext(), message)
         } else {
             if (removeFollowView()) {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.added_to_your_joined_chat_rooms)
+                    getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                 )
             }
             PollVoteSubmitSuccessDialog.newInstance(
@@ -2997,14 +3421,14 @@ class ChatroomDetailFragment :
             val hasAnswer = !response?.answer.isNullOrEmpty()
             val hasAttachments = response?.attachmentCount!! > 0
             val answer = when {
-                hasAnswer -> "${requireContext().getString(R.string.changed_current_topic_to)} ${response.answer}"
+                hasAnswer -> "${requireContext().getString(R.string.lm_chat_changed_current_topic_to)} ${response.answer}"
                 hasAttachments -> when (response.attachments?.firstOrNull()?.type) {
-                    IMAGE -> requireContext().getString(R.string.set_a_photo_message_to_current_topic)
-                    VIDEO -> requireContext().getString(R.string.set_a_video_message_to_current_topic)
-                    PDF -> requireContext().getString(R.string.set_a_document_message_to_current_topic)
-                    GIF -> requireContext().getString(R.string.set_a_gif_message_to_current_topic)
-                    AUDIO -> requireContext().getString(R.string.set_an_audio_message_to_current_topic)
-                    VOICE_NOTE -> requireContext().getString(R.string.set_a_voice_note_to_current_topic)
+                    IMAGE -> requireContext().getString(R.string.lm_chat_set_a_photo_message_to_current_topic)
+                    VIDEO -> requireContext().getString(R.string.lm_chat_set_a_video_message_to_current_topic)
+                    PDF -> requireContext().getString(R.string.lm_chat_set_a_document_message_to_current_topic)
+                    GIF -> requireContext().getString(R.string.lm_chat_set_a_gif_message_to_current_topic)
+                    AUDIO -> requireContext().getString(R.string.lm_chat_set_an_audio_message_to_current_topic)
+                    VOICE_NOTE -> requireContext().getString(R.string.lm_chat_set_a_voice_note_to_current_topic)
                     else -> ""
                 }
 
@@ -3057,53 +3481,112 @@ class ChatroomDetailFragment :
         }
     }
 
-    private fun observeErrors() {
+    // observes memberBlocked live data
+    private fun observeMemberBlocked() {
+        viewModel.memberBlocked.observe(viewLifecycleOwner) { memberBlocked ->
+            showTapToUndoLocally = false
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                viewModel.showDM.value,
+                memberBlocked
+            )
+            val message = if (memberBlocked) {
+                getString(R.string.lm_chat_member_blocked)
+            } else {
+                getString(R.string.lm_chat_member_unblocked)
+            }
+            ViewUtils.showShortToast(requireContext(), message)
+        }
+    }
+
+    // observes error messages
+    private fun observeErrorMessage() {
         viewModel.errorMessageFlow.onEach { response ->
             when (response) {
-                is ChatroomDetailViewModel.ErrorMessageEvent.FollowChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                is ChatroomDetailViewModel.ErrorMessageEvent.SendDMRequest -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
 
-                is ChatroomDetailViewModel.ErrorMessageEvent.LeaveSecretChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                is ChatroomDetailViewModel.ErrorMessageEvent.BlockMember -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
 
-                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.SetChatroomTopic -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.PostConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.EditConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
-
-                is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
-                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
-                }
                 is ChatroomDetailViewModel.ErrorMessageEvent.AddPollOption -> {
                     ViewUtils.showShortToast(
                         context,
-                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.DeleteConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.EditConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.FollowChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.LeaveSecretChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.PostConversation -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.SetChatroomTopic -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
+                }
+
                 is ChatroomDetailViewModel.ErrorMessageEvent.SubmitPoll -> {
                     ViewUtils.showShortToast(
                         context,
-                        context?.getString(R.string.sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
+                        context?.getString(R.string.lm_chat_sorry_unfortunately_we_could_not_submit_your_choices_please_try_again)
                     )
                 }
-                is ChatroomDetailViewModel.ErrorMessageEvent.EditChatroomTitle -> {
-                    ViewUtils.showLongSnack(binding.root, response.errorMessage)
+
+                is ChatroomDetailViewModel.ErrorMessageEvent.MuteChatroom -> {
+                    ViewUtils.showShortToast(requireContext(), response.errorMessage)
                 }
             }
         }.observeInLifecycle(viewLifecycleOwner)
+    }
+
+    // observes the showDM LiveData
+    private fun observeDMStatus() {
+        viewModel.showDM.observe(viewLifecycleOwner) { showDM ->
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                showDM
+            )
+        }
+    }
+
+    // observes updatedChatRequestState live data
+    private fun observeChatRequestState() {
+        viewModel.updatedChatRequestState.observe(viewLifecycleOwner) {
+            setChatInputBoxViewType(
+                CHAT_BOX_NORMAL,
+                viewModel.showDM.value
+            )
+        }
+    }
+
+    // observes dmInitiatedForCM live data
+    private fun observeDMInitiatedForCM() {
+        viewModel.dmInitiatedForCM.observe(viewLifecycleOwner) { dmInitiatedForCM ->
+            if (dmInitiatedForCM && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)) {
+                syncChatroom()
+            }
+        }
     }
 
     /**--------------------------------
@@ -3168,6 +3651,7 @@ class ChatroomDetailFragment :
                         }
                     }
                 }
+
                 MEDIA_RESULT_PICKED -> {
                     onMediaPicked(result)
                 }
@@ -3198,8 +3682,12 @@ class ChatroomDetailFragment :
     private var documentSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()
@@ -3238,6 +3726,7 @@ class ChatroomDetailFragment :
             .text(text)
             .isExternallyShared(isExternallyShared)
             .isSecretChatroom(getChatroomViewData()?.isSecret)
+            .isTaggingEnabled(!viewModel.isDmChatroom())
             .build()
         if (attachments.isNotEmpty()) {
             val intent =
@@ -3249,8 +3738,12 @@ class ChatroomDetailFragment :
     private val audioSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()
@@ -3291,6 +3784,7 @@ class ChatroomDetailFragment :
                 .text(text)
                 .isExternallyShared(isExternallyShared)
                 .isSecretChatroom(getChatroomViewData()?.isSecret)
+                .isTaggingEnabled(!viewModel.isDmChatroom())
                 .build()
             if (attachments.isNotEmpty()) {
                 val intent = MediaActivity.getIntent(
@@ -3306,8 +3800,12 @@ class ChatroomDetailFragment :
     private var imageVideoSendLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data?.extras?.getParcelable<MediaExtras>(BUNDLE_MEDIA_EXTRAS)
-                    ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val data = ExtrasUtil.getParcelable(
+                    extras,
+                    BUNDLE_MEDIA_EXTRAS,
+                    MediaExtras::class.java
+                )
                 postConversationWithMedia(data)
             } else if (result?.resultCode == Activity.RESULT_FIRST_USER) {
                 activity?.finish()
@@ -3329,6 +3827,7 @@ class ChatroomDetailFragment :
             .communityId(communityId?.toIntOrNull())
             .text(text)
             .isSecretChatroom(getChatroomViewData()?.isSecret)
+            .isTaggingEnabled(!viewModel.isDmChatroom())
             .build()
         val intent =
             MediaActivity.getIntent(requireContext(), mediaExtras, activity?.intent?.clipData)
@@ -3368,6 +3867,7 @@ class ChatroomDetailFragment :
                 .text(text)
                 .isExternallyShared(isExternallyShared)
                 .isSecretChatroom(getChatroomViewData()?.isSecret)
+                .isTaggingEnabled(!viewModel.isDmChatroom())
                 .build()
 
             val intent =
@@ -3462,6 +3962,7 @@ class ChatroomDetailFragment :
                                 //todo
 //                                editAnnouncementMessageClicked(it)
                             }
+
                             else -> {
                                 setChatInputBoxViewType(CHAT_BOX_REPLY)
                                 setEditMessageViewChatRoomData(it)
@@ -3516,13 +4017,13 @@ class ChatroomDetailFragment :
             if (!isSecretChatRoom()) {
                 ViewUtils.showShortSnack(
                     binding.root,
-                    getString(R.string.added_to_your_joined_chat_rooms)
+                    getString(R.string.lm_chat_added_to_your_joined_chat_rooms)
                 )
             }
         } else {
             ViewUtils.showShortSnack(
                 binding.root,
-                getString(R.string.removed_from_your_joined_chat_rooms)
+                getString(R.string.lm_chat_removed_from_your_joined_chat_rooms)
             )
         }
         viewModel.followChatroom(
@@ -3630,7 +4131,7 @@ class ChatroomDetailFragment :
         )
         ViewUtils.showShortSnack(
             binding.root,
-            getString(R.string.you_are_joining_this_chat_room)
+            getString(R.string.lm_chat_you_are_joining_this_chat_room)
         )
     }
 
@@ -3643,7 +4144,7 @@ class ChatroomDetailFragment :
         )
         ViewUtils.showShortSnack(
             binding.root,
-            getString(R.string.removed_from_your_joined_chat_rooms)
+            getString(R.string.lm_chat_removed_from_your_joined_chat_rooms)
         )
     }
 
@@ -3671,7 +4172,7 @@ class ChatroomDetailFragment :
                     updateAudioVoiceNoteBinder(
                         attachment.toBuilder()
                             .progress(0)
-                            .currentDuration(requireContext().getString(R.string.start_duration))
+                            .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                             .mediaState(MEDIA_ACTION_NONE)
                             .build(),
                         localParentConversationId,
@@ -3691,7 +4192,7 @@ class ChatroomDetailFragment :
                     binding.inputBox.tvVoiceNoteTime.text =
                         DateUtil.formatSeconds(singleUriDataOfVoiceNote?.duration ?: 0)
                     isVoiceNotePlaying = false
-                    binding.inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+                    binding.inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
                 }
                 localParentConversationId = parentPositionId
                 localChildPosition = childPosition
@@ -3886,7 +4387,7 @@ class ChatroomDetailFragment :
     }
 
     override fun showMemberProfile(member: MemberViewData) {
-        // todo: show member profile
+        SDKApplication.getLikeMindsCallback()?.openProfile(member)
     }
 
     //add this function for every navigation from chatroom
@@ -3909,7 +4410,7 @@ class ChatroomDetailFragment :
             attachment = attachment.toBuilder()
                 .progress(0)
                 .mediaState(MEDIA_ACTION_NONE)
-                .currentDuration(requireContext().getString(R.string.start_duration))
+                .currentDuration(requireContext().getString(R.string.lm_chat_start_duration))
                 .build()
 
             updateAudioVoiceNoteBinder(
@@ -3958,7 +4459,7 @@ class ChatroomDetailFragment :
             else -> {
                 ViewUtils.showShortToast(
                     requireContext(),
-                    getString(R.string.poll_ended_result_message)
+                    getString(R.string.lm_chat_poll_ended_result_message)
                 )
             }
         }
@@ -4042,7 +4543,7 @@ class ChatroomDetailFragment :
                 else -> {
                     ViewUtils.showShortToast(
                         requireContext(),
-                        getString(R.string.poll_ended_result_message)
+                        getString(R.string.lm_chat_poll_ended_result_message)
                     )
                 }
             }
@@ -4052,9 +4553,9 @@ class ChatroomDetailFragment :
     // shows alert dialog for anonymous poll
     private fun showAnonymousPollDialog(context: Context) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(context.getString(R.string.anonymous_poll))
-            .setMessage(context.getString(R.string.anonymous_poll_message))
-            .setPositiveButton(context.getString(R.string.okay)) { dialog, _ ->
+        builder.setTitle(context.getString(R.string.lm_chat_anonymous_poll))
+            .setMessage(context.getString(R.string.lm_chat_anonymous_poll_message))
+            .setPositiveButton(context.getString(R.string.lm_chat_okay)) { dialog, _ ->
                 dialog.dismiss()
             }
         val alertDialog = builder.create()
@@ -4062,7 +4563,7 @@ class ChatroomDetailFragment :
             alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.black_40
+                    R.color.lm_chat_black_40
                 )
             )
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -4138,7 +4639,7 @@ class ChatroomDetailFragment :
             isVoiceNotePlaying = false
             fabMic.show()
             fabSend.hide()
-            inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+            inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
             singleUriDataOfVoiceNote = null
             if (voiceRecorder.isRecording()) {
                 voiceRecorder.stopRecording(requireContext())
@@ -4150,7 +4651,7 @@ class ChatroomDetailFragment :
         binding.apply {
             isVoiceNoteRecording = false
             fabMic.show()
-            inputBox.ivPlayRecording.setImageResource(R.drawable.ic_voice_play)
+            inputBox.ivPlayRecording.setImageResource(R.drawable.lm_chat_ic_voice_play)
             fabSend.hide()
             isVoiceNotePlaying = false
             singleUriDataOfVoiceNote = null
@@ -4222,7 +4723,9 @@ class ChatroomDetailFragment :
                 item is ConversationViewData &&
                 (item.id == conversations[i].id || item.id == conversations[i].temporaryId)
             ) {
-                map[index] = conversations[i]
+                map[index] = conversations[i].toBuilder()
+                    .showTapToUndo(item.showTapToUndo)
+                    .build()
                 i++
             }
         }
@@ -4582,7 +5085,7 @@ class ChatroomDetailFragment :
             actionModeCallback?.startActionMode(
                 this,
                 requireActivity() as AppCompatActivity,
-                R.menu.message_actions_menu
+                R.menu.lm_chat_message_actions_menu
             )
         }
         val selectedSize = (if (selectedChatRoom != null) 1 else 0) + selectedConversations.size
@@ -4714,7 +5217,7 @@ class ChatroomDetailFragment :
             }
             return@setOnMenuItemClickListener true
         }
-        popUpMenu.menuInflater.inflate(R.menu.conversation_menu, popUpMenu.menu)
+        popUpMenu.menuInflater.inflate(R.menu.lm_chat_conversation_menu, popUpMenu.menu)
         popUpMenu.show()
     }
 
@@ -4772,9 +5275,9 @@ class ChatroomDetailFragment :
             chatReplyData = replyData
 
             val placeholder = if (replyData.attachmentType == AUDIO) {
-                R.drawable.placeholder_audio
+                R.drawable.lm_chat_placeholder_audio
             } else {
-                R.drawable.image_placeholder
+                R.drawable.lm_chat_image_placeholder
             }
 
             if (replyData.imageUrl.isNullOrEmpty()) {
@@ -4856,9 +5359,9 @@ class ChatroomDetailFragment :
 
     private fun copyConversationText(text: String, isSingleConversation: Boolean) {
         val message = if (isSingleConversation) {
-            requireContext().getString(R.string.message_copied)
+            requireContext().getString(R.string.lm_chat_message_copied)
         } else {
-            requireContext().getString(R.string.messages_copied)
+            requireContext().getString(R.string.lm_chat_messages_copied)
         }
         viewModel.sendMessageCopyEvent(text)
         ViewUtils.copyToClipboard(
@@ -5115,7 +5618,7 @@ class ChatroomDetailFragment :
 
     override fun removedReaction(conversationId: String) {
         childFragmentManager.popBackStack()
-        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_reaction_removed))
         reactionsViewModel.deleteConversationReaction(conversationId)
         updateReactionsGridUI(null, conversationId)
         reactionsViewModel.sendReactionRemovedEvent(
@@ -5127,7 +5630,7 @@ class ChatroomDetailFragment :
 
     override fun removedChatroomReaction() {
         childFragmentManager.popBackStack()
-        ViewUtils.showShortToast(requireContext(), getString(R.string.reaction_removed))
+        ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_reaction_removed))
         reactionsViewModel.deleteChatroomReaction(chatroomId)
         updateChatroomReactionGridUI(null)
         reactionsViewModel.sendReactionRemovedEvent(
@@ -5216,8 +5719,64 @@ class ChatroomDetailFragment :
         ChatroomUtil.setStatusBarColor(requireActivity(), requireContext(), isFullScreen)
     }
 
+    // sends dm request when the user clicks on confirm
+    override fun sendDMRequest() {
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.INITIATED)
+        clearEditTextAnswer()
+    }
+
+    // approves dm request when the user accepts DM request
+    override fun approveDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.ACCEPTED)
+    }
+
+    // rejects dm request when the user rejects DM request
+    override fun rejectDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED)
+    }
+
+    // rejects dm request and reports the user when the user rejects DM request
+    override fun reportAndRejectDMRequest() {
+        binding.cvDmRequest.hide()
+        viewModel.sendDMRequest(chatroomId, ChatRequestState.REJECTED)
+        performReportAbuse()
+    }
+
+    // unblocks the member and updates the tap to undo
+    override fun blockMember(index: Int, state: MemberBlockState) {
+        val conversationViewData = chatroomDetailAdapter[index] as ConversationViewData
+        val updatedConversationViewData = conversationViewData.toBuilder()
+            .showTapToUndo(false)
+            .build()
+
+        chatroomDetailAdapter.update(index, updatedConversationViewData)
+        updatedBlockActionTitle = BLOCK_ACTION_TITLE
+        invalidateActionsMenu()
+        viewModel.blockMember(
+            chatroomId,
+            state
+        )
+    }
+
+    override fun onMemberTagClicked(memberTag: Uri) {
+        super.onMemberTagClicked(memberTag)
+
+        if (memberTag.host == Route.ROUTE_MEMBER
+            || memberTag.host == Route.ROUTE_MEMBER_PROFILE
+            || memberTag.host == Route.ROUTE_USER_PROFILE
+        ) {
+            val uuid = memberTag.getNullableQueryParameter("uuid")
+                ?: memberTag.lastPathSegment ?: return
+
+            val member = viewModel.getMemberFromDB(uuid)
+            SDKApplication.getLikeMindsCallback()?.openProfile(member)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chatroom_menu, menu)
+        inflater.inflate(R.menu.lm_chat_chatroom_menu, menu)
         updateChatroomActionMenu(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -5308,6 +5867,16 @@ class ChatroomDetailFragment :
                     item?.isVisible = true
                     item?.title = chatroomActionViewData.title
                 }
+
+                "27", "28" -> {
+                    val item = actionsMenu?.findItem(R.id.block_unblock)
+                    item?.isVisible = true
+                    if (updatedBlockActionTitle != null) {
+                        item?.title = updatedBlockActionTitle
+                    } else {
+                        item?.title = chatroomActionViewData.title
+                    }
+                }
             }
         }
     }
@@ -5351,6 +5920,24 @@ class ChatroomDetailFragment :
                 showLeaveChatroomConfirmationPopup()
             }
 
+            R.id.block_unblock -> {
+                val value: MemberBlockState
+                if (item.title.toString() == BLOCK_ACTION_TITLE
+                ) {
+                    updatedBlockActionTitle = UNBLOCK_ACTION_TITLE
+                    value = MemberBlockState.MEMBER_BLOCKED
+                } else {
+                    updatedBlockActionTitle = BLOCK_ACTION_TITLE
+                    value = MemberBlockState.MEMBER_UNBLOCKED
+                    updateTapToUndoLocally(false)
+                }
+                invalidateActionsMenu()
+                viewModel.blockMember(
+                    chatroomId,
+                    value
+                )
+            }
+
             // todo: profile
 //            R.id.view_profile -> {
 //                redirectToProfile()
@@ -5387,14 +5974,14 @@ class ChatroomDetailFragment :
                 value = false
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.notifications_unmuted_for_this_chatroom)
+                    requireContext().getString(R.string.lm_chat_notifications_unmuted_for_this_chatroom)
                 )
             } else {
                 updatedMuteActionTitle = UNMUTE_ACTION_TITLE
                 value = true
                 ViewUtils.showShortToast(
                     requireContext(),
-                    requireContext().getString(R.string.notifications_muted_for_this_chatroom)
+                    requireContext().getString(R.string.lm_chat_notifications_muted_for_this_chatroom)
                 )
             }
             invalidateActionsMenu()
@@ -5521,5 +6108,37 @@ class ChatroomDetailFragment :
         }
         voiceNoteUtils.clear()
         super.onDestroy()
+    }
+
+    private fun subscribeToChatEvent() {
+        ChatEvent.getPublisher().subscribe(this)
+    }
+
+    private fun unsubscribeToChatEvent() {
+        ChatEvent.getPublisher().unsubscribe(this)
+    }
+
+    override fun update(postData: Any) {
+        if (postData is HashMap<*, *>) {
+            postData.map {
+                val conversationID = it.key ?: return
+                if (conversationID is String) {
+                    val widgetViewData = it.value ?: return
+                    if (widgetViewData is WidgetViewData) {
+                        val index = getIndexOfConversation(conversationID)
+                        if (index >= 0) {
+                            var conversationViewData =
+                                chatroomDetailAdapter.items()[index] as? ConversationViewData
+                                    ?: return
+                            conversationViewData =
+                                conversationViewData.toBuilder().widget(widgetViewData).build()
+
+                            //update recycler view
+                            chatroomDetailAdapter.update(index, conversationViewData)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

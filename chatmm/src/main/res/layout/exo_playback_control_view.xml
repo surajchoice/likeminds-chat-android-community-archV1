@@ -20,14 +20,14 @@
             android:id="@id/exo_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play"
+            android:src="@drawable/lm_chat_ic_play"
             tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@id/exo_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_pause"
+            android:src="@drawable/lm_chat_ic_pause"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
@@ -55,10 +55,10 @@
             android:layout_height="16dp"
             android:layout_weight="1"
             app:bar_height="1dp"
-            app:buffered_color="@color/white_80"
-            app:played_color="@color/colorPrimary"
-            app:scrubber_color="@color/colorPrimary"
-            app:unplayed_color="@color/white" />
+            app:buffered_color="@color/lm_chat_white_80"
+            app:played_color="@color/lm_chat_colorPrimary"
+            app:scrubber_color="@color/lm_chat_colorPrimary"
+            app:unplayed_color="@color/lm_chat_white" />
 
         <TextView
             android:id="@id/exo_duration"

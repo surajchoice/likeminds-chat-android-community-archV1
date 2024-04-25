@@ -49,7 +49,7 @@ class MediaPickerDocumentItemViewDataBinder @Inject constructor(
                     MediaPickerDataBinderUtils.getFilteredText(
                         data.mediaName ?: "",
                         data.filteredKeywords,
-                        ContextCompat.getColor(binding.root.context, R.color.turquoise),
+                        ContextCompat.getColor(binding.root.context, R.color.lm_chat_turquoise),
                     ), TextView.BufferType.SPANNABLE
                 )
             }

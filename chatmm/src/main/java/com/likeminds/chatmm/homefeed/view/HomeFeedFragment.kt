@@ -1,11 +1,17 @@
 package com.likeminds.chatmm.homefeed.view
 
+import android.Manifest
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -14,13 +20,14 @@ import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
 import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.chat.model.LMChatExtras
+import com.likeminds.chatmm.chat.model.SDKInitiateSource
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
-import com.likeminds.chatmm.homefeed.model.HomeFeedExtras
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
@@ -31,14 +38,13 @@ import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
 import com.likeminds.chatmm.search.view.SearchActivity
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
-import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
-import com.likeminds.chatmm.utils.observeInLifecycle
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
@@ -49,7 +55,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     HomeFeedAdapterListener,
     ConnectivityReceiverListener {
 
-    private lateinit var extras: HomeFeedExtras
+    private lateinit var extras: LMChatExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
 
     @Inject
@@ -76,16 +82,23 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         ConnectivityBroadcastReceiver()
     }
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {}
+
     companion object {
         const val TAG = "HomeFeedFragment"
         private const val BUNDLE_HOME_FRAGMENT = "bundle of home fragment"
+
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
 
         /**
          * creates a instance of fragment
          **/
         @JvmStatic
         fun getInstance(
-            extras: HomeFeedExtras
+            extras: LMChatExtras
         ): HomeFeedFragment {
             val fragment = HomeFeedFragment()
             val bundle = Bundle()
@@ -110,19 +123,41 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     override fun receiveExtras() {
         super.receiveExtras()
-        extras = requireArguments().getParcelable(BUNDLE_HOME_FRAGMENT)
-            ?: throw emptyExtrasException(TAG)
+        extras = ExtrasUtil.getParcelable(
+            requireArguments(),
+            BUNDLE_HOME_FRAGMENT,
+            LMChatExtras::class.java
+        ) ?: throw emptyExtrasException(TAG)
+
         isGuestUser = extras.isGuest ?: false
     }
 
     override fun setUpViews() {
         super.setUpViews()
+        checkForNotificationPermission()
         setBranding()
-        setupReceivers()
-        initiateUser()
+        if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
+            binding.toolbar.show()
+            setupReceivers()
+            initiateUser()
+        } else {
+            binding.toolbar.hide()
+            initData()
+        }
         initRecyclerView()
         initToolbar()
         fetchData()
+    }
+
+    //check permission for Post Notifications
+    private fun checkForNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                if (activity?.checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
+                }
+            }
+        }
     }
 
     //register receivers to the activity
@@ -141,7 +176,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         observeErrors()
 
         initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) { user ->
-            observeInitiateUserResponse(user)
+            if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
+                observeInitiateUserResponse(user)
+            }
         }
 
         viewModel.userData.observe(viewLifecycleOwner) { user ->
@@ -167,7 +204,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private fun observeLogoutResponse() {
         initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
-            ViewUtils.showShortToast(requireContext(), getString(R.string.invalid_app_access))
+            ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_invalid_app_access))
         }
     }
 
@@ -182,6 +219,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 is HomeFeedViewModel.ErrorMessageEvent.GetChatroom -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
+
                 is HomeFeedViewModel.ErrorMessageEvent.GetExploreTabCount -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
@@ -192,6 +230,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     //observe user data
     private fun observeUserData(user: MemberViewData?) {
         if (user != null) {
+            communityId = user.communityId ?: ""
+            communityName = user.communityName ?: ""
+
             MemberImageUtil.setImage(
                 user.imageUrl,
                 user.name,
@@ -207,12 +248,17 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     private fun observeInitiateUserResponse(user: MemberViewData?) {
         communityId = user?.communityId ?: ""
         communityName = user?.communityName ?: ""
+        initData()
+        initiateViewModel.getConfig()
+    }
+
+    // initializes home feed data
+    private fun initData() {
         initToolbar()
         fetchData()
         startSync()
 
         viewModel.observeLiveHomeFeed(requireContext())
-        viewModel.getConfig()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
@@ -352,7 +398,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                     wasNetworkGone = false
                     snackBar.showMessage(
                         view,
-                        getString(R.string.internet_connection_restored),
+                        getString(R.string.lm_chat_internet_connection_restored),
                         true
                     )
                 }

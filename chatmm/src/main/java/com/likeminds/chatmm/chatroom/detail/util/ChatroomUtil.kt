@@ -124,7 +124,7 @@ object ChatroomUtil {
     private fun getVideoDrawable(conversation: ConversationViewData?): Pair<Int, Int>? {
         val videosCount = conversation?.attachments?.filter { it.type == VIDEO }?.size ?: 0
         return when {
-            (videosCount > 0) -> Pair(R.drawable.ic_video_header, videosCount)
+            (videosCount > 0) -> Pair(R.drawable.lm_chat_ic_video_header, videosCount)
             else -> null
         }
     }
@@ -194,26 +194,26 @@ object ChatroomUtil {
             conversation?.attachments?.filter { it.type == VOICE_NOTE }?.size ?: 0
         return when {
             imagesCount > 0 -> {
-                Pair(R.drawable.ic_photo_header, imagesCount)
+                Pair(R.drawable.lm_chat_ic_photo_header, imagesCount)
             }
             gifsCount > 0 -> {
-                Pair(R.drawable.ic_gif_header, gifsCount)
+                Pair(R.drawable.lm_chat_ic_gif_header, gifsCount)
             }
             pdfsCount > 0 -> {
-                Pair(R.drawable.ic_document_header, pdfsCount)
+                Pair(R.drawable.lm_chat_ic_document_header, pdfsCount)
             }
             audiosCount > 0 -> {
-                Pair(R.drawable.ic_audio_header_grey, audiosCount)
+                Pair(R.drawable.lm_chat_ic_audio_header_grey, audiosCount)
             }
             voiceNoteCount > 0 -> {
-                Pair(R.drawable.ic_voice_note_header_grey, voiceNoteCount)
+                Pair(R.drawable.lm_chat_ic_voice_note_header_grey, voiceNoteCount)
             }
             conversation?.ogTags != null || conversation?.answer
                 .containsUrl() -> {
-                Pair(R.drawable.ic_link_header, 1)
+                Pair(R.drawable.lm_chat_ic_link_header, 1)
             }
             conversation?.state == STATE_POLL -> {
-                Pair(R.drawable.ic_micro_poll, 1)
+                Pair(R.drawable.lm_chat_ic_micro_poll, 1)
             }
             else -> null
         }
@@ -228,17 +228,17 @@ object ChatroomUtil {
         return if (uuid == currentMemberId) {
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
             if (deletedByUUID == currentMemberId) {
-                context.getString(R.string.you_deleted_this_message)
+                context.getString(R.string.lm_chat_you_deleted_this_message)
             } else {
-                context.getString(R.string.your_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_your_message_was_deleted_by_cm)
             }
         } else {
             val deletedByUUID = conversation.deletedByMember?.sdkClientInfo?.uuid
             val conversationCreator = conversation.memberViewData.sdkClientInfo.uuid
             if (conversationCreator == deletedByUUID) {
-                context.getString(R.string.this_message_was_deleted)
+                context.getString(R.string.lm_chat_this_message_was_deleted)
             } else {
-                context.getString(R.string.this_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_this_message_was_deleted_by_cm)
             }
         }
     }
@@ -252,17 +252,17 @@ object ChatroomUtil {
         return if (uuid == currentMemberId) {
             val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
             if (deletedByUUID == currentMemberId) {
-                context.getString(R.string.you_deleted_this_message)
+                context.getString(R.string.lm_chat_you_deleted_this_message)
             } else {
-                context.getString(R.string.your_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_your_message_was_deleted_by_cm)
             }
         } else {
             val deletedByUUID = chatroom.deletedByMember?.sdkClientInfo?.uuid
             val creatorUUID = chatroom.memberViewData.sdkClientInfo.uuid
             if (creatorUUID == deletedByUUID) {
-                context.getString(R.string.this_message_was_deleted)
+                context.getString(R.string.lm_chat_this_message_was_deleted)
             } else {
-                context.getString(R.string.this_message_was_deleted_by_cm)
+                context.getString(R.string.lm_chat_this_message_was_deleted_by_cm)
             }
         }
     }
@@ -270,7 +270,7 @@ object ChatroomUtil {
     fun getTypeDrawableId(type: Int?): Int? {
         return when (type) {
             TYPE_ANNOUNCEMENT -> {
-                R.drawable.ic_announcement_room
+                R.drawable.lm_chat_ic_announcement_room
             }
             else -> {
                 return null
@@ -400,10 +400,10 @@ object ChatroomUtil {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         if (isFullScreen) {
-            window.statusBarColor = ContextCompat.getColor(context, R.color.black)
+            window.statusBarColor = ContextCompat.getColor(context, R.color.lm_chat_black)
         } else {
             window.statusBarColor =
-                ContextCompat.getColor(context, R.color.colorPrimaryDark)
+                ContextCompat.getColor(context, R.color.lm_chat_colorPrimaryDark)
         }
     }
 }

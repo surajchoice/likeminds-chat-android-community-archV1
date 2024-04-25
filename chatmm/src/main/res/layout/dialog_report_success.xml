@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/lm_chat_white">
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_reported_header"
@@ -15,13 +16,14 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:lineHeight="24sp"
-            android:text="@string/s_is_reported_for_review"
-            android:textColor="@color/black_87"
+            android:text="@string/lm_chat_s_is_reported_for_review"
+            android:textColor="@color/lm_chat_black_87"
             android:textSize="16sp"
             app:fontType="medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UnusedAttribute" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_report_sub_header"
@@ -31,13 +33,14 @@
             android:layout_marginTop="30dp"
             android:gravity="start"
             android:lineHeight="20sp"
-            android:text="@string/our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s"
-            android:textColor="@color/black_54"
+            android:text="@string/lm_chat_our_team_will_look_into_your_feedback_and_will_take_appropriate_action_on_this_s"
+            android:textColor="@color/lm_chat_black_54"
             android:textSize="15sp"
             app:fontType="regular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_reported_header" />
+            app:layout_constraintTop_toBottomOf="@id/tv_reported_header"
+            tools:ignore="UnusedAttribute" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsButton
             android:id="@+id/btn_ok"
@@ -46,8 +49,8 @@
             android:layout_marginVertical="30dp"
             android:paddingHorizontal="88dp"
             android:paddingVertical="13dp"
-            android:text="@string/ok"
-            android:textColor="@color/white"
+            android:text="@string/lm_chat_ok"
+            android:textColor="@color/lm_chat_white"
             app:cornerRadius="22dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

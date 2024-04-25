@@ -39,7 +39,7 @@ class CustomPlayerUiController(
         horizontalProgress = playerUi.findViewById(R.id.horizontal_progress)
 
         playPauseButton = playerUi.findViewById(R.id.iv_play_pause)
-        playPauseButton?.setOnClickListener { view ->
+        playPauseButton?.setOnClickListener { _ ->
             if (playerTracker.state == PlayerState.PLAYING) {
                 pauseVideo()
             } else {
@@ -51,12 +51,12 @@ class CustomPlayerUiController(
 
     private fun pauseVideo() {
         youTubePlayer.pause()
-        playPauseButton?.setImageResource(R.drawable.ic_play)
+        playPauseButton?.setImageResource(R.drawable.lm_chat_ic_play)
     }
 
     private fun playVideo() {
         youTubePlayer.play()
-        playPauseButton?.setImageResource(R.drawable.ic_pause)
+        playPauseButton?.setImageResource(R.drawable.lm_chat_ic_pause)
     }
 
     /**
@@ -78,7 +78,7 @@ class CustomPlayerUiController(
         if (state == PlayerState.PLAYING || state == PlayerState.PAUSED ||
             state == PlayerState.VIDEO_CUED || state == PlayerState.BUFFERING
         ) panel?.setBackgroundColor(
-            ContextCompat.getColor(context, R.color.transparent)
+            ContextCompat.getColor(context, R.color.lm_chat_transparent)
         )
     }
 

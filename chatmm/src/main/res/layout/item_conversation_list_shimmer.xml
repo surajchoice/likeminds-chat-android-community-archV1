@@ -12,14 +12,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/cloudy_blue">
+            android:background="@color/lm_chat_cloudy_blue">
 
             <View
                 android:id="@+id/chat_head"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/background_shimmer_circle"
+                android:background="@drawable/lm_chat_background_shimmer_circle"
                 app:layout_constraintBottom_toBottomOf="@+id/linear_layout1"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -30,7 +30,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="52dp"
-                android:background="@drawable/background_chat_bubble_other"
+                android:background="@drawable/lm_chat_background_chat_bubble_other"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/chat_head"
@@ -41,14 +41,14 @@
                     android:layout_height="13dp"
                     android:layout_marginStart="21dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/background_shimmer_bubble_conversation" />
+                    android:background="@drawable/lm_chat_background_shimmer_bubble_conversation" />
 
                 <View
                     android:layout_width="223dp"
                     android:layout_height="13dp"
                     android:layout_marginStart="21dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/background_shimmer_bubble_conversation" />
+                    android:background="@drawable/lm_chat_background_shimmer_bubble_conversation" />
 
                 <View
                     android:layout_width="183dp"
@@ -56,7 +56,7 @@
                     android:layout_marginStart="21dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/background_shimmer_bubble_conversation" />
+                    android:background="@drawable/lm_chat_background_shimmer_bubble_conversation" />
 
             </LinearLayout>
 
@@ -67,7 +67,7 @@
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="9dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/background_chat_bubble_me"
+                android:background="@drawable/lm_chat_background_chat_bubble_me"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,7 +79,7 @@
                     android:layout_marginStart="11dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/background_shimmer_bubble_conversation" />
+                    android:background="@drawable/lm_chat_background_shimmer_bubble_conversation" />
 
                 <View
                     android:layout_width="60dp"
@@ -87,7 +87,7 @@
                     android:layout_marginStart="11dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="9dp"
-                    android:background="@drawable/background_shimmer_bubble_conversation" />
+                    android:background="@drawable/lm_chat_background_shimmer_bubble_conversation" />
 
             </LinearLayout>
 

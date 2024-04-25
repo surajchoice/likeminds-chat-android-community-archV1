@@ -47,7 +47,7 @@ class MediaPickerAudioFragment :
         private const val BUNDLE_MEDIA_PICKER_AUDIO = "bundle of media picker audio"
 
         @JvmStatic
-        fun getInstance(extras: MediaPickerExtras): MediaPickerAudioFragment {
+        fun getInstance(extras: LMChatMediaPickerExtras): MediaPickerAudioFragment {
             val fragment = MediaPickerAudioFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_MEDIA_PICKER_AUDIO, extras)
@@ -64,7 +64,7 @@ class MediaPickerAudioFragment :
         return FragmentMediaPickerAudioBinding.inflate(layoutInflater)
     }
 
-    private lateinit var mediaPickerExtras: MediaPickerExtras
+    private lateinit var mediaPickerExtras: LMChatMediaPickerExtras
     private val selectedMedias by lazy { HashMap<String, MediaViewData>() }
     private var localItemPosition: Int = 0
 
@@ -101,7 +101,7 @@ class MediaPickerAudioFragment :
             if (it.isNotEmpty()) {
                 mediaPickerAdapter.replace(it)
             } else {
-                ViewUtils.showShortToast(requireContext(), getString(R.string.no_audio_files))
+                ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_no_audio_files))
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
@@ -110,7 +110,7 @@ class MediaPickerAudioFragment :
     override fun receiveExtras() {
         super.receiveExtras()
         mediaPickerExtras =
-            MediaPickerDocumentFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
+            LMChatMediaPickerDocumentFragmentArgs.fromBundle(requireArguments()).mediaPickerExtras
     }
 
     override fun onStop() {
@@ -131,7 +131,7 @@ class MediaPickerAudioFragment :
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.media_picker_audio_menu, menu)
+        inflater.inflate(R.menu.lm_chat_media_picker_audio_menu, menu)
         updateMenu(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -294,7 +294,7 @@ class MediaPickerAudioFragment :
             ) {
                 String.format("Send to %s", mediaPickerExtras.senderName)
             } else {
-                getString(R.string.music)
+                getString(R.string.lm_chat_music)
             }
     }
 
@@ -303,7 +303,7 @@ class MediaPickerAudioFragment :
             binding.tvToolbarSubtitle.text =
                 String.format("%s selected", selectedMedias.size)
         } else {
-            binding.tvToolbarSubtitle.text = getString(R.string.tap_to_select)
+            binding.tvToolbarSubtitle.text = getString(R.string.lm_chat_tap_to_select)
         }
         binding.fabSend.isVisible = isMediaSelectionEnabled()
     }
@@ -361,7 +361,7 @@ class MediaPickerAudioFragment :
             .build()
         val intent = Intent().apply {
             putExtras(Bundle().apply {
-                putParcelable(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extras)
+                putParcelable(LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT, extras)
             })
         }
         requireActivity().setResult(Activity.RESULT_OK, intent)

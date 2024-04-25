@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="showCustomTitle"
+            type="Boolean" />
+
+        <variable
+            name="position"
+            type="Integer" />
+
+        <variable
+            name="memberViewData"
+            type="com.likeminds.chatmm.member.model.MemberViewData" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ClickableView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lm_chat_white">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_member_image"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_member_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/lm_chat_roboto_medium"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/lm_chat_black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_subtitle"
+            app:layout_constraintEnd_toStartOf="@id/view_dot"
+            app:layout_constraintStart_toEndOf="@id/iv_member_image"
+            app:layout_constraintTop_toTopOf="@id/iv_member_image"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="Rajesh Kumar" />
+
+        <View
+            android:id="@+id/view_dot"
+            android:layout_width="3dp"
+            android:layout_height="3dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/lm_chat_shape_center_dot_cloudy_blue"
+            android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/tv_member_name"
+            app:layout_constraintStart_toEndOf="@id/tv_member_name"
+            app:layout_constraintTop_toTopOf="@id/tv_member_name"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_custom_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:text="@{memberViewData.customTitle}"
+            android:textColor="@color/lm_chat_turquoise"
+            android:textSize="12sp"
+            android:visibility="@{showCustomTitle ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/tv_member_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/view_dot"
+            app:layout_constraintTop_toTopOf="@id/tv_member_name"
+            tools:text="@string/lm_chat_community_manager"
+            tools:visibility="visible" />
+
+        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:textColor="@color/lm_chat_grey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_member_image"
+            app:layout_constraintStart_toEndOf="@id/iv_member_image"
+            app:layout_constraintTop_toBottomOf="@id/tv_member_name"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="You: Sure I will look into" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

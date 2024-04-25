@@ -190,9 +190,9 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
             val attachment = conversation.attachments?.get(0) ?: return
             tvPdfName.text = attachment.name ?: "Document"
             if (!attachment.thumbnail.isNullOrEmpty()) {
-                tvPdfName.setBackgroundResource(R.drawable.background_item_document_name_with_preview)
+                tvPdfName.setBackgroundResource(R.drawable.lm_chat_background_item_document_name_with_preview)
             } else {
-                tvPdfName.setBackgroundResource(R.drawable.background_item_document_name_without_preview)
+                tvPdfName.setBackgroundResource(R.drawable.lm_chat_background_item_document_name_without_preview)
             }
             if (attachment.thumbnail.isNullOrEmpty()) {
                 ivSingleImage.hide()
@@ -203,7 +203,7 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
                 ImageBindingUtil.loadImage(
                     binding.ivSingleImage,
                     attachment.thumbnail,
-                    placeholder = R.drawable.image_placeholder,
+                    placeholder = R.drawable.lm_chat_image_placeholder,
                     cornerRadius = 10
                 )
                 ChatroomConversationItemViewDataBinderUtil.initImageAspectRatio(

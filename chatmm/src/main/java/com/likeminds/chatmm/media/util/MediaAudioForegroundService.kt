@@ -1,18 +1,14 @@
 package com.likeminds.chatmm.media.util
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.*
+import android.content.*
 import android.net.Uri
 import android.os.*
 import androidx.core.app.NotificationCompat
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.handler
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
+import com.likeminds.chatmm.utils.ExtrasUtil
 
 class MediaAudioForegroundService : Service(), MediaPlayerListener {
     private var mediaPlayer: LMMediaPlayer? = null
@@ -33,8 +29,13 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notificationBuilder = createNotificationBuilder()
-        val uri = intent?.extras?.getParcelable<Uri>(AUDIO_SERVICE_URI_EXTRA)
-        progress = intent?.extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
+        val extras = intent?.extras
+        val uri = ExtrasUtil.getParcelable(
+            extras,
+            AUDIO_SERVICE_URI_EXTRA,
+            Uri::class.java
+        )
+        progress = extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
         isDataSourceSet = true
         mediaPlayer?.setMediaDataSource(uri, progress = progress * 1000L)
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
@@ -66,8 +67,13 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
     private val newAudioBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             isDataSourceSet = true
-            val data = intent?.extras?.getParcelable<Uri>(AUDIO_SERVICE_URI_EXTRA)
-            progress = intent?.extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
+            val extras = intent?.extras
+            val data = ExtrasUtil.getParcelable(
+                extras,
+                AUDIO_SERVICE_URI_EXTRA,
+                Uri::class.java
+            )
+            progress = extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
             val notificationBuilder = createNotificationBuilder()
             startForeground(NOTIFICATION_ID, notificationBuilder.build())
             mediaPlayer?.setMediaDataSource(data, progress = progress * 1000L)
@@ -79,7 +85,6 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
             val progress = intent?.extras?.getInt(PROGRESS_SEEKBAR_DRAGGED) ?: 0
             mediaPlayer?.seekTo(progress * 1000L)
         }
-
     }
 
     fun removeHandler() {
@@ -120,8 +125,8 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
             this,
             CHANNEL_ID
         ).apply {
-            setContentTitle(getString(R.string.audio_is_played))
-            setSmallIcon(R.drawable.ic_notification)
+            setContentTitle(getString(R.string.lm_chat_audio_is_played))
+            setSmallIcon(R.drawable.lm_chat_ic_notification)
             setAutoCancel(false)
             setSilent(true)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

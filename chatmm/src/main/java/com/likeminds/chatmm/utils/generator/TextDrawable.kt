@@ -72,6 +72,7 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
         textPaint.colorFilter = cf
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSLUCENT
     }

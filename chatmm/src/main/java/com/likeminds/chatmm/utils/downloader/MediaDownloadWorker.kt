@@ -98,14 +98,14 @@ internal class MediaDownloadWorker(
                 Result.success()
             } else {
                 showFailedNotification(notificationBuilder, notificationManager)
-                getFailureResult(context.getString(R.string.unknown_error_occurred))
+                getFailureResult(context.getString(R.string.lm_chat_unknown_error_occurred))
             }
         } catch (e: TimeoutCancellationException) {
             showFailedNotification(notificationBuilder, notificationManager)
-            getFailureResult(context.getString(R.string.connection_timed_out))
+            getFailureResult(context.getString(R.string.lm_chat_connection_timed_out))
         } catch (t: Throwable) {
             showFailedNotification(notificationBuilder, notificationManager)
-            getFailureResult(context.getString(R.string.failed_to_connect))
+            getFailureResult(context.getString(R.string.lm_chat_failed_to_connect))
         }
     }
 
@@ -114,7 +114,7 @@ internal class MediaDownloadWorker(
         manager: NotificationManagerCompat?
     ) {
         if (builder != null && manager != null) {
-            builder.setContentText(context.getString(R.string.download_failed))
+            builder.setContentText(context.getString(R.string.lm_chat_download_failed))
                 .setProgress(0, 0, false)
             manager.notify(notificationId, builder.build())
         }
@@ -125,7 +125,7 @@ internal class MediaDownloadWorker(
         manager: NotificationManagerCompat?
     ) {
         if (builder != null && manager != null) {
-            builder.setContentText(context.getString(R.string.download_completed))
+            builder.setContentText(context.getString(R.string.lm_chat_download_completed))
                 .setProgress(0, 0, false)
             manager.notify(notificationId, builder.build())
         }
@@ -133,9 +133,9 @@ internal class MediaDownloadWorker(
 
     private fun getNotificationTitle(type: String?): String {
         return when (type) {
-            IMAGE -> context.getString(R.string.image_download)
-            VIDEO -> context.getString(R.string.video_download)
-            else -> context.getString(R.string.media_download)
+            IMAGE -> context.getString(R.string.lm_chat_image_download)
+            VIDEO -> context.getString(R.string.lm_chat_video_download)
+            else -> context.getString(R.string.lm_chat_media_download)
         }
     }
 

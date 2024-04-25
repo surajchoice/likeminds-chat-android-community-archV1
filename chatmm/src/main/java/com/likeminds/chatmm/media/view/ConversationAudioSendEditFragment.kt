@@ -4,15 +4,12 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.collabmates.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
@@ -22,20 +19,17 @@ import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.databinding.FragmentConversationAudioEditSendBinding
 import com.likeminds.chatmm.media.model.*
-import com.likeminds.chatmm.media.util.LMMediaPlayer
+import com.likeminds.chatmm.media.util.*
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.handler
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.isDataSourceSet
 import com.likeminds.chatmm.media.util.LMMediaPlayer.Companion.runnable
-import com.likeminds.chatmm.media.util.MediaPlayerListener
-import com.likeminds.chatmm.media.util.MediaUtils
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
 import com.likeminds.chatmm.member.util.UserPreferences
-import com.likeminds.chatmm.utils.AndroidUtils
-import com.likeminds.chatmm.utils.DateUtil
-import com.likeminds.chatmm.utils.ProgressHelper
+import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 import com.likeminds.chatmm.utils.membertagging.MemberTaggingDecoder
+import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingUtil
 import com.likeminds.chatmm.utils.membertagging.util.MemberTaggingViewListener
 import com.likeminds.chatmm.utils.membertagging.view.MemberTaggingView
@@ -183,8 +177,8 @@ class ConversationAudioSendEditFragment :
         if (mediaPlayer != null) {
             isDataSourceSet = false
             handler?.removeCallbacks(runnable ?: Runnable { })
-            binding.tvCurrentDuration.text = getString(R.string.start_duration)
-            binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+            binding.tvCurrentDuration.text = getString(R.string.lm_chat_start_duration)
+            binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
             progressAnim.cancel()
             binding.wave.setRawData(ByteArray(0))
         }
@@ -209,11 +203,11 @@ class ConversationAudioSendEditFragment :
         }
 
         binding.btnAdd.setOnClickListener {
-            val extras = MediaPickerExtras.Builder()
+            val extras = LMChatMediaPickerExtras.Builder()
                 .senderName(mediaExtras.chatroomName ?: "Chatroom")
                 .mediaTypes(listOf(AUDIO))
                 .build()
-            val intent = MediaPickerActivity.getIntent(
+            val intent = LMChatMediaPickerActivity.getIntent(
                 requireContext(),
                 extras
             )
@@ -237,19 +231,21 @@ class ConversationAudioSendEditFragment :
             when {
                 !isDataSourceSet -> {
                     mediaPlayer?.setMediaDataSource(selectedUri!!.uri)
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_pause)
                     inflateWave(selectedUri!!.uri, selectedUri!!.duration?.toLong() ?: 0L)
                 }
+
                 mediaPlayer?.isPlaying() == true -> {
                     mediaPlayer?.pause()
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
                     if (progressAnim.isRunning) {
                         progressAnim.pause()
                     }
                 }
+
                 mediaPlayer?.isPlaying() == false -> {
                     mediaPlayer?.start()
-                    binding.iconAudioPlay.setImageResource(R.drawable.ic_pause)
+                    binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_pause)
                     if (progressAnim.isPaused) {
                         progressAnim.resume()
                     }
@@ -264,9 +260,12 @@ class ConversationAudioSendEditFragment :
     private val pickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result?.resultCode == Activity.RESULT_OK && result.data != null) {
-                val mediaPickerResult =
-                    result.data?.extras?.getParcelable<MediaPickerResult>(MediaPickerActivity.ARG_MEDIA_PICKER_RESULT)
-                        ?: return@registerForActivityResult
+                val extras = result.data?.extras
+                val mediaPickerResult = ExtrasUtil.getParcelable(
+                    extras,
+                    LMChatMediaPickerActivity.ARG_MEDIA_PICKER_RESULT,
+                    MediaPickerResult::class.java
+                ) ?: return@registerForActivityResult
                 when (mediaPickerResult.mediaPickerResultType) {
                     MEDIA_RESULT_PICKED -> {
                         val mediaUris = MediaUtils.convertMediaViewDataToSingleUriData(
@@ -316,6 +315,8 @@ class ConversationAudioSendEditFragment :
             mediaExtras.text,
             LMBranding.getTextLinkColor()
         )
+
+        memberTagging.taggingEnabled = mediaExtras.isTaggingEnabled
     }
 
     private fun initRVForMedia() {
@@ -343,7 +344,7 @@ class ConversationAudioSendEditFragment :
                 )
             } else {
                 binding.gradientView.visibility = View.GONE
-                binding.ivAlbumCover.setImageResource(R.color.orange_yellow)
+                binding.ivAlbumCover.setImageResource(R.color.lm_chat_orange_yellow)
             }
             progressAnim.cancel()
             binding.wave.setRawData(ByteArray(0))
@@ -352,7 +353,7 @@ class ConversationAudioSendEditFragment :
                 DateUtil.formatSeconds(selectedUri.duration ?: 0)
             binding.tvSize.text = MediaUtils.getFileSizeText(selectedUri.size)
             binding.tvAudioName.text = selectedUri.mediaName ?: "Audio"
-            binding.iconAudioPlay.setImageResource(R.drawable.ic_play)
+            binding.iconAudioPlay.setImageResource(R.drawable.lm_chat_ic_play)
         }
     }
 

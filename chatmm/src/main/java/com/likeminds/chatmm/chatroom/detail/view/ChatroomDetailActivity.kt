@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
 import com.likeminds.chatmm.databinding.ActivityChatroomDetailBinding
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.BaseAppCompatActivity
 
@@ -66,7 +67,11 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         val bundle = intent.getBundleExtra("bundle")
 
         if (bundle != null) {
-            chatroomDetailExtras = bundle.getParcelable(CHATROOM_DETAIL_EXTRAS)
+            chatroomDetailExtras = ExtrasUtil.getParcelable(
+                bundle,
+                CHATROOM_DETAIL_EXTRAS,
+                ChatroomDetailExtras::class.java
+            )
             val args = Bundle().apply {
                 putParcelable(CHATROOM_DETAIL_EXTRAS, chatroomDetailExtras)
             }
@@ -75,7 +80,7 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
             navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             navController = navHostFragment.navController
-            navController.setGraph(R.navigation.nav_graph_chatroom_detail, args)
+            navController.setGraph(R.navigation.lm_chat_nav_graph_chatroom_detail, args)
         } else {
             redirectActivity(true)
         }
@@ -130,14 +135,14 @@ class ChatroomDetailActivity : BaseAppCompatActivity() {
         if (isError) {
             ViewUtils.showShortToast(
                 this,
-                getString(R.string.the_chatroom_link_is_either_tampered_or_invalid)
+                getString(R.string.lm_chat_the_chatroom_link_is_either_tampered_or_invalid)
             )
         }
         supportFragmentManager.popBackStack()
         super.onBackPressed()
         overridePendingTransition(
-            R.anim.slide_from_left,
-            R.anim.slide_to_right
+            R.anim.lm_chat_slide_from_left,
+            R.anim.lm_chat_slide_to_right
         )
     }
 

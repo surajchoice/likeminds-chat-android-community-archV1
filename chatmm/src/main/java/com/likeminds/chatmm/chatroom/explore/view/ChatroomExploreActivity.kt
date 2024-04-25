@@ -46,6 +46,6 @@ class ChatroomExploreActivity : BaseAppCompatActivity() {
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        navController.setGraph(R.navigation.nav_graph_chatroom_explore, intent.extras)
+        navController.setGraph(R.navigation.lm_chat_nav_graph_chatroom_explore, intent.extras)
     }
 }
