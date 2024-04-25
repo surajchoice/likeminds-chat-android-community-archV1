@@ -185,7 +185,8 @@ class InitiateViewModel @Inject constructor(
         }
     }
 
-    fun getCommunityConfiguration() {
+    //gets community configurations and save it into local db
+    private fun getCommunityConfiguration() {
         viewModelScope.launchIO {
             val communityConfigurationResponse = lmChatClient.getCommunityConfigurations()
             if (communityConfigurationResponse.success) {
