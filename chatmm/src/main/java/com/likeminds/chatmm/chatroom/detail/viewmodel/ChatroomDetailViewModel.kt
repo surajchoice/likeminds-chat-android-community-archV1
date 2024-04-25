@@ -230,6 +230,10 @@ class ChatroomDetailViewModel @Inject constructor(
         return sdkPreferences.isMicroPollsEnabled() && hasCreatePollRights()
     }
 
+    fun isWidgetEnabled(): Boolean {
+        return sdkPreferences.getIsWidgetEnabled()
+    }
+
     fun isAnnouncementChatroom(): Boolean {
         return ChatroomType.isAnnouncementRoom(chatroomDetail.chatroom?.type)
     }
