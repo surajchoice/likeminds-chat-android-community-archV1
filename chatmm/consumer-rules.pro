@@ -20,7 +20,6 @@
 -keep class com.likeminds.chatmm.utils.mediauploader.model.** { *; }
 -keep class com.likeminds.chatmm.utils.membertagging.model.** { *; }
 -keep class com.likeminds.chatmm.utils.model.** { *; }
--keep class com.likeminds.chatmm.utils.model.** { *; }
 -keep class androidx.databinding.DataBindingComponent {*;}
 
 # for parcelable classes
