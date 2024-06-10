@@ -68,7 +68,8 @@ internal class ConversationPollItemViewDataBinder constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 updatePollViewVisibility(this, true)

@@ -72,7 +72,8 @@ internal class ConversationSingleVideoItemViewDataBinder @Inject constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 clImage.show()
