@@ -61,7 +61,8 @@ internal class ConversationLinkItemViewDataBinder constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 layoutLinkView.root.visibility = View.VISIBLE

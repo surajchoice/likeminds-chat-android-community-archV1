@@ -2,6 +2,7 @@ package com.likeminds.chatmm.homefeed.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.likeminds.chatmm.conversation.model.ConversationViewData
+import com.likeminds.chatmm.dm.model.DMFeedEmptyViewData
 import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
@@ -30,6 +31,7 @@ internal class HomeFeedDiffUtilCallback(
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
             oldItem is HomeChatroomListShimmerViewData && newItem is HomeChatroomListShimmerViewData -> true
             oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> true
+            oldItem is DMFeedEmptyViewData && newItem is DMFeedEmptyViewData -> true
             else -> false
         }
     }
@@ -51,6 +53,7 @@ internal class HomeFeedDiffUtilCallback(
             oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> {
                 homeFeedViewData(oldItem, newItem)
             }
+            oldItem is DMFeedEmptyViewData && newItem is DMFeedEmptyViewData -> true
             else -> false
         }
     }

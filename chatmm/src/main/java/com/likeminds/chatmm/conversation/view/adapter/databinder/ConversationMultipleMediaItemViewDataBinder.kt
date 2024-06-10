@@ -65,7 +65,8 @@ internal class ConversationMultipleMediaItemViewDataBinder @Inject constructor(
                     tvConversation,
                     tvDeleteMessage,
                     userPreferences.getUUID(),
-                    conversationViewData = data
+                    conversationViewData = data,
+                    viewReply
                 )
             } else {
                 rvDocuments.visibility = View.VISIBLE
