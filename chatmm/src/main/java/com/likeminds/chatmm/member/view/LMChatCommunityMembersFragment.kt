@@ -113,6 +113,7 @@ class LMChatCommunityMembersFragment :
                 }
 
                 is CommunityMembersViewModel.ErrorMessageEvent.GetAllMembers -> {
+                    ProgressHelper.hideProgress(binding.progressBar)
                     val errorMessage = response.errorMessage
                     ViewUtils.showErrorMessageToast(requireContext(), errorMessage)
                 }
@@ -132,6 +133,7 @@ class LMChatCommunityMembersFragment :
     }
 
     private fun initData() {
+        ProgressHelper.showProgress(binding.progressBar, true)
         viewModel.getAllMembers(extras.showList, 1)
     }
 
@@ -211,6 +213,7 @@ class LMChatCommunityMembersFragment :
         mAdapter.addAll(members)
 
         binding.apply {
+            ProgressHelper.hideProgress(progressBar)
             if (mAdapter.itemCount == 0) {
                 layoutNoResults.root.show()
                 tvMemberCount.hide()
@@ -269,7 +272,7 @@ class LMChatCommunityMembersFragment :
 
             setSearchViewListener(object : CustomSearchBar.SearchViewListener {
                 override fun onSearchViewClosed() {
-                    binding.searchBar.hide()
+                    hide()
                     clearMemberSearch()
                 }
 
@@ -285,7 +288,9 @@ class LMChatCommunityMembersFragment :
                 }
 
                 override fun emptyKeywordEntered() {
-                    clearMemberSearch()
+                    if (isOpen) {
+                        clearMemberSearch()
+                    }
                 }
             })
             observeSearchView(true)
