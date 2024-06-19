@@ -234,6 +234,10 @@ class HomeFeedViewModel @Inject constructor(
         lmChatClient.observeLiveHomeFeed(context)
     }
 
+    fun removeLiveHomeFeedListener() {
+        lmChatClient.removeLiveHomeFeedListener()
+    }
+
     fun getExploreTabCount() {
         viewModelScope.launchIO {
             val getExploreTabCountResponse = lmChatClient.getExploreTabCount()
