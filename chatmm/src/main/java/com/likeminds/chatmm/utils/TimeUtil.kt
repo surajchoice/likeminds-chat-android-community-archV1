@@ -62,15 +62,15 @@ object TimeUtil {
     /**
      * Returns current time in HH:mm format
      */
-    fun generateCreatedAt(): String {
-        return TIME_SDF.get()?.format(Date()) ?: ""
+    fun generateCreatedAt(conversationCreatedEpoch: Long): String {
+        return TIME_SDF.get()?.format(conversationCreatedEpoch) ?: ""
     }
 
     /**
      * Returns current date in dd MMM yyyy format
      */
-    fun generateDate(): String {
-        return DATE_SDF_1.get()?.format(Date()) ?: ""
+    fun generateDate(conversationCreatedEpoch: Long): String {
+        return DATE_SDF_1.get()?.format(conversationCreatedEpoch) ?: ""
     }
 
     fun isInMillis(time: Long): Boolean {
