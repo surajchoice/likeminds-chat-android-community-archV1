@@ -1458,7 +1458,8 @@ class ChatroomDetailViewModel @Inject constructor(
         viewModelScope.launchIO {
             val chatroomId = chatroomDetail.chatroom?.id ?: return@launchIO
             val communityId = chatroomDetail.chatroom?.communityId
-            val temporaryId = ValueUtils.getTemporaryId()
+            val conversationCreatedEpoch = System.currentTimeMillis()
+            val temporaryId = "-$conversationCreatedEpoch"
             val updatedFileUris = includeAttachmentMetaData(context, fileUris)
             var postConversationRequestBuilder = PostConversationRequest.Builder()
                 .chatroomId(chatroomId)
@@ -1500,7 +1501,8 @@ class ChatroomDetailViewModel @Inject constructor(
                 userPreferences.getUUID(),
                 communityId,
                 postConversationRequest,
-                updatedFileUris
+                updatedFileUris,
+                conversationCreatedEpoch
             )
             sendPostedConversationsToUI(temporaryConversation)
 
@@ -1584,13 +1586,15 @@ class ChatroomDetailViewModel @Inject constructor(
         uuid: String,
         communityId: String?,
         request: PostConversationRequest,
-        fileUris: List<SingleUriData>?
+        fileUris: List<SingleUriData>?,
+        conversationCreatedEpoch: Long
     ): ConversationViewData? {
         val conversation = ViewDataConverter.convertConversation(
             uuid,
             communityId,
             request,
-            fileUris
+            fileUris,
+            conversationCreatedEpoch
         )
         val saveConversationRequest = SaveConversationRequest.Builder()
             .conversation(conversation)

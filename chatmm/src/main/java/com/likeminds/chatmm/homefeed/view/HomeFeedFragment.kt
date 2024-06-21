@@ -258,7 +258,6 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         fetchData()
         startSync()
 
-        viewModel.observeLiveHomeFeed(requireContext())
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
@@ -285,6 +284,12 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         if (!viewModel.isDBEmpty() && !userPreferences.getIsGuestUser()) {
             startSync()
         }
+        viewModel.observeLiveHomeFeed(requireContext())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.removeLiveHomeFeedListener()
     }
 
     private fun startSync() {

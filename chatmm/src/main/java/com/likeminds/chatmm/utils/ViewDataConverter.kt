@@ -577,17 +577,17 @@ object ViewDataConverter {
         communityId: String?,
         request: PostConversationRequest,
         fileUris: List<SingleUriData>?,
+        conversationCreatedEpoch: Long
     ): Conversation {
 
         val metadata = request.metadata
-        val currentTimeStamp = System.currentTimeMillis()
         val widget = if (metadata != null) {
             Widget.Builder()
-                .id("-$currentTimeStamp")
+                .id("-$conversationCreatedEpoch")
                 .metadata(metadata)
                 .parentEntityType("message")
-                .createdAt(currentTimeStamp)
-                .updatedAt(currentTimeStamp)
+                .createdAt(conversationCreatedEpoch)
+                .updatedAt(conversationCreatedEpoch)
                 .build()
         } else {
             null
@@ -599,16 +599,16 @@ object ViewDataConverter {
             .communityId(communityId)
             .answer(request.text)
             .state(STATE_NORMAL)
-            .createdEpoch(System.currentTimeMillis())
+            .createdEpoch(conversationCreatedEpoch)
             .memberId(uuid)
-            .createdAt(TimeUtil.generateCreatedAt())
+            .createdAt(TimeUtil.generateCreatedAt(conversationCreatedEpoch))
             .attachments(convertAttachments(fileUris))
             .lastSeen(true)
             .ogTags(request.ogTags)
-            .date(TimeUtil.generateDate())
+            .date(TimeUtil.generateDate(conversationCreatedEpoch))
             .replyConversationId(request.repliedConversationId)
             .attachmentCount(request.attachmentCount ?: 0)
-            .localCreatedEpoch(System.currentTimeMillis())
+            .localCreatedEpoch(conversationCreatedEpoch)
             .temporaryId(request.temporaryId)
             .isEdited(false)
             .replyChatroomId(request.repliedChatroomId)
