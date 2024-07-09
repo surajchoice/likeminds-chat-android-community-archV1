@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.chat.view
 
 import android.Manifest
+import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -165,10 +166,18 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     //register receivers to the activity
     private fun setupReceivers() {
         connectivityBroadcastReceiver.setListener(this)
-        activity?.registerReceiver(
-            connectivityBroadcastReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            )
+        }
     }
 
     private fun initiateUser() {

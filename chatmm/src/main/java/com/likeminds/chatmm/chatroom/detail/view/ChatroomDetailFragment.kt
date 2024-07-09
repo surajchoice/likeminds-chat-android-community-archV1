@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
@@ -1102,12 +1103,22 @@ class ChatroomDetailFragment :
 
     private fun registerAudioCompleteBroadcast() {
         val filter = IntentFilter(BROADCAST_COMPLETE)
-        requireActivity().registerReceiver(audioCompleteReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(audioCompleteReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            requireActivity().registerReceiver(audioCompleteReceiver, filter)
+        }
     }
 
     private fun registerProgressBroadcast() {
         val filter = IntentFilter(BROADCAST_PROGRESS)
-        requireActivity()?.registerReceiver(progressReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(progressReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            requireActivity().registerReceiver(progressReceiver, filter)
+        }
     }
 
     /**------------------------------------------------------------
@@ -4941,6 +4952,7 @@ class ChatroomDetailFragment :
             val broadcastNewAudio = Intent(BROADCAST_PLAY_NEW_AUDIO)
             broadcastNewAudio.putExtra(AUDIO_SERVICE_URI_EXTRA, uri)
             broadcastNewAudio.putExtra(AUDIO_SERVICE_PROGRESS_EXTRA, progress)
+            broadcastNewAudio.setPackage(requireContext().packageName)
             activity?.sendBroadcast(broadcastNewAudio)
         }
     }
@@ -5094,6 +5106,7 @@ class ChatroomDetailFragment :
     private fun sendProgressBroadcast(progress: Int) {
         val broadcastSeekBarDragged = Intent(BROADCAST_SEEKBAR_DRAGGED)
         broadcastSeekBarDragged.putExtra(PROGRESS_SEEKBAR_DRAGGED, progress)
+        broadcastSeekBarDragged.setPackage(requireContext().packageName)
         activity?.sendBroadcast(broadcastSeekBarDragged)
     }
 

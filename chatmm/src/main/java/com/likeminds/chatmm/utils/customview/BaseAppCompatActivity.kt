@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils.customview
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -53,10 +54,18 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
     override fun onResume() {
         super.onResume()
         connectivityBroadcastReceiver.setListener(this)
-        registerReceiver(
-            connectivityBroadcastReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            )
+        }
     }
 
     override fun onStart() {
