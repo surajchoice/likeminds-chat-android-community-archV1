@@ -34,10 +34,14 @@ class LMChatPermission private constructor(
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val READ_MEDIA_AUDIO = Manifest.permission.READ_MEDIA_AUDIO
 
+        @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+        const val READ_MEDIA_VISUAL_USER_SELECTED =
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+
         private const val REQUEST_STORAGE = 10102
         private const val REQUEST_RECORD_AUDIO = 10103
         private const val REQUEST_NOTIFICATIONS = 10105
-        private const val REQUEST_GALLERY = 10106
+        const val REQUEST_GALLERY = 10106
         private const val REQUEST_AUDIO = 10107
 
         fun getStoragePermissionData(): LMChatPermission {
@@ -97,13 +101,22 @@ class LMChatPermission private constructor(
         // returns the [PermissionExtras] for gallery permissions request
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private fun getGalleryPermissionExtras(context: Context): LMChatPermissionExtras {
-            return LMChatPermissionExtras.Builder()
-                .permissions(
+            val permissionsArray =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    arrayOf(
+                        READ_MEDIA_IMAGES,
+                        READ_MEDIA_VIDEO,
+                        READ_MEDIA_VISUAL_USER_SELECTED
+                    )
+                } else {
                     arrayOf(
                         READ_MEDIA_VIDEO,
                         READ_MEDIA_IMAGES
                     )
-                )
+                }
+
+            return LMChatPermissionExtras.Builder()
+                .permissions(permissionsArray)
                 .requestCode(REQUEST_GALLERY)
                 .preDialogMessage(context.getString(R.string.lm_chat_pre_gallery_media_permission_dialog_message))
                 .deniedDialogMessage(context.getString(R.string.lm_chat_denied_gallery_media_permission_dialog_message))

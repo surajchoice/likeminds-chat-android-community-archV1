@@ -17,6 +17,8 @@ import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.permissions.*
+import com.likeminds.chatmm.utils.permissions.LMChatPermission.Companion.READ_MEDIA_VISUAL_USER_SELECTED
+import com.likeminds.chatmm.utils.permissions.LMChatPermission.Companion.REQUEST_GALLERY
 import com.likeminds.chatmm.utils.permissions.model.LMChatPermissionExtras
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import javax.inject.Inject
@@ -99,11 +101,18 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
             true
         } else {
             var hasPermission = true
+            var isPartialMediaPermission = false
             permissions.forEach { permission ->
+                if (permission == READ_MEDIA_VISUAL_USER_SELECTED
+                    && checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    isPartialMediaPermission = true
+                    return@forEach
+                }
                 hasPermission =
                     hasPermission && checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
             }
-            return hasPermission
+            return hasPermission || isPartialMediaPermission
         }
     }
 
@@ -164,11 +173,15 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         if (grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callback.onGrant()
+            } else if (requestCode == REQUEST_GALLERY
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                && checkSelfPermission(READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED
+            ) {
+                //if the API version >= 34 and the request code is REQUEST_GALLERY then we check if the READ_MEDIA_VISUAL_USER_SELECTED permission is granted
+                callback.onGrant()
             } else {
                 callback.onDeny()
             }
-        } else {
-            callback.onDeny()
         }
     }
 
