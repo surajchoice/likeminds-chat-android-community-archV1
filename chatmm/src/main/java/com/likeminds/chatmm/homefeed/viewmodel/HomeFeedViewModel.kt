@@ -16,7 +16,7 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.chatroom.model.Chatroom
+import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.homefeed.util.HomeChatroomListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -40,6 +40,9 @@ class HomeFeedViewModel @Inject constructor(
     private val _userData = MutableLiveData<MemberViewData?>()
     val userData: LiveData<MemberViewData?> = _userData
 
+    private val _isInviteAccepted = MutableLiveData<ChannelInviteStatus>()
+    val isInviteAccepted: LiveData<ChannelInviteStatus> = _isInviteAccepted
+
     private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
 
@@ -47,6 +50,10 @@ class HomeFeedViewModel @Inject constructor(
         data class GetChatroom(val errorMessage: String?) : ErrorMessageEvent()
 
         data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
+
+        data class GetChannelInvites(val errorMessage: String?) : ErrorMessageEvent()
+
+        data class UpdateChannelInvite(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private val chatroomListener = object : HomeChatroomListener() {
@@ -256,6 +263,57 @@ class HomeFeedViewModel @Inject constructor(
                     ErrorMessageEvent.GetExploreTabCount(errorMessage)
                 )
                 Log.e(SDKApplication.LOG_TAG, "$errorMessage")
+            }
+        }
+    }
+
+    fun getChannelInvites() {
+        viewModelScope.launchIO {
+            val request = ChannelInviteRequest.Builder()
+                .channelType(1)
+                .page(1)
+                .pageSize(50)
+                .build()
+
+            val response = lmChatClient.getChannelInvites(request)
+
+            if (response.success) {
+                val data = response.data
+                if (data != null) {
+                    // todo: handle channel invites
+                    val channelInvites = data.userInvites
+                }
+            } else {
+                // send error
+                val errorMessage = response.errorMessage
+                errorMessageChannel.send(
+                    ErrorMessageEvent.UpdateChannelInvite(errorMessage)
+                )
+                Log.e(SDKApplication.LOG_TAG, "$errorMessage")
+            }
+        }
+    }
+
+    fun updateChannelInvite(
+        channelId: String,
+        inviteStatus: ChannelInviteStatus
+    ) {
+        viewModelScope.launchIO {
+            val request = UpdateChannelInviteRequest.Builder()
+                .channelId(channelId)
+                .inviteStatus(inviteStatus)
+                .build()
+
+            val response = lmChatClient.updateChannelInvite(request)
+
+            if (response.success) {
+                _isInviteAccepted.postValue(inviteStatus)
+            } else {
+                // send error
+                val errorMessage = response.errorMessage
+                errorMessageChannel.send(
+                    ErrorMessageEvent.GetChannelInvites(errorMessage)
+                )
             }
         }
     }

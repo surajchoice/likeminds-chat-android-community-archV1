@@ -27,13 +27,14 @@
             android:id="@+id/iv_feed"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="40dp"
             android:padding="4dp"
             android:src="@drawable/lm_chat_ic_explore_feed"
             android:tint="@{buttonColor}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.263"
             tools:ignore="ContentDescription,UseAppTint" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView

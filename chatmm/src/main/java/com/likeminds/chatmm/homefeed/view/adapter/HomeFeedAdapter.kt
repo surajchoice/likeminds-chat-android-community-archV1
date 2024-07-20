@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.homefeed.view.adapter
 
+import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.view.adapter.databinder.*
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -40,6 +41,10 @@ class HomeFeedAdapter constructor(
 
         val homeFeedViewDataBinder = HomeFeedViewDataBinder(listener)
         viewDataBinders.add(homeFeedViewDataBinder)
+
+        val channelInviteViewDataBinder = ChannelInviteItemViewDataBinder(listener)
+        viewDataBinders.add(channelInviteViewDataBinder)
+
         return viewDataBinders
     }
 }
@@ -47,4 +52,6 @@ class HomeFeedAdapter constructor(
 interface HomeFeedAdapterListener {
     fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData)
     fun homeFeedClicked()
+    fun onAcceptChannelInviteClicked(position: Int, channelInviteViewData: ChannelInviteViewData)
+    fun onRejectChannelInviteClicked(position: Int, channelInviteViewData: ChannelInviteViewData)
 }

@@ -29,6 +29,7 @@ import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
+import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
@@ -47,6 +48,7 @@ import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import com.likeminds.likemindschat.chatroom.model.ChannelInviteStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -213,7 +215,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private fun observeLogoutResponse() {
         initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
-            ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_invalid_app_access))
+            ViewUtils.showShortToast(
+                requireContext(),
+                getString(R.string.lm_chat_invalid_app_access)
+            )
         }
     }
 
@@ -232,6 +237,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 is HomeFeedViewModel.ErrorMessageEvent.GetExploreTabCount -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
+
+                is HomeFeedViewModel.ErrorMessageEvent.GetChannelInvites -> TODO()
+
+                is HomeFeedViewModel.ErrorMessageEvent.UpdateChannelInvite -> TODO()
             }
         }.observeInLifecycle(viewLifecycleOwner)
     }
@@ -267,6 +276,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         fetchData()
         startSync()
 
+        viewModel.getChannelInvites()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
@@ -422,5 +432,27 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 }
             }
         }
+    }
+
+    override fun onAcceptChannelInviteClicked(
+        position: Int,
+        channelInviteViewData: ChannelInviteViewData
+    ) {
+        //todo: open dialog here and move this to dialog actions
+        viewModel.updateChannelInvite(
+            channelInviteViewData.invitedChatroom.id,
+            ChannelInviteStatus.ACCEPTED
+        )
+    }
+
+    override fun onRejectChannelInviteClicked(
+        position: Int,
+        channelInviteViewData: ChannelInviteViewData
+    ) {
+        //todo: open dialog here and move this to dialog actions
+        viewModel.updateChannelInvite(
+            channelInviteViewData.invitedChatroom.id,
+            ChannelInviteStatus.REJECTED
+        )
     }
 }
