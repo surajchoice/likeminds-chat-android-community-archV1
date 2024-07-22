@@ -16,10 +16,6 @@
             type="Integer" />
 
         <variable
-            name="buttonColor"
-            type="int" />
-
-        <variable
             name="channelInviteViewData"
             type="com.likeminds.chatmm.homefeed.model.ChannelInviteViewData" />
     </data>

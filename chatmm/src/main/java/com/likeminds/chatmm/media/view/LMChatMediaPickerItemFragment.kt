@@ -3,6 +3,8 @@ package com.likeminds.chatmm.media.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.*
@@ -23,7 +26,6 @@ import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
 import com.likeminds.chatmm.utils.actionmode.ActionModeListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.model.ITEM_MEDIA_PICKER_HEADER
-import com.likeminds.chatmm.utils.permissions.*
 
 
 class LMChatMediaPickerItemFragment :
@@ -92,6 +94,9 @@ class LMChatMediaPickerItemFragment :
         binding.toolbar.title = ""
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
+        binding.toolbarColor = LMBranding.getToolbarColor()
+        binding.headerColor = LMBranding.getHeaderColor()
+
         binding.tvToolbarTitle.text = mediaPickerItemExtras.folderTitle
 
         mediaPickerAdapter = MediaPickerAdapter(this)
@@ -129,6 +134,10 @@ class LMChatMediaPickerItemFragment :
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Add menu items here
                 menuInflater.inflate(R.menu.lm_chat_media_picker_item_menu, menu)
+                val menuItem = menu.findItem(R.id.select_multiple)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    menuItem.iconTintList = ColorStateList.valueOf(LMBranding.getToolbarColor())
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

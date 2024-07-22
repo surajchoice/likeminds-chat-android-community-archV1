@@ -8,6 +8,10 @@
         <variable
             name="toolbarColor"
             type="int" />
+
+        <variable
+            name="headerColor"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +23,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/lm_chat_colorPrimary"
+            android:background="@{headerColor}"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetEnd="0dp"
@@ -57,7 +61,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:textColor="@color/lm_chat_white"
+                    android:textColor="@{toolbarColor}"
                     android:textSize="20sp"
                     app:fontType="regular"
                     app:layout_constraintBottom_toBottomOf="parent"
