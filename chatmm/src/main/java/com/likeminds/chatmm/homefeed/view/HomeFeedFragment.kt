@@ -238,9 +238,13 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
 
-                is HomeFeedViewModel.ErrorMessageEvent.GetChannelInvites -> TODO()
+                is HomeFeedViewModel.ErrorMessageEvent.GetChannelInvites -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
 
-                is HomeFeedViewModel.ErrorMessageEvent.UpdateChannelInvite -> TODO()
+                is HomeFeedViewModel.ErrorMessageEvent.UpdateChannelInvite -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
             }
         }.observeInLifecycle(viewLifecycleOwner)
     }

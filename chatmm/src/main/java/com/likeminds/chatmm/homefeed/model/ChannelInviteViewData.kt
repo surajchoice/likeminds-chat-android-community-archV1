@@ -4,13 +4,14 @@ import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.chatmm.utils.model.ITEM_CHANNEL_INVITE
+import com.likeminds.likemindschat.chatroom.model.ChannelInviteStatus
 
 class ChannelInviteViewData private constructor(
     val id: Int,
     val invitedChatroom: ChatroomViewData,
     val inviteSender: MemberViewData,
     val inviteReceiver: MemberViewData,
-    val inviteStatus: Int,
+    val inviteStatus: ChannelInviteStatus,
     val createdAt: Long,
     val updatedAt: Long
 ) : BaseViewType {
@@ -23,7 +24,7 @@ class ChannelInviteViewData private constructor(
         private var invitedChatroom: ChatroomViewData = ChatroomViewData.Builder().build()
         private var inviteSender: MemberViewData = MemberViewData.Builder().build()
         private var inviteReceiver: MemberViewData = MemberViewData.Builder().build()
-        private var inviteStatus: Int = 0
+        private var inviteStatus: ChannelInviteStatus = ChannelInviteStatus.INVITED
         private var createdAt: Long = 0
         private var updatedAt: Long = 0
 
@@ -43,7 +44,7 @@ class ChannelInviteViewData private constructor(
             this.inviteReceiver = inviteReceiver
         }
 
-        fun inviteStatus(inviteStatus: Int) = apply {
+        fun inviteStatus(inviteStatus: ChannelInviteStatus) = apply {
             this.inviteStatus = inviteStatus
         }
 

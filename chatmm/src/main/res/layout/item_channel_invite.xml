@@ -86,25 +86,6 @@
             tools:visibility="visible" />
 
         <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-            android:id="@+id/tv_last_conversation_member_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:lineSpacingExtra="4sp"
-            android:maxLines="1"
-            android:paddingEnd="4dp"
-            android:textColor="@color/lm_chat_grey"
-            android:textSize="12sp"
-            android:textStyle="normal"
-            android:visibility="gone"
-            app:fontType="regular"
-            app:layout_constraintStart_toStartOf="@+id/tv_chatroom_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name"
-            tools:ignore="RtlSymmetry"
-            tools:text="Person Name :"
-            tools:visibility="visible" />
-
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
             android:id="@+id/tv_last_conversation_attachment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,7 +112,7 @@
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/iv_channel_invite_reject"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/tv_last_conversation_attachment"
+            app:layout_constraintStart_toStartOf="@+id/tv_chatroom_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name"
             tools:text="This community is for all the members of society" />
 

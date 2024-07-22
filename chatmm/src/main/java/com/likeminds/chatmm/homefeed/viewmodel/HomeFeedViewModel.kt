@@ -43,6 +43,8 @@ class HomeFeedViewModel @Inject constructor(
     private val _isInviteAccepted = MutableLiveData<ChannelInviteStatus>()
     val isInviteAccepted: LiveData<ChannelInviteStatus> = _isInviteAccepted
 
+    private val channelInvitesViewData = mutableListOf<ChannelInviteViewData>()
+
     private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
 
@@ -198,8 +200,14 @@ class HomeFeedViewModel @Inject constructor(
 
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
+
+        if (channelInvitesViewData.isNotEmpty())  {
+            dataList.addAll(channelInvitesViewData)
+        }
+
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
+
             !wasChatroomsFetched -> {
                 dataList.add(chatRoomListShimmerView)
             }
@@ -280,8 +288,13 @@ class HomeFeedViewModel @Inject constructor(
             if (response.success) {
                 val data = response.data
                 if (data != null) {
-                    // todo: handle channel invites
-                    val channelInvites = data.userInvites
+                    val channelInvites = data.channelInvites
+                    channelInvitesViewData.addAll(
+                        ViewDataConverter.convertChannelInvites(
+                            channelInvites
+                        )
+                    )
+                    homeEventChannel.send(HomeEvent.UpdateChatrooms)
                 }
             } else {
                 // send error

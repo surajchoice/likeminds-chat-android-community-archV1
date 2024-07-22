@@ -8,7 +8,7 @@ import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
-class HomeFeedAdapter constructor(
+class HomeFeedAdapter(
     private val userPreferences: UserPreferences,
     private val listener: HomeFeedAdapterListener
 ) : BaseRecyclerAdapter<BaseViewType>() {

@@ -2,9 +2,12 @@ package com.likeminds.chatmm.homefeed.view.adapter.databinder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.databinding.ItemChannelInviteBinding
 import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
+import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.ITEM_CHANNEL_INVITE
 
@@ -31,8 +34,24 @@ class ChannelInviteItemViewDataBinder(
         position: Int
     ) {
         binding.apply {
+            val context = root.context
+
+            buttonColor = LMBranding.getButtonsColor()
             channelInviteViewData = data
             this.position = position
+
+            val invitedChatroom = data.invitedChatroom
+
+            ViewUtils.setChatroomImage(
+                invitedChatroom.id,
+                invitedChatroom.header,
+                invitedChatroom.chatroomImageUrl,
+                ivChatRoom
+            )
+
+            val inviteSender = data.inviteSender
+            tvLastConversation.text =
+                context.getString(R.string.lm_chat_s_invited_you_to_join, inviteSender.name)
         }
     }
 
