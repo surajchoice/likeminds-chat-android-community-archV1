@@ -52,7 +52,9 @@ import com.likeminds.likemindschat.chatroom.model.ChannelInviteStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
     HomeFeedAdapterListener,
@@ -309,25 +311,26 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     // shows the toast message as per update in channel invite and remove the invite chatroom
     private fun updateChannelInviteStatus(channelInviteStatus: Pair<String, ChannelInviteStatus>) {
+        // remove the channel invitation from the adapter
         val channelId = channelInviteStatus.first
+        val index = homeFeedAdapter.items().indexOfFirst {
+            it is ChannelInviteViewData && it.invitedChatroom.id == channelId
+        }
+        if (index.isValidIndex(homeFeedAdapter.items())) {
+            homeFeedAdapter.removeIndex(index)
+        }
 
         // show the appropriate toast message
         val toastMessage = if (channelInviteStatus.second == ChannelInviteStatus.ACCEPTED) {
+            // start sync 2 seconds after the invitation is accepted
+            Timer().schedule(2000) {
+                startSync()
+            }
             getString(R.string.lm_chat_joined_the_group)
         } else {
             getString(R.string.lm_chat_invitation_rejected)
         }
         ViewUtils.showShortToast(requireContext(), toastMessage)
-
-        val index = homeFeedAdapter.items().indexOfFirst {
-            it is ChannelInviteViewData && it.invitedChatroom.id == channelId
-        }
-
-        if (index.isValidIndex(homeFeedAdapter.items())) {
-            homeFeedAdapter.removeIndex(index)
-        }
-
-        viewModel.refetchChatrooms()
     }
 
     override fun onResume() {
