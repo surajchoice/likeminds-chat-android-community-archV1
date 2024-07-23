@@ -11,7 +11,9 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.community.model.ConfigurationType
-import com.likeminds.likemindschat.initiateUser.model.*
+import com.likeminds.likemindschat.user.model.InitiateUserRequest
+import com.likeminds.likemindschat.user.model.InitiateUserResponse
+import com.likeminds.likemindschat.user.model.RegisterDeviceRequest
 import javax.inject.Inject
 
 class InitiateViewModel @Inject constructor(
