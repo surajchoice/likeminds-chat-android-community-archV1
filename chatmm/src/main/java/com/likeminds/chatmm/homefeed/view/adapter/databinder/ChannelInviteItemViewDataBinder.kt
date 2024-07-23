@@ -36,12 +36,14 @@ class ChannelInviteItemViewDataBinder(
         binding.apply {
             val context = root.context
 
+            // set data in binding
             buttonColor = LMBranding.getButtonsColor()
             channelInviteViewData = data
             this.position = position
 
             val invitedChatroom = data.invitedChatroom
 
+            // set chatroom image
             ViewUtils.setChatroomImage(
                 invitedChatroom.id,
                 invitedChatroom.header,
@@ -67,7 +69,7 @@ class ChannelInviteItemViewDataBinder(
             ivChannelInviteReject.setOnClickListener {
                 val data = this.channelInviteViewData ?: return@setOnClickListener
                 val position: Int = this.position ?: return@setOnClickListener
-                homeAdapterListener.onAcceptChannelInviteClicked(position, data)
+                homeAdapterListener.onRejectChannelInviteClicked(position, data)
             }
         }
     }

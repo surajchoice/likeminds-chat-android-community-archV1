@@ -40,8 +40,10 @@ class HomeFeedViewModel @Inject constructor(
     private val _userData = MutableLiveData<MemberViewData?>()
     val userData: LiveData<MemberViewData?> = _userData
 
-    private val _isInviteAccepted = MutableLiveData<ChannelInviteStatus>()
-    val isInviteAccepted: LiveData<ChannelInviteStatus> = _isInviteAccepted
+    // holds chatroom id along with the status of the channel invitation
+    private val _updateChannelInviteStatus = MutableLiveData<Pair<String, ChannelInviteStatus>>()
+    val updateChannelInviteStatus: LiveData<Pair<String, ChannelInviteStatus>> =
+        _updateChannelInviteStatus
 
     private val channelInvitesViewData = mutableListOf<ChannelInviteViewData>()
 
@@ -201,7 +203,7 @@ class HomeFeedViewModel @Inject constructor(
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
 
-        if (channelInvitesViewData.isNotEmpty())  {
+        if (channelInvitesViewData.isNotEmpty()) {
             dataList.addAll(channelInvitesViewData)
         }
 
@@ -320,12 +322,17 @@ class HomeFeedViewModel @Inject constructor(
             val response = lmChatClient.updateChannelInvite(request)
 
             if (response.success) {
-                _isInviteAccepted.postValue(inviteStatus)
+                // remove the channel from invites list
+                val channelIndex = channelInvitesViewData.indexOfFirst {
+                    it.invitedChatroom.id == channelId
+                }
+                channelInvitesViewData.removeAt(channelIndex)
+                _updateChannelInviteStatus.postValue(Pair(channelId, inviteStatus))
             } else {
                 // send error
                 val errorMessage = response.errorMessage
                 errorMessageChannel.send(
-                    ErrorMessageEvent.GetChannelInvites(errorMessage)
+                    ErrorMessageEvent.UpdateChannelInvite(errorMessage)
                 )
             }
         }
