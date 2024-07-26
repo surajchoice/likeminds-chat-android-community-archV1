@@ -279,7 +279,7 @@ class HomeFeedViewModel @Inject constructor(
 
     fun getChannelInvites() {
         viewModelScope.launchIO {
-            val request = ChannelInviteRequest.Builder()
+            val request = GetChannelInviteRequest.Builder()
                 .channelType(1)
                 .page(1)
                 .pageSize(50)
