@@ -191,8 +191,9 @@ class HomeFeedViewModel @Inject constructor(
     fun getHomeFeedList(context: Context): List<BaseViewType> {
         val dataList = mutableListOf<BaseViewType>()
 
+        // adds the explore view to the home feed
         dataList.add(
-            HomeFeedViewData.Builder()
+            HomeFeedExploreViewData.Builder()
                 .totalChatRooms(totalChatroomCount)
                 .newChatRooms(unseenChatroomCount)
                 .build()

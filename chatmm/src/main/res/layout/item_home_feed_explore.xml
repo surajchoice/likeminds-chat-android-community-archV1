@@ -13,7 +13,7 @@
 
         <variable
             name="data"
-            type="com.likeminds.chatmm.homefeed.model.HomeFeedViewData" />
+            type="com.likeminds.chatmm.homefeed.model.HomeFeedExploreViewData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

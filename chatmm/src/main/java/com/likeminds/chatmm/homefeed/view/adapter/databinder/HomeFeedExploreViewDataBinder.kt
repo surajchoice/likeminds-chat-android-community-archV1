@@ -6,22 +6,22 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.databinding.ItemHomeFeedBinding
-import com.likeminds.chatmm.homefeed.model.HomeFeedViewData
+import com.likeminds.chatmm.databinding.ItemHomeFeedExploreBinding
+import com.likeminds.chatmm.homefeed.model.HomeFeedExploreViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
-import com.likeminds.chatmm.utils.model.ITEM_HOME_FEED
+import com.likeminds.chatmm.utils.model.ITEM_HOME_FEED_EXPLORE
 import javax.inject.Inject
 
-class HomeFeedViewDataBinder @Inject constructor(
+class HomeFeedExploreViewDataBinder @Inject constructor(
     private val homeAdapterListener: HomeFeedAdapterListener?
-) : ViewDataBinder<ItemHomeFeedBinding, HomeFeedViewData>() {
+) : ViewDataBinder<ItemHomeFeedExploreBinding, HomeFeedExploreViewData>() {
 
     override val viewType: Int
-        get() = ITEM_HOME_FEED
+        get() = ITEM_HOME_FEED_EXPLORE
 
-    override fun createBinder(parent: ViewGroup): ItemHomeFeedBinding {
-        val binding = ItemHomeFeedBinding.inflate(
+    override fun createBinder(parent: ViewGroup): ItemHomeFeedExploreBinding {
+        val binding = ItemHomeFeedExploreBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -30,7 +30,7 @@ class HomeFeedViewDataBinder @Inject constructor(
         return binding
     }
 
-    private fun setRootClick(binding: ItemHomeFeedBinding) {
+    private fun setRootClick(binding: ItemHomeFeedExploreBinding) {
         binding.root.setOnClickListener {
             homeAdapterListener?.homeFeedClicked()
         }
@@ -38,8 +38,8 @@ class HomeFeedViewDataBinder @Inject constructor(
 
     @SuppressLint("SetTextI18n")
     override fun bindData(
-        binding: ItemHomeFeedBinding,
-        data: HomeFeedViewData,
+        binding: ItemHomeFeedExploreBinding,
+        data: HomeFeedExploreViewData,
         position: Int
     ) {
         binding.apply {

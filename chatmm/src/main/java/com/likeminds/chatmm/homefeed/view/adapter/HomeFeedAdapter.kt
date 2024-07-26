@@ -39,8 +39,8 @@ class HomeFeedAdapter(
         val homeChatroomListShimmerViewDataBinder = HomeChatroomListShimmerViewDataBinder()
         viewDataBinders.add(homeChatroomListShimmerViewDataBinder)
 
-        val homeFeedViewDataBinder = HomeFeedViewDataBinder(listener)
-        viewDataBinders.add(homeFeedViewDataBinder)
+        val homeFeedExploreViewDataBinder = HomeFeedExploreViewDataBinder(listener)
+        viewDataBinders.add(homeFeedExploreViewDataBinder)
 
         val channelInviteViewDataBinder = ChannelInviteItemViewDataBinder(listener)
         viewDataBinders.add(channelInviteViewDataBinder)

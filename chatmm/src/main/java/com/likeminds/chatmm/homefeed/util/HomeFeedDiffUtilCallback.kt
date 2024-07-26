@@ -32,7 +32,7 @@ internal class HomeFeedDiffUtilCallback(
 
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
             oldItem is HomeChatroomListShimmerViewData && newItem is HomeChatroomListShimmerViewData -> true
-            oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> true
+            oldItem is HomeFeedExploreViewData && newItem is HomeFeedExploreViewData -> true
             oldItem is DMFeedEmptyViewData && newItem is DMFeedEmptyViewData -> true
             oldItem is ChannelInviteViewData && newItem is ChannelInviteViewData -> {
                 oldItem.id == newItem.id
@@ -58,7 +58,7 @@ internal class HomeFeedDiffUtilCallback(
 //            oldItem is ProgressViewData && newItem is ProgressViewData -> true
 //            oldItem is ProgressHorizontalViewData && newItem is ProgressHorizontalViewData -> true
 //            oldItem is ChatroomListShimmerViewData && newItem is ChatroomListShimmerViewData -> true
-            oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> {
+            oldItem is HomeFeedExploreViewData && newItem is HomeFeedExploreViewData -> {
                 homeFeedViewData(oldItem, newItem)
             }
 
@@ -129,8 +129,8 @@ internal class HomeFeedDiffUtilCallback(
     }
 
     private fun homeFeedViewData(
-        oldItem: HomeFeedViewData?,
-        newItem: HomeFeedViewData?
+        oldItem: HomeFeedExploreViewData?,
+        newItem: HomeFeedExploreViewData?
     ): Boolean {
         if (oldItem == null && newItem == null) {
             return true
