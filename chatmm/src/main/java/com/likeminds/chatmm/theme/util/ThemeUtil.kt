@@ -1,19 +1,19 @@
-package com.likeminds.chatmm.branding.util
+package com.likeminds.chatmm.theme.util
 
 import android.content.Context
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 
-object BrandingUtil {
+object ThemeUtil {
     /**
      * @param context - context to retrieve assets
      * @param fontStyle - style of font to be applied
      * @return Typeface? - typeface of current font as per the [fontStyle]
      * */
     fun getTypeFace(context: Context, fontStyle: String?): Typeface? {
-        val currentFont = LMBranding.getCurrentFonts()
+        val currentFont = LMTheme.getCurrentFonts()
 
         val typeface = when (fontStyle) {
             "bold" -> {
@@ -52,13 +52,13 @@ object BrandingUtil {
     fun getTextColor(defaultColor: Int, textType: String?): Int {
         val color = when (textType) {
             "title" -> {
-                LMBranding.getToolbarColor()
+                LMTheme.getToolbarColor()
             }
             "subtitle" -> {
-                LMBranding.getSubtitleColor()
+                LMTheme.getSubtitleColor()
             }
             "special" -> {
-                LMBranding.getButtonsColor()
+                LMTheme.getButtonsColor()
             }
             else -> {
                 defaultColor

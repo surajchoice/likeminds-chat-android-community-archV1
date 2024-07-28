@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.model.SDKInitiateSource
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
@@ -141,7 +141,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     override fun setUpViews() {
         super.setUpViews()
         checkForNotificationPermission()
-        setBranding()
+        setTheme()
         if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
             binding.toolbar.show()
             setupReceivers()
@@ -382,9 +382,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         }
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            toolbarColor = LMBranding.getToolbarColor()
+            toolbarColor = LMTheme.getToolbarColor()
         }
     }
 

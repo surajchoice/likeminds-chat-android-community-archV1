@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import com.google.android.material.chip.Chip
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
-internal class LikeMindsChip : Chip {
+internal class LikeMindsCheckbox : MaterialCheckBox {
     constructor(context: Context) : super(context) {
         initiate(null)
     }
@@ -25,10 +25,10 @@ internal class LikeMindsChip : Chip {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsChip)
-        typeface = BrandingUtil.getTypeFace(
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsCheckbox)
+        typeface = ThemeUtil.getTypeFace(
             context,
-            array.getString(R.styleable.LikeMindsChip_font_look)
+            array.getString(R.styleable.LikeMindsCheckbox_set_font_type)
         )
         array.recycle()
     }

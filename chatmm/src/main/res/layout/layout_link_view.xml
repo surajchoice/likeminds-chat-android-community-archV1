@@ -78,7 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@id/iv_youtube_link"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_link_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="Twitter ns" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_link_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="The new feasd fmnsd fnms fssdf mnds fndnmf sndmf " />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_link_url"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.*
@@ -94,8 +94,8 @@ class LMChatMediaPickerItemFragment :
         binding.toolbar.title = ""
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
-        binding.toolbarColor = LMBranding.getToolbarColor()
-        binding.headerColor = LMBranding.getHeaderColor()
+        binding.toolbarColor = LMTheme.getToolbarColor()
+        binding.headerColor = LMTheme.getHeaderColor()
 
         binding.tvToolbarTitle.text = mediaPickerItemExtras.folderTitle
 
@@ -136,7 +136,7 @@ class LMChatMediaPickerItemFragment :
                 menuInflater.inflate(R.menu.lm_chat_media_picker_item_menu, menu)
                 val menuItem = menu.findItem(R.id.select_multiple)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    menuItem.iconTintList = ColorStateList.valueOf(LMBranding.getToolbarColor())
+                    menuItem.iconTintList = ColorStateList.valueOf(LMTheme.getToolbarColor())
                 }
             }
 

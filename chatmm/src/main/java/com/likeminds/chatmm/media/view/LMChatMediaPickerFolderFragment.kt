@@ -3,7 +3,6 @@ package com.likeminds.chatmm.media.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerFolderBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.LMChatMediaPickerActivity.Companion.ARG_MEDIA_PICKER_RESULT
@@ -143,8 +142,8 @@ class LMChatMediaPickerFolderFragment :
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         initializeTitle()
 
-        binding.toolbarColor = LMBranding.getToolbarColor()
-        binding.headerColor = LMBranding.getHeaderColor()
+        binding.toolbarColor = LMTheme.getToolbarColor()
+        binding.headerColor = LMTheme.getHeaderColor()
 
         mediaPickerAdapter = MediaPickerAdapter(this)
         binding.rvFolder.apply {

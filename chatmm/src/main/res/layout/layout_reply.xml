@@ -44,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_conversation_member_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 tools:visibility="visible" />
 
             <!-- TODO: removed typeface"  -->
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_conversation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

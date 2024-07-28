@@ -278,6 +278,7 @@ class HomeFeedViewModel @Inject constructor(
         }
     }
 
+    // gets the list of channel invites that the user has received
     fun getChannelInvites() {
         viewModelScope.launchIO {
             val request = GetChannelInviteRequest.Builder()

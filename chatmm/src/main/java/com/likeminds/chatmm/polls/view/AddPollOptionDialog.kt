@@ -7,7 +7,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.DialogAddPollOptionBinding
 import com.likeminds.chatmm.polls.model.AddPollOptionExtras
 import com.likeminds.chatmm.polls.util.AddPollOptionListener
@@ -81,7 +81,7 @@ class AddPollOptionDialog :
                 intArrayOf(-android.R.attr.state_enabled)
             ),
             intArrayOf(
-                LMBranding.getButtonsColor(),
+                LMTheme.getButtonsColor(),
                 requireContext().fetchColor(R.color.lm_chat_black_14)
             )
         )

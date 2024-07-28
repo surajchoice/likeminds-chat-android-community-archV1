@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="@id/cl_no_internet"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_noInternet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="@+id/cl_no_internet"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_check_your_connection"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

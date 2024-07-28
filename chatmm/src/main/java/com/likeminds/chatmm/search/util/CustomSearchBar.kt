@@ -18,7 +18,7 @@ import android.widget.TextView
 import androidx.annotation.CheckResult
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.LayoutSearchBarBinding
 import com.likeminds.chatmm.utils.AnimationUtils
 import com.likeminds.chatmm.utils.ViewUtils
@@ -203,7 +203,7 @@ class CustomSearchBar @JvmOverloads constructor(
             etSearch.setText("")
             etSearch.requestFocus()
             AnimationUtils.circleRevealView(searchToolbar)
-            setBackgroundColor(LMBranding.getHeaderColor())
+            setBackgroundColor(LMTheme.getHeaderColor())
             elevation = 20F
             isOpen = true
             mSearchViewListener?.onSearchViewOpened()

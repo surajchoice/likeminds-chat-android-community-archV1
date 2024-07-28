@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="@+id/cl_something_went_wrong"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="@+id/cl_something_went_wrong"
             tools:text="Something went wrong! Please try again. " />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

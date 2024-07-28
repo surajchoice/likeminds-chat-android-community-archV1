@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.customview.edittext
+package com.likeminds.chatmm.theme.customview.edittext
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatEditText
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
 internal class LikeMindsEditText @JvmOverloads constructor(
     mContext: Context,
@@ -18,7 +18,7 @@ internal class LikeMindsEditText @JvmOverloads constructor(
     init {
         // fonts
         val array = context.obtainStyledAttributes(attributeSet, R.styleable.LikeMindsEditText)
-        this.typeface = BrandingUtil.getTypeFace(
+        this.typeface = ThemeUtil.getTypeFace(
             context,
             array.getString(R.styleable.LikeMindsEditText_font_style)
         )
@@ -26,7 +26,7 @@ internal class LikeMindsEditText @JvmOverloads constructor(
         //edittext background color
         val etType = array.getString(R.styleable.LikeMindsEditText_et_type)
         if (etType.equals("special"))
-            this.backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            this.backgroundTintList = ColorStateList.valueOf(LMTheme.getButtonsColor())
 
         array.recycle()
     }

@@ -1,6 +1,6 @@
-package com.likeminds.chatmm.branding.model
+package com.likeminds.chatmm.theme.model
 
-class SetBrandingRequest private constructor(
+class LMChatTheme private constructor(
     val headerColor: String,
     val buttonsColor: String,
     val textLinkColor: String,
@@ -17,7 +17,7 @@ class SetBrandingRequest private constructor(
         fun textLinkColor(textLinkColor: String) = apply { this.textLinkColor = textLinkColor }
         fun fonts(fonts: LMFonts?) = apply { this.fonts = fonts }
 
-        fun build() = SetBrandingRequest(
+        fun build() = LMChatTheme(
             headerColor,
             buttonsColor,
             textLinkColor,

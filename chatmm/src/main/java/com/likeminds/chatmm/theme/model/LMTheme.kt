@@ -1,9 +1,9 @@
-package com.likeminds.chatmm.branding.model
+package com.likeminds.chatmm.theme.model
 
 import android.graphics.Color
 
-// responsible for all the branding-related things like colors and fonts
-object LMBranding {
+// responsible for all the theme-related things like colors and fonts
+object LMTheme {
 
     private var headerColor: String = "#FFFFFF"
     private var buttonsColor: String = "#00897B"
@@ -11,14 +11,14 @@ object LMBranding {
     private var fonts: LMFonts? = null
 
     /**
-     * @param setBrandingRequest - Request to set branding with colors and fonts
+     * @param lmChatTheme - Object to set theme with colors and fonts
      * sets headerColor, buttonsColor, textLinkColor and fonts, used throughout the app
      * */
-    fun setBranding(setBrandingRequest: SetBrandingRequest) {
-        headerColor = setBrandingRequest.headerColor
-        buttonsColor = setBrandingRequest.buttonsColor
-        textLinkColor = setBrandingRequest.textLinkColor
-        fonts = setBrandingRequest.fonts
+    fun setTheme(lmChatTheme: LMChatTheme) {
+        headerColor = lmChatTheme.headerColor
+        buttonsColor = lmChatTheme.buttonsColor
+        textLinkColor = lmChatTheme.textLinkColor
+        fonts = lmChatTheme.fonts
     }
 
     // returns button color

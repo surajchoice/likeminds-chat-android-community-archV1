@@ -1,6 +1,6 @@
 # Keeping all models
 
--keep class com.likeminds.chatmm.branding.model.** { *; }
+-keep class com.likeminds.chatmm.theme.model.** { *; }
 -keep class com.likeminds.chatmm.chat.model.** { *; }
 -keep class com.likeminds.chatmm.chatroom.detail.model.** { *; }
 -keep class com.likeminds.chatmm.chatroom.explore.model.** { *; }

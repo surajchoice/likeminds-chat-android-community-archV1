@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatRadioButton
+import androidx.appcompat.widget.SwitchCompat
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
-internal class LikeMindsRadioButton : AppCompatRadioButton {
+internal class LikeMindsSwitch : SwitchCompat {
     constructor(context: Context) : super(context) {
         initiate(null)
     }
@@ -25,10 +25,10 @@ internal class LikeMindsRadioButton : AppCompatRadioButton {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsRadioButton)
-        typeface = BrandingUtil.getTypeFace(
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsSwitch)
+        this.typeface = ThemeUtil.getTypeFace(
             context,
-            array.getString(R.styleable.LikeMindsRadioButton_set_font_style)
+            array.getString(R.styleable.LikeMindsSwitch_setFontType)
         )
         array.recycle()
     }

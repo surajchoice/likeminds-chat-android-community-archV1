@@ -3,7 +3,7 @@ package com.likeminds.chatmm.homefeed.view
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.DialogFragmentChatroomInviteBinding
 import com.likeminds.chatmm.homefeed.model.ChatroomInviteDialogExtras
 import com.likeminds.chatmm.utils.ErrorUtil
@@ -62,7 +62,7 @@ class JoinChatroomInviteDialogFragment :
         super.setUpViews()
 
         binding.apply {
-            buttonColor = LMBranding.getButtonsColor()
+            buttonColor = LMTheme.getButtonsColor()
 
             tvTitle.text = chatroomInviteDialogExtras.chatroomInviteDialogTitle
             tvChatroomInviteDescription.text =

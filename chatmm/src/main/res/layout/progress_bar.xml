@@ -8,7 +8,7 @@
         android:translationZ="10dp"
         android:visibility="gone">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsProgressBar
+        <com.likeminds.chatmm.theme.customview.LikeMindsProgressBar
             android:id="@+id/prog_view"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"

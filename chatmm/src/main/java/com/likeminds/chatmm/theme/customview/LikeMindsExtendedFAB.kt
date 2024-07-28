@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
 internal class LikeMindsExtendedFAB : ExtendedFloatingActionButton {
     constructor(context: Context) : super(context) {
@@ -29,10 +29,10 @@ internal class LikeMindsExtendedFAB : ExtendedFloatingActionButton {
         // fonts
         val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsExtendedFAB)
         val fontStyle = array.getString(R.styleable.LikeMindsExtendedFAB_font_Style)
-        this.typeface = BrandingUtil.getTypeFace(context, fontStyle)
+        this.typeface = ThemeUtil.getTypeFace(context, fontStyle)
         array.recycle()
 
         // color
-        this.backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+        this.backgroundTintList = ColorStateList.valueOf(LMTheme.getButtonsColor())
     }
 }

@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.customview.snackbar
+package com.likeminds.chatmm.theme.customview.snackbar
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator

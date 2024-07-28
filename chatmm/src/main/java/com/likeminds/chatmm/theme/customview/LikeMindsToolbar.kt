@@ -1,12 +1,11 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
-import android.widget.ProgressBar
-import com.likeminds.chatmm.branding.model.LMBranding
+import androidx.appcompat.widget.Toolbar
+import com.likeminds.chatmm.theme.model.LMTheme
 
-class LikeMindsProgressBar : ProgressBar {
+class LikeMindsToolbar : Toolbar {
     constructor(context: Context) : super(context) {
         initiate()
     }
@@ -24,8 +23,12 @@ class LikeMindsProgressBar : ProgressBar {
     }
 
     private fun initiate() {
-        // color
-        this.progressTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
-        this.indeterminateTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+        // background color
+        this.setBackgroundColor(LMTheme.getHeaderColor())
+
+        // toolbar color
+        val color = LMTheme.getToolbarColor()
+        this.overflowIcon?.setTint(color)
+        this.navigationIcon?.setTint(color)
     }
 }

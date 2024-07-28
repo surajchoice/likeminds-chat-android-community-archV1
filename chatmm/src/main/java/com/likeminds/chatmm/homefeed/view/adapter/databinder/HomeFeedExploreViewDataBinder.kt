@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.ItemHomeFeedExploreBinding
 import com.likeminds.chatmm.homefeed.model.HomeFeedExploreViewData
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
@@ -43,7 +43,7 @@ class HomeFeedExploreViewDataBinder @Inject constructor(
         position: Int
     ) {
         binding.apply {
-            buttonColor = LMBranding.getButtonsColor()
+            buttonColor = LMTheme.getButtonsColor()
             this.data = data
 
             val context = this.root.context

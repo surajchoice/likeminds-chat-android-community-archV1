@@ -73,7 +73,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_max="230dp">
 
-                    <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                         android:id="@+id/tv_member_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                         app:layout_constraintStart_toEndOf="@+id/tv_member_name"
                         app:layout_constraintTop_toTopOf="@+id/tv_member_name" />
 
-                    <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                    <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                         android:id="@+id/tv_custom_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                     tools:background="@color/lm_chat_light_red"
                     tools:visibility="visible" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -168,7 +168,7 @@
                     app:layout_constraintStart_toStartOf="@+id/rv_documents"
                     app:layout_constraintTop_toTopOf="@+id/rv_documents" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_conversation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                     app:layout_constraintTop_toBottomOf="@id/rv_documents"
                     tools:text="That’s awesome. I would be interested in attending this event. I was always looking forward to such events." />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_delete_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     app:barrierDirection="bottom"
                     app:constraint_referenced_ids="tv_conversation, tv_delete_message" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
@@ -234,7 +234,7 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_time"
                     tools:visibility="visible" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

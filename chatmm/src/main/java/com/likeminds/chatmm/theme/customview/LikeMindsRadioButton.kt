@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import com.google.android.material.checkbox.MaterialCheckBox
+import androidx.appcompat.widget.AppCompatRadioButton
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
-internal class LikeMindsCheckbox : MaterialCheckBox {
+internal class LikeMindsRadioButton : AppCompatRadioButton {
     constructor(context: Context) : super(context) {
         initiate(null)
     }
@@ -25,10 +25,10 @@ internal class LikeMindsCheckbox : MaterialCheckBox {
 
     private fun initiate(attrs: AttributeSet?) {
         // fonts
-        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsCheckbox)
-        typeface = BrandingUtil.getTypeFace(
+        val array = context.obtainStyledAttributes(attrs, R.styleable.LikeMindsRadioButton)
+        typeface = ThemeUtil.getTypeFace(
             context,
-            array.getString(R.styleable.LikeMindsCheckbox_set_font_type)
+            array.getString(R.styleable.LikeMindsRadioButton_set_font_style)
         )
         array.recycle()
     }

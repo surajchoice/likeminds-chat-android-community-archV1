@@ -1,12 +1,12 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import com.google.android.material.button.MaterialButton
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.theme.util.ThemeUtil
 
 internal class LikeMindsButton : MaterialButton {
     constructor(context: Context) : super(context) {
@@ -32,25 +32,25 @@ internal class LikeMindsButton : MaterialButton {
         val drawableType = array.getString(R.styleable.LikeMindsButton_drawable_type)
         val buttonType = array.getString(R.styleable.LikeMindsButton_button_type)
         val textType = array.getString(R.styleable.LikeMindsButton_text_type)
-        typeface = BrandingUtil.getTypeFace(context, fontStyle)
+        typeface = ThemeUtil.getTypeFace(context, fontStyle)
         array.recycle()
 
         // applies button color to button drawables
         if (!drawableType.equals("normal")) {
-            iconTint = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            iconTint = ColorStateList.valueOf(LMTheme.getButtonsColor())
             compoundDrawables.forEach {
-                it?.setTintList(ColorStateList.valueOf(LMBranding.getButtonsColor()))
+                it?.setTintList(ColorStateList.valueOf(LMTheme.getButtonsColor()))
             }
         }
 
         // bg color
         if (!buttonType.equals("normal")) {
-            backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            backgroundTintList = ColorStateList.valueOf(LMTheme.getButtonsColor())
         }
 
         // text color
         if (!textType.equals("normal")) {
-            setTextColor(LMBranding.getButtonsColor())
+            setTextColor(LMTheme.getButtonsColor())
         }
     }
 }

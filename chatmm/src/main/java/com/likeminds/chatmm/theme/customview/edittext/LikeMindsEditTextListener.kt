@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.customview.edittext
+package com.likeminds.chatmm.theme.customview.edittext
 
 import android.net.Uri
 

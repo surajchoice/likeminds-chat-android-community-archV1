@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_poll"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -69,7 +69,7 @@
                 app:layout_goneMarginBottom="5dp"
                 tools:text="Finiss nocere, tanquam placidus amor. Grow and you will be grasped daily." />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_added_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_no_votes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

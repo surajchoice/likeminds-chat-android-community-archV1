@@ -1,11 +1,11 @@
-package com.likeminds.chatmm.branding.customview
+package com.likeminds.chatmm.theme.customview
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 
 class LikeMindsFAB : FloatingActionButton {
     constructor(context: Context) : super(context) {
@@ -30,7 +30,7 @@ class LikeMindsFAB : FloatingActionButton {
 
         // color
         if (!fabType.equals("normal")) {
-            this.backgroundTintList = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            this.backgroundTintList = ColorStateList.valueOf(LMTheme.getButtonsColor())
         }
 
         array.recycle()

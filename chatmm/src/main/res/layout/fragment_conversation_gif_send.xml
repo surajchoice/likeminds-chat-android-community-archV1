@@ -50,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+            <com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
                 android:id="@+id/et_conversation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

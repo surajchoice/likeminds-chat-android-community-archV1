@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.customview.edittext
+package com.likeminds.chatmm.theme.customview.edittext
 
 import android.content.Context
 import android.os.Build
@@ -11,7 +11,7 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.util.BrandingUtil
+import com.likeminds.chatmm.theme.util.ThemeUtil
 import com.vanniktech.emoji.EmojiEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ internal class LikeMindsEmojiEditText @JvmOverloads constructor(
     private fun setFonts(attributeSet: AttributeSet?) {
         // fonts
         val array = context.obtainStyledAttributes(attributeSet, R.styleable.LikeMindsEditText)
-        typeface = BrandingUtil.getTypeFace(
+        typeface = ThemeUtil.getTypeFace(
             context,
             array.getString(R.styleable.LikeMindsEditText_font_style)
         )

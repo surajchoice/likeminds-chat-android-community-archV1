@@ -52,7 +52,7 @@
                     app:srcCompat="@drawable/lm_chat_ic_arrow_back_white_24dp"
                     tools:ignore="ContentDescription,UseAppTint" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

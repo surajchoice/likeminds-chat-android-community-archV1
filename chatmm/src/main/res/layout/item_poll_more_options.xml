@@ -12,7 +12,7 @@
         android:background="@drawable/lm_chat_background_poll_item_unselected"
         android:minHeight="45dp">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_poll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

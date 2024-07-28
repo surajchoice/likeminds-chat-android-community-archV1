@@ -36,7 +36,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription,UseAppTint" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_explore"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             app:tint="@color/lm_chat_brown_grey"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_unread_chatroom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

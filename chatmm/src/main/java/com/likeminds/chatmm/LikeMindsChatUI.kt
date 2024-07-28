@@ -3,7 +3,7 @@ package com.likeminds.chatmm
 import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.likeminds.chatmm.branding.model.SetBrandingRequest
+import com.likeminds.chatmm.theme.model.LMChatTheme
 import com.likeminds.chatmm.chat.model.SDKInitiateSource
 import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.view.LMChatFragment
@@ -14,12 +14,12 @@ object LikeMindsChatUI {
      * Call this function to configure SDK in client's app
      *
      * @param application: application instance of client's app
-     * @param brandingRequest: branding request from client
+     * @param chatTheme: [LMChatTheme] object from client
      **/
     fun initiateChatUI(
         application: Application,
         lmUICallback: LMUICallback? = null,
-        brandingRequest: SetBrandingRequest? = null
+        chatTheme: LMChatTheme? = null
     ) {
         Log.d(SDKApplication.LOG_TAG, "initiate LikeMindsChatUI called")
 
@@ -30,7 +30,7 @@ object LikeMindsChatUI {
         sdk.initSDKApplication(
             application,
             lmUICallback,
-            brandingRequest
+            chatTheme
         )
     }
 
@@ -88,8 +88,8 @@ object LikeMindsChatUI {
         transaction.commitNowAllowingStateLoss()
     }
 
-    fun setBranding(brandingRequest: SetBrandingRequest) {
+    fun setTheme(chatTheme: LMChatTheme) {
         val sdk = SDKApplication.getInstance()
-        sdk.setupBranding(brandingRequest)
+        sdk.setupTheme(chatTheme)
     }
 }

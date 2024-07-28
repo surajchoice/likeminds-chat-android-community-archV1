@@ -1,4 +1,4 @@
-package com.likeminds.chatmm.branding.model
+package com.likeminds.chatmm.theme.model
 
 /**
  * variables here, hold path for the fonts
