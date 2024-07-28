@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.homefeed.view
 
 import android.Manifest
+import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -163,10 +164,18 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     //register receivers to the activity
     private fun setupReceivers() {
         connectivityBroadcastReceiver.setListener(this)
-        activity?.registerReceiver(
-            connectivityBroadcastReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            )
+        }
     }
 
     override fun observeData() {
