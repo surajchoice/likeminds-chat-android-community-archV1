@@ -1,8 +1,11 @@
 package com.likeminds.chatsampleapp.auth.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.likeminds.chatmm.LikeMindsChatUI
+import com.likeminds.chatmm.LMChatCore
+import com.likeminds.chatmm.chat.view.LMChatFragment
+import com.likeminds.chatmm.member.model.UserResponse
 import com.likeminds.chatsampleapp.ChatMMApplication
 import com.likeminds.chatsampleapp.R
 import com.likeminds.chatsampleapp.auth.model.LoginExtras
@@ -33,6 +36,7 @@ class AfterLoginActivity : AppCompatActivity() {
                 R.id.community_tab -> {
                     initCommunityTab()
                 }
+
                 R.id.user -> {
                     initUserFragment()
                 }
@@ -49,13 +53,32 @@ class AfterLoginActivity : AppCompatActivity() {
     }
 
     private fun initCommunityTab() {
-        LikeMindsChatUI.initiateChatFragment(
+        val successCallback = { userResponse: UserResponse ->
+            Log.d("PUI", "${userResponse.user?.id}")
+            replaceFragment()
+        }
+
+        val errorCallback = { error: String? ->
+            Log.d("PUI", "$error")
+            Unit
+        }
+        LMChatCore.showChat(
             this,
-            R.id.frameLayout,
-            authPreferences.getApiKey(),
-            authPreferences.getUserName(),
-            authPreferences.getUserId(),
-            false
+            apiKey = authPreferences.getApiKey(),
+            userName = authPreferences.getUserName(),
+            uuid = authPreferences.getUserId(),
+            successCallback,
+            errorCallback
         )
+    }
+
+    private fun replaceFragment() {
+        val containerViewId = R.id.frameLayout
+
+        val chatFragment = LMChatFragment.getInstance()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(containerViewId, chatFragment, containerViewId.toString())
+        transaction.commit()
     }
 }

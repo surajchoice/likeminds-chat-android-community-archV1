@@ -17,17 +17,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
-import com.likeminds.chatmm.*
+import com.likeminds.chatmm.R
+import com.likeminds.chatmm.SDKApplication
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
-import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.search.view.SearchActivity
-import com.likeminds.chatmm.utils.*
+import com.likeminds.chatmm.utils.ErrorUtil
+import com.likeminds.chatmm.utils.ExtrasUtil
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -39,9 +40,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     ConnectivityReceiverListener {
 
     var dmMeta: CheckDMTabViewData? = null
-
-    private lateinit var lmChatExtras: LMChatExtras
-
     private val connectivityBroadcastReceiver by lazy {
         ConnectivityBroadcastReceiver()
     }
@@ -53,9 +51,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     @Inject
     lateinit var snackBar: CustomSnackBar
 
-    @Inject
-    lateinit var initiateViewModel: InitiateViewModel
-
     private var wasNetworkGone = false
 
     companion object {
@@ -65,11 +60,8 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
 
-        fun getInstance(lmChatExtras: LMChatExtras): LMChatFragment {
+        fun getInstance(): LMChatFragment {
             val fragment = LMChatFragment()
-            val bundle = Bundle()
-            bundle.putParcelable(CHAT_EXTRAS, lmChatExtras)
-            fragment.arguments = bundle
             return fragment
         }
     }
@@ -95,35 +87,16 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         initTabLayout()
         setBranding()
         setupReceivers()
-        initiateUser()
         initToolbar()
-    }
 
-    override fun receiveExtras() {
-        super.receiveExtras()
-        lmChatExtras = ExtrasUtil.getParcelable(
-            arguments,
-            CHAT_EXTRAS,
-            LMChatExtras::class.java
-        ) ?: throw ErrorUtil.emptyExtrasException(TAG)
+        //todo wrap in a function
+        initPagerAdapter()
+        initData()
+        viewModel.checkDMTab()
     }
 
     override fun observeData() {
         super.observeData()
-
-        // observes [initiateErrorMessage]
-        initiateViewModel.initiateErrorMessage.observe(viewLifecycleOwner) {
-            ViewUtils.showErrorMessageToast(requireContext(), it)
-        }
-
-        // observes [initiateUserResponse] live data and calls API to get configuration
-        initiateViewModel.initiateUserResponse.observe(viewLifecycleOwner) {
-            initPagerAdapter()
-            initData()
-            viewModel.checkDMTab()
-            initiateViewModel.getConfig()
-        }
-
         // observes [userData] ;ive data
         viewModel.userData.observe(viewLifecycleOwner) { user ->
             observeUserData(user)
@@ -171,16 +144,6 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         )
     }
 
-    private fun initiateUser() {
-        initiateViewModel.initiateUser(
-            requireContext(),
-            lmChatExtras.apiKey,
-            lmChatExtras.userName,
-            lmChatExtras.userId,
-            lmChatExtras.isGuest ?: false
-        )
-    }
-
     private fun initToolbar() {
         binding.apply {
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
@@ -207,7 +170,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
     private fun initPagerAdapter() {
         binding.viewPager.apply {
             (getChildAt(0) as? RecyclerView)?.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            pagerAdapter = ChatPagerAdapter(this@LMChatFragment, lmChatExtras)
+            pagerAdapter = ChatPagerAdapter(this@LMChatFragment)
             adapter = pagerAdapter
         }
 
@@ -274,9 +237,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     override fun onResume() {
         super.onResume()
-        if (initiateViewModel.isUserInitiated) {
-            viewModel.checkDMTab()
-        }
+        viewModel.checkDMTab()
     }
 
     //update the unread count on dm tab

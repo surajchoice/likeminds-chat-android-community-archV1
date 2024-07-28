@@ -19,7 +19,7 @@ class ChatroomViewData private constructor(
     val alreadySeenFullConversation: Boolean?,
     val answerText: String?,
     val shortAnswer: String?,
-    val state: Int,
+    val state: Int?,
     val shareUrl: String?,
     val communityId: String,
     val communityName: String,
@@ -84,7 +84,7 @@ class ChatroomViewData private constructor(
         private var alreadySeenFullConversation: Boolean? = null
         private var answerText: String? = null
         private var shortAnswer: String? = null
-        private var state: Int = 0
+        private var state: Int? = null
         private var shareUrl: String? = null
         private var communityId: String = ""
         private var communityName: String = ""
@@ -141,7 +141,7 @@ class ChatroomViewData private constructor(
 
         fun answerText(answerText: String?) = apply { this.answerText = answerText }
         fun shortAnswer(shortAnswer: String?) = apply { this.shortAnswer = shortAnswer }
-        fun state(state: Int) = apply { this.state = state }
+        fun state(state: Int?) = apply { this.state = state }
         fun shareUrl(shareUrl: String?) = apply { this.shareUrl = shareUrl }
         fun communityId(communityId: String) = apply { this.communityId = communityId }
         fun communityName(communityName: String) = apply { this.communityName = communityName }

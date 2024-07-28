@@ -1,12 +1,12 @@
 package com.likeminds.chatmm.reactions.util
 
-import android.app.Application
+import android.content.Context
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences
 import javax.inject.Inject
 
 class ReactionsPreferences @Inject constructor(
-    application: Application,
-) : BasePreferences(MESSAGE_REACTIONS_PREFS, application) {
+    context: Context
+) : BasePreferences(MESSAGE_REACTIONS_PREFS, context) {
     companion object {
         const val MESSAGE_REACTIONS_PREFS = "message_reactions_pref"
         const val HAS_USER_REACTED_ONCE = "HAS_USER_REACTED_ONCE"

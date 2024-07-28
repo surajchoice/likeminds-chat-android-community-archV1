@@ -2,9 +2,8 @@ package com.likeminds.chatmm
 
 import android.app.Application
 import android.content.Context
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserStateDetails
+import android.util.Log
+import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.likeminds.chatmm.branding.model.LMBranding
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
@@ -21,17 +20,25 @@ import com.likeminds.chatmm.di.polls.PollsComponent
 import com.likeminds.chatmm.di.reactions.ReactionsComponent
 import com.likeminds.chatmm.di.report.ReportComponent
 import com.likeminds.chatmm.di.search.SearchComponent
+import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.LMChatSDKCallback
+import com.likeminds.likemindschat.user.model.InitiateUserRequest
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SDKApplication {
+class SDKApplication : LMChatSDKCallback {
 
     @Inject
     lateinit var transferUtility: TransferUtility
+
+    private lateinit var lmChatUserMetaData: LMChatUserMetaData
+
+    private lateinit var mChatClient: LMChatClient
 
     private var likeMindsChatComponent: LikeMindsChatComponent? = null
 
@@ -50,7 +57,7 @@ class SDKApplication {
     companion object {
         const val LOG_TAG = "LikeMindsChat"
         private var sdkApplicationInstance: SDKApplication? = null
-        private var lmUICallback: LMUICallback? = null
+        private var lmChatCoreCallback: LMChatCoreCallback? = null
 
         /**
          * @return Singleton Instance of SDK Application class, which used for injecting dagger in fragments.
@@ -67,23 +74,31 @@ class SDKApplication {
          * @return Singleton Instance of Call backs required
          * */
         @JvmStatic
-        fun getLikeMindsCallback(): LMUICallback? {
-            return lmUICallback
+        fun getLikeMindsCallback(): LMChatCoreCallback? {
+            return lmChatCoreCallback
         }
     }
 
     fun initSDKApplication(
         application: Application,
-        lmUICallback: LMUICallback?,
-        brandingRequest: SetBrandingRequest?
+        lmChatCoreCallback: LMChatCoreCallback?,
+        brandingRequest: SetBrandingRequest?,
+        domain: String? = null,
+        enablePushNotifications: Boolean = false,
+        deviceId: String? = null,
     ) {
-        LMChatClient.Builder(application)
+        mChatClient = LMChatClient.Builder(application)
+            .lmChatSDKCallback(this)
             .build()
-        SDKApplication.lmUICallback = lmUICallback
+
+        SDKApplication.lmChatCoreCallback = lmChatCoreCallback
         setupBranding(brandingRequest)
         initAppComponent(application)
         EmojiManager.install(GoogleEmojiProvider())
         initAWSMobileClient(application)
+
+        lmChatUserMetaData = LMChatUserMetaData.getInstance()
+        lmChatUserMetaData.init(domain, enablePushNotifications, deviceId)
     }
 
     // sets branding to the app
@@ -227,5 +242,48 @@ class SDKApplication {
             chatComponent = likeMindsChatComponent?.chatComponent()?.create()
         }
         return chatComponent
+    }
+
+    override fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
+        Log.d(
+            LOG_TAG, """
+            core layer
+            access token expired and refreshed
+            accessToken: $accessToken
+            refreshToken: $refreshToken
+        """.trimIndent()
+        )
+        lmChatCoreCallback?.onAccessTokenExpiredAndRefreshed(accessToken, refreshToken)
+    }
+
+    override fun onRefreshTokenExpired(): Pair<String?, String?> {
+        val apiKey = mChatClient.getAPIKey().data
+
+        return if (apiKey != null) {
+            runBlocking {
+                val user = mChatClient.getLoggedInUser()?.data?.user
+                if (user != null) {
+                    val initiateUserRequest = InitiateUserRequest.Builder()
+                        .apiKey(apiKey)
+                        .userName(user.name)
+                        .userId(user.sdkClientInfo?.uuid)
+                        .build()
+                    val response = mChatClient.initiateUser(initiateUserRequest)
+
+                    if (response.success) {
+                        val accessToken = response.data?.accessToken ?: ""
+                        val refreshToken = response.data?.refreshToken ?: ""
+                        Pair(accessToken, refreshToken)
+                    } else {
+                        Pair("", "")
+                    }
+
+                } else {
+                    Pair("", "")
+                }
+            }
+        } else {
+            lmChatCoreCallback?.onRefreshTokenExpired() ?: Pair("", "")
+        }
     }
 }

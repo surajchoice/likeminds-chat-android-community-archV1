@@ -2,14 +2,12 @@ package com.likeminds.chatmm.chat.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.view.LMChatFragment
 import com.likeminds.chatmm.dm.view.DMFeedFragment
 import com.likeminds.chatmm.homefeed.view.HomeFeedFragment
 
 class ChatPagerAdapter(
     private val fragment: LMChatFragment,
-    private val lmChatExtras: LMChatExtras
 ) : FragmentStateAdapter(fragment) {
 
     companion object {
@@ -23,7 +21,7 @@ class ChatPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> {
-                HomeFeedFragment.getInstance(lmChatExtras)
+                HomeFeedFragment.getInstance()
             }
 
             1 -> {

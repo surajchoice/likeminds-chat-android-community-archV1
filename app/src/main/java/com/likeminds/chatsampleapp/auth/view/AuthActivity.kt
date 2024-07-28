@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
 import com.github.dhaval2404.colorpicker.model.ColorSwatch
-import com.likeminds.chatmm.LikeMindsChatUI
+import com.likeminds.chatmm.LMChatCore
 import com.likeminds.chatmm.branding.model.LMFonts
 import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.utils.Route
@@ -158,7 +158,7 @@ class AuthActivity : AppCompatActivity() {
                     )
                     .build()
 
-                LikeMindsChatUI.setBranding(brandingRequest)
+                LMChatCore.setBranding(brandingRequest)
                 navigateToAfterLoginActivity()
             }
         }
