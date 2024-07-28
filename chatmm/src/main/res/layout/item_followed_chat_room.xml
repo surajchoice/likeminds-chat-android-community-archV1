@@ -68,7 +68,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_time_stamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_chatroom_name"
             tools:text="20:20PM" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_chatroom_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_last_conversation_member_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
             tools:text="Person Name :"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_last_conversation_attachment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_last_conversation_member_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_chatroom_name" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_last_conversation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -207,7 +207,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_unseen_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

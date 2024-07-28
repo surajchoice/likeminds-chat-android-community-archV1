@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapter
 import com.likeminds.chatmm.chatroom.create.view.adapter.ImageAdapterListener
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
@@ -93,7 +93,7 @@ class ConversationDocumentSendFragment :
 
     override fun setUpViews() {
         super.setUpViews()
-        setBranding()
+        setTheme()
         if (mediaExtras.isExternallyShared) {
             ProgressHelper.showProgress(binding.progressBar, true)
             viewModel.fetchExternallySharedUriData(
@@ -109,7 +109,7 @@ class ConversationDocumentSendFragment :
         MemberTaggingDecoder.decode(
             binding.etConversation,
             mediaExtras.text,
-            LMBranding.getTextLinkColor()
+            LMTheme.getTextLinkColor()
         )
 
         binding.btnBack.setOnClickListener {
@@ -215,8 +215,8 @@ class ConversationDocumentSendFragment :
         }
     }
 
-    private fun setBranding() {
-        binding.buttonColor = LMBranding.getButtonsColor()
+    private fun setTheme() {
+        binding.buttonColor = LMTheme.getButtonsColor()
     }
 
     private fun initRichEditorSupport() {
@@ -444,7 +444,7 @@ class ConversationDocumentSendFragment :
                 .editText(binding.etConversation)
                 .darkMode(true)
                 .color(
-                    LMBranding.getTextLinkColor()
+                    LMTheme.getTextLinkColor()
                 )
                 .build()
         )

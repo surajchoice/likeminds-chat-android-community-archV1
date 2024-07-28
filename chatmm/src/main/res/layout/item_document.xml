@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_document_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Getting started.png" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_meta_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_meta_1"
             app:layout_constraintTop_toTopOf="@+id/tv_meta_1" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_meta_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_meta_2"
             app:layout_constraintTop_toTopOf="@+id/tv_meta_2" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_meta_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

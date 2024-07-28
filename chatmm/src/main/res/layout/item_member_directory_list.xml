@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_member_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_member_name"
             app:layout_constraintTop_toTopOf="@+id/tv_member_name" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_custom_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             app:textType="special"
             tools:text="@string/lm_chat_community_manager" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_member_name"
             tools:text="You: Sure I will look into" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_verification_pending"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

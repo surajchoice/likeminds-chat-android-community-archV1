@@ -6,7 +6,7 @@
     tools:layout_width="match_parent"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+    <com.likeminds.chatmm.theme.customview.LikeMindsTextView
         android:id="@+id/message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

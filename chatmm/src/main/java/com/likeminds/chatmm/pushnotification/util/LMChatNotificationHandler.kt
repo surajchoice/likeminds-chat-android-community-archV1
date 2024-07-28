@@ -13,7 +13,7 @@ import androidx.core.app.RemoteInput
 import com.google.gson.Gson
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.media.model.*
@@ -258,7 +258,7 @@ class LMChatNotificationHandler {
 
         notificationIcon = R.drawable.lm_chat_ic_notification
 
-        notificationTextColor = LMBranding.getButtonsColor()
+        notificationTextColor = LMTheme.getButtonsColor()
 
         createNotificationChannel()
     }

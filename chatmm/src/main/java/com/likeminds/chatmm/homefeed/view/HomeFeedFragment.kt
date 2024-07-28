@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.WorkInfo
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.SDKApplication.Companion.LOG_TAG
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.model.SDKInitiateSource
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
@@ -29,7 +29,7 @@ import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailActivity
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.explore.view.ChatroomExploreActivity
 import com.likeminds.chatmm.databinding.FragmentHomeFeedBinding
-import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
+import com.likeminds.chatmm.homefeed.model.*
 import com.likeminds.chatmm.homefeed.util.HomeFeedPreferences
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapter
 import com.likeminds.chatmm.homefeed.view.adapter.HomeFeedAdapterListener
@@ -41,20 +41,25 @@ import com.likeminds.chatmm.pushnotification.viewmodel.LMNotificationViewModel
 import com.likeminds.chatmm.search.view.SearchActivity
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ErrorUtil.emptyExtrasException
+import com.likeminds.chatmm.utils.ValueUtils.isValidIndex
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
+import com.likeminds.likemindschat.chatroom.model.ChannelInviteStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel>(),
     HomeFeedAdapterListener,
-    ConnectivityReceiverListener {
+    ConnectivityReceiverListener,
+    JoinChatroomInviteDialogListener {
 
     private lateinit var extras: LMChatExtras
     private lateinit var homeFeedAdapter: HomeFeedAdapter
@@ -136,7 +141,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
     override fun setUpViews() {
         super.setUpViews()
         checkForNotificationPermission()
-        setBranding()
+        setTheme()
         if (extras.sdkInitiateSource == SDKInitiateSource.HOME_FEED) {
             binding.toolbar.show()
             setupReceivers()
@@ -202,6 +207,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
             showInvalidAccess()
         }
 
+        viewModel.updateChannelInviteStatus.observe(viewLifecycleOwner) { channelInviteStatus ->
+            updateChannelInviteStatus(channelInviteStatus)
+        }
+
         viewModel.homeEventsFlow.onEach { homeEvent ->
             when (homeEvent) {
                 is HomeFeedViewModel.HomeEvent.UpdateChatrooms -> {
@@ -213,7 +222,10 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
 
     private fun observeLogoutResponse() {
         initiateViewModel.logoutResponse.observe(viewLifecycleOwner) {
-            ViewUtils.showShortToast(requireContext(), getString(R.string.lm_chat_invalid_app_access))
+            ViewUtils.showShortToast(
+                requireContext(),
+                getString(R.string.lm_chat_invalid_app_access)
+            )
         }
     }
 
@@ -230,6 +242,14 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 }
 
                 is HomeFeedViewModel.ErrorMessageEvent.GetExploreTabCount -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
+
+                is HomeFeedViewModel.ErrorMessageEvent.GetChannelInvites -> {
+                    ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
+                }
+
+                is HomeFeedViewModel.ErrorMessageEvent.UpdateChannelInvite -> {
                     ViewUtils.showErrorMessageToast(requireContext(), response.errorMessage)
                 }
             }
@@ -267,6 +287,7 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         fetchData()
         startSync()
 
+        viewModel.getChannelInvites()
         viewModel.getExploreTabCount()
         viewModel.sendCommunityTabClicked(communityId, communityName)
         viewModel.sendHomeScreenOpenedEvent(LMAnalytics.Source.COMMUNITY_TAB)
@@ -286,6 +307,30 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         homeFeedAdapter.setItemsViaDiffUtilForHome(
             viewModel.getHomeFeedList(requireContext())
         )
+    }
+
+    // shows the toast message as per update in channel invite and remove the invite chatroom
+    private fun updateChannelInviteStatus(channelInviteStatus: Pair<String, ChannelInviteStatus>) {
+        // remove the channel invitation from the adapter
+        val channelId = channelInviteStatus.first
+        val index = homeFeedAdapter.items().indexOfFirst {
+            it is ChannelInviteViewData && it.invitedChatroom.id == channelId
+        }
+        if (index.isValidIndex(homeFeedAdapter.items())) {
+            homeFeedAdapter.removeIndex(index)
+        }
+
+        // show the appropriate toast message
+        val toastMessage = if (channelInviteStatus.second == ChannelInviteStatus.ACCEPTED) {
+            // start sync 2 seconds after the invitation is accepted
+            Timer().schedule(2000) {
+                startSync()
+            }
+            getString(R.string.lm_chat_joined_the_group)
+        } else {
+            getString(R.string.lm_chat_invitation_rejected)
+        }
+        ViewUtils.showShortToast(requireContext(), toastMessage)
     }
 
     override fun onResume() {
@@ -337,9 +382,9 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
         }
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            toolbarColor = LMBranding.getToolbarColor()
+            toolbarColor = LMTheme.getToolbarColor()
         }
     }
 
@@ -422,5 +467,45 @@ class HomeFeedFragment : BaseFragment<FragmentHomeFeedBinding, HomeFeedViewModel
                 }
             }
         }
+    }
+
+    override fun onAcceptChannelInviteClicked(
+        position: Int,
+        channelInviteViewData: ChannelInviteViewData
+    ) {
+        JoinChatroomInviteDialogFragment.showDialog(
+            childFragmentManager,
+            ChatroomInviteDialogExtras.Builder()
+                .chatroomInviteDialogTitle(getString(R.string.lm_chat_join_this_chatroom_question))
+                .chatroomInviteDialogSubtitle(getString(R.string.lm_chat_join_this_chatroom_description))
+                .channelInviteStatus(ChannelInviteStatus.ACCEPTED)
+                .chatroomId(channelInviteViewData.invitedChatroom.id)
+                .build()
+        )
+    }
+
+    override fun onRejectChannelInviteClicked(
+        position: Int,
+        channelInviteViewData: ChannelInviteViewData
+    ) {
+        JoinChatroomInviteDialogFragment.showDialog(
+            childFragmentManager,
+            ChatroomInviteDialogExtras.Builder()
+                .chatroomInviteDialogTitle(getString(R.string.lm_chat_reject_invitation_question))
+                .chatroomInviteDialogSubtitle(getString(R.string.lm_chat_reject_invitation_description))
+                .channelInviteStatus(ChannelInviteStatus.REJECTED)
+                .chatroomId(channelInviteViewData.invitedChatroom.id)
+                .build()
+        )
+    }
+
+    override fun onChatroomInviteDialogConfirmed(
+        invitedChatroomId: String,
+        channelInviteStatus: ChannelInviteStatus
+    ) {
+        viewModel.updateChannelInvite(
+            invitedChatroomId,
+            channelInviteStatus
+        )
     }
 }

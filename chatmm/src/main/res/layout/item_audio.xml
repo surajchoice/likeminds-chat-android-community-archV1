@@ -90,7 +90,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_audio_cover"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_audio_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
             app:layout_constraintStart_toEndOf="@id/iv_play_pause"
             app:layout_constraintTop_toTopOf="@id/iv_play_pause" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_audio_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

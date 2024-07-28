@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

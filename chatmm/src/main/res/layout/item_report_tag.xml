@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_report_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

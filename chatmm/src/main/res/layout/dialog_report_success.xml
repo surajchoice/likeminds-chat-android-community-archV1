@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_reported_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="UnusedAttribute" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_report_sub_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_reported_header"
             tools:ignore="UnusedAttribute" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+        <com.likeminds.chatmm.theme.customview.LikeMindsButton
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

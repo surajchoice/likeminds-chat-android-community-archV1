@@ -19,7 +19,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.likeminds.chatmm.*
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.model.LMChatExtras
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
@@ -94,7 +94,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         super.setUpViews()
         checkForNotificationPermission()
         initTabLayout()
-        setBranding()
+        setTheme()
         setupReceivers()
         initiateUser()
         initToolbar()
@@ -152,14 +152,14 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     private fun initTabLayout() {
         binding.tabChat.apply {
-            setSelectedTabIndicatorColor(LMBranding.getButtonsColor())
-            setTabTextColors(Color.GRAY, LMBranding.getButtonsColor())
+            setSelectedTabIndicatorColor(LMTheme.getButtonsColor())
+            setTabTextColors(Color.GRAY, LMTheme.getButtonsColor())
         }
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            toolbarColor = LMBranding.getToolbarColor()
+            toolbarColor = LMTheme.getToolbarColor()
         }
     }
 
@@ -245,7 +245,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
                                 number = unreadDMCount
                                 maxCharacterCount = 2
-                                backgroundColor = LMBranding.getButtonsColor()
+                                backgroundColor = LMTheme.getButtonsColor()
 
                                 badgeTextColor =
                                     ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
@@ -303,7 +303,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                             .roundToInt()
                     number = unreadDMCount
                     maxCharacterCount = 2
-                    backgroundColor = LMBranding.getButtonsColor()
+                    backgroundColor = LMTheme.getButtonsColor()
                     badgeTextColor =
                         ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                 }

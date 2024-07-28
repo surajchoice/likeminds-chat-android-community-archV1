@@ -62,7 +62,7 @@
             app:tint="@color/lm_chat_brown_grey"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

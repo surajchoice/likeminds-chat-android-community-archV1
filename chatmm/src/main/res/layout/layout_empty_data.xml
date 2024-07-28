@@ -30,7 +30,7 @@
             app:srcCompat="@drawable/lm_chat_ic_empty_data"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_empty_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="No result" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_empty_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

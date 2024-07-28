@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_link_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="@+id/iv_link"
             tools:text="Twitter will soon let you schedule your tweets" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_link_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
             app:srcCompat="@drawable/lm_chat_ic_cross_tags_2"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_link_url"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

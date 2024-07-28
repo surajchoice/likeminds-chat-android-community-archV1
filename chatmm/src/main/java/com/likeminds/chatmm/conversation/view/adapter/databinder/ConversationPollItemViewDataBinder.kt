@@ -4,7 +4,7 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.ChatroomDetailFragment
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
@@ -42,8 +42,8 @@ internal class ConversationPollItemViewDataBinder constructor(
         position: Int,
     ) {
         binding.apply {
-            buttonColor = LMBranding.getButtonsColor()
-            viewReply.buttonColor = LMBranding.getButtonsColor()
+            buttonColor = LMTheme.getButtonsColor()
+            viewReply.buttonColor = LMTheme.getButtonsColor()
 
             conversation = data
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
@@ -285,7 +285,7 @@ internal class ConversationPollItemViewDataBinder constructor(
             }
 
             if (memberViewData.sdkClientInfo.uuid == userPreferences.getUUID()) {
-                btnAddOption.strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
+                btnAddOption.strokeColor = ColorStateList.valueOf(LMTheme.getButtonsColor())
             } else {
                 btnAddOption.setStrokeColorResource(R.color.lm_chat_cloudy_blue)
             }

@@ -16,7 +16,7 @@ import com.likeminds.chatmm.utils.ViewDataConverter
 import com.likeminds.chatmm.utils.coroutine.launchIO
 import com.likeminds.chatmm.utils.model.BaseViewType
 import com.likeminds.likemindschat.LMChatClient
-import com.likeminds.likemindschat.chatroom.model.Chatroom
+import com.likeminds.likemindschat.chatroom.model.*
 import com.likeminds.likemindschat.homefeed.util.HomeChatroomListener
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -40,6 +40,13 @@ class HomeFeedViewModel @Inject constructor(
     private val _userData = MutableLiveData<MemberViewData?>()
     val userData: LiveData<MemberViewData?> = _userData
 
+    // holds chatroom id along with the status of the channel invitation
+    private val _updateChannelInviteStatus = MutableLiveData<Pair<String, ChannelInviteStatus>>()
+    val updateChannelInviteStatus: LiveData<Pair<String, ChannelInviteStatus>> =
+        _updateChannelInviteStatus
+
+    private val channelInvitesViewData = mutableListOf<ChannelInviteViewData>()
+
     private val errorMessageChannel = Channel<ErrorMessageEvent>(Channel.BUFFERED)
     val errorMessageEventFlow = errorMessageChannel.receiveAsFlow()
 
@@ -47,6 +54,10 @@ class HomeFeedViewModel @Inject constructor(
         data class GetChatroom(val errorMessage: String?) : ErrorMessageEvent()
 
         data class GetExploreTabCount(val errorMessage: String?) : ErrorMessageEvent()
+
+        data class GetChannelInvites(val errorMessage: String?) : ErrorMessageEvent()
+
+        data class UpdateChannelInvite(val errorMessage: String?) : ErrorMessageEvent()
     }
 
     private val chatroomListener = object : HomeChatroomListener() {
@@ -180,19 +191,26 @@ class HomeFeedViewModel @Inject constructor(
     fun getHomeFeedList(context: Context): List<BaseViewType> {
         val dataList = mutableListOf<BaseViewType>()
 
+        // adds the explore view to the home feed
         dataList.add(
-            HomeFeedViewData.Builder()
+            HomeFeedExploreViewData.Builder()
                 .totalChatRooms(totalChatroomCount)
                 .newChatRooms(unseenChatroomCount)
                 .build()
         )
-
+        // adds the line break between explore tab and Joined chat rooms
         dataList.add(lineBreakViewData)
 
         //Chat rooms
         dataList.add(HomeFeedUtil.getContentHeaderView(context.getString(R.string.lm_chat_joined_chatrooms)))
+
+        if (channelInvitesViewData.isNotEmpty()) {
+            dataList.addAll(channelInvitesViewData)
+        }
+
         val wasChatroomsFetched = homeFeedPreferences.getShowHomeFeedShimmer()
         when {
+
             !wasChatroomsFetched -> {
                 dataList.add(chatRoomListShimmerView)
             }
@@ -256,6 +274,68 @@ class HomeFeedViewModel @Inject constructor(
                     ErrorMessageEvent.GetExploreTabCount(errorMessage)
                 )
                 Log.e(SDKApplication.LOG_TAG, "$errorMessage")
+            }
+        }
+    }
+
+    // gets the list of channel invites that the user has received
+    fun getChannelInvites() {
+        viewModelScope.launchIO {
+            val request = GetChannelInviteRequest.Builder()
+                .channelType(1)
+                .page(1)
+                .pageSize(50)
+                .build()
+
+            val response = lmChatClient.getChannelInvites(request)
+
+            if (response.success) {
+                val data = response.data
+                if (data != null) {
+                    val channelInvites = data.channelInvites
+                    channelInvitesViewData.addAll(
+                        ViewDataConverter.convertChannelInvites(
+                            channelInvites
+                        )
+                    )
+                    homeEventChannel.send(HomeEvent.UpdateChatrooms)
+                }
+            } else {
+                // send error
+                val errorMessage = response.errorMessage
+                errorMessageChannel.send(
+                    ErrorMessageEvent.UpdateChannelInvite(errorMessage)
+                )
+                Log.e(SDKApplication.LOG_TAG, "$errorMessage")
+            }
+        }
+    }
+
+    fun updateChannelInvite(
+        channelId: String,
+        inviteStatus: ChannelInviteStatus
+    ) {
+        viewModelScope.launchIO {
+            val request = UpdateChannelInviteRequest.Builder()
+                .channelId(channelId)
+                .inviteStatus(inviteStatus)
+                .build()
+
+            val response = lmChatClient.updateChannelInvite(request)
+
+            if (response.success) {
+                // remove the channel from invites list
+                val channelIndex = channelInvitesViewData.indexOfFirst {
+                    it.invitedChatroom.id == channelId
+                }
+                channelInvitesViewData.removeAt(channelIndex)
+                _updateChannelInviteStatus.postValue(Pair(channelId, inviteStatus))
+            } else {
+                // send error
+                val errorMessage = response.errorMessage
+                errorMessageChannel.send(
+                    ErrorMessageEvent.UpdateChannelInvite(errorMessage)
+                )
             }
         }
     }

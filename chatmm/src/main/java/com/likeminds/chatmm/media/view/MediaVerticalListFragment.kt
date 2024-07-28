@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
 import com.likeminds.chatmm.databinding.FragmentMediaVerticalListBinding
 import com.likeminds.chatmm.media.model.*
@@ -56,7 +56,7 @@ class MediaVerticalListFragment :
 
     override fun setUpViews() {
         super.setUpViews()
-        setBranding()
+        setTheme()
         initImageListView()
 
         binding.tvTitle.text = mediaExtras?.title
@@ -66,9 +66,9 @@ class MediaVerticalListFragment :
         binding.btnBack.setOnClickListener { activity?.finish() }
     }
 
-    private fun setBranding() {
-        binding.toolbarColor = LMBranding.getToolbarColor()
-        binding.headerColor = LMBranding.getHeaderColor()
+    private fun setTheme() {
+        binding.toolbarColor = LMTheme.getToolbarColor()
+        binding.headerColor = LMTheme.getHeaderColor()
     }
 
     private fun initImageListView() {
