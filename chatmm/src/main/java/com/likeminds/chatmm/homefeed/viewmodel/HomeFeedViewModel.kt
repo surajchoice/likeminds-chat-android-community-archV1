@@ -198,7 +198,7 @@ class HomeFeedViewModel @Inject constructor(
                 .newChatRooms(unseenChatroomCount)
                 .build()
         )
-
+        // adds the line break between explore tab and Joined chat rooms
         dataList.add(lineBreakViewData)
 
         //Chat rooms

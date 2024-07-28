@@ -50,33 +50,6 @@ class ConversationWidgetItemViewDataBinder(
             //Custom Widget Data
             val metadata = JSONObject(data.widgetViewData?.metadata.toString())
 
-            //get whether chatroom is dm or not
-            val isDMChatroom = if (metadata.has("is_dm")) {
-                metadata.get("is_dm") as Boolean
-            } else {
-                false
-            }
-
-            //get transaction id
-            val transactionId = if (metadata.has("transaction_id")) {
-                metadata.get("transaction_id") as? String
-            } else {
-                null
-            }
-
-            // get widget type to be displayed
-            val widgetType = if (metadata.has("widget_type")) {
-                metadata.get("widget_type") as? String
-            } else {
-                null
-            }
-
-            if (!transactionId.isNullOrEmpty()) {
-                clWidget.show()
-            } else {
-                clWidget.hide()
-            }
-
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
                 clConversationRoot,
                 clConversationBubble,

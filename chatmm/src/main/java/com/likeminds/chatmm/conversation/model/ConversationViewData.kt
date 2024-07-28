@@ -2,29 +2,11 @@ package com.likeminds.chatmm.conversation.model
 
 import android.os.Parcelable
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil
-import com.likeminds.chatmm.media.model.AUDIO
-import com.likeminds.chatmm.media.model.GIF
-import com.likeminds.chatmm.media.model.IMAGE
-import com.likeminds.chatmm.media.model.PDF
-import com.likeminds.chatmm.media.model.VIDEO
-import com.likeminds.chatmm.media.model.VOICE_NOTE
+import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.polls.model.PollInfoData
 import com.likeminds.chatmm.reactions.model.ReactionViewData
-import com.likeminds.chatmm.utils.model.BaseViewType
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_ACTION
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_AUDIO
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_CUSTOM_WIDGET
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_LINK
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_DOCUMENT
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_MULTIPLE_MEDIA
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_POLL
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_GIF
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_IMAGE
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_PDF
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_SINGLE_VIDEO
-import com.likeminds.chatmm.utils.model.ITEM_CONVERSATION_VOICE_NOTE
+import com.likeminds.chatmm.utils.model.*
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import kotlinx.parcelize.Parcelize
 
@@ -358,5 +340,7 @@ class ConversationViewData private constructor(
             .isExpanded(isExpanded)
             .deletedByMember(deletedByMember)
             .showTapToUndo(showTapToUndo)
+            .widgetId(widgetId)
+            .widget(widgetViewData)
     }
 }

@@ -829,46 +829,20 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        //todo add code
-        val isDMChatroom = viewModel.isDmChatroom()
-
-        val widgetType = if (isDMChatroom) {
-            "send_payment"
-        } else {
-            "spilt_payment"
-        }
-
         val metaData = JSONObject().apply {
-            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
-            put("is_dm", isDMChatroom)
-            put("widget_type", widgetType)
+            // add your custom keys here
         }
 
-        postConversation(
-            metadata = metaData
-        )
+        postConversation(metadata = metaData)
     }
 
     //on click function when custom widget B is clicked
     private fun onCustomWidgetBAttachmentClicked() {
-        //todo add code
-        val isDMChatroom = viewModel.isDmChatroom()
-
-        val widgetType = if (isDMChatroom) {
-            "request_payment"
-        } else {
-            "show_payment"
-        }
-
         val metaData = JSONObject().apply {
-            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
-            put("is_dm", isDMChatroom)
-            put("widget_type", widgetType)
+            // add your custom keys here
         }
 
-        postConversation(
-            metadata = metaData
-        )
+        postConversation(metadata = metaData)
     }
 
     private fun disableAnswerPosting() {
