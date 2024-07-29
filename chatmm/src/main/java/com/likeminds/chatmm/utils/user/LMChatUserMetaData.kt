@@ -4,9 +4,12 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.SDKApplication
+import com.likeminds.chatmm.community.utils.CommunitySettingsUtil
+import com.likeminds.chatmm.member.model.UserResponse
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
 import com.likeminds.likemindschat.LMChatClient
+import com.likeminds.likemindschat.community.model.CommunitySetting
 import com.likeminds.likemindschat.community.model.ConfigurationType
 import com.likeminds.likemindschat.user.model.RegisterDeviceRequest
 import kotlinx.coroutines.*
@@ -44,14 +47,23 @@ class LMChatUserMetaData {
 
     fun onPostUserSessionInit(
         context: Context,
-        userName: String?,
-        uuid: String?,
-        memberId: String?
+        userResponse: UserResponse
     ) {
+        val userName = userResponse.user?.name
+        val uuid = userResponse.user?.sdkClientInfo?.uuid
+        val memberId = userResponse.user?.id
+        val communitySettings = userResponse.community?.communitySettings ?: listOf()
+
         saveUserPreferences(context, userName, uuid, memberId)
         getConfig(context)
         pushToken()
         getCommunityConfiguration(context)
+        saveCommunitySettings(communitySettings)
+    }
+
+    //save community settings
+    private fun saveCommunitySettings(communitySettings: List<CommunitySetting>) {
+        CommunitySettingsUtil.setCommunitySettings(communitySettings)
     }
 
     //get config

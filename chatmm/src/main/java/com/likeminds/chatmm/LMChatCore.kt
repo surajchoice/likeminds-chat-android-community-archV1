@@ -82,13 +82,13 @@ object LMChatCore {
                 val response = lmChatClient.initiateUser(initiateUserRequest)
                 if (response.success) {
                     success?.let { success ->
-                        val memberId = response.data?.user?.id
-                        //perform post session actions
-                        lmChatUserMeta.onPostUserSessionInit(context, userName, uuid, memberId)
+                        response.data?.let {
+                            val userResponse = UserResponseConvertor.getUserResponse(it)
 
-                        //return user response
-                        response.data?.let { data ->
-                            val userResponse = UserResponseConvertor.getUserResponse(data)
+                            //perform post session actions
+                            lmChatUserMeta.onPostUserSessionInit(context, userResponse)
+
+                            //return user response
                             success(userResponse)
                         }
                     }
@@ -153,16 +153,11 @@ object LMChatCore {
             val response = lmFeedClient.validateUser(validateUserRequest)
             if (response.success) {
                 success?.let { success ->
-                    //perform post session actions
-                    val user = response.data?.user
-                    val userName = user?.name
-                    val uuid = user?.sdkClientInfo?.uuid
-                    val memberId = user?.id
-                    lmChatUserMeta.onPostUserSessionInit(context, userName, uuid, memberId)
+                    response.data?.let {
+                        val userResponse = UserResponseConvertor.getUserResponse(it)
 
-                    //return user response
-                    response.data?.let { data ->
-                        val userResponse = UserResponseConvertor.getUserResponse(data)
+                        lmChatUserMeta.onPostUserSessionInit(context, userResponse)
+
                         success(userResponse)
                     }
                 }
