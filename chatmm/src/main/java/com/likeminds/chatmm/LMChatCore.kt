@@ -27,7 +27,7 @@ object LMChatCore {
         enablePushNotifications: Boolean = false,
         deviceId: String? = null,
     ) {
-        Log.d(SDKApplication.LOG_TAG, "setup called")
+        Log.d(SDKApplication.LOG_TAG, "LMChatCore setup called")
 
         //create object of SDKApplication
         val sdk = SDKApplication.getInstance()
@@ -52,26 +52,12 @@ object LMChatCore {
         error: ((String?) -> Unit)?
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d(
-                SDKApplication.LOG_TAG, """
-                show chat called without security
-                apiKey: $apiKey
-                userName: $userName
-                uuid: $uuid
-            """.trimIndent()
-            )
             val lmChatClient = LMChatClient.getInstance()
             val tokens = lmChatClient.getTokens().data
             val lmChatUserMeta = LMChatUserMetaData.getInstance()
             val deviceId = lmChatUserMeta.deviceId
 
             if (tokens?.first == null || tokens.second == null) {
-                Log.d(
-                    SDKApplication.LOG_TAG, """
-                    show chat called without security
-                    tokens are null
-                """.trimIndent()
-                )
                 val initiateUserRequest = InitiateUserRequest.Builder()
                     .apiKey(apiKey)
                     .userName(userName)
@@ -96,12 +82,6 @@ object LMChatCore {
                     error?.let { it(response.errorMessage) }
                 }
             } else {
-                Log.d(
-                    SDKApplication.LOG_TAG, """
-                    show chat called without security
-                    tokens are not null
-                """.trimIndent()
-                )
                 showChat(context, tokens.first, tokens.second, success, error)
             }
         }
@@ -115,32 +95,13 @@ object LMChatCore {
         error: ((String?) -> Unit)?
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d(
-                SDKApplication.LOG_TAG, """
-                    show chat called with security
-                    accessToken: $accessToken
-                    refreshToken: $refreshToken
-                """.trimIndent()
-            )
             val lmChatUserMeta = LMChatUserMetaData.getInstance()
             val deviceId = lmChatUserMeta.deviceId
 
             val lmFeedClient = LMChatClient.getInstance()
             val tokens = if (accessToken == null || refreshToken == null) {
-                Log.d(
-                    SDKApplication.LOG_TAG, """
-                    show chat called with security
-                    tokens are not present in parameter
-                """.trimIndent()
-                )
                 lmFeedClient.getTokens().data ?: Pair("", "")
             } else {
-                Log.d(
-                    SDKApplication.LOG_TAG, """
-                    show chat called with security
-                    tokens are present in parameter
-                """.trimIndent()
-                )
                 Pair(accessToken, refreshToken)
             }
 

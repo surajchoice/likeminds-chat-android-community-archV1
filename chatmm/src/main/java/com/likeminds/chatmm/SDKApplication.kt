@@ -245,14 +245,6 @@ class SDKApplication : LMChatSDKCallback {
     }
 
     override fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
-        Log.d(
-            LOG_TAG, """
-            core layer
-            access token expired and refreshed
-            accessToken: $accessToken
-            refreshToken: $refreshToken
-        """.trimIndent()
-        )
         lmChatCoreCallback?.onAccessTokenExpiredAndRefreshed(accessToken, refreshToken)
     }
 

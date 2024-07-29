@@ -59,13 +59,11 @@ class AfterLoginActivity : AppCompatActivity() {
 
     private fun initCommunityTab() {
         val successCallback = { userResponse: UserResponse ->
-            Log.d("PUI", "${userResponse.user?.id}")
             replaceFragment()
         }
 
         val errorCallback = { error: String? ->
-            Log.d("PUI", "$error")
-            Unit
+
         }
         LMChatCore.showChat(
             this,
@@ -79,13 +77,10 @@ class AfterLoginActivity : AppCompatActivity() {
 
     private fun withAPIKeySecurity(accessToken: String, refreshToken: String) {
         val successCallback = { userResponse: UserResponse ->
-            Log.d("PUI", "${userResponse.user?.id}")
             replaceFragment()
         }
 
         val errorCallback = { error: String? ->
-            Log.d("PUI", "$error")
-            Unit
         }
 
         LMChatCore.showChat(

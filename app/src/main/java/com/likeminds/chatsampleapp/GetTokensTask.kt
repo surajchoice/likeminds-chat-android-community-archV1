@@ -49,8 +49,6 @@ class GetTokensTask {
             val request = JSONObject().apply {
                 put("uuid", authPreferences.getUserId())
                 put("user_name", authPreferences.getUserName())
-                put("token_expiry_beta", 1)
-                put("rtm_token_expiry_beta", 2)
             }
 
             Log.d(LM_CHAT_EXAMPLE_TAG, "connection : ${connection.requestProperties}")
