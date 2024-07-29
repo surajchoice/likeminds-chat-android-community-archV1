@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="Abhishek" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/text_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 app:layout_constraintStart_toEndOf="@+id/text_sub_title"
                 app:layout_constraintTop_toTopOf="@+id/text_sub_title" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/text_view_sub_title_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

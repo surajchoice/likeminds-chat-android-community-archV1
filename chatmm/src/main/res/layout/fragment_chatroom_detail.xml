@@ -25,7 +25,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
+        <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -74,7 +74,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="ContentDescription" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     tools:ignore="ContentDescription,UseAppTint"
                     tools:visibility="visible" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
+        </com.likeminds.chatmm.theme.customview.LikeMindsToolbar>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chatroom"
@@ -146,7 +146,7 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:listitem="@layout/item_chatroom" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_send_dm_request_to_member"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="16dp">
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_dm_request_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UnusedAttribute" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_approve_dm_request"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                     app:textType="special"
                     tools:ignore="UnusedAttribute" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_reject_dm_request"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsFAB
+        <com.likeminds.chatmm.theme.customview.LikeMindsFAB
             android:id="@+id/fab_scroll_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_scroll_bottom"
             android:layout_width="21dp"
             android:layout_height="21dp"
@@ -286,7 +286,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_chatroom_member_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -319,7 +319,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_chatroom_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
             app:layout_constraintTop_toTopOf="@+id/tv_chatroom_member_name"
             tools:text="April 20" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_chatroom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -382,7 +382,7 @@
             app:barrierDirection="top"
             app:constraint_referenced_ids="input_box, tv_restricted_message" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_restricted_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -434,7 +434,7 @@
             app:layout_constraintRight_toRightOf="parent"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsFAB
+        <com.likeminds.chatmm.theme.customview.LikeMindsFAB
             android:id="@+id/fab_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -451,7 +451,7 @@
             tools:ignore="DuplicateClickableBoundsCheck"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsFAB
+        <com.likeminds.chatmm.theme.customview.LikeMindsFAB
             android:id="@+id/fab_mic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -542,7 +542,7 @@
             app:layout_constraintEnd_toEndOf="@id/input_box"
             tools:visibility="visible">
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_slide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

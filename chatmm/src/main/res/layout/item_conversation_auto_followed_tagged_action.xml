@@ -28,7 +28,7 @@
             app:srcCompat="@drawable/lm_chat_ic_auto_followed_tagged"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_tagged_auto_join" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+        <com.likeminds.chatmm.theme.customview.LikeMindsButton
             android:id="@+id/btn_keep_following"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_subtitle" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+        <com.likeminds.chatmm.theme.customview.LikeMindsButton
             android:id="@+id/btn_unfollow"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"

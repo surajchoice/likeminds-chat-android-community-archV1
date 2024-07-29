@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
+        <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:orientation="horizontal"
                 android:padding="15dp">
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     tools:src="@color/lm_chat_black" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
+        </com.likeminds.chatmm.theme.customview.LikeMindsToolbar>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_chat"

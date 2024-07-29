@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
+        <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -54,7 +54,7 @@
                     app:srcCompat="@drawable/lm_chat_ic_arrow_back_white_24dp"
                     tools:ignore="ContentDescription,UnusedAttribute,UseAppTint" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_toolbar_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
+        </com.likeminds.chatmm.theme.customview.LikeMindsToolbar>
 
         <com.likeminds.chatmm.search.util.CustomSearchBar
             android:id="@+id/search_bar"

@@ -31,21 +31,21 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.customview.snackbar.LikeMindsSnackbar
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.customview.snackbar.LikeMindsSnackbar
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.utils.databinding.ImageBindingUtil
 
 //view related utils class
 object ViewUtils {
 
-    fun setBrandingTint(
+    fun setThemeTint(
         checkBox: CheckBox? = null,
         switch: SwitchCompat? = null,
         radioButton: RadioButton? = null,
         materialButton: MaterialButton? = null,
     ) {
-        val buttonsColor = LMBranding.getButtonsColor()
+        val buttonsColor = LMTheme.getButtonsColor()
 
         val disableColor = Color.LTGRAY
         val percentage = 70f / 100

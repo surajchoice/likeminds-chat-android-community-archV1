@@ -21,7 +21,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.button.MaterialButton
 import com.likeminds.chatmm.*
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomViewData
 import com.likeminds.chatmm.chatroom.detail.model.TYPE_DIRECT_MESSAGE
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
@@ -335,7 +335,7 @@ object ChatroomConversationItemViewDataBinderUtil {
             tvConversation,
             trimmedText,
             true,
-            LMBranding.getTextLinkColor()
+            LMTheme.getTextLinkColor()
         ) { it ->
             adapterListener?.onMemberTagClicked(it)
         }
@@ -864,7 +864,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                                 tvConversation,
                                 replyData.conversationText,
                                 false,
-                                LMBranding.getTextLinkColor()
+                                LMTheme.getTextLinkColor()
                             )
                         }
                     }
@@ -1301,7 +1301,7 @@ object ChatroomConversationItemViewDataBinderUtil {
                     )
                 } else {
                     backgroundTintList =
-                        ColorStateList.valueOf(LMBranding.getButtonsColor())
+                        ColorStateList.valueOf(LMTheme.getButtonsColor())
                 }
             }
         }
@@ -1336,9 +1336,9 @@ object ChatroomConversationItemViewDataBinderUtil {
             return
         }
         btnSubmitVote.apply {
-            iconTint = ColorStateList.valueOf(LMBranding.getButtonsColor())
-            setTextColor(LMBranding.getButtonsColor())
-            strokeColor = ColorStateList.valueOf(LMBranding.getButtonsColor())
+            iconTint = ColorStateList.valueOf(LMTheme.getButtonsColor())
+            setTextColor(LMTheme.getButtonsColor())
+            strokeColor = ColorStateList.valueOf(LMTheme.getButtonsColor())
             tag = "POLL_CLICK_ENABLED"
             isEnabled = true
         }

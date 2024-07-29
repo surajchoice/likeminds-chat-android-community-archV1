@@ -12,7 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerDocumentBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
@@ -70,7 +70,7 @@ class LMChatMediaPickerDocumentFragment :
     override fun setUpViews() {
         super.setUpViews()
         setupMenu()
-        setBranding()
+        setTheme()
         initializeUI()
         initializeListeners()
         viewModel.fetchAllDocuments(requireContext()).observe(viewLifecycleOwner) {
@@ -116,17 +116,17 @@ class LMChatMediaPickerDocumentFragment :
     private fun updateMenu(menu: Menu) {
         //update search icon
         val item = menu.findItem(R.id.menu_item_search)
-        item?.icon?.setTint(LMBranding.getToolbarColor())
+        item?.icon?.setTint(LMTheme.getToolbarColor())
 
         //update sort icon
         val item2 = menu.findItem(R.id.menu_item_sort)
-        item2?.icon?.setTint(LMBranding.getToolbarColor())
+        item2?.icon?.setTint(LMTheme.getToolbarColor())
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            buttonColor = LMBranding.getButtonsColor()
-            toolbarColor = LMBranding.getToolbarColor()
+            buttonColor = LMTheme.getButtonsColor()
+            toolbarColor = LMTheme.getToolbarColor()
         }
     }
 

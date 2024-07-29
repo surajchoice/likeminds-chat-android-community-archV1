@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.community.utils.CommunitySettingsUtil
+import com.likeminds.chatmm.community.utils.LMChatCommunitySettingsUtil
 import com.likeminds.chatmm.member.model.UserResponse
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.utils.SDKPreferences
@@ -63,7 +63,7 @@ class LMChatUserMetaData {
 
     //save community settings
     private fun saveCommunitySettings(communitySettings: List<CommunitySetting>) {
-        CommunitySettingsUtil.setCommunitySettings(communitySettings)
+        LMChatCommunitySettingsUtil.setCommunitySettings(communitySettings)
     }
 
     //get config

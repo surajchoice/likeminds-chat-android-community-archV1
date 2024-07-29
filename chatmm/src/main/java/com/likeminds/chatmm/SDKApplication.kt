@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.Log
 import com.amazonaws.mobile.client.*
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
-import com.likeminds.chatmm.branding.model.LMBranding
-import com.likeminds.chatmm.branding.model.SetBrandingRequest
+import com.likeminds.chatmm.theme.model.LMTheme
+import com.likeminds.chatmm.theme.model.LMChatTheme
 import com.likeminds.chatmm.di.DaggerLikeMindsChatComponent
 import com.likeminds.chatmm.di.LikeMindsChatComponent
 import com.likeminds.chatmm.di.chat.ChatComponent
@@ -82,7 +82,7 @@ class SDKApplication : LMChatSDKCallback {
     fun initSDKApplication(
         application: Application,
         lmChatCoreCallback: LMChatCoreCallback?,
-        brandingRequest: SetBrandingRequest?,
+        chatTheme: LMChatTheme?,
         domain: String? = null,
         enablePushNotifications: Boolean = false,
         deviceId: String? = null,
@@ -92,7 +92,7 @@ class SDKApplication : LMChatSDKCallback {
             .build()
 
         SDKApplication.lmChatCoreCallback = lmChatCoreCallback
-        setupBranding(brandingRequest)
+        setupTheme(chatTheme)
         initAppComponent(application)
         EmojiManager.install(GoogleEmojiProvider())
         initAWSMobileClient(application)
@@ -101,10 +101,10 @@ class SDKApplication : LMChatSDKCallback {
         lmChatUserMetaData.init(domain, enablePushNotifications, deviceId)
     }
 
-    // sets branding to the app
-    fun setupBranding(setBrandingRequest: SetBrandingRequest?) {
-        val brandingRequest = setBrandingRequest ?: SetBrandingRequest.Builder().build()
-        LMBranding.setBranding(brandingRequest)
+    // sets theme to the app
+    fun setupTheme(lmChatTheme: LMChatTheme?) {
+        val chatTheme = lmChatTheme ?: LMChatTheme.Builder().build()
+        LMTheme.setTheme(chatTheme)
     }
 
     private fun initAWSMobileClient(applicationContext: Context) {

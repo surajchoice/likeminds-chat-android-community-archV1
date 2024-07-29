@@ -39,8 +39,7 @@ class CommunityMembersViewDataBinder @Inject constructor(
 
             tvMemberName.text = MemberUtil.getMemberNameForDisplay(data, userPreferences.getUUID())
 
-            // todo: change this once question answers are added in [MemberViewData]
-            val subtitle = ""
+            val subtitle = data.sdkClientInfo.uuid
 
             tvSubtitle.apply {
                 text = subtitle

@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_new"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="@+id/iv_chat_room"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_participant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_header"
             tools:text="12" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_responses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_header">
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            <com.likeminds.chatmm.theme.customview.LikeMindsButton
                 android:id="@+id/btn_join"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
@@ -161,7 +161,7 @@
                 app:strokeColor="@color/lm_chat_white"
                 app:text_type="normal" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            <com.likeminds.chatmm.theme.customview.LikeMindsButton
                 android:id="@+id/btn_joined"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
@@ -186,7 +186,7 @@
 
         </LinearLayout>
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

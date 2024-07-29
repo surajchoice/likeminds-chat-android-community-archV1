@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.create.view.adapter.ChatroomItemAdapter
 import com.likeminds.chatmm.chatroom.create.view.adapter.CreatePollItemAdapterListener
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailExtras
@@ -103,7 +103,7 @@ class CreateConversationPollDialog :
 
     override fun setUpViews() {
         super.setUpViews()
-        setBranding()
+        setTheme()
         initBottomSheetBehavior()
         initPollQuestionView()
         initListeners()
@@ -113,11 +113,11 @@ class CreateConversationPollDialog :
         initMultipleOptionNoDropdownView()
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            ViewUtils.setBrandingTint(switch = switchAddNewOptions)
-            ViewUtils.setBrandingTint(switch = switchAnonymousPoll)
-            ViewUtils.setBrandingTint(switch = switchLiveResults)
+            ViewUtils.setThemeTint(switch = switchAddNewOptions)
+            ViewUtils.setThemeTint(switch = switchAnonymousPoll)
+            ViewUtils.setThemeTint(switch = switchLiveResults)
 
             btnPost.backgroundTintList = ColorStateList(
                 arrayOf(
@@ -125,7 +125,7 @@ class CreateConversationPollDialog :
                     intArrayOf(-android.R.attr.state_enabled)
                 ),
                 intArrayOf(
-                    LMBranding.getButtonsColor(),
+                    LMTheme.getButtonsColor(),
                     requireContext().fetchColor(R.color.lm_chat_black_14)
                 )
             )

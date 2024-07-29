@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_poll_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="10" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_poll_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

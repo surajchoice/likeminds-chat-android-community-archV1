@@ -23,15 +23,21 @@ internal class HomeFeedDiffUtilCallback(
             oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 oldItem.chatroom.id == newItem.chatroom.id
             }
+
             oldItem is HomeLineBreakViewData && newItem is HomeLineBreakViewData -> true
             oldItem is HomeBlankSpaceViewData && newItem is HomeBlankSpaceViewData -> true
             oldItem is ContentHeaderViewData && newItem is ContentHeaderViewData -> {
                 oldItem.title == newItem.title
             }
+
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
             oldItem is HomeChatroomListShimmerViewData && newItem is HomeChatroomListShimmerViewData -> true
-            oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> true
+            oldItem is HomeFeedExploreViewData && newItem is HomeFeedExploreViewData -> true
             oldItem is DMFeedEmptyViewData && newItem is DMFeedEmptyViewData -> true
+            oldItem is ChannelInviteViewData && newItem is ChannelInviteViewData -> {
+                oldItem.id == newItem.id
+            }
+
             else -> false
         }
     }
@@ -43,17 +49,24 @@ internal class HomeFeedDiffUtilCallback(
             oldItem is HomeFeedItemViewData && newItem is HomeFeedItemViewData -> {
                 chatViewData(oldItem, newItem)
             }
+
             oldItem is ContentHeaderViewData && newItem is ContentHeaderViewData -> {
                 oldItem.title == newItem.title
             }
+
             oldItem is EmptyScreenViewData && newItem is EmptyScreenViewData -> true
 //            oldItem is ProgressViewData && newItem is ProgressViewData -> true
 //            oldItem is ProgressHorizontalViewData && newItem is ProgressHorizontalViewData -> true
 //            oldItem is ChatroomListShimmerViewData && newItem is ChatroomListShimmerViewData -> true
-            oldItem is HomeFeedViewData && newItem is HomeFeedViewData -> {
+            oldItem is HomeFeedExploreViewData && newItem is HomeFeedExploreViewData -> {
                 homeFeedViewData(oldItem, newItem)
             }
+
             oldItem is DMFeedEmptyViewData && newItem is DMFeedEmptyViewData -> true
+            oldItem is ChannelInviteViewData && newItem is ChannelInviteViewData -> {
+                channelInviteViewData(oldItem, newItem)
+            }
+
             else -> false
         }
     }
@@ -116,8 +129,8 @@ internal class HomeFeedDiffUtilCallback(
     }
 
     private fun homeFeedViewData(
-        oldItem: HomeFeedViewData?,
-        newItem: HomeFeedViewData?
+        oldItem: HomeFeedExploreViewData?,
+        newItem: HomeFeedExploreViewData?
     ): Boolean {
         if (oldItem == null && newItem == null) {
             return true
@@ -129,4 +142,22 @@ internal class HomeFeedDiffUtilCallback(
                 && oldItem.newChatRooms == newItem.newChatRooms
     }
 
+    /**
+     * Check the differences in only those data which are shown to the UI.
+     */
+    private fun channelInviteViewData(
+        oldItem: ChannelInviteViewData,
+        newItem: ChannelInviteViewData
+    ): Boolean {
+        return oldItem.invitedChatroom.header == newItem.invitedChatroom.header
+                && oldItem.invitedChatroom.title == newItem.invitedChatroom.title
+                && oldItem.invitedChatroom.type == newItem.invitedChatroom.type
+                && oldItem.invitedChatroom.isSecret == newItem.invitedChatroom.isSecret
+                && oldItem.invitedChatroom.chatroomImageUrl == newItem.invitedChatroom.chatroomImageUrl
+                && oldItem.createdAt == newItem.createdAt
+                && oldItem.updatedAt == newItem.updatedAt
+                && oldItem.inviteStatus.value == newItem.inviteStatus.value
+                && memberViewData(oldItem.inviteSender, newItem.inviteSender)
+                && memberViewData(oldItem.inviteReceiver, newItem.inviteReceiver)
+    }
 }

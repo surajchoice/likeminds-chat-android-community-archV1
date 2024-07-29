@@ -12,8 +12,8 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.likeminds.chatmm.utils.membertagging.model.MemberTaggingExtras
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.viewmodel.HelperViewModel
 import com.likeminds.chatmm.databinding.FragmentConversationGifSendBinding
 import com.likeminds.chatmm.media.model.*
@@ -77,7 +77,7 @@ class ConversationGifSendFragment :
 
     override fun setUpViews() {
         super.setUpViews()
-        setBranding()
+        setTheme()
         singleUriData = mediaExtras.mediaUris?.firstOrNull()
         initViews()
         initMemberTagging()
@@ -94,8 +94,8 @@ class ConversationGifSendFragment :
         }
     }
 
-    private fun setBranding() {
-        binding.buttonColor = LMBranding.getButtonsColor()
+    private fun setTheme() {
+        binding.buttonColor = LMTheme.getButtonsColor()
     }
 
     private fun initViews() {
@@ -120,7 +120,7 @@ class ConversationGifSendFragment :
                 .editText(binding.etConversation)
                 .darkMode(true)
                 .color(
-                    LMBranding.getTextLinkColor()
+                    LMTheme.getTextLinkColor()
                 )
                 .build()
         )

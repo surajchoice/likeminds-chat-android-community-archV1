@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+        <com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
             android:id="@+id/et_poll"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_poll_sub_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_delete"
             tools:ignore="ContentDescription" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_document_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Event Document.pdf" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_document_page_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_document_page_count"
             app:layout_constraintTop_toTopOf="@+id/tv_document_type" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_document_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_document_size"
             app:layout_constraintTop_toTopOf="@+id/tv_document_type" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_document_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+            <com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
                 android:id="@+id/et_conversation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

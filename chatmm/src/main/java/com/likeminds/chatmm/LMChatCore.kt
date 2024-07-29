@@ -3,9 +3,9 @@ package com.likeminds.chatmm
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.likeminds.chatmm.branding.model.SetBrandingRequest
 import com.likeminds.chatmm.member.model.UserResponse
 import com.likeminds.chatmm.member.util.UserResponseConvertor
+import com.likeminds.chatmm.theme.model.LMChatTheme
 import com.likeminds.chatmm.utils.user.LMChatUserMetaData
 import com.likeminds.likemindschat.LMChatClient
 import com.likeminds.likemindschat.user.model.InitiateUserRequest
@@ -17,12 +17,12 @@ object LMChatCore {
      * Call this function to configure SDK in client's app
      *
      * @param application: application instance of client's app
-     * @param brandingRequest: branding request from client
+     * @param theme: branding request from client
      **/
     fun setup(
         application: Application,
         lmChatCoreCallback: LMChatCoreCallback? = null,
-        brandingRequest: SetBrandingRequest? = null,
+        theme: LMChatTheme? = null,
         domain: String? = null,
         enablePushNotifications: Boolean = false,
         deviceId: String? = null,
@@ -36,7 +36,7 @@ object LMChatCore {
         sdk.initSDKApplication(
             application,
             lmChatCoreCallback,
-            brandingRequest,
+            theme,
             domain,
             enablePushNotifications,
             deviceId
@@ -167,8 +167,8 @@ object LMChatCore {
         }
     }
 
-    fun setBranding(brandingRequest: SetBrandingRequest) {
+    fun setTheme(lmChatTheme: LMChatTheme) {
         val sdk = SDKApplication.getInstance()
-        sdk.setupBranding(brandingRequest)
+        sdk.setupTheme(lmChatTheme)
     }
 }

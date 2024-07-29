@@ -29,8 +29,8 @@ class DMLimitExceededDialogExtras private constructor(
         )
     }
 
-    fun toBuilder(): CheckDMLimitViewData.Builder {
-        return CheckDMLimitViewData.Builder()
+    fun toBuilder(): Builder {
+        return Builder()
             .newRequestDMTimestamp(newRequestDMTimestamp)
             .numberInDuration(numberInDuration)
             .duration(duration)

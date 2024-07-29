@@ -296,4 +296,12 @@
     <string name="lm_chat_groups">Groups</string>
     <string name="lm_chat_dms">DMs</string>
     <string name="lm_chat_you_are_not_connected_with_this_user_yet">You are not connected with this user yet!</string>
+    <string name="lm_chat_s_invited_you_to_join">%s invited you to join.</string>
+    <string name="lm_chat_join_this_chatroom_question">Join this chatroom?</string>
+    <string name="lm_chat_join_this_chatroom_description">You are about to join this secret chatroom.</string>
+    <string name="lm_chat_reject_invitation_question">Reject invitation?</string>
+    <string name="lm_chat_reject_invitation_description">Are you sure you want to reject the invitation to join this chatroom?</string>
+    <string name="lm_chat_confirm">Confirm</string>
+    <string name="lm_chat_joined_the_group">Joined the group</string>
+    <string name="lm_chat_invitation_rejected">Invitation Rejected</string>
 </resources>

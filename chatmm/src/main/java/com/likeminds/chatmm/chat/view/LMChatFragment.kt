@@ -1,6 +1,7 @@
 package com.likeminds.chatmm.chat.view
 
 import android.Manifest
+import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -19,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
@@ -85,7 +86,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         super.setUpViews()
         checkForNotificationPermission()
         initTabLayout()
-        setBranding()
+        setTheme()
         setupReceivers()
         initToolbar()
 
@@ -124,24 +125,32 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     private fun initTabLayout() {
         binding.tabChat.apply {
-            setSelectedTabIndicatorColor(LMBranding.getButtonsColor())
-            setTabTextColors(Color.GRAY, LMBranding.getButtonsColor())
+            setSelectedTabIndicatorColor(LMTheme.getButtonsColor())
+            setTabTextColors(Color.GRAY, LMTheme.getButtonsColor())
         }
     }
 
-    private fun setBranding() {
+    private fun setTheme() {
         binding.apply {
-            toolbarColor = LMBranding.getToolbarColor()
+            toolbarColor = LMTheme.getToolbarColor()
         }
     }
 
     //register receivers to the activity
     private fun setupReceivers() {
         connectivityBroadcastReceiver.setListener(this)
-        activity?.registerReceiver(
-            connectivityBroadcastReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            activity?.registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            )
+        }
     }
 
     private fun initToolbar() {
@@ -199,7 +208,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
                                 number = unreadDMCount
                                 maxCharacterCount = 2
-                                backgroundColor = LMBranding.getButtonsColor()
+                                backgroundColor = LMTheme.getButtonsColor()
 
                                 badgeTextColor =
                                     ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
@@ -255,7 +264,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
                             .roundToInt()
                     number = unreadDMCount
                     maxCharacterCount = 2
-                    backgroundColor = LMBranding.getButtonsColor()
+                    backgroundColor = LMTheme.getButtonsColor()
                     badgeTextColor =
                         ContextCompat.getColor(requireContext(), R.color.lm_chat_white)
                 }

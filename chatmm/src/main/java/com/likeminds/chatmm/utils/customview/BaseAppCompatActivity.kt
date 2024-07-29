@@ -2,6 +2,7 @@ package com.likeminds.chatmm.utils.customview
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -12,10 +13,12 @@ import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.permissions.*
+import com.likeminds.chatmm.utils.permissions.LMChatPermission.Companion.READ_MEDIA_VISUAL_USER_SELECTED
+import com.likeminds.chatmm.utils.permissions.LMChatPermission.Companion.REQUEST_GALLERY
 import com.likeminds.chatmm.utils.permissions.model.LMChatPermissionExtras
 import com.likeminds.chatmm.utils.snackbar.CustomSnackBar
 import javax.inject.Inject
@@ -53,15 +56,23 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
     override fun onResume() {
         super.onResume()
         connectivityBroadcastReceiver.setListener(this)
-        registerReceiver(
-            connectivityBroadcastReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            registerReceiver(
+                connectivityBroadcastReceiver,
+                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            )
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        setStatusBarColor(LMBranding.getHeaderColor())
+        setStatusBarColor(LMTheme.getHeaderColor())
     }
 
     override fun onPause() {
@@ -90,11 +101,18 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
             true
         } else {
             var hasPermission = true
+            var isPartialMediaPermission = false
             permissions.forEach { permission ->
+                if (permission == READ_MEDIA_VISUAL_USER_SELECTED
+                    && checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    isPartialMediaPermission = true
+                    return@forEach
+                }
                 hasPermission =
                     hasPermission && checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
             }
-            return hasPermission
+            return hasPermission || isPartialMediaPermission
         }
     }
 
@@ -155,11 +173,15 @@ open class BaseAppCompatActivity : ConnectivityReceiverListener, AppCompatActivi
         if (grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callback.onGrant()
+            } else if (requestCode == REQUEST_GALLERY
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                && checkSelfPermission(READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED
+            ) {
+                //if the API version >= 34 and the request code is REQUEST_GALLERY then we check if the READ_MEDIA_VISUAL_USER_SELECTED permission is granted
+                callback.onGrant()
             } else {
                 callback.onDeny()
             }
-        } else {
-            callback.onDeny()
         }
     }
 

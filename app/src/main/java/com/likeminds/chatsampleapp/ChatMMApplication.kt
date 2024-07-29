@@ -5,8 +5,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.likeminds.chatmm.*
-import com.likeminds.chatmm.branding.model.LMFonts
-import com.likeminds.chatmm.branding.model.SetBrandingRequest
+import com.likeminds.chatmm.theme.model.LMFonts
+import com.likeminds.chatmm.theme.model.LMChatTheme
 import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
@@ -27,7 +27,7 @@ class ChatMMApplication : Application(), LMChatCoreCallback {
 
         authPreferences = AuthPreferences(this)
 
-        val brandingRequest = SetBrandingRequest.Builder()
+        val chatTheme = LMChatTheme.Builder()
             .headerColor(authPreferences.getHeaderColor())
             .buttonsColor(authPreferences.getButtonColor())
             .textLinkColor(authPreferences.getTextLinkColor())
@@ -43,7 +43,7 @@ class ChatMMApplication : Application(), LMChatCoreCallback {
         LMChatCore.setup(
             this,
             this,
-            brandingRequest
+            chatTheme
         )
     }
 
