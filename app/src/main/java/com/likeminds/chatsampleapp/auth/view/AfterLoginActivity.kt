@@ -6,11 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.likeminds.chatmm.LMChatCore
 import com.likeminds.chatmm.chat.view.LMChatFragment
 import com.likeminds.chatmm.member.model.UserResponse
-import com.likeminds.chatsampleapp.ChatMMApplication
-import com.likeminds.chatsampleapp.R
+import com.likeminds.chatsampleapp.*
 import com.likeminds.chatsampleapp.auth.model.LoginExtras
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
 import com.likeminds.chatsampleapp.databinding.ActivityAfterLoginBinding
+import kotlinx.coroutines.*
 
 class AfterLoginActivity : AppCompatActivity() {
 
@@ -30,7 +30,12 @@ class AfterLoginActivity : AppCompatActivity() {
             finish()
         }
 
-        initCommunityTab()
+//        initCommunityTab()
+
+        callInitiateUser { accessToken, refreshToken ->
+            withAPIKeySecurity(accessToken, refreshToken)
+        }
+
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.community_tab -> {
@@ -72,6 +77,26 @@ class AfterLoginActivity : AppCompatActivity() {
         )
     }
 
+    private fun withAPIKeySecurity(accessToken: String, refreshToken: String) {
+        val successCallback = { userResponse: UserResponse ->
+            Log.d("PUI", "${userResponse.user?.id}")
+            replaceFragment()
+        }
+
+        val errorCallback = { error: String? ->
+            Log.d("PUI", "$error")
+            Unit
+        }
+
+        LMChatCore.showChat(
+            this,
+            accessToken,
+            refreshToken,
+            successCallback,
+            errorCallback
+        )
+    }
+
     private fun replaceFragment() {
         val containerViewId = R.id.frameLayout
 
@@ -80,5 +105,14 @@ class AfterLoginActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(containerViewId, chatFragment, containerViewId.toString())
         transaction.commit()
+    }
+
+    private fun callInitiateUser(callback: (String, String) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val task = GetTokensTask()
+            val tokens = task.getTokens(applicationContext, false)
+            Log.d("Example", "tokens: $tokens")
+            callback(tokens.first, tokens.second)
+        }
     }
 }
