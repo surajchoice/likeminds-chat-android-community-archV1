@@ -16,6 +16,10 @@ interface LMChatCoreCallback {
         //implement to get widget data in conversation id
     }
 
+    fun getAnalyticsEvents(eventName: String, eventProperties: Map<String, String?> = mapOf()){
+        //implement to get analytics events
+    }
+
     fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
         //implement to handle access token refresh
     }

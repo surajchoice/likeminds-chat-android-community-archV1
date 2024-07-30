@@ -5,8 +5,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.likeminds.chatmm.*
-import com.likeminds.chatmm.theme.model.LMFonts
 import com.likeminds.chatmm.theme.model.LMChatTheme
+import com.likeminds.chatmm.theme.model.LMFonts
 import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
@@ -41,9 +41,12 @@ class ChatMMApplication : Application(), LMChatCoreCallback {
             .build()
 
         LMChatCore.setup(
-            this,
-            this,
-            chatTheme
+            application = this,
+            lmChatCoreCallback = this,
+            theme = chatTheme,
+            domain = "",
+            enablePushNotifications = true,
+            deviceId = ""
         )
     }
 
