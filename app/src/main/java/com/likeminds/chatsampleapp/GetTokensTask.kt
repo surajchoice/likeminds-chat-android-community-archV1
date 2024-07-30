@@ -19,11 +19,7 @@ class GetTokensTask {
     suspend fun getTokens(context: Context, isProd: Boolean): Pair<String, String> {
         return withContext(Dispatchers.IO) {
             //get api url
-            val apiUrl = if (isProd) {
-                "https://auth.likeminds.community/sdk/initiate"
-            } else {
-                "https://betaauth.likeminds.community/sdk/initiate"
-            }
+            val apiUrl = BuildConfig.INTIATE_URL
 
             authPreferences = AuthPreferences(context)
 
@@ -40,9 +36,6 @@ class GetTokensTask {
                     "application/json"
                 )
                 setRequestProperty("x-api-key", authPreferences.getApiKey())
-                setRequestProperty("x-version-code", "307")
-                setRequestProperty("x-platform-code", "an")
-                setRequestProperty("x-sdk-source", "chat")
             }
 
             // Create request body

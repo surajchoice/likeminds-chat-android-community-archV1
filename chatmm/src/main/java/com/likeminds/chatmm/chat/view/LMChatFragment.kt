@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayoutMediator
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chat.adapter.ChatPagerAdapter
 import com.likeminds.chatmm.chat.viewmodel.ChatViewModel
 import com.likeminds.chatmm.databinding.FragmentChatBinding
@@ -28,8 +26,7 @@ import com.likeminds.chatmm.dm.model.CheckDMTabViewData
 import com.likeminds.chatmm.member.model.MemberViewData
 import com.likeminds.chatmm.member.util.MemberImageUtil
 import com.likeminds.chatmm.search.view.SearchActivity
-import com.likeminds.chatmm.utils.ErrorUtil
-import com.likeminds.chatmm.utils.ExtrasUtil
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.connectivity.ConnectivityBroadcastReceiver
 import com.likeminds.chatmm.utils.connectivity.ConnectivityReceiverListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -89,11 +86,8 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
         setTheme()
         setupReceivers()
         initToolbar()
-
-        //todo wrap in a function
         initPagerAdapter()
         initData()
-        viewModel.checkDMTab()
     }
 
     override fun observeData() {
@@ -172,6 +166,7 @@ class LMChatFragment : BaseFragment<FragmentChatBinding, ChatViewModel>(),
 
     // calls api to initiate data
     private fun initData() {
+        viewModel.checkDMTab()
         initToolbar()
     }
 

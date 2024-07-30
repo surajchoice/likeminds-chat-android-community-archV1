@@ -17,7 +17,11 @@ object LMChatCore {
      * Call this function to configure SDK in client's app
      *
      * @param application: application instance of client's app
+     * @param lmChatCoreCallback: callback to receive events from SDK
      * @param theme: branding request from client
+     * @param domain: domain request from client
+     * @param enablePushNotifications: enable/disable push notifications
+     * @param deviceId: device id
      **/
     fun setup(
         application: Application,
@@ -43,6 +47,15 @@ object LMChatCore {
         )
     }
 
+    /**
+     * Call this function to show chat without API Key Security
+     * @param context: context of client's app
+     * @param apiKey: api key of client
+     * @param userName: name of user
+     * @param uuid: uuid of user
+     * @param success: callback to receive user response
+     * @param error: callback to receive error message
+     */
     fun showChat(
         context: Context,
         apiKey: String,
@@ -87,6 +100,14 @@ object LMChatCore {
         }
     }
 
+    /**
+     * Call this function to show chat with API Key Security
+     * @param context: context of client's app
+     * @param accessToken: access token of user
+     * @param refreshToken: refresh token of user
+     * @param success: callback to receive user response
+     * @param error: callback to receive error message
+     */
     fun showChat(
         context: Context,
         accessToken: String?,
@@ -128,6 +149,10 @@ object LMChatCore {
         }
     }
 
+    /**
+     * Call this function to set theme for chat
+     * @param lmChatTheme: branding request from client
+     */
     fun setTheme(lmChatTheme: LMChatTheme) {
         val sdk = SDKApplication.getInstance()
         sdk.setupTheme(lmChatTheme)

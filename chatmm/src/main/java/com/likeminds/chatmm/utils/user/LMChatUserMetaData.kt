@@ -15,11 +15,11 @@ import com.likeminds.likemindschat.user.model.RegisterDeviceRequest
 import kotlinx.coroutines.*
 
 class LMChatUserMetaData {
-    var domain: String? = null
-    var enablePushNotifications: Boolean = false
+    private var domain: String? = null
+    private var enablePushNotifications: Boolean = false
     var deviceId: String? = null
 
-    lateinit var mChatClient: LMChatClient
+    private lateinit var mChatClient: LMChatClient
 
     companion object {
         private var instance: LMChatUserMetaData? = null
@@ -33,6 +33,7 @@ class LMChatUserMetaData {
         }
     }
 
+    //init user meta data
     fun init(
         domain: String?,
         enablePushNotifications: Boolean,
@@ -45,6 +46,7 @@ class LMChatUserMetaData {
         mChatClient = LMChatClient.getInstance()
     }
 
+    //perform post user session init
     fun onPostUserSessionInit(
         context: Context,
         userResponse: UserResponse
@@ -141,6 +143,7 @@ class LMChatUserMetaData {
         }
     }
 
+    //call register device api
     private fun registerDevice(token: String) {
         CoroutineScope(Dispatchers.IO).launch {
             //create request
