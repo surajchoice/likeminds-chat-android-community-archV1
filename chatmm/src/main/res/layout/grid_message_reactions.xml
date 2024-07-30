@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/first_reaction"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -32,7 +32,7 @@
                 android:textSize="18sp"
                 app:fontType="regular" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/first_reaction_count"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -58,7 +58,7 @@
             app:layout_constraintStart_toEndOf="@id/layout_reaction_1"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/second_reaction"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -71,7 +71,7 @@
                 app:layout_constraintStart_toStartOf="@id/layout_reaction_2"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/second_reaction_count"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

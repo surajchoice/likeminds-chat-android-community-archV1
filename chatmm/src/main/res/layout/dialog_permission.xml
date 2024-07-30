@@ -43,7 +43,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewIcon" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/textViewMessage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/imageViewIcon"
                     tools:text="To send media, allow LikeMInds access to your device’s photos, media and files. Tap on Settings &gt; Permission, and turn Storage on." />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/textViewPositiveButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewMessage"
                     tools:text="SETTINGS" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/textViewNegativeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

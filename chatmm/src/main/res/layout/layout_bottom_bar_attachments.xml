@@ -34,7 +34,7 @@
                 app:srcCompat="@drawable/lm_chat_ic_create_camera"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_camera_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 app:srcCompat="@drawable/lm_chat_ic_create_gallery"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_gallery_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 app:srcCompat="@drawable/lm_chat_ic_document_new"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_document_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                 app:srcCompat="@drawable/lm_chat_ic_poll_create_message_selector"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_poll_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                 app:srcCompat="@drawable/lm_chat_ic_create_music"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_audio_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,6 +143,7 @@
                 app:layout_constraintStart_toStartOf="@+id/iv_audio"
                 app:layout_constraintTop_toBottomOf="@+id/iv_audio" />
 
+            <!-- Update the icon of custom widget A here -->
             <ImageView
                 android:id="@+id/iv_custom_widget_a"
                 android:layout_width="wrap_content"
@@ -154,7 +155,8 @@
                 app:srcCompat="@drawable/ic_create_custom_widget_a"
                 tools:ignore="ContentDescription" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <!-- Update the title of custom widget A here -->
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_custom_widget_a_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,30 +168,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/iv_custom_widget_a"
                 app:layout_constraintStart_toStartOf="@+id/iv_custom_widget_a"
                 app:layout_constraintTop_toBottomOf="@+id/iv_custom_widget_a" />
-
-            <ImageView
-                android:id="@+id/iv_custom_widget_b"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="@+id/tv_audio_title"
-                app:layout_constraintStart_toStartOf="@+id/tv_audio_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_audio_title"
-                app:srcCompat="@drawable/ic_create_custom_widget_a"
-                tools:ignore="ContentDescription" />
-
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
-                android:id="@+id/tv_custom_widget_b_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/lm_chat_custom_widget_b"
-                android:textColor="@color/lm_chat_brown_grey"
-                android:textSize="13sp"
-                app:fontType="regular"
-                app:layout_constraintEnd_toEndOf="@+id/iv_custom_widget_b"
-                app:layout_constraintStart_toStartOf="@+id/iv_custom_widget_b"
-                app:layout_constraintTop_toBottomOf="@+id/iv_custom_widget_b" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -115,5 +115,6 @@ object LMAnalytics {
             eventProperties: $eventProperties
         """.trimIndent()
         )
+        SDKApplication.getLikeMindsCallback()?.getAnalyticsEvents(eventName, eventProperties)
     }
 }

@@ -75,7 +75,7 @@
                     android:src="@drawable/lm_chat_ic_audio_header"
                     tools:ignore="ContentDescription" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_audio_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -18,7 +18,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="4dp">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

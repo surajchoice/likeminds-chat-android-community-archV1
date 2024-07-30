@@ -7,6 +7,7 @@ import com.likeminds.chatmm.chatroom.explore.model.ExploreViewData
 import com.likeminds.chatmm.conversation.model.*
 import com.likeminds.chatmm.dm.model.CheckDMLimitViewData
 import com.likeminds.chatmm.dm.model.CheckDMTabViewData
+import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
 import com.likeminds.chatmm.media.model.SingleUriData
 import com.likeminds.chatmm.member.model.*
 import com.likeminds.chatmm.member.util.MemberImageUtil
@@ -564,6 +565,34 @@ object ViewDataConverter {
             .metadata(widget.metadata.toString())
             .createdAt(widget.createdAt)
             .updatedAt(widget.updatedAt)
+            .build()
+    }
+
+    /**
+     * converts list of [ChannelInvite] to list of [ChannelInviteViewData]
+     *
+     * @param channelInvites: list of objects to [ChannelInvite]
+     */
+    fun convertChannelInvites(channelInvites: List<ChannelInvite>): List<ChannelInviteViewData> {
+        return channelInvites.map { channelInvite ->
+            convertChannelInvite(channelInvite)
+        }
+    }
+
+    /**
+     * converts [ChannelInvite] to [ChannelInviteViewData]
+     *
+     * @param channelInvite: object to [ChannelInvite]
+     */
+    private fun convertChannelInvite(channelInvite: ChannelInvite): ChannelInviteViewData {
+        return ChannelInviteViewData.Builder()
+            .id(channelInvite.id)
+            .inviteReceiver(convertMember(channelInvite.inviteReceiver))
+            .inviteSender(convertMember(channelInvite.inviteSender))
+            .invitedChatroom(convertChatroomForHome(channelInvite.chatroom))
+            .inviteStatus(channelInvite.inviteStatus)
+            .createdAt(channelInvite.createdAt)
+            .updatedAt(channelInvite.updatedAt)
             .build()
     }
 

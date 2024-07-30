@@ -3,21 +3,23 @@ package com.likeminds.chatsampleapp
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import com.likeminds.chatmm.LMUICallback
-import com.likeminds.chatmm.LikeMindsChatUI
-import com.likeminds.chatmm.branding.model.LMFonts
-import com.likeminds.chatmm.branding.model.SetBrandingRequest
+import android.util.Log
+import com.likeminds.chatmm.*
+import com.likeminds.chatmm.theme.model.LMChatTheme
+import com.likeminds.chatmm.theme.model.LMFonts
 import com.likeminds.chatmm.utils.observer.ChatEvent
 import com.likeminds.chatmm.widget.model.WidgetViewData
 import com.likeminds.chatsampleapp.auth.util.AuthPreferences
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
-class ChatMMApplication : Application(), LMUICallback {
+class ChatMMApplication : Application(), LMChatCoreCallback {
 
     private lateinit var authPreferences: AuthPreferences
 
     companion object {
         const val EXTRA_LOGIN = "extra of login"
+        const val LM_CHAT_EXAMPLE_TAG = "ExampleTag"
     }
 
     override fun onCreate() {
@@ -25,7 +27,7 @@ class ChatMMApplication : Application(), LMUICallback {
 
         authPreferences = AuthPreferences(this)
 
-        val brandingRequest = SetBrandingRequest.Builder()
+        val chatTheme = LMChatTheme.Builder()
             .headerColor(authPreferences.getHeaderColor())
             .buttonsColor(authPreferences.getButtonColor())
             .textLinkColor(authPreferences.getTextLinkColor())
@@ -38,10 +40,13 @@ class ChatMMApplication : Application(), LMUICallback {
             )
             .build()
 
-        LikeMindsChatUI.initiateChatUI(
-            this,
-            this,
-            brandingRequest
+        LMChatCore.setup(
+            application = this,
+            lmChatCoreCallback = this,
+            theme = chatTheme,
+            domain = "",
+            enablePushNotifications = true,
+            deviceId = ""
         )
     }
 
@@ -65,5 +70,30 @@ class ChatMMApplication : Application(), LMUICallback {
         Handler(Looper.getMainLooper()).postDelayed({
             ChatEvent.getPublisher().notify(updatedWidgetData)
         }, 3000)
+    }
+
+    override fun onAccessTokenExpiredAndRefreshed(accessToken: String, refreshToken: String) {
+        Log.d(
+            SDKApplication.LOG_TAG, """
+                    Example Layer -> onAccessTokenExpiredAndRefreshed
+                    accessToken: $accessToken
+                    refreshToken: $refreshToken
+                """.trimIndent()
+        )
+    }
+
+    override fun onRefreshTokenExpired(): Pair<String?, String?> {
+        return runBlocking {
+            Log.d(
+                SDKApplication.LOG_TAG, """
+                Example Layer Callback -> onRefreshTokenExpired
+            """.trimIndent()
+            )
+
+            val task = GetTokensTask()
+            val tokens = task.getTokens(applicationContext, false)
+            Log.d(SDKApplication.LOG_TAG, "tokens: $tokens")
+            tokens
+        }
     }
 }

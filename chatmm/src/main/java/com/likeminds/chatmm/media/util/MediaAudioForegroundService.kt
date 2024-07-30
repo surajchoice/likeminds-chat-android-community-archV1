@@ -2,6 +2,7 @@ package com.likeminds.chatmm.media.util
 
 import android.app.*
 import android.content.*
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 import android.net.Uri
 import android.os.*
 import androidx.core.app.NotificationCompat
@@ -38,18 +39,36 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
         progress = extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
         isDataSourceSet = true
         mediaPlayer?.setMediaDataSource(uri, progress = progress * 1000L)
-        startForeground(NOTIFICATION_ID, notificationBuilder.build())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            startForeground(
+                NOTIFICATION_ID,
+                notificationBuilder.build(),
+                FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, notificationBuilder.build())
+        }
         return START_STICKY
     }
 
     private fun registerPlayNewAudio() {
         val filter = IntentFilter(BROADCAST_PLAY_NEW_AUDIO)
-        registerReceiver(newAudioBroadcastReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(newAudioBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(newAudioBroadcastReceiver, filter)
+        }
     }
 
     private fun registerSeekbarDragged() {
         val filter = IntentFilter(BROADCAST_SEEKBAR_DRAGGED)
-        registerReceiver(seekbarDraggedReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(seekbarDraggedReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(seekbarDraggedReceiver, filter)
+        }
     }
 
     override fun onAudioComplete() {
@@ -58,6 +77,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
         stopMedia()
         val completeIntent = Intent(BROADCAST_COMPLETE)
         completeIntent.putExtra(AUDIO_IS_COMPLETE_EXTRA, true)
+        completeIntent.setPackage(application.packageName)
         sendBroadcast(completeIntent)
         stopSelf()
         stopForeground(true)
@@ -75,7 +95,15 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
             )
             progress = extras?.getInt(AUDIO_SERVICE_PROGRESS_EXTRA) ?: 0
             val notificationBuilder = createNotificationBuilder()
-            startForeground(NOTIFICATION_ID, notificationBuilder.build())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    notificationBuilder.build(),
+                    FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, notificationBuilder.build())
+            }
             mediaPlayer?.setMediaDataSource(data, progress = progress * 1000L)
         }
     }
@@ -94,6 +122,7 @@ class MediaAudioForegroundService : Service(), MediaPlayerListener {
     override fun onProgressChanged(currentDuration: String, playedPercentage: Int) {
         super.onProgressChanged(currentDuration, playedPercentage)
         val progressIntent = Intent(BROADCAST_PROGRESS)
+        progressIntent.setPackage(application.packageName)
         progressIntent.putExtra(AUDIO_DURATION_STRING_EXTRA, currentDuration)
         progressIntent.putExtra(AUDIO_DURATION_INT_EXTRA, playedPercentage)
         sendBroadcast(progressIntent)

@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:background="@color/lm_chat_white">
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsToolbar
+        <com.likeminds.chatmm.theme.customview.LikeMindsToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_report_title"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:layout_width="0dp"
@@ -54,9 +54,9 @@
                     tools:ignore="ContentDescription" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.likeminds.chatmm.branding.customview.LikeMindsToolbar>
+        </com.likeminds.chatmm.theme.customview.LikeMindsToolbar>
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_report_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:ignore="UnusedAttribute" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_report_sub_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_report_sub_header" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsButton
+        <com.likeminds.chatmm.theme.customview.LikeMindsButton
             android:id="@+id/btn_post_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:text_type="normal" />
 
-        <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditText
+        <com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditText
             android:id="@+id/et_others"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

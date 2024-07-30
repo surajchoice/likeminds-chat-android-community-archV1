@@ -1,10 +1,9 @@
 # Keeping all models
 
--keep class com.likeminds.chatmm.branding.model.** { *; }
 -keep class com.likeminds.chatmm.chat.model.** { *; }
 -keep class com.likeminds.chatmm.chatroom.detail.model.** { *; }
 -keep class com.likeminds.chatmm.chatroom.explore.model.** { *; }
--keep class com.likeminds.chatmm.explore.model.** { *; }
+-keep class com.likeminds.chatmm.community.model.** { *; }
 -keep class com.likeminds.chatmm.conversation.model.** { *; }
 -keep class com.likeminds.chatmm.dm.model.** { *; }
 -keep class com.likeminds.chatmm.homefeed.model.** { *; }
@@ -16,10 +15,14 @@
 -keep class com.likeminds.chatmm.reactions.model.** { *; }
 -keep class com.likeminds.chatmm.report.model.** { *; }
 -keep class com.likeminds.chatmm.search.model.** { *; }
+-keep class com.likeminds.chatmm.theme.model.** { *; }
 -keep class com.likeminds.chatmm.utils.file.model.** { *; }
 -keep class com.likeminds.chatmm.utils.mediauploader.model.** { *; }
 -keep class com.likeminds.chatmm.utils.membertagging.model.** { *; }
 -keep class com.likeminds.chatmm.utils.model.** { *; }
+-keep class com.likeminds.chatmm.utils.permissions.model.** { *; }
+-keep class com.likeminds.chatmm.utils.user.** { *; }
+-keep class com.likeminds.chatmm.widget.model.** { *; }
 -keep class androidx.databinding.DataBindingComponent {*;}
 
 # for parcelable classes

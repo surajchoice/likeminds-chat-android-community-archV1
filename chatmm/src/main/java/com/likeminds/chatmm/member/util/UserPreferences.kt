@@ -1,7 +1,7 @@
 package com.likeminds.chatmm.member.util
 
 import android.annotation.SuppressLint
-import android.app.Application
+import android.content.Context
 import android.provider.Settings
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences
 import javax.inject.Inject
@@ -9,8 +9,8 @@ import javax.inject.Singleton
 
 @Singleton
 class UserPreferences @Inject constructor(
-    private val application: Application
-) : BasePreferences(USER_PREFS, application) {
+    private val context: Context
+) : BasePreferences(USER_PREFS, context) {
 
     companion object {
         const val USER_PREFS = "user_prefs"
@@ -63,7 +63,7 @@ class UserPreferences @Inject constructor(
 
     @SuppressLint("HardwareIds")
     fun getDeviceId(): String {
-        return Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
             ?: ""
     }
 

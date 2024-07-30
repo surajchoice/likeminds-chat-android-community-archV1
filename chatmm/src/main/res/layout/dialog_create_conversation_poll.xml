@@ -39,7 +39,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="view_top_background, tv_cancel, tv_title, view_bar" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_poll_question_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/barrier"
                 app:textType="special" />
 
-            <com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
+            <com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
                 android:id="@+id/et_poll_question"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_poll_question" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_answer_options_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_answer_options_title"
                 tools:visibility="gone" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_add_options"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -186,7 +186,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_add_options" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_poll_expires_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -202,7 +202,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/view_divider2"
                 app:textType="special" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_poll_expire_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -238,7 +238,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/view_divider3"
                 tools:visibility="visible">
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsSwitch
+                <com.likeminds.chatmm.theme.customview.LikeMindsSwitch
                     android:id="@+id/switch_add_new_options"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -265,7 +265,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_add_new_options" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsSwitch
+                <com.likeminds.chatmm.theme.customview.LikeMindsSwitch
                     android:id="@+id/switch_anonymous_poll"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -292,7 +292,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_anonymous_poll" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsSwitch
+                <com.likeminds.chatmm.theme.customview.LikeMindsSwitch
                     android:id="@+id/switch_live_results"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -319,7 +319,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_live_results" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_user_can_vote"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -345,7 +345,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_user_can_vote" />
 
-                <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+                <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                     android:id="@+id/tv_equal_to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -388,7 +388,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_advanced" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+            <com.likeminds.chatmm.theme.customview.LikeMindsTextView
                 android:id="@+id/tv_advanced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -406,7 +406,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraint_layout_advanced"
                 tools:visibility="visible" />
 
-            <com.likeminds.chatmm.branding.customview.LikeMindsButton
+            <com.likeminds.chatmm.theme.customview.LikeMindsButton
                 android:id="@+id/btn_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

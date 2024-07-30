@@ -36,21 +36,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_member_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginBottom="1dp"
             android:ellipsize="end"
-            android:fontFamily="@font/lm_chat_roboto_medium"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="@color/lm_chat_black"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@id/tv_subtitle"
+            app:fontFamily="@font/lm_chat_roboto_medium"
+            app:layout_constraintBottom_toTopOf="@id/guide_name_subtitle"
             app:layout_constraintEnd_toStartOf="@id/view_dot"
             app:layout_constraintStart_toEndOf="@id/iv_member_image"
             app:layout_constraintTop_toTopOf="@id/iv_member_image"
+            app:layout_constraintVertical_bias="1"
             app:layout_constraintWidth_default="wrap"
             tools:text="Rajesh Kumar" />
 
@@ -66,7 +68,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_member_name"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_custom_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -85,7 +87,14 @@
             tools:text="@string/lm_chat_community_manager"
             tools:visibility="visible" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_name_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,10 +105,10 @@
             android:includeFontPadding="false"
             android:maxLines="2"
             android:textColor="@color/lm_chat_grey"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/iv_member_image"
             app:layout_constraintStart_toEndOf="@id/iv_member_image"
-            app:layout_constraintTop_toBottomOf="@id/tv_member_name"
+            app:layout_constraintTop_toBottomOf="@id/guide_name_subtitle"
             app:layout_constraintVertical_bias="0.0"
             tools:text="You: Sure I will look into" />
 

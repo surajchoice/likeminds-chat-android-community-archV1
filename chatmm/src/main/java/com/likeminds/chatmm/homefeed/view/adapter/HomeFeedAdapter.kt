@@ -1,5 +1,6 @@
 package com.likeminds.chatmm.homefeed.view.adapter
 
+import com.likeminds.chatmm.homefeed.model.ChannelInviteViewData
 import com.likeminds.chatmm.homefeed.model.HomeFeedItemViewData
 import com.likeminds.chatmm.homefeed.view.adapter.databinder.*
 import com.likeminds.chatmm.member.util.UserPreferences
@@ -7,7 +8,7 @@ import com.likeminds.chatmm.utils.customview.BaseRecyclerAdapter
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
 import com.likeminds.chatmm.utils.model.BaseViewType
 
-class HomeFeedAdapter constructor(
+class HomeFeedAdapter(
     private val userPreferences: UserPreferences,
     private val listener: HomeFeedAdapterListener
 ) : BaseRecyclerAdapter<BaseViewType>() {
@@ -38,8 +39,12 @@ class HomeFeedAdapter constructor(
         val homeChatroomListShimmerViewDataBinder = HomeChatroomListShimmerViewDataBinder()
         viewDataBinders.add(homeChatroomListShimmerViewDataBinder)
 
-        val homeFeedViewDataBinder = HomeFeedViewDataBinder(listener)
-        viewDataBinders.add(homeFeedViewDataBinder)
+        val homeFeedExploreViewDataBinder = HomeFeedExploreViewDataBinder(listener)
+        viewDataBinders.add(homeFeedExploreViewDataBinder)
+
+        val channelInviteViewDataBinder = ChannelInviteItemViewDataBinder(listener)
+        viewDataBinders.add(channelInviteViewDataBinder)
+
         return viewDataBinders
     }
 }
@@ -47,4 +52,6 @@ class HomeFeedAdapter constructor(
 interface HomeFeedAdapterListener {
     fun onChatRoomClicked(homeFeedItemViewData: HomeFeedItemViewData)
     fun homeFeedClicked()
+    fun onAcceptChannelInviteClicked(position: Int, channelInviteViewData: ChannelInviteViewData)
+    fun onRejectChannelInviteClicked(position: Int, channelInviteViewData: ChannelInviteViewData)
 }

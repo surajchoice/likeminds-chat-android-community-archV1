@@ -1,14 +1,14 @@
 package com.likeminds.chatmm.homefeed.util
 
-import android.app.Application
+import android.content.Context
 import com.likeminds.chatmm.utils.sharedpreferences.BasePreferences
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class HomeFeedPreferences @Inject constructor(
-    application: Application,
-) : BasePreferences(HOME_FEED_PREFS, application) {
+    context: Context,
+) : BasePreferences(HOME_FEED_PREFS, context) {
     companion object {
         const val HOME_FEED_PREFS = "home_feed_prefs"
 

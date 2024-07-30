@@ -37,7 +37,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getUserFromLocalDb() {
-        val userResponse = lmChatClient.getUser()
+        val userResponse = lmChatClient.getLoggedInUser()
         _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 }

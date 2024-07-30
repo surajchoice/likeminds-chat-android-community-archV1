@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
@@ -36,9 +37,9 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.chatmm.branding.customview.edittext.LikeMindsEmojiEditText
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -548,8 +549,8 @@ class ChatroomDetailFragment :
     // initializes the toolbar
     private fun initToolbar() {
         binding.apply {
-            toolbarColor = LMBranding.getToolbarColor()
-            buttonColor = LMBranding.getButtonsColor()
+            toolbarColor = LMTheme.getToolbarColor()
+            buttonColor = LMTheme.getButtonsColor()
 
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
 
@@ -806,18 +807,9 @@ class ChatroomDetailFragment :
             ivCustomWidgetA.isVisible = isWidgetEnabled
             tvCustomWidgetATitle.isVisible = isWidgetEnabled
 
-            ivCustomWidgetB.isVisible = isWidgetEnabled
-            tvCustomWidgetBTitle.isVisible = isWidgetEnabled
-
-
             ivCustomWidgetA.setOnClickListener {
                 initVisibilityOfAttachmentsBar(View.GONE)
                 onCustomWidgetAAttachmentClicked()
-            }
-
-            ivCustomWidgetB.setOnClickListener {
-                initVisibilityOfAttachmentsBar(View.GONE)
-                onCustomWidgetBAttachmentClicked()
             }
 
             clBottomBar.setOnClickListener {
@@ -827,48 +819,7 @@ class ChatroomDetailFragment :
     }
 
     //on click function when custom widget A is clicked
-    private fun onCustomWidgetAAttachmentClicked() {
-        //todo add code
-        val isDMChatroom = viewModel.isDmChatroom()
-
-        val widgetType = if (isDMChatroom) {
-            "send_payment"
-        } else {
-            "spilt_payment"
-        }
-
-        val metaData = JSONObject().apply {
-            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
-            put("is_dm", isDMChatroom)
-            put("widget_type", widgetType)
-        }
-
-        postConversation(
-            metadata = metaData
-        )
-    }
-
-    //on click function when custom widget B is clicked
-    private fun onCustomWidgetBAttachmentClicked() {
-        //todo add code
-        val isDMChatroom = viewModel.isDmChatroom()
-
-        val widgetType = if (isDMChatroom) {
-            "request_payment"
-        } else {
-            "show_payment"
-        }
-
-        val metaData = JSONObject().apply {
-            put("transaction_id", "tran_id-${System.currentTimeMillis()}")
-            put("is_dm", isDMChatroom)
-            put("widget_type", widgetType)
-        }
-
-        postConversation(
-            metadata = metaData
-        )
-    }
+    private fun onCustomWidgetAAttachmentClicked() {}
 
     private fun disableAnswerPosting() {
         editAnswerEnableState(false)
@@ -1102,12 +1053,22 @@ class ChatroomDetailFragment :
 
     private fun registerAudioCompleteBroadcast() {
         val filter = IntentFilter(BROADCAST_COMPLETE)
-        requireActivity().registerReceiver(audioCompleteReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(audioCompleteReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            requireActivity().registerReceiver(audioCompleteReceiver, filter)
+        }
     }
 
     private fun registerProgressBroadcast() {
         val filter = IntentFilter(BROADCAST_PROGRESS)
-        requireActivity()?.registerReceiver(progressReceiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(progressReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            requireActivity().registerReceiver(progressReceiver, filter)
+        }
     }
 
     /**------------------------------------------------------------
@@ -1770,7 +1731,7 @@ class ChatroomDetailFragment :
                 MemberTaggingExtras.Builder()
                     .editText(binding.inputBox.etAnswer)
                     .maxHeightInPercentage(0.4f)
-                    .color(LMBranding.getTextLinkColor())
+                    .color(LMTheme.getTextLinkColor())
                     .build()
             )
             memberTagging.addListener(object : MemberTaggingViewListener {
@@ -2420,7 +2381,7 @@ class ChatroomDetailFragment :
                             tvChatroom,
                             topic.answer,
                             false,
-                            LMBranding.getTextLinkColor()
+                            LMTheme.getTextLinkColor()
                         )
                     }
                 }
@@ -2485,7 +2446,7 @@ class ChatroomDetailFragment :
                     tvChatroom,
                     chatroom.title,
                     false,
-                    LMBranding.getTextLinkColor()
+                    LMTheme.getTextLinkColor()
                 )
             }
         }
@@ -4566,7 +4527,7 @@ class ChatroomDetailFragment :
                 )
             )
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                ?.setTextColor(LMBranding.getButtonsColor())
+                ?.setTextColor(LMTheme.getButtonsColor())
         }
         alertDialog.show()
     }
@@ -4941,6 +4902,7 @@ class ChatroomDetailFragment :
             val broadcastNewAudio = Intent(BROADCAST_PLAY_NEW_AUDIO)
             broadcastNewAudio.putExtra(AUDIO_SERVICE_URI_EXTRA, uri)
             broadcastNewAudio.putExtra(AUDIO_SERVICE_PROGRESS_EXTRA, progress)
+            broadcastNewAudio.setPackage(requireContext().packageName)
             activity?.sendBroadcast(broadcastNewAudio)
         }
     }
@@ -5094,6 +5056,7 @@ class ChatroomDetailFragment :
     private fun sendProgressBroadcast(progress: Int) {
         val broadcastSeekBarDragged = Intent(BROADCAST_SEEKBAR_DRAGGED)
         broadcastSeekBarDragged.putExtra(PROGRESS_SEEKBAR_DRAGGED, progress)
+        broadcastSeekBarDragged.setPackage(requireContext().packageName)
         activity?.sendBroadcast(broadcastSeekBarDragged)
     }
 
@@ -5300,7 +5263,7 @@ class ChatroomDetailFragment :
                         tvConversation,
                         replyData.conversationText,
                         false,
-                        LMBranding.getTextLinkColor()
+                        LMTheme.getTextLinkColor()
                     )
                 }
             }
@@ -5406,12 +5369,12 @@ class ChatroomDetailFragment :
                 viewReply.tvConversation,
                 editData.conversationText,
                 false,
-                LMBranding.getTextLinkColor()
+                LMTheme.getTextLinkColor()
             )
             MemberTaggingDecoder.decode(
                 etAnswer,
                 editData.conversationText,
-                LMBranding.getTextLinkColor()
+                LMTheme.getTextLinkColor()
             )
             etAnswer.setSelection(etAnswer.text?.length ?: 0)
             ViewUtils.showKeyboard(requireContext(), etAnswer)
@@ -5808,7 +5771,7 @@ class ChatroomDetailFragment :
                     item?.title = chatroomActionViewData.title
                     val item2 = actionsMenu?.findItem(R.id.share_chatroom_icon)
                     item2?.isVisible = true
-                    item2?.icon?.setTint(LMBranding.getToolbarColor())
+                    item2?.icon?.setTint(LMTheme.getToolbarColor())
                 }
 
                 "4", "9" -> {

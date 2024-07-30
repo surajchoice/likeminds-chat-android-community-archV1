@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@color/lm_chat_colorPrimaryDark" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_member_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sachin Gakkhar" />
 
-        <com.likeminds.chatmm.branding.customview.LikeMindsTextView
+        <com.likeminds.chatmm.theme.customview.LikeMindsTextView
             android:id="@+id/tv_remove_reaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

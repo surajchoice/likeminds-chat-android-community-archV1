@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.branding.model.LMBranding
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.ConversationViewData
@@ -42,8 +42,8 @@ internal class ConversationSinglePdfItemViewDataBinder constructor(
         position: Int,
     ) {
         binding.apply {
-            buttonColor = LMBranding.getButtonsColor()
-            viewReply.buttonColor = LMBranding.getButtonsColor()
+            buttonColor = LMTheme.getButtonsColor()
+            viewReply.buttonColor = LMTheme.getButtonsColor()
             conversation = data as ConversationViewData
             itemPosition = position
             ChatroomConversationItemViewDataBinderUtil.initConversationBubbleView(
