@@ -20,15 +20,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
+            buildConfigField("String", "INTIATE_URL", "\"" + localProperties['prodInitiateUrl'] + "\"")
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
             shrinkResources false
+            buildConfigField("String", "INTIATE_URL", "\"" + localProperties['betaInitiateUrl'] + "\"")
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

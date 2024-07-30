@@ -120,7 +120,7 @@ class HomeFeedViewModel @Inject constructor(
     }
 
     fun getUserFromLocalDb() {
-        val userResponse = lmChatClient.getUser()
+        val userResponse = lmChatClient.getLoggedInUser()
         _userData.postValue(ViewDataConverter.convertUser(userResponse.data?.user))
     }
 

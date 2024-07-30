@@ -1,12 +1,11 @@
 package com.likeminds.chatmm.utils.sharedpreferences
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 
 abstract class BasePreferences protected constructor(
     prefName: String,
-    application: Application
+    context: Context
 ) {
 
     companion object {
@@ -16,13 +15,13 @@ abstract class BasePreferences protected constructor(
 
     init {
         val masterPref: SharedPreferences =
-            application.getSharedPreferences(MASTER_PREF, Context.MODE_PRIVATE)
+            context.getSharedPreferences(MASTER_PREF, Context.MODE_PRIVATE)
         val list = masterPref.getStringSet(ALL_PREFS_SET, emptySet())
         masterPref.edit().putStringSet(ALL_PREFS_SET, list!!.plus(prefName)).apply()
     }
 
     private val preferences: SharedPreferences =
-        application.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
 
     fun putPreference(key: String, value: String) {
         preferences.edit().putString(key, value).apply()
