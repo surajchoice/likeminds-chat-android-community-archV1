@@ -30,11 +30,11 @@ class AfterLoginActivity : AppCompatActivity() {
             finish()
         }
 
-//        initCommunityTab()
+        initCommunityTab()
 
-        callInitiateUser { accessToken, refreshToken ->
-            withAPIKeySecurity(accessToken, refreshToken)
-        }
+//        callInitiateUser { accessToken, refreshToken ->
+//            withAPIKeySecurity(accessToken, refreshToken)
+//        }
 
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {

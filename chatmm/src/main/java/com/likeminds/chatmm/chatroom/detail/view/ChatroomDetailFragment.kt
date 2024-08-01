@@ -33,13 +33,11 @@ import androidx.work.WorkManager
 import com.giphy.sdk.core.models.Media
 import com.giphy.sdk.ui.*
 import com.giphy.sdk.ui.themes.GPHTheme
+import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditTextListener
-import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
-import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -79,6 +77,9 @@ import com.likeminds.chatmm.reactions.viewmodel.ReactionsViewModel
 import com.likeminds.chatmm.report.model.*
 import com.likeminds.chatmm.report.view.ReportActivity
 import com.likeminds.chatmm.report.view.ReportSuccessDialog
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEditTextListener
+import com.likeminds.chatmm.theme.customview.edittext.LikeMindsEmojiEditText
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.Route.getNullableQueryParameter
 import com.likeminds.chatmm.utils.ValueUtils.getEmailIfExist
@@ -692,7 +693,7 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GPHTheme.Light)
+        val settings = GPHSettings(GridType.waterfall,GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
