@@ -2,7 +2,6 @@ package com.likeminds.chatmm.member.view
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -177,7 +176,6 @@ class LMChatCommunityMembersFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_search -> {
-                Log.d("PUI", "menu_search")
                 showSearchToolbar()
             }
         }
@@ -262,7 +260,6 @@ class LMChatCommunityMembersFragment :
         binding.searchBar.apply {
             show()
             post {
-                Log.d("PUI", "search bar opened")
                 openSearch()
             }
         }
