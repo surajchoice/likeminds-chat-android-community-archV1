@@ -50,10 +50,6 @@ dependencies {
     //keyboardutil
     implementation deps.keyboardutil.main
 
-    //google play core
-    implementation deps.playCore.main
-    implementation deps.playCore.ktx
-
     //mp4parser
     implementation deps.mp4parser.main
 
@@ -66,9 +62,6 @@ dependencies {
 
     //workmanager
     implementation deps.workmanager.main
-
-    //relate to branch
-    implementation deps.branch.main
 
     //shimmer
     implementation deps.facebook.shimmer
@@ -100,5 +93,5 @@ dependencies {
     androidTestImplementation deps.android_test.espresso
 
     // chat-sdk
-    api 'community.likeminds:likemindschat:2.3.1'
+    api 'community.likeminds:likemindschat:2.3.3'
 }

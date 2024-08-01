@@ -16,7 +16,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.likeminds.chatmm.LMAnalytics
 import com.likeminds.chatmm.R
-import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomConversationItemViewDataBinderUtil
 import com.likeminds.chatmm.chatroom.detail.view.adapter.ChatroomDetailAdapterListener
 import com.likeminds.chatmm.conversation.model.AttachmentViewData
@@ -27,6 +26,7 @@ import com.likeminds.chatmm.media.view.MediaActivity
 import com.likeminds.chatmm.member.util.UserPreferences
 import com.likeminds.chatmm.reactions.util.ReactionUtil
 import com.likeminds.chatmm.reactions.util.ReactionsPreferences
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.ProgressHelper
 import com.likeminds.chatmm.utils.ViewUtils
 import com.likeminds.chatmm.utils.customview.ViewDataBinder
@@ -334,20 +334,22 @@ internal class ConversationSingleGifItemViewDataBinder constructor(
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
-                    target: Target<GifDrawable?>,
+                    target: Target<GifDrawable?>?,
                     isFirstResource: Boolean
                 ): Boolean {
                     return false
                 }
 
                 override fun onResourceReady(
-                    resource: GifDrawable,
-                    model: Any,
+                    resource: GifDrawable?,
+                    model: Any?,
                     target: Target<GifDrawable?>?,
-                    dataSource: DataSource,
+                    dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    startGifAnimation(binding, resource)
+                    resource?.let {
+                        startGifAnimation(binding, it)
+                    }
                     return false
                 }
             })
