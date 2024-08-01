@@ -3,25 +3,20 @@ package com.likeminds.chatmm.media.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.likeminds.chatmm.R
 import com.likeminds.chatmm.SDKApplication
-import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.chatroom.detail.model.ChatroomDetailActionModeData
 import com.likeminds.chatmm.databinding.LmChatFragmentMediaPickerItemBinding
 import com.likeminds.chatmm.media.model.*
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapter
 import com.likeminds.chatmm.media.view.adapter.MediaPickerAdapterListener
 import com.likeminds.chatmm.media.viewmodel.MediaViewModel
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.actionmode.ActionModeCallback
 import com.likeminds.chatmm.utils.actionmode.ActionModeListener
 import com.likeminds.chatmm.utils.customview.BaseFragment
@@ -76,7 +71,7 @@ class LMChatMediaPickerItemFragment :
     override fun setUpViews() {
         super.setUpViews()
         if (mediaPickerItemExtras.allowMultipleSelect) {
-            setupMenu()
+            setHasOptionsMenu(true)
         }
         initializeUI()
         initializeListeners()
@@ -87,6 +82,21 @@ class LMChatMediaPickerItemFragment :
             mediaPickerItemExtras.mediaTypes as MutableList<String>
         ).observe(viewLifecycleOwner) {
             mediaPickerAdapter.replace(it)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.lm_chat_media_picker_item_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.select_multiple -> {
+                startActionMode()
+                true
+            }
+            else -> false
         }
     }
 
@@ -119,39 +129,6 @@ class LMChatMediaPickerItemFragment :
         binding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }
-    }
-
-    // sets up the menu item
-    private fun setupMenu() {
-        // The usage of an interface lets you inject your own implementation
-        val menuHost: MenuHost = requireActivity()
-
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.lm_chat_media_picker_item_menu, menu)
-                val menuItem = menu.findItem(R.id.select_multiple)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    menuItem.iconTintList = ColorStateList.valueOf(LMTheme.getToolbarColor())
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.select_multiple -> {
-                        startActionMode()
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun startActionMode() {

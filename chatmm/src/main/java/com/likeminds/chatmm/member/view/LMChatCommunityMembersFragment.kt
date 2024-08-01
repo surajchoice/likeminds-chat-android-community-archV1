@@ -2,11 +2,9 @@ package com.likeminds.chatmm.member.view
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.likeminds.chatmm.R
@@ -24,6 +22,7 @@ import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapter
 import com.likeminds.chatmm.member.view.adapter.CommunityMembersAdapterListener
 import com.likeminds.chatmm.member.viewmodel.CommunityMembersViewModel
 import com.likeminds.chatmm.search.util.CustomSearchBar
+import com.likeminds.chatmm.theme.model.LMTheme
 import com.likeminds.chatmm.utils.*
 import com.likeminds.chatmm.utils.ViewUtils.hide
 import com.likeminds.chatmm.utils.ViewUtils.show
@@ -73,7 +72,8 @@ class LMChatCommunityMembersFragment :
 
     override fun setUpViews() {
         super.setUpViews()
-        setupMenu()
+        setHasOptionsMenu(true)
+        initToolbar()
         initializeClickListener()
         initRecyclerView()
         initData()
@@ -164,28 +164,29 @@ class LMChatCommunityMembersFragment :
         }
     }
 
-    private fun setupMenu() {
-        val fragmentActivity = activity as AppCompatActivity?
-        fragmentActivity?.setSupportActionBar(binding.toolbar)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.lm_chat_dm_all_member_menu, menu)
+    }
 
-        val menuHost: MenuHost = requireActivity()
+    private fun updateMenu(menu: Menu) {
+        val item = menu.findItem(R.id.menu_search)
+        item?.icon?.setTint(LMTheme.getToolbarColor())
+    }
 
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.lm_chat_dm_all_member_menu, menu)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_search -> {
+                Log.d("PUI", "menu_search")
+                showSearchToolbar()
             }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.menu_search -> {
-                        showSearchToolbar()
-                    }
-
-                    else -> return false
-                }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    //inits toolbar
+    private fun initToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
     }
 
     private fun initializeClickListener() {
@@ -261,6 +262,7 @@ class LMChatCommunityMembersFragment :
         binding.searchBar.apply {
             show()
             post {
+                Log.d("PUI", "search bar opened")
                 openSearch()
             }
         }
