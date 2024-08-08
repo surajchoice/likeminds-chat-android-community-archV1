@@ -18,6 +18,7 @@ import android.util.Base64
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -693,7 +694,7 @@ class ChatroomDetailFragment :
             requireContext(),
             String(Base64.decode(InternalKeys.GIPHY_SDK, Base64.DEFAULT))
         )
-        val settings = GPHSettings(GridType.waterfall,GPHTheme.Light)
+        val settings = GPHSettings(GridType.waterfall, GPHTheme.Light)
         settings.mediaTypeConfig = arrayOf(GPHContentType.recents, GPHContentType.gif)
         settings.selectedContentType = GPHContentType.gif
         val giphyDialog = GiphyDialogFragment.newInstance(settings)
@@ -820,7 +821,9 @@ class ChatroomDetailFragment :
     }
 
     //on click function when custom widget A is clicked
-    private fun onCustomWidgetAAttachmentClicked() {}
+    private fun onCustomWidgetAAttachmentClicked() {
+        Toast.makeText(context, "Buy/Sell Widget is clicked", Toast.LENGTH_SHORT).show()
+    }
 
     private fun disableAnswerPosting() {
         editAnswerEnableState(false)
