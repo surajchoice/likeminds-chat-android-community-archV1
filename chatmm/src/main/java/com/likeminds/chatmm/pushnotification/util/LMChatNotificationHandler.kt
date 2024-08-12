@@ -256,7 +256,7 @@ class LMChatNotificationHandler {
 
         appComponent!!.inject(this)
 
-        notificationIcon = R.drawable.lm_chat_ic_notification
+        notificationIcon = R.mipmap.ic_launcher
 
         notificationTextColor = LMTheme.getButtonsColor()
 
@@ -387,7 +387,8 @@ class LMChatNotificationHandler {
     private fun createGeneralNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_general_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_general_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_general_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(GENERAL_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -402,7 +403,8 @@ class LMChatNotificationHandler {
     private fun createChatroomNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = mApplication.getString(R.string.lm_chat_chatroom_channel_name)
-            val descriptionText = mApplication.getString(R.string.lm_chat_chatroom_channel_description)
+            val descriptionText =
+                mApplication.getString(R.string.lm_chat_chatroom_channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHATROOM_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
