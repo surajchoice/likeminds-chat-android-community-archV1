@@ -39,6 +39,7 @@ import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.likeminds.chatmm.*
 import com.likeminds.chatmm.R
+import com.likeminds.chatmm.buysellwidget.view.BuySellCustomWidgetDialog
 import com.likeminds.chatmm.chatroom.detail.model.*
 import com.likeminds.chatmm.chatroom.detail.util.*
 import com.likeminds.chatmm.chatroom.detail.util.ChatroomUtil.getTypeName
@@ -822,7 +823,10 @@ class ChatroomDetailFragment :
 
     //on click function when custom widget A is clicked
     private fun onCustomWidgetAAttachmentClicked() {
-        Toast.makeText(context, "Buy/Sell Widget is clicked", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "Buy/Sell Widget is clicked", Toast.LENGTH_SHORT).show()
+        Log.e("Tag", "Buy/Sell Widget is clicked")
+        val bottomSheetFragment = BuySellCustomWidgetDialog()
+        bottomSheetFragment.show(childFragmentManager, bottomSheetFragment.tag)
     }
 
     private fun disableAnswerPosting() {

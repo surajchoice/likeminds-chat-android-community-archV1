@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_vertical_gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.01" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_vertical_gl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.99" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Search"
+            app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/order_type_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Order Type:"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />
+
+
+        <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
+        <!--            android:id="@+id/radio_buy_btn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_marginTop="16dp"-->
+        <!--            android:text="Buy"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/order_type_tv"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
+
+        <!--        <com.google.android.material.radiobutton.MaterialRadioButton-->
+        <!--            android:id="@+id/radio_sell_btn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_marginTop="16dp"-->
+        <!--            android:text="Sell"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/radio_buy_btn"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/search_input_layout" />-->
+        <RadioGroup
+            android:id="@+id/order_type_radio_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/order_type_tv"
+            app:layout_constraintTop_toTopOf="@id/order_type_tv"
+            app:layout_constraintBottom_toBottomOf="@id/order_type_tv">
+
+            <RadioButton
+                android:id="@+id/radio_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buy" />
+
+            <RadioButton
+                android:id="@+id/radio_sell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Sell" />
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/entry_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Entry"
+            app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintTop_toBottomOf="@id/order_type_radio_group">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/entry_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sl_price_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="SL Price"
+            app:layout_constraintEnd_toStartOf="@id/target_price_input_layout"
+            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintTop_toBottomOf="@id/entry_input_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sl_price_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/target_price_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Target Price"
+            app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+            app:layout_constraintStart_toEndOf="@id/sl_price_input_layout"
+            app:layout_constraintTop_toBottomOf="@id/entry_input_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/target_price_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/post_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Post"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="@id/end_vertical_gl"
+            app:layout_constraintStart_toStartOf="@id/start_vertical_gl"
+            app:layout_constraintTop_toBottomOf="@id/sl_price_input_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
